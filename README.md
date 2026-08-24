@@ -2,7 +2,7 @@
 
 `kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供五类真题（2010—2026）的合规检索与分析、新手图文讲解、学习规划与执行、进度诊断、错题闭环、原创模考、官方招考信息核验，并可条件式连接 14 个学习层（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
-当前版本：`2.3.0`
+当前版本：`2.4.0`
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
@@ -21,17 +21,20 @@
 
 ### 新手图文讲解
 
-单题解析统一按以下结构输出：
+数学、英语、408、政治的单题与概念讲解默认采用详细模式；只有明确说“只要答案”“简洁版”或“不要过程”时才压缩。多题先给答案与考点总览，再逐题完整讲解；每批最多四题，分批只发生在题目边界，不以省略步骤换取一次塞完。
+
+每道题统一按以下结构输出：
 
 1. 结论与题型定位；
 2. `[真题证据]`（科目、试卷年度、实际考试日期、题号、来源 URL、核验状态）；
-3. 前置知识清单；
-4. 可编辑图解（Mermaid / 表格 / SVG）；
-5. 逐步推导，每一步解释“为什么”；
-6. 独立复核（换方法或边界条件）；
-7. 第一处易错点与常见误区；
-8. `[原创练习]` 迁移题（不冒充真题）；
-9. 学习层写回与必要的 Schema 1.1 便携记录。
+3. 已知条件、目标和前置知识；
+4. 解题路线与可编辑图解（Mermaid / 表格 / SVG）；
+5. 逐步推导，每一步解释“做什么、为什么、用了什么条件”，保留关键中间结果；
+6. 选择题逐项核对正确依据与错误来源；
+7. 独立复核（换方法、代回或边界条件）；
+8. 用户有解法时定位第一处错误，没有时说明最早易错点；
+9. `[原创练习]` 迁移题（不冒充真题）；
+10. 学习层写回与必要的 Schema 1.1 便携记录。
 
 没有可靠真题时输出 `[真题未命中]` 并用 `[原创示例]` 完成教学，不编造年份、题号或答案。
 
@@ -199,14 +202,14 @@
 新版 Codex CLI/IDE 可添加仓库 marketplace 后安装：
 
 ```powershell
-codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.3.0
+codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.4.0
 codex plugin add kaoyan-408@kaoyan-408
 ```
 
 也可克隆固定版本，在 ChatGPT Desktop 或 Codex Desktop 打开仓库并从 repo marketplace 安装：
 
 ```powershell
-git clone --branch v2.3.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
+git clone --branch v2.4.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
 跨平台安装器：
