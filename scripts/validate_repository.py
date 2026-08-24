@@ -38,6 +38,13 @@ EXPECTED_SKILLS = {
     "kaoyan-official-info-researcher",
 }
 
+DETAILED_TUTOR_SKILLS = {
+    "kaoyan-408-tutor",
+    "kaoyan-math-coach",
+    "kaoyan-english-coach",
+    "kaoyan-politics-coach",
+}
+
 EXPECTED_REFERENCES = {
     "capability-routing-contract.md",
     "evidence-copyright-contract.md",
@@ -319,6 +326,13 @@ def check_skill(skill_dir: Path) -> None:
     for tag, skills in OUTPUT_TAG_SKILLS.items():
         if name in skills:
             require(tag in content, f"Skill does not require the output evidence tag {tag}: {name}")
+    if name in DETAILED_TUTOR_SKILLS:
+        require(
+            "beginner-visual-answer-contract.md" in content,
+            f"tutor Skill does not load the beginner answer contract: {name}",
+        )
+        for marker in ("每批最多四题", "只要答案", "最早易错点"):
+            require(marker in content, f"tutor Skill is missing detailed-answer marker {marker}: {name}")
 
     yaml_path = skill_dir / "agents" / "openai.yaml"
     document = load_yaml(yaml_path)
@@ -346,6 +360,18 @@ def check_links(plugin: Path) -> None:
                 f"Markdown link leaves plugin tree: {md_path}: {target}",
             )
             require(resolved.exists(), f"Markdown link target does not exist: {md_path}: {target}")
+
+
+def check_beginner_answer_contract(plugin: Path) -> None:
+    contract = read_utf8_text(plugin / "references" / "beginner-visual-answer-contract.md")
+    for marker in (
+        "默认详细模式",
+        "显式简洁覆盖",
+        "每批最多四题",
+        "不得省略中间步骤",
+        "选择题必须逐项说明",
+    ):
+        require(marker in contract, f"beginner answer contract is missing marker: {marker}")
 
 
 def check_obsidian_brain_contract(plugin: Path) -> None:
@@ -854,6 +880,7 @@ def validate_repo(
     check_manifest(plugin)
     check_release_tree(plugin)
     check_obsidian_brain_contract(plugin)
+    check_beginner_answer_contract(plugin)
     check_portable_schema(plugin)
     check_past_paper_schema(plugin)
 
@@ -870,7 +897,7 @@ def validate_repo(
     return [
         "manifest and marketplace",
         "13 Skills and openai.yaml files",
-        "shared contracts, dual brains, portable-record and past-paper JSON Schemas",
+        "shared contracts, detailed tutoring, dual brains, portable-record and past-paper JSON Schemas",
         "exact release allowlist, UTF-8/LF, and sensitive-content scan",
         "65 routing and 52 behavior scenario coverage checks",
         "Git-history, secret, and removed-system scans",

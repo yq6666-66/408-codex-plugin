@@ -68,6 +68,20 @@ class RepositoryMutationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValidationError, "Obsidian brain contract"):
             validate_repo(self.repo, scan_history=False)
 
+    def test_missing_detailed_answer_contract_marker_is_rejected(self) -> None:
+        path = self.plugin / "references" / "beginner-visual-answer-contract.md"
+        text = path.read_text(encoding="utf-8").replace("每批最多四题", "按需分批")
+        path.write_text(text, encoding="utf-8", newline="\n")
+        with self.assertRaisesRegex(ValidationError, "beginner answer contract"):
+            validate_repo(self.repo, scan_history=False)
+
+    def test_tutor_missing_detailed_answer_marker_is_rejected(self) -> None:
+        path = self.plugin / "skills" / "kaoyan-english-coach" / "SKILL.md"
+        text = path.read_text(encoding="utf-8").replace("最早易错点", "常见误区")
+        path.write_text(text, encoding="utf-8", newline="\n")
+        with self.assertRaisesRegex(ValidationError, "detailed-answer marker"):
+            validate_repo(self.repo, scan_history=False)
+
     def test_invalid_utf8_is_rejected(self) -> None:
         path = self.plugin / "references" / "evidence-copyright-contract.md"
         path.write_bytes(b"\xff\xfe")
