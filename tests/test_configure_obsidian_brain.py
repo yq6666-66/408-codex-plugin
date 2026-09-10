@@ -62,7 +62,7 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         self.assertEqual(data["knowledgeRoot"], "30-知识/408考研")
         self.assertEqual(data["pastPaperRoot"], "40-真题/408考研")
         project = self.vault / "20-项目" / "408考研"
-        for name in ("主页.md", "学习档案.md", "当前进度.md", "错题队列.md", "记忆索引.md"):
+        for name in ("主页.md", "学习档案.md", "当前进度.md", "错题队列.md", "学习检查点.md", "记忆索引.md"):
             self.assertTrue((project / name).is_file())
 
         second = self.run_cli("configure", "--vault", str(self.vault))
@@ -70,6 +70,7 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         index = (self.vault / "00-系统" / "知识库索引.md").read_text(encoding="utf-8")
         self.assertEqual(index.count("kaoyan-408-brain"), 1)
         self.assertTrue((self.vault / "40-真题" / "408考研" / "真题索引.md").is_file())
+        self.assertTrue((self.vault / "40-真题" / "408考研" / "政治").is_dir())
 
         disabled = self.run_cli("disable")
         self.assertEqual(disabled.returncode, 0, disabled.stdout + disabled.stderr)

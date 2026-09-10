@@ -1,56 +1,64 @@
 # 能力路由契约
 
-始终条件式读取 [Obsidian 大脑契约](obsidian-brain-contract.md)；宿主提供并已授权 Notion 工具时同时读取 [Notion 学习大脑契约](notion-brain-contract.md)。宿主提供 Udemy 工具时读取 [Udemy 课程资源契约](udemy-course-source-contract.md)；提供 Sider Scholar 或 Exa 工具时读取对应 [Sider Scholar 资料检索契约](sider-scholar-search-contract.md) 与 [Exa 资料检索契约](exa-search-contract.md)；提供 GoodNotes 工具或用户已导出笔记时读取 [GoodNotes 笔记记忆契约](goodnotes-note-brain-contract.md)；提供 Wolfram 工具时读取 [Wolfram 计算核验契约](wolfram-computation-contract.md)；提供 A-Z Dictionary 工具时读取 [A-Z Dictionary 词典契约](az-dictionary-contract.md)；提供 Quizlet 工具时读取 [Quizlet 闪卡记忆契约](quizlet-flashcard-contract.md)；提供 Ace Quiz Maker 工具时读取 [Ace Quiz Maker 章节测契约](ace-quiz-maker-contract.md)；提供 Ace Knowledge Graph 工具时读取 [Ace Knowledge Graph 知识图谱契约](ace-knowledge-graph-contract.md)；提供 AhaMotion 工具时读取 [AhaMotion 视频讲解契约](ahamotion-video-contract.md)；提供 Vocabulary Trainer 工具时读取 [Vocabulary Trainer 词汇训练契约](vocabulary-trainer-contract.md)；提供 Kahoot 工具时读取 [Kahoot 互动复习契约](kahoot-review-contract.md)。学习层只负责检索与沉淀，不改变唯一主责 Skill。
+始终条件式读取 [Obsidian 大脑契约](obsidian-brain-contract.md)；宿主提供并已授权 Notion 工具时同时读取 [Notion 学习大脑契约](notion-brain-contract.md)。宿主提供任何外部学习层工具时，按 [通用学习层契约](learning-layer-contract.md) 的能力族（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务）判断是否启用与如何降级，不再按品牌逐个加载规则。学习层只负责检索与沉淀，不改变唯一主责 Skill。
 
 ## 公共规则
 
-1. 每轮只指定一个主责 Skill。先完成当前主要产物，再用三行交接卡传递最小结果。
-2. 默认先给结论或立即行动，再给必要依据、可选交接卡、学习层状态，最后才是必需的 Schema 1.1 JSON。
+1. 每轮只有一个主责 Skill。同一会话内的连续任务由 Agent 自己按优先级串联执行（检索来源 → 核验题面 → 教学讲解 → 授权范围内的笔记整理），不得要求用户复制、粘贴或人工传递“交接卡”才能进入下一步。交接卡只是跨会话或输出给别人时可选的最小结果摘要。
+2. 默认先给结论或立即行动，再给必要依据，最后才是必需的便携记录 JSON。
 3. 信息不足时只询问会改变结果的最小字段；未知值使用 `null`，不得编造个人进度、真题出处或当前事实。
-4. 数学一/二、英语一/二、408、政治单题以及真题逐题解析必须读取 [新手图文讲解契约](beginner-visual-answer-contract.md)。
+4. 数学一/二、英语一/二、408、政治单题以及真题逐题解析必须读取 [新手图文讲解契约](beginner-visual-answer-contract.md)，其中包含题面完整性检查、三种教学模式与答案泄露规则。
 5. 搜索、引用或保存真题时必须读取 [真题来源与入库契约](past-paper-source-contract.md) 和 [证据与版权契约](evidence-copyright-contract.md)。
+6. 涉及学习记录读取或写入时，必须读取 [便携学习记录契约](portable-learning-records.md)；本地可用时优先用 `scripts/records.py` 校验与规范化，不可用时按契约文字规则执行。
+7. 相对日期（今天、明天、三天后、下周等）解析优先使用宿主提供的可靠当前日期与时区；展示或保存关键日期时必须同时写出绝对日期，例如 `三天后（2026-09-14）`。旧记录中日期未知就保持未知，不得用当前日期回填。到期计算必须允许显式传入基准日期（`records.py due --date`）。
 
-```markdown
-使用：$next-skill
-目标：下一步要完成的任务
-传递：完成任务所需的最小结果
-```
+## 三种教学模式
+
+- **详细讲解**（默认）：按新手图文讲解契约完整教学。
+- **逐级提示**：从弱到强分层提示，不立即泄露最终答案；用户明确说“提示我”“卡住了”时启用。
+- **独立作答**：先出题（或沿用用户给的题），等用户完成后批改、定位错误、讲解、给变式，必要时复测。
+- 用户说“考考我”“先别给答案”“我自己做”“出一道题”“模拟一下”时，默认进入独立作答或相应测验模式。
+- 冻结模考在正式交卷前不得泄露答案；所有外部测验工具调用继承同一规则。
+
+## 主 Agent 与子 Agent 边界
+
+只有彼此真正独立的检索型工作（不同院校、不同年份、不同来源核验）可以并行交给子 Agent。最终事实判断、来源冲突处理、教学顺序、总结、笔记写入和用户最终回复必须由主 Agent 汇总完成；不得让多个子 Agent 同时写同一个学习记录或同一个持久化文件。
 
 ## 复合意图优先级
 
 1. 会阻塞后续任务的“今年、最新、当前”大纲、报名、院校规则或考试安排先由 `kaoyan-official-info-researcher` 核验。
-2. “帮我找某年试卷、哪里下载、GitHub 有没有、搜一下来源”由 `kaoyan-past-paper-searcher` 主责。
+2. “帮我找某年试卷、哪里下载、GitHub 有没有、搜一下来源”由 `kaoyan-past-paper-searcher` 主责；科目范围是数学一、数学二、英语一、英语二、408、政治六类，检索起点 2010，不设固定结束年份上限。
 3. 已提供或已核验试卷的覆盖、结构、难度与有限趋势由 `kaoyan-past-paper-analyst` 主责。
 4. 当前主要产物是单题或概念讲解时，由 `kaoyan-math-coach`、`kaoyan-english-coach`、`kaoyan-408-tutor` 或 `kaoyan-politics-coach` 主责；真题搜索仅作为证据前置，不抢占讲解。
 5. 多题错因聚类、间隔复测和延迟掌握由 `kaoyan-error-loop-coach` 主责。
-6. 下游任务只用交接卡，不在同一回答中让多个 Skill 争抢主责。
+6. “继续上次复习”“上次学到哪了”由 `kaoyan-review-executor` 读取真实持久化的 SessionCheckpoint 与到期错题后恢复；读取不到真实记录时明确说明，不得根据模糊聊天历史凭空推断。
 
 ## 13 个主责 Skill
 
 | Skill | 主责意图 | 最近邻负向边界 |
 | --- | --- | --- |
 | `kaoyan-408-planner` | 阶段、月度、周度、目标日期倒排和跨科配额 | 不展开单次时段，不伪造真题频率 |
-| `kaoyan-review-executor` | 把既有计划或本次目标展开为立即可做的时间盒 | 不决定长期路线 |
+| `kaoyan-review-executor` | 展开本次时段，或按 SessionCheckpoint 恢复上次复习 | 不决定长期路线，不凭聊天记忆伪造检查点 |
 | `kaoyan-progress-diagnostician` | 根据记录诊断偏差、风险和调整信号 | 不凭空生成进度或完整重排 |
 | `kaoyan-error-loop-coach` | 跨题聚类错因、复测和掌握证据 | 不替代单题第一处错误定位 |
 | `kaoyan-mock-exam-coach` | 组织原创或用户授权的冻结题面模考 | 交卷前不讲题或泄露线索 |
 | `kaoyan-408-tutor` | 408 概念、单题、题面缺失和答案冲突 | 不做整卷趋势或搜索整套资料 |
 | `kaoyan-math-coach` | 数学一/二概念、单题、第一处错误和专项训练 | 必须先明确卷种差异，不做跨题闭环 |
 | `kaoyan-english-coach` | 英语一/二阅读、翻译、完形、新题型和写作 | 必须区分卷种和评分口径 |
-| `kaoyan-politics-coach` | 政治理论、材料题、作答批改和背诵复测 | 不进入五类真题自动搜索库，不凭记忆断言时政 |
-| `kaoyan-past-paper-searcher` | 发现、核验、许可判断、去重和登记五类真题来源 | 不直接完成逐题教学或整卷趋势分析 |
+| `kaoyan-politics-coach` | 政治理论、材料题、作答批改和背诵复测 | 时政答案按试卷实际年度核验，不凭记忆断言当前时政 |
+| `kaoyan-past-paper-searcher` | 发现、核验、许可判断、去重和登记六类真题来源 | 不直接完成逐题教学或整卷趋势分析 |
 | `kaoyan-past-paper-analyst` | 分析已提供或已核验可访问的真题样本 | 不搜索来源，不把小样本写成规律 |
-| `kaoyan-material-study-assistant` | 把用户材料转成摘要、卡片、提纲或原创练习 | 不获取未提供材料，不替代单题讲解 |
-| `kaoyan-official-info-researcher` | 核验当年招考、408 院校目录发现、复试方案与近两年录取 | 不做学科教学，不用真题替代当前官方页面，不做后台监控或自动提醒 |
+| `kaoyan-material-study-assistant` | 把用户材料转成摘要、卡片、提纲或原创练习 | 不替代单题讲解，不索取未授权材料 |
+| `kaoyan-official-info-researcher` | 核验当年招考、六科范围、408 院校目录、复试与近两年录取，统一院校比较口径 | 不做学科教学；无宿主调度能力时不承诺自动提醒 |
 
 ## 常见冲突
 
-- “搜 2020 数学一真题并讲第 3 题”：若题面尚未取得，先搜索并交接数学教练；题面已经提供则数学教练主责。
+- “搜 2020 数学一真题并讲第 3 题”：同一任务内先搜索并核验，再直接讲解；不需要用户在中间复制粘贴题面。
 - “这五年 408 哪部分变多”：先确认有完整可比样本，再由真题分析师处理；没有样本时先交搜索器。
 - “今晚 90 分钟刷真题”：已有科目、目标和材料时由执行器处理；找卷不是主要产物。
 - “这题总是错”：当前一题由学科教练定位；多次记录要求聚类时由错题闭环处理。
-- 政治理论由政治教练处理；当前时政事实先交官方核验员，政治试卷不进入自动真题库。
-- “哪些学校考 408、某校近两年录取多少分”：院校目录发现与复试、录取数据核验由官方核验员主责；基于已核验数据的择校决策与时间安排交接 `$kaoyan-408-planner`。
+- “2027 政治 1000 题什么时候出”之类的未来年份请求：按真题来源契约以真实可访问来源判断是否已公开，不因超过某个固定年份而直接判定不存在。
+- “哪些学校考 408、某校近两年录取多少分”：院校目录发现与复试、录取数据核验由官方核验员主责，并按统一口径列比较表；缺失数据留空或标未知。
 
 ## 推荐串联
 
@@ -58,3 +66,4 @@
 - `真题搜索 → 真题分析 → 学科辅导`
 - `学科辅导 → 错题闭环 → 进度诊断`
 - `模考 → 错题闭环 → 进度诊断`
+- `读取 SessionCheckpoint → 恢复未完成任务 → 到期错题复测`

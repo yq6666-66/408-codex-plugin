@@ -15,11 +15,17 @@ from validate_repository import (  # noqa: E402
     ValidationError,
     check_behavior_cases,
     check_forward_cases,
+    check_learning_layer_contract,
     check_obsidian_brain_contract,
     check_portable_schema,
     check_progress_accuracy_semantics,
     validate_repo,
 )
+from release_payload import check_mastery_evidence_semantics  # noqa: E402
+
+
+def skill_text(name: str) -> str:
+    return (REPO / "plugins/kaoyan-408/skills" / name / "SKILL.md").read_text(encoding="utf-8")
 
 
 class RepositoryContractTests(unittest.TestCase):
@@ -50,53 +56,60 @@ class RepositoryContractTests(unittest.TestCase):
         plugin = REPO / "plugins/kaoyan-408"
         check_portable_schema(plugin)
         check_obsidian_brain_contract(plugin)
+        check_learning_layer_contract(plugin)
         check_forward_cases(REPO)
         check_behavior_cases(REPO)
 
-    def test_behavior_sensitive_skills_state_explicit_contracts(self) -> None:
-        skills = REPO / "plugins/kaoyan-408/skills"
-        mock = (skills / "kaoyan-mock-exam-coach/SKILL.md").read_text(
+    def test_merged_brand_contracts_are_gone(self) -> None:
+        references = REPO / "plugins/kaoyan-408/references"
+        remaining = sorted(path.name for path in references.glob("*-contract.md"))
+        self.assertEqual(
+            remaining,
+            [
+                "beginner-visual-answer-contract.md",
+                "capability-routing-contract.md",
+                "evidence-copyright-contract.md",
+                "learning-layer-contract.md",
+                "notion-brain-contract.md",
+                "obsidian-brain-contract.md",
+                "past-paper-source-contract.md",
+            ],
+        )
+
+    def test_behavior_critical_rules_remain(self) -> None:
+        """A small set of behavior-critical product rules, not verbatim prose matching."""
+        mock = skill_text("kaoyan-mock-exam-coach")
+        self.assertIn("交卷前", mock)
+        self.assertIn("rubric", mock)
+        tutor = skill_text("kaoyan-408-tutor")
+        self.assertIn("模型讲解", tutor)
+        error_loop = skill_text("kaoyan-error-loop-coach")
+        self.assertIn("hypothesis", error_loop)
+        planner = skill_text("kaoyan-408-planner")
+        self.assertIn("null", planner)
+        politics = skill_text("kaoyan-politics-coach")
+        self.assertIn("[待核验]", politics)
+        past_paper = skill_text("kaoyan-past-paper-analyst")
+        self.assertIn("样本覆盖表", past_paper)
+
+    def test_teaching_modes_and_answer_policy_are_wired(self) -> None:
+        beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(
             encoding="utf-8"
         )
-        material = (
-            skills / "kaoyan-material-study-assistant/SKILL.md"
-        ).read_text(encoding="utf-8")
-        tutor_408 = (skills / "kaoyan-408-tutor/SKILL.md").read_text(
+        for marker in ("逐级提示", "独立作答", "考考我", "交卷前", "题面完整性检查"):
+            self.assertIn(marker, beginner)
+        routing = (REPO / "plugins/kaoyan-408/references/capability-routing-contract.md").read_text(
             encoding="utf-8"
         )
-        diagnostician = (
-            skills / "kaoyan-progress-diagnostician/SKILL.md"
-        ).read_text(encoding="utf-8")
-        planner = (skills / "kaoyan-408-planner/SKILL.md").read_text(
+        self.assertIn("三种教学模式", routing)
+        self.assertIn("SessionCheckpoint", routing)
+
+    def test_permission_semantics_distinguish_readonly_from_notion_only(self) -> None:
+        layer = (REPO / "plugins/kaoyan-408/references/learning-layer-contract.md").read_text(
             encoding="utf-8"
         )
-        error_loop = (skills / "kaoyan-error-loop-coach/SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        english = (skills / "kaoyan-english-coach/SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        official = (
-            skills / "kaoyan-official-info-researcher/SKILL.md"
-        ).read_text(encoding="utf-8")
-        past_paper = (
-            skills / "kaoyan-past-paper-analyst/SKILL.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("交卷时回报实际用时", mock)
-        self.assertIn("不得写成“可附用时”", mock)
-        self.assertIn("不下载、补齐、搜索或重建", material)
-        self.assertIn("没有后台学习状态", material)
-        self.assertIn("必须另起“模型讲解”段落", tutor_408)
-        self.assertIn("不得放在 `[用户材料]` 标签之下", tutor_408)
-        self.assertIn("相对周期不是已提供的绝对日期", diagnostician)
-        self.assertIn("不得根据当前系统日期自行推定", diagnostician)
-        self.assertIn("用户未说明当前阶段时写 `null`", planner)
-        self.assertIn("支持/证伪后的双向更新规则", error_loop)
-        self.assertIn("不能因此把另一端自动称为“短期”", english)
-        self.assertIn("标题为“必须修正”和“可选提升”的两个清单", english)
-        self.assertIn("传递：[待核验] 暂无可传递的已核验结论", official)
-        self.assertIn("必须建立 Markdown 样本覆盖表", past_paper)
-        self.assertIn("每条趋势同时写支持样本数", past_paper)
+        self.assertIn("禁止所有学习记录写入", layer)
+        self.assertIn("仅限制 Notion 写入", layer)
 
     def test_accuracy_semantics_reject_impossible_or_inconsistent_values(self) -> None:
         base = {
@@ -117,6 +130,43 @@ class RepositoryContractTests(unittest.TestCase):
             check_progress_accuracy_semantics(
                 {**base, "accuracy": [{"subject": "english2", "correct": 16, "total": 20, "rate": 0.7}]}
             )
+
+    def test_mastery_evidence_semantics_require_independent_or_transfer(self) -> None:
+        base_item = {
+            "subject": "408",
+            "topic": "LRU",
+            "errorCause": None,
+            "errorCauseStatus": None,
+            "nextRetestDate": None,
+            "retestOffsetDays": None,
+            "status": "mastered",
+            "masteryEvidence": [],
+        }
+        queue = {"recordType": "ReviewQueue", "items": [base_item]}
+        self.assertEqual(len(check_mastery_evidence_semantics(queue)), 1)
+        solution_only = {
+            **queue,
+            "items": [
+                {
+                    **base_item,
+                    "retestEvidence": [
+                        {"evidenceType": "solution-seen", "outcome": "correct"},
+                        {"evidenceType": "redo-after-solution", "outcome": "correct"},
+                    ],
+                }
+            ],
+        }
+        self.assertEqual(len(check_mastery_evidence_semantics(solution_only)), 1)
+        independent = {
+            **queue,
+            "items": [
+                {
+                    **base_item,
+                    "retestEvidence": [{"evidenceType": "independent", "outcome": "correct"}],
+                }
+            ],
+        }
+        self.assertEqual(check_mastery_evidence_semantics(independent), [])
 
 
 if __name__ == "__main__":

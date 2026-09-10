@@ -1,0 +1,207 @@
+{
+  "$schemaVersion": "1.0",
+  "title": "kaoyan-408 GPT-6 实际回答验收用例",
+  "notes": [
+    "工程测试（unittest）与 GPT-6 教学质量验收完全分离：本文件只是可重复的测试材料。",
+    "同一组用例必须在新旧两版插件上、同一 GPT-6 宿主、相同推理档位下运行。",
+    "判分依据是 checkpoints；不得只因回答出现指定关键词就判 pass。"
+  ],
+  "cases": [
+    {
+      "id": "gpt6-01-detailed-408",
+      "category": "detailed-answer",
+      "skill": "kaoyan-408-tutor",
+      "input": "讲一下：某机主存按字节编址，容量 64KB，Cache 数据区 4KB，块大小 16B，直接映射。主存地址 0x8A34 访问时，tag/index/offset 各多少位？该地址是否命中（此前已依次访问 0x8A30、0x1234）？",
+      "checkpoints": [
+        "覆盖前置知识（直接映射、地址划分）",
+        "关键中间步骤完整：64KB=16 位地址、块内偏移 4 位、行号 8 位、tag 4 位",
+        "逐项说明 0x8A34 的划分与是否命中的推理",
+        "包含独立复核（如换一种方式重算或边界说明）"
+      ]
+    },
+    {
+      "id": "gpt6-02-detailed-math",
+      "category": "detailed-answer",
+      "skill": "kaoyan-math-coach",
+      "input": "数学二：求 lim(x→0) (e^x - 1 - x) / (x^2)。请完整讲清每一步。",
+      "checkpoints": [
+        "指明 0/0 型与所用定理（泰勒或洛必达）及适用条件",
+        "公式来源与中间结果保留",
+        "有独立复核（换泰勒或洛必达交叉验证）",
+        "区分“工具实际运行结果”与“人工复核”（若使用计算工具）"
+      ]
+    },
+    {
+      "id": "gpt6-03-detailed-english",
+      "category": "detailed-answer",
+      "skill": "kaoyan-english-coach",
+      "input": "英语二阅读单题：原文 “The policy, though well intentioned, has benefited mainly those who needed it least.” 问：作者对该政策的态度最接近哪种？（A 支持 B 有保留的批评 C 完全否定 D 中立描述）",
+      "checkpoints": [
+        "给出证据链：设问限定→原文证据→主干→让步结构 though",
+        "逐项说明四个选项为何成立/不成立",
+        "说明范围与语气强度（well intentioned ≠ 完全否定）"
+      ]
+    },
+    {
+      "id": "gpt6-04-detailed-politics",
+      "category": "detailed-answer",
+      "skill": "kaoyan-politics-coach",
+      "input": "材料题：某地推行“社区议事会”让居民参与公共事务决策。用唯物史观相关原理分析这一做法。",
+      "checkpoints": [
+        "先拆分理论命题与当前事实命题",
+        "原理准确（人民群众是历史的创造者/上层建筑适应经济基础等）并说明适用条件",
+        "材料对应逐点映射，不堆背诵句",
+        "如涉当前事实，标注 [待核验] 并交接官方核验，不凭记忆断言"
+      ]
+    },
+    {
+      "id": "gpt6-05-concise-override",
+      "category": "concise-answer",
+      "skill": "kaoyan-math-coach",
+      "input": "求 lim(x→0) (e^x - 1 - x) / (x^2)。只要答案，不要过程。",
+      "checkpoints": [
+        "识别显式简洁覆盖并压缩解释",
+        "仍给出答案和一句关键依据",
+        "不因简洁丢失正确性"
+      ]
+    },
+    {
+      "id": "gpt6-06-batch-five-questions",
+      "category": "batching",
+      "skill": "kaoyan-408-tutor",
+      "input": "依次讲这 5 道题：1) Cache 直接映射地址划分；2) LRU 置换步骤；3) FCFS 平均等待时间；4) RR 时间片边界到达；5) TCP 三次握手目的。要求完整讲解。",
+      "checkpoints": [
+        "先给“题号—答案—考点”总览",
+        "本批不超过四题且逐题完整展开",
+        "明确列出本批题号与剩余题号",
+        "不以省略推导压缩篇幅"
+      ]
+    },
+    {
+      "id": "gpt6-07-image-defect",
+      "category": "defective-input",
+      "skill": "kaoyan-408-tutor",
+      "input": "（附一张页边裁切的真题照片，题干完整、选项 D 被裁掉一半）讲这道题",
+      "checkpoints": [
+        "指出选项 D 裁切属于足以改变作答解读的缺失并最小追问，或按可读部分处理并说明",
+        "不因不影响答案的轻微版式问题阻断",
+        "列出已核对的题面要素（题号、正负号、单位等）"
+      ]
+    },
+    {
+      "id": "gpt6-08-ambiguous-symbol",
+      "category": "defective-input",
+      "skill": "kaoyan-math-coach",
+      "input": "（手写拍照）求 f(x)=ln(1+x)/x 在 x→0 的极限，照片中指数位置模糊，可能是 e^x−1 或 e^x−1−x",
+      "checkpoints": [
+        "识别指数模糊属于足以改变答案的歧义并最小追问",
+        "追问范围不扩大到无关内容",
+        "说明两种读法各自的结论作为过渡"
+      ]
+    },
+    {
+      "id": "gpt6-09-mock-no-leak",
+      "category": "answer-leak",
+      "skill": "kaoyan-mock-exam-coach",
+      "input": "来一套 5 题 408 操作系统章节测，交卷前不许给答案。多轮：出题→用户问“第 2 题是不是选 C”→用户交卷。",
+      "checkpoints": [
+        "出题冻结 examId/paperVersion/题目/rubric，要求回报实际用时",
+        "交卷前对选项猜测不确认、不否认、不给提示",
+        "交卷后才逐题评分并说明判分依据",
+        "全程无侧信道泄露（元数据、工具输出）"
+      ]
+    },
+    {
+      "id": "gpt6-10-continuous-search-verify-teach",
+      "category": "continuous-task",
+      "skill": "kaoyan-past-paper-searcher",
+      "input": "帮我找 2024 数学二真题的公开来源，核验后直接讲其中一道极限题。",
+      "checkpoints": [
+        "同一任务内完成 检索→核验→讲解，不要求用户复制粘贴交接卡",
+        "来源核验记录年度、考试日期、来源、完整度、许可状态",
+        "讲解遵循新手图文契约",
+        "来源不可用时诚实输出 [真题未命中] 并用原创示例完成教学"
+      ]
+    },
+    {
+      "id": "gpt6-11-politics-paper-search",
+      "category": "past-paper",
+      "skill": "kaoyan-past-paper-searcher",
+      "input": "找 2023 年考研政治真题的公开来源，并说明答案里时政题应按哪一年的语境核验。",
+      "checkpoints": [
+        "政治作为第六科被正常检索，未被以“政治不在范围”拒绝",
+        "记录试卷年度与实际考试日期（2023 年度考试在 2022-12）",
+        "时政答案按 2023 试卷年度核验，不用当前年份新闻替代",
+        "区分来源与许可状态"
+      ]
+    },
+    {
+      "id": "gpt6-12-future-year-paper",
+      "category": "past-paper",
+      "skill": "kaoyan-past-paper-searcher",
+      "input": "2027 年的 408 真题有吗？现在能找到吗？",
+      "checkpoints": [
+        "不以“超出固定年份上限”直接判定不存在",
+        "按真实可访问来源判断该年度试卷是否已公开（考试通常在当年 12 月）",
+        "未公开时如实说明时间线，不编造链接"
+      ]
+    },
+    {
+      "id": "gpt6-13-school-comparison-calibers",
+      "category": "official-info",
+      "skill": "kaoyan-official-info-researcher",
+      "input": "比较 A、B 两校计算机学院 408 专业的录取难度：复试线、拟录取人数、报录比、推免占比（贴两校公示页内容）。",
+      "checkpoints": [
+        "先统一口径：招生年度、院系、专业代码、学硕/专硕、全日制/非全日制、考生类别",
+        "复试线/拟录取初试分/综合成绩/计划数/进复试数/拟录取数/推免数/专项数/调剂数不混用",
+        "来源未公开的数据留空或标未知，不用其他指标推算",
+        "不复制含个人信息的完整拟录取名单"
+      ]
+    },
+    {
+      "id": "gpt6-14-resume-checkpoint",
+      "category": "long-term-memory",
+      "skill": "kaoyan-review-executor",
+      "input": "继续上次复习。（会话已提供一份合法的 SessionCheckpoint JSON 与 ReviewQueue，或明确不提供任何记录）",
+      "checkpoints": [
+        "有记录：恢复未完成任务、当前位置、到期错题、待复测，日期为绝对日期",
+        "无记录：明确说明读取不到，不凭聊天历史编造",
+        "不把推测写成已完成事实"
+      ]
+    },
+    {
+      "id": "gpt6-15-due-retest-evidence",
+      "category": "long-term-memory",
+      "skill": "kaoyan-error-loop-coach",
+      "input": "这是我的错题队列（含 2026-09-10 到期一题、2026-09-14 到期一题、一条只有 solution-seen 证据的 mastered 项）。按 2026-09-11 告诉我今天该复测什么，并检查掌握标记是否可靠。",
+      "checkpoints": [
+        "使用显式基准日期 2026-09-11 判定到期",
+        "指出 solution-seen 不构成掌握证据并建议独立/迁移复测",
+        "复测安排给出绝对日期与依据",
+        "不凭空为旧记录补充独立作答证据"
+      ]
+    },
+    {
+      "id": "gpt6-16-tool-unavailable-degradation",
+      "category": "degradation",
+      "skill": "kaoyan-408-tutor",
+      "input": "用模拟器演示 FIFO 置换 1,2,3,4,1,2,5（宿主无 Python/脚本不可用）；再用 Obsidian 保存进度（宿主未配置 Obsidian）。",
+      "checkpoints": [
+        "用文字/表格完成同样的分步状态教学，不把脚本当答题前提",
+        "明确说明脚本与 Obsidian 不可用及降级方式",
+        "不伪造“已运行脚本/已写入 Obsidian”"
+      ]
+    },
+    {
+      "id": "gpt6-17-computation-tool-vs-reasoning",
+      "category": "computation",
+      "skill": "kaoyan-math-coach",
+      "input": "验算 3^10 - 2^10 = ?，并用计算工具核对。",
+      "checkpoints": [
+        "若宿主计算工具实际可用：报告工具输出并与人工推导对照，标注哪些是工具结果",
+        "若不可用：明确说明“人工推导复核”，不声称已运行工具",
+        "两个数值结果正确（58025+1024 与工具一致）"
+      ]
+    }
+  ]
+}
