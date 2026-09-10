@@ -15,7 +15,8 @@ from pathlib import Path
 from typing import Any, Callable
 
 from build_release import plugin_tree_digest
-from validate_repository import ALLOWED_RELEASE_FILES, EXPECTED_SKILLS, ValidationError
+from release_payload import ALLOWED_RELEASE_FILES, EXPECTED_SKILLS
+from validate_repository import ValidationError
 
 
 SCHEMA_VERSION = "1.1"

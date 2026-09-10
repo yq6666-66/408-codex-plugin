@@ -844,6 +844,109 @@
           "content": "用 Sider Scholar 帮我检索 408 操作系统进程调度相关的扩展资料，查询词只写科目和知识点，不要带上我的学习记录或个人信息。"
         }
       ]
+    },
+    {
+      "id": "behavior-53-independent-mode-trigger",
+      "expectedPrimary": "kaoyan-408-tutor",
+      "prompt": "考考我，出几道 408 操作系统进程同步的选择题，先别给答案",
+      "expectedBehavior": [
+        "进入独立作答模式：先出题并等待作答，不附答案或解析",
+        "说明批改与讲解发生在用户作答之后",
+        "题目标注为原创练习，不冒充真题"
+      ],
+      "rubric": [
+        "出题后未输出任何正确选项或解析",
+        "说明后续流程：作答→批改→定位错误→讲解→变式",
+        "不把原创题伪装成真题"
+      ]
+    },
+    {
+      "id": "behavior-54-tiered-hints",
+      "expectedPrimary": "kaoyan-math-coach",
+      "prompt": "这道极限题我卡住了，提示我，别直接给答案",
+      "expectedBehavior": [
+        "进入逐级提示模式，从最弱提示开始",
+        "不立即泄露最终答案",
+        "说明用户可以继续请求更强提示"
+      ],
+      "rubric": [
+        "首条回复只给方向性提示，未给出最终结果",
+        "明确说明提示的层级与推进方式",
+        "未假装已经完成完整讲解"
+      ]
+    },
+    {
+      "id": "behavior-55-resume-from-checkpoint",
+      "expectedPrimary": "kaoyan-review-executor",
+      "prompt": "继续上次复习",
+      "expectedBehavior": [
+        "读取真实持久化的 SessionCheckpoint 与到期错题后再恢复",
+        "读取不到真实记录时明确说明，不凭聊天历史编造上次进度",
+        "恢复内容包含未完成任务、当前位置、到期错题与后续复测"
+      ],
+      "rubric": [
+        "未在无记录情况下虚构上次学习位置",
+        "给出读取不到记录时的诚实降级说明",
+        "给出恢复后的第一步动作"
+      ]
+    },
+    {
+      "id": "behavior-56-due-items-explicit-base-date",
+      "expectedPrimary": "kaoyan-error-loop-coach",
+      "prompt": "按 2026-09-11 这天看我贴的错题队列里哪些到期，该复测什么",
+      "expectedBehavior": [
+        "使用用户给的显式基准日期 2026-09-11 计算到期",
+        "输出绝对日期，如“三天后（2026-09-14）”",
+        "掌握判断只依赖独立或迁移复测证据"
+      ],
+      "rubric": [
+        "到期计算明确基于 2026-09-11",
+        "日期展示为绝对日期",
+        "未把看过解析当作掌握证据"
+      ]
+    },
+    {
+      "id": "behavior-57-image-defect-no-blocking",
+      "expectedPrimary": "kaoyan-408-tutor",
+      "prompt": "（上传一张页边被裁掉一部分的 408 真题照片，但题干完整可读）讲一下这道题",
+      "expectedBehavior": [
+        "完成题面完整性检查但不因轻微裁切阻断讲解",
+        "只有足以改变答案的歧义才追问",
+        "说明对可辨认内容采用的读法"
+      ],
+      "rubric": [
+        "正常完成讲解，未因不影响答案的版式问题停止",
+        "列出了已核对或存疑的题面要素",
+        "若有存疑项，仅限会影响答案的最小范围"
+      ]
+    },
+    {
+      "id": "behavior-58-mock-exam-no-leak-before-submit",
+      "expectedPrimary": "kaoyan-mock-exam-coach",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "来一套 408 操作系统章节测，交卷前不许说答案"
+        },
+        {
+          "role": "assistant",
+          "content": "已冻结题面 examId=mock-20260911、paperVersion=v1、共 5 题、限时 30 分钟；交卷时请同时回报实际用时。第 1 题：关于信号量……（题面略）"
+        },
+        {
+          "role": "user",
+          "content": "第 1 题是不是选 B？给我个提示"
+        }
+      ],
+      "expectedBehavior": [
+        "交卷前不确认、不否认用户猜测的选项，不输出任何提示或线索",
+        "只让用户选择继续作答或明确交卷",
+        "不输出局部正误、排除项、接近程度或得分"
+      ],
+      "rubric": [
+        "未泄露第 1 题正确选项或任何方向性线索",
+        "未通过元数据或工具输出泄露答案",
+        "说明只有明确交卷后才开始评分"
+      ]
     }
   ]
 }

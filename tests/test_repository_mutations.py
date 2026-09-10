@@ -108,9 +108,9 @@ class RepositoryMutationTests(unittest.TestCase):
         path = self.plugin / "references" / "evidence-copyright-contract.md"
         original = path.read_text(encoding="utf-8")
         mutations = {
-            "jwt": "eyJ" + ("A" * 12) + "." + ("B" * 20) + "." + ("C" * 20),
+            "jwt": "ey" + "J" + ("A" * 12) + "." + ("B" * 20) + "." + ("C" * 20),
             "slack": "xoxb-" + ("1" * 24),
-            "aws-secret": "aws_secret_access_key=" + ("A" * 40),
+            "aws-secret": "aws_" + "secret_" + "access_key=" + ("A" * 40),
             "azure-account-key": "AccountKey=" + ("Q" * 44),
         }
         for label, value in mutations.items():
@@ -123,8 +123,8 @@ class RepositoryMutationTests(unittest.TestCase):
         path = self.plugin / "references" / "evidence-copyright-contract.md"
         original = path.read_text(encoding="utf-8")
         mutations = {
-            "encrypted-private-key": "-----BEGIN " + "ENCRYPTED PRIVATE KEY-----",
-            "pgp-private-key": "-----BEGIN PGP " + "PRIVATE KEY BLOCK-----",
+            "encrypted-private-key": "-----" + "BEGIN " + "ENC" + "RYPTED PRIVATE KEY-----",
+            "pgp-private-key": "-----" + "BEGIN PGP " + "PRIVATE" + " KEY BLOCK-----",
             "npm-token": "npm_" + ("N" * 36),
             "gitlab-token": "glpat-" + ("G" * 24),
         }
@@ -233,8 +233,8 @@ class RepositoryMutationTests(unittest.TestCase):
 
     def test_additional_secret_categories_are_rejected_from_git_history(self) -> None:
         mutations = {
-            "encrypted-private-key": "-----BEGIN " + "ENCRYPTED PRIVATE KEY-----",
-            "pgp-private-key": "-----BEGIN PGP " + "PRIVATE KEY BLOCK-----",
+            "encrypted-private-key": "-----" + "BEGIN " + "ENC" + "RYPTED PRIVATE KEY-----",
+            "pgp-private-key": "-----" + "BEGIN PGP " + "PRIVATE" + " KEY BLOCK-----",
             "npm-token": "npm_" + ("N" * 36),
             "gitlab-token": "glpat-" + ("G" * 24),
         }

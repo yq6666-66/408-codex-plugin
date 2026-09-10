@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "pluginName": "kaoyan-408",
+    "pluginVariant": "new",
+    "pluginVersion": "2.5.0",
+    "model": "GPT-6（填写宿主实际返回的模型标识）",
+    "reasoningEffort": "填写推理档位，如 medium/high",
+    "host": "填写宿主，如 Codex CLI x.y / ChatGPT Desktop",
+    "runAt": "填写 UTC 时间，如 2026-09-12T03:00:00Z",
+    "notes": ""
+  },
+  "cases": [
+    {
+      "id": "gpt6-01-detailed-408",
+      "inputMaterial": "粘贴实际发给模型的完整输入（含图片文件名/路径说明）",
+      "modelOutput": "粘贴模型实际回答全文；禁止粘贴编造或模拟的回答",
+      "toolCalls": [
+        {"tool": "工具名，如 shell/records.py/web.search", "input": "调用输入", "output": "调用实际返回（无则留空数组）"}
+      ],
+      "verdicts": [
+        {"checkpoint": "逐字复制 cases.json 中该用例的一条 checkpoint", "verdict": "pass|fail|partial", "evidence": "引用回答原文或工具输出作为依据"}
+      ],
+      "overall": "pass|fail"
+    }
+  ]
+}

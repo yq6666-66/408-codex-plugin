@@ -229,6 +229,7 @@ kaoyan-408-brain
 - [[学习档案]]
 - [[当前进度]]
 - [[错题队列]]
+- [[学习检查点]]
 - [[记忆索引]]
 - [[知识库索引]]
 - [[真题索引]]
@@ -239,7 +240,7 @@ kaoyan-408-brain
 
 ```json
 {
-  "schemaVersion": "1.1",
+  "schemaVersion": "1.2",
   "recordType": "StudyProfile",
   "targetExam": null,
   "targetDate": null,
@@ -261,10 +262,26 @@ kaoyan-408-brain
 
 ```json
 {
-  "schemaVersion": "1.1",
+  "schemaVersion": "1.2",
   "recordType": "ReviewQueue",
   "generatedAt": null,
   "items": []
+}
+```
+""",
+        "学习检查点.md": common
+        + """
+# 学习检查点
+
+```json
+{
+  "schemaVersion": "1.2",
+  "recordType": "SessionCheckpoint",
+  "updatedAt": null,
+  "currentTask": null,
+  "position": null,
+  "dueItems": [],
+  "pendingRetests": []
 }
 ```
 """,
@@ -277,6 +294,7 @@ kaoyan-408-brain
 - [[学习档案]]
 - [[当前进度]]
 - [[错题队列]]
+- [[学习检查点]]
 
 ## 主题
 
@@ -296,11 +314,11 @@ kaoyan-408-brain
         )
     _write_if_missing(
         past_papers / "真题索引.md",
-        (common + "\n# 真题索引\n\n范围：2010—2026 年数学一、数学二、英语一、英语二、408。\n").lstrip(),
+        (common + "\n# 真题索引\n\n范围：2010 年起（不设固定结束年份）数学一、数学二、英语一、英语二、408、政治。\n").lstrip(),
         actions,
         dry_run=dry_run,
     )
-    for subject in ("数学一", "数学二", "英语一", "英语二", "408"):
+    for subject in ("数学一", "数学二", "英语一", "英语二", "408", "政治"):
         subject_dir = past_papers / subject
         if not dry_run:
             subject_dir.mkdir(parents=True, exist_ok=True)

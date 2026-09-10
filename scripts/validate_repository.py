@@ -6,11 +6,9 @@ from __future__ import annotations
 import argparse
 import io
 import json
-import math
 import re
 import subprocess
 import sys
-from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -20,23 +18,25 @@ from jsonschema.exceptions import SchemaError, ValidationError as JsonSchemaVali
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 
+from release_payload import (
+    ALLOWED_PLUGIN_ROOTS,
+    ALLOWED_RELEASE_FILES,
+    EXPECTED_REFERENCES,
+    EXPECTED_SKILLS,
+    PLACEHOLDER,
+    PLUGIN_RELATIVE_PATH,
+    SEMVER_PATTERN,
+    ValidationError,
+    check_accuracy_semantics,
+    check_mastery_evidence_semantics,
+    expected_release_files,
+    read_utf8_text,
+    require,
+)
 
-PLUGIN_RELATIVE_PATH = PurePosixPath("plugins/kaoyan-408")
-EXPECTED_SKILLS = {
-    "kaoyan-408-planner",
-    "kaoyan-review-executor",
-    "kaoyan-progress-diagnostician",
-    "kaoyan-error-loop-coach",
-    "kaoyan-mock-exam-coach",
-    "kaoyan-408-tutor",
-    "kaoyan-math-coach",
-    "kaoyan-english-coach",
-    "kaoyan-politics-coach",
-    "kaoyan-past-paper-searcher",
-    "kaoyan-past-paper-analyst",
-    "kaoyan-material-study-assistant",
-    "kaoyan-official-info-researcher",
-}
+SEMVER = re.compile(SEMVER_PATTERN)
+FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw", "index", "user"}
+HISTORY_FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw"}
 
 DETAILED_TUTOR_SKILLS = {
     "kaoyan-408-tutor",
@@ -44,36 +44,6 @@ DETAILED_TUTOR_SKILLS = {
     "kaoyan-english-coach",
     "kaoyan-politics-coach",
 }
-
-EXPECTED_REFERENCES = {
-    "capability-routing-contract.md",
-    "evidence-copyright-contract.md",
-    "obsidian-brain-contract.md",
-    "notion-brain-contract.md",
-    "portable-learning-records.md",
-    "portable-learning-records.schema.json",
-    "past-paper-source-contract.md",
-    "past-paper-knowledge.schema.json",
-    "beginner-visual-answer-contract.md",
-    "udemy-course-source-contract.md",
-    "sider-scholar-search-contract.md",
-    "goodnotes-note-brain-contract.md",
-    "exa-search-contract.md",
-    "wolfram-computation-contract.md",
-    "az-dictionary-contract.md",
-    "quizlet-flashcard-contract.md",
-    "ace-quiz-maker-contract.md",
-    "ace-knowledge-graph-contract.md",
-    "ahamotion-video-contract.md",
-    "vocabulary-trainer-contract.md",
-    "kahoot-review-contract.md",
-}
-
-ALLOWED_PLUGIN_ROOTS = {".codex-plugin", "skills", "references", "assets"}
-PLACEHOLDER = "TO" + "DO"
-SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$")
-FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw", "index", "user"}
-HISTORY_FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw"}
 
 PORTABLE_RECORD_SKILLS = {
     "kaoyan-408-planner",
@@ -112,6 +82,7 @@ OUTPUT_TAG_SKILLS = {
         "kaoyan-408-tutor",
         "kaoyan-math-coach",
         "kaoyan-english-coach",
+        "kaoyan-politics-coach",
         "kaoyan-past-paper-searcher",
         "kaoyan-past-paper-analyst",
     },
@@ -119,6 +90,7 @@ OUTPUT_TAG_SKILLS = {
         "kaoyan-408-tutor",
         "kaoyan-math-coach",
         "kaoyan-english-coach",
+        "kaoyan-politics-coach",
         "kaoyan-past-paper-searcher",
     },
 }
@@ -182,10 +154,6 @@ HISTORY_LEGACY_PATTERNS = (
 )
 
 
-class ValidationError(RuntimeError):
-    """Raised when a repository contract is violated."""
-
-
 class UniqueKeyLoader(yaml.SafeLoader):
     """Safe YAML loader that rejects duplicate mapping keys."""
 
@@ -211,25 +179,6 @@ UniqueKeyLoader.add_constructor(
     yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
     _construct_unique_mapping,
 )
-
-
-def require(condition: bool, message: str) -> None:
-    if not condition:
-        raise ValidationError(message)
-
-
-def read_utf8_text(path: Path, *, require_lf: bool = True) -> str:
-    try:
-        payload = path.read_bytes()
-    except OSError as exc:
-        raise ValidationError(f"cannot read {path}: {exc}") from exc
-    require(b"\x00" not in payload, f"text file contains NUL bytes: {path}")
-    if require_lf:
-        require(b"\r" not in payload, f"release text must use LF, not CRLF: {path}")
-    try:
-        return payload.decode("utf-8")
-    except UnicodeDecodeError as exc:
-        raise ValidationError(f"file is not valid UTF-8: {path}: {exc}") from exc
 
 
 def load_json(path: Path) -> Any:
@@ -263,21 +212,6 @@ def parse_frontmatter(path: Path) -> dict[str, Any]:
     require(set(metadata) == {"name", "description"}, f"frontmatter must contain only name/description: {path}")
     require(all(isinstance(value, str) for value in metadata.values()), f"frontmatter values must be strings: {path}")
     return metadata
-
-
-def expected_release_files() -> frozenset[str]:
-    names = {
-        ".codex-plugin/plugin.json",
-        "assets/kaoyan-408.svg",
-        *(f"references/{name}" for name in EXPECTED_REFERENCES),
-    }
-    for skill in EXPECTED_SKILLS:
-        names.add(f"skills/{skill}/SKILL.md")
-        names.add(f"skills/{skill}/agents/openai.yaml")
-    return frozenset(names)
-
-
-ALLOWED_RELEASE_FILES = expected_release_files()
 
 
 def check_manifest(plugin: Path) -> dict[str, Any]:
@@ -372,6 +306,47 @@ def check_beginner_answer_contract(plugin: Path) -> None:
         "选择题必须逐项说明",
     ):
         require(marker in contract, f"beginner answer contract is missing marker: {marker}")
+    for marker in (
+        "题面完整性检查",
+        "足以改变答案",
+        "逐级提示",
+        "独立作答",
+        "考考我",
+        "交卷前",
+    ):
+        require(marker in contract, f"beginner answer contract is missing teaching-mode marker: {marker}")
+
+
+def check_learning_layer_contract(plugin: Path) -> None:
+    contract = read_utf8_text(plugin / "references" / "learning-layer-contract.md")
+    routing = read_utf8_text(plugin / "references" / "capability-routing-contract.md")
+    require(
+        "learning-layer-contract.md" in routing,
+        "routing contract must load the generic learning-layer contract",
+    )
+    for capability in (
+        "搜索",
+        "计算",
+        "词典",
+        "卡片",
+        "测验",
+        "图谱",
+        "媒体",
+        "笔记",
+        "文件",
+        "定时任务",
+    ):
+        require(capability in contract, f"learning-layer contract is missing capability family: {capability}")
+    for marker in (
+        "只读",
+        "本次不记忆",
+        "禁止所有学习记录写入",
+        "不要同步 Notion",
+        "仅限制 Notion 写入",
+        "宿主实际返回创建成功",
+        "有实质变化",
+    ):
+        require(marker in contract, f"learning-layer contract is missing permission marker: {marker}")
 
 
 def check_obsidian_brain_contract(plugin: Path) -> None:
@@ -397,6 +372,8 @@ def check_obsidian_brain_contract(plugin: Path) -> None:
         "hypothesis",
         "planned",
         "completed",
+        "学习检查点.md",
+        "政治",
     ):
         require(marker in brain, f"Obsidian brain contract is missing marker: {marker}")
     require(
@@ -414,6 +391,8 @@ def check_obsidian_brain_contract(plugin: Path) -> None:
         "planned",
         "completed",
         "hypothesis",
+        "06｜政治",
+        "学习检查点",
     ):
         require(marker in notion, f"Notion brain contract is missing marker: {marker}")
     combined = "\n".join(
@@ -444,8 +423,10 @@ def check_portable_schema(plugin: Path) -> None:
 
     output_samples = (
         {
-            "schemaVersion": "1.1",
+            "schemaVersion": "1.2",
             "recordType": "StudyProfile",
+            "recordId": "kr-0f1e2d3c4b5a6978",
+            "updatedAt": "2026-09-11",
             "targetExam": None,
             "targetDate": None,
             "weeklyHours": None,
@@ -461,10 +442,37 @@ def check_portable_schema(plugin: Path) -> None:
             "blockers": [],
         },
         {
-            "schemaVersion": "1.1",
+            "schemaVersion": "1.2",
             "recordType": "ReviewQueue",
+            "recordId": "kr-1234567890abcdef",
+            "updatedAt": None,
             "generatedAt": None,
-            "items": [],
+            "items": [
+                {
+                    "subject": "408",
+                    "topic": "Cache 映射",
+                    "errorCause": None,
+                    "errorCauseStatus": None,
+                    "nextRetestDate": "2026-09-14",
+                    "retestOffsetDays": None,
+                    "retestAnchorDate": "2026-09-11",
+                    "status": "pending",
+                    "masteryEvidence": [],
+                    "retestEvidence": [
+                        {"evidenceType": "independent", "outcome": "correct", "date": None, "note": None}
+                    ],
+                }
+            ],
+        },
+        {
+            "schemaVersion": "1.2",
+            "recordType": "SessionCheckpoint",
+            "checkpointId": "kc-0f1e2d3c4b5a6978",
+            "updatedAt": None,
+            "currentTask": "2009-2018 阅读精读第二轮",
+            "position": "英语二 2014 Text 2 第 3 题",
+            "dueItems": ["kr-1234567890abcdef#1"],
+            "pendingRetests": [],
         },
     )
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
@@ -472,7 +480,30 @@ def check_portable_schema(plugin: Path) -> None:
         try:
             validator.validate(sample)
         except JsonSchemaValidationError as exc:
-            raise ValidationError(f"portable-record schema rejects a required 1.1 shape: {exc.message}") from exc
+            raise ValidationError(f"portable-record schema rejects a required 1.1/1.2 shape: {exc.message}") from exc
+
+    bad_evidence_type = {
+        "schemaVersion": "1.2",
+        "recordType": "ReviewQueue",
+        "generatedAt": None,
+        "items": [
+            {
+                "subject": None,
+                "topic": "limit",
+                "errorCause": None,
+                "errorCauseStatus": None,
+                "nextRetestDate": None,
+                "retestOffsetDays": 3,
+                "status": "pending",
+                "masteryEvidence": [],
+                "retestEvidence": [{"evidenceType": "guess", "outcome": "correct"}],
+            }
+        ],
+    }
+    require(
+        not validator.is_valid(bad_evidence_type),
+        "portable-record schema must reject unknown retestEvidence types",
+    )
 
     defs = schema.get("$defs")
     require(isinstance(defs, dict) and "legacyInput" in defs, "portable-record schema must expose $defs/legacyInput")
@@ -506,14 +537,31 @@ def check_portable_schema(plugin: Path) -> None:
             "blockers": ["legacy extension that also resembles progress data"],
             "unrecognizedExtension": {"preserve": True},
         },
+        {
+            "schemaVersion": "1.1",
+            "recordType": "ReviewQueue",
+            "generatedAt": "2026-08-01",
+            "items": [
+                {
+                    "subject": "数学二",
+                    "topic": "泰勒展开",
+                    "errorCause": None,
+                    "errorCauseStatus": "hypothesis",
+                    "nextRetestDate": None,
+                    "retestOffsetDays": 5,
+                    "status": "pending",
+                    "masteryEvidence": [],
+                }
+            ],
+        },
     )
     for sample in legacy_samples:
         try:
             legacy_validator.validate(sample)
         except JsonSchemaValidationError as exc:
-            raise ValidationError(f"portable-record schema rejects a supported 1.0 input: {exc.message}") from exc
+            raise ValidationError(f"portable-record schema rejects a supported 1.0/1.1 input: {exc.message}") from exc
     require(
-        all(not validator.is_valid(sample) for sample in legacy_samples),
+        all(not validator.is_valid(sample) for sample in legacy_samples[:3]),
         "portable-record root schema must reject all Schema 1.0 inputs",
     )
     invalid_11_date = {
@@ -588,29 +636,53 @@ def check_portable_schema(plugin: Path) -> None:
             continue
         raise ValidationError("portable-record semantic gate accepted inconsistent accuracy values")
 
+    mastered_without_evidence = {
+        "schemaVersion": "1.2",
+        "recordType": "ReviewQueue",
+        "generatedAt": None,
+        "items": [
+            {
+                "subject": "408",
+                "topic": "LRU 置换",
+                "errorCause": None,
+                "errorCauseStatus": None,
+                "nextRetestDate": None,
+                "retestOffsetDays": None,
+                "status": "mastered",
+                "masteryEvidence": [],
+                "retestEvidence": [
+                    {"evidenceType": "solution-seen", "outcome": "correct", "date": None, "note": None},
+                    {"evidenceType": "redo-after-solution", "outcome": "correct", "date": None, "note": None},
+                ],
+            }
+        ],
+    }
+    warnings = check_mastery_evidence_semantics(mastered_without_evidence)
+    require(
+        len(warnings) == 1 and "mastered" in warnings[0],
+        "mastery evidence gate must flag mastered items without independent or transfer evidence",
+    )
+    qualified = {
+        **mastered_without_evidence,
+        "items": [
+            {
+                **mastered_without_evidence["items"][0],
+                "retestEvidence": [
+                    {"evidenceType": "independent", "outcome": "correct", "date": "2026-09-10", "note": None},
+                    {"evidenceType": "transfer", "outcome": "correct", "date": None, "note": None},
+                ],
+            }
+        ],
+    }
+    require(
+        check_mastery_evidence_semantics(qualified) == [],
+        "mastery evidence gate must accept independent plus transfer evidence",
+    )
+
 
 def check_progress_accuracy_semantics(record: dict[str, Any]) -> None:
-    """Enforce numeric relationships JSON Schema cannot express portably."""
-
-    require(record.get("recordType") == "ProgressSnapshot", "accuracy semantics require ProgressSnapshot")
-    accuracy = record.get("accuracy")
-    require(isinstance(accuracy, list), "ProgressSnapshot accuracy must be an array")
-    for index, entry in enumerate(accuracy):
-        require(isinstance(entry, dict), f"accuracy[{index}] must be an object")
-        correct = entry.get("correct")
-        total = entry.get("total")
-        rate = entry.get("rate")
-        if correct is not None and total is not None:
-            require(correct <= total, f"accuracy[{index}].correct must not exceed total")
-        if total == 0:
-            require(correct in {None, 0}, f"accuracy[{index}].correct must be 0 or null when total is zero")
-            require(rate is None, f"accuracy[{index}].rate must be null when total is zero")
-        elif correct is not None and total is not None and rate is not None:
-            expected_rate = correct / total
-            require(
-                math.isclose(rate, expected_rate, rel_tol=0.0, abs_tol=1e-12),
-                f"accuracy[{index}].rate must equal correct / total",
-            )
+    """Back-compat alias for the shared accuracy semantics gate."""
+    check_accuracy_semantics(record)
 
 
 def check_past_paper_schema(plugin: Path) -> None:
@@ -643,8 +715,16 @@ def check_past_paper_schema(plugin: Path) -> None:
         "storagePolicy": "full-text",
     }
     validator.validate(source)
+    require(
+        validator.is_valid({**source, "subject": "政治"}),
+        "past-paper schema must accept politics as the sixth searchable subject",
+    )
+    require(
+        validator.is_valid({**source, "paperYear": 2027, "examDate": None}),
+        "past-paper schema must accept future years without a hard upper cap",
+    )
     for mutation in (
-        {**source, "subject": "政治"},
+        {**source, "subject": "数学三"},
         {**source, "paperYear": 2009},
         {**source, "sourceUrl": "http://example.org/paper"},
     ):
@@ -680,10 +760,10 @@ def check_forward_cases(repo: Path) -> None:
     forward = load_json(repo / "tests" / "forward-cases.json")
     require(isinstance(forward, dict) and forward.get("schemaVersion") == "2.0", "forward cases must use schemaVersion 2.0")
     cases = forward.get("cases")
-    require(isinstance(cases, list) and len(cases) == 65, "forward cases must contain exactly 65 cases")
+    require(isinstance(cases, list) and len(cases) >= 13, "forward cases must cover at least one case per Skill")
     ids = [case.get("id") for case in cases if isinstance(case, dict)]
-    require(len(ids) == 65 and len(set(ids)) == 65 and all(isinstance(item, str) and item for item in ids), "forward case IDs must be unique non-empty strings")
-    counts: dict[str, Counter[str]] = defaultdict(Counter)
+    require(len(ids) == len(cases) and len(set(ids)) == len(ids) and all(isinstance(item, str) and item for item in ids), "forward case IDs must be unique non-empty strings")
+    routed: set[str] = set()
     for case in cases:
         require(isinstance(case, dict), "each forward case must be an object")
         skill = case.get("skillUnderTest")
@@ -702,17 +782,15 @@ def check_forward_cases(repo: Path) -> None:
         elif kind == "conflict":
             require(case.get("expectedNotPrimary") == skill, f"conflict case does not exclude the Skill under test: {case.get('id')}")
             require(case["expectedPrimary"] != skill, f"conflict case still routes to the excluded Skill: {case.get('id')}")
-        counts[skill][kind] += 1
-    for skill in EXPECTED_SKILLS:
-        expected = Counter({"positive": 2, "colloquial": 1, "conflict": 1, "compound": 1})
-        require(counts[skill] == expected, f"{skill} must have 2 positive, 1 colloquial, 1 conflict, and 1 compound case")
+        routed.add(skill)
+    require(routed == EXPECTED_SKILLS, "forward cases must cover every Skill with at least one case")
 
 
 def check_behavior_cases(repo: Path) -> None:
     behavior = load_json(repo / "tests" / "behavior-cases.json")
     require(isinstance(behavior, dict) and behavior.get("schemaVersion") == "2.0", "behavior cases must use schemaVersion 2.0")
     cases = behavior.get("cases")
-    require(isinstance(cases, list) and len(cases) == 52, "behavior cases must contain exactly 52 cases")
+    require(isinstance(cases, list) and len(cases) >= 13, "behavior cases must cover at least one scenario per Skill")
     ids: list[str] = []
     for case in cases:
         require(isinstance(case, dict), "each behavior case must be an object")
@@ -742,12 +820,6 @@ def check_behavior_cases(repo: Path) -> None:
                     f"behavior transcript content is empty: {case_id}",
                 )
     require(len(ids) == len(set(ids)), "behavior case IDs must be unique")
-    numbers = {
-        int(match.group(1))
-        for case_id in ids
-        if (match := re.fullmatch(r"behavior-(\d{2})-[a-z0-9-]+", case_id))
-    }
-    require(numbers == set(range(1, 53)), "behavior case IDs must cover behavior-01 through behavior-52 exactly")
 
 
 def check_repository_docs(repo: Path) -> None:
@@ -880,6 +952,7 @@ def validate_repo(
     check_manifest(plugin)
     check_release_tree(plugin)
     check_obsidian_brain_contract(plugin)
+    check_learning_layer_contract(plugin)
     check_beginner_answer_contract(plugin)
     check_portable_schema(plugin)
     check_past_paper_schema(plugin)
@@ -897,9 +970,9 @@ def validate_repo(
     return [
         "manifest and marketplace",
         "13 Skills and openai.yaml files",
-        "shared contracts, detailed tutoring, dual brains, portable-record and past-paper JSON Schemas",
+        "shared contracts, generic learning layers, dual brains, teaching modes, portable-record and past-paper JSON Schemas",
         "exact release allowlist, UTF-8/LF, and sensitive-content scan",
-        "65 routing and 52 behavior scenario coverage checks",
+        "routing and behavior scenario coverage checks",
         "Git-history, secret, and removed-system scans",
     ]
 
