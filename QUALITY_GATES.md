@@ -24,6 +24,6 @@
 
 通过自动门禁表示插件文件、规则、测试资产、安全边界和发布包满足仓库声明；不表示任何特定模型对所有自然语言输入都能稳定选择同一 Skill 或产生相同答案。模型行为仍受宿主版本、可用工具、上下文和用户输入影响。
 
-GPT-6 教学质量验收独立于本文件：使用 `eval/gpt6-acceptance/` 的固定用例在真实宿主上运行新旧两版并记录回答与判分依据；v2.5.1 发布前已完成 17 条真实新旧版本对照，本文件所述门禁仍不替代逐条人工判分。
+GPT-6 教学质量验收独立于本文件：使用 `eval/gpt6-acceptance/` 的固定用例在真实宿主上运行新旧两版并记录回答与判分依据；v2.5.1 已完成 17 条真实新旧版本对照，候选版 17/17 用例、60/60 checkpoint 通过且逐 checkpoint 无回退。完整公开统计见 [`eval/gpt6-acceptance/results-v2.5.1.md`](eval/gpt6-acceptance/results-v2.5.1.md)。本文件所述静态门禁仍不替代逐条人工判分，也不把一次固定宿主实测外推为所有模型输入的确定性保证。
 
 发布既可由与 manifest 版本一致的 `v*` 标签触发，也可在无法使用本地 GitHub/Codex CLI 登录时，从 GitHub Actions 的 `CI` 工作流对最新 `main` 手动输入该标签。手动入口不会绕过检查：`validate`、`windows` 和 `reproducible` 必须全部成功，且标签必须严格等于 `plugin.json.version` 派生值，之后工作流才创建标签和 Release。

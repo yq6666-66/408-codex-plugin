@@ -1,6 +1,6 @@
 # GPT-6 实际回答验收 harness
 
-**状态：已完成候选 v2.5.1 实际运行。** 本目录提供可重复的测试材料、记录格式与校验工具；17 条用例已在同一 Windows 宿主上完成 v2.4.0 与候选 v2.5.1 对照。工程测试通过不等于模型行为自动通过，判分证据仍需人工复核。
+**状态：v2.5.1 已完成并公开验证。** 本目录提供可重复的测试材料、记录格式与校验工具；17 条用例已在同一 Windows 宿主上完成 v2.4.0 与 v2.5.1 对照，v2.5.1 为 17/17 用例、60/60 checkpoint，通过严格 `regressionGate`。公开脱敏摘要见 [`results-v2.5.1.md`](results-v2.5.1.md)。工程测试通过不等于模型行为自动通过，判分证据仍需人工复核。
 
 ## 目的
 
@@ -17,7 +17,7 @@
 
 1. **同一宿主、同一模型、同一推理档位**：新旧两版必须条件一致。
 2. 旧版：在宿主中安装 v2.4.0（`codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.4.0`）。
-3. 新版：同法安装候选 v2.5.1。
+3. 新版：同法安装固定 tag [`v2.5.1`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)。
 4. 每版逐条运行 `cases.json` 的用例；图片类用例使用 `materials/` 中的固定材料（或按 input 描述自备并记入 `inputMaterial`）。
 5. 每条用例把模型真实回答、实际工具调用与逐条 checkpoint 判分记入一份 record JSON（模板见 [`record-template.json`](record-template.json)）。**必须粘贴模型真实输出，禁止编造或模拟回答。**
 6. 校验并出报告：
