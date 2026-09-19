@@ -205,7 +205,7 @@ Notion 首次写入需确认绑定“408考研”主页（标记 `kaoyan-408-bra
 
 ## GPT-6 实测与工程测试的区别
 
-工程测试（`python scripts/check.py`、unittest）只证明代码与契约正确；**GPT-6 教学质量必须用真实宿主实测验收**，材料与记录格式见 [`eval/gpt6-acceptance/`](eval/gpt6-acceptance/README.md)（同一组用例可同时跑旧版与新版，保存插件版本、模型版本、推理档位、输入、真实回答、工具调用与判分依据）。截至 v2.5.0 发布，该验收 harness **尚未实际运行**。
+工程测试（`python scripts/check.py`、unittest）只证明代码与契约正确；**GPT-6 教学质量必须用真实宿主实测验收**，材料与记录格式见 [`eval/gpt6-acceptance/`](eval/gpt6-acceptance/README.md)（同一组用例可同时跑旧版与新版，保存插件版本、模型版本、推理档位、输入、真实回答、工具调用与判分依据）。截至 v2.5.1 发布，该验收 harness **尚未实际运行**。
 
 ---
 
