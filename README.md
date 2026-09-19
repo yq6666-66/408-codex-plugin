@@ -6,6 +6,29 @@
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
+## v2.5.1 验证状态（公开可审计）
+
+当前稳定版本为 [v2.5.1 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)，发布资产为 `kaoyan-408-2.5.1.zip`。本版本覆盖数学一、数学二、英语一、英语二、408 与政治六科，提供详细讲解、逐级提示、独立作答三种教学模式，并支持在搜索、计算、笔记、测验、文件和定时任务等宿主能力不可用时明确降级；学习规划、检查点、错题闭环、进度诊断和便携学习记录仍可按契约运行。
+
+公开验证结论：
+
+- 工程门禁：146 项单元测试通过，仓库六项校验通过，13/13 Skill validator 通过；[Windows、Ubuntu 与 reproducible CI](https://github.com/yq6666-66/408-codex-plugin/actions) 均通过。
+- 真实行为：17/17 用例、60/60 checkpoint 通过；与 v2.4.0 在相同题面、材料、宿主、模型和推理档位下逐 checkpoint 比较无回退，`regressionGate=pass`。分类、边界和判分限制见 [`eval/gpt6-acceptance/results-v2.5.1.md`](eval/gpt6-acceptance/results-v2.5.1.md)。
+- 工具证据：只有当前轮次存在成功的真实工具调用和原始输出，回答才可声明“工具核验”；没有调用、调用失败或无输出时必须写人工复核或宿主降级。
+- Release ZIP SHA-256：`cc78a154560a37c4f12bf45985697fea55b7ba111e0ee0a499bf19b20b37a800`。
+- 官方 CLI 安装验证：版本 `2.5.1`、38 个文件、安装树哈希 `76006232ffe566bab5164bf68ba206bd686f635dcdab84310c1d261290829383`；固定 tag 的新会话已加载 v2.5.1 Skills 并完成真实 smoke test。
+
+固定版本安装与验证：
+
+```powershell
+codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.5.1
+codex plugin add kaoyan-408@kaoyan-408
+python scripts/install_local.py verify-release --zip kaoyan-408-2.5.1.zip --sha256 cc78a154560a37c4f12bf45985697fea55b7ba111e0ee0a499bf19b20b37a800 --version 2.5.1
+python scripts/install_local.py verify-tree --dir <已安装插件目录> --version 2.5.1
+```
+
+需要回退时使用 [v2.4.0 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.4.0)；回退命令见“安装与回退”。完整模型原始回答、搜索缓存、个人路径和本机临时记录不提交到仓库。
+
 ---
 
 ## 功能总览

@@ -13,7 +13,8 @@
 
 ### 验收状态
 
-- 17 条候选 v2.5.1 真实回答全部通过 checkpoint 判分；与 v2.4.0 的逐 checkpoint 比较无回退。
+- 17 条候选 v2.5.1 真实回答、60 个 checkpoint 全部通过；与 v2.4.0 的逐 checkpoint 比较无回退，`regressionGate=pass`。
+- 离线工程门禁为 146 项测试、仓库校验六项、13/13 Skill validator；Windows、Ubuntu 与 reproducible CI 均通过。公开验收统计见 [`eval/gpt6-acceptance/results-v2.5.1.md`](eval/gpt6-acceptance/results-v2.5.1.md)，正式资产见 [v2.5.1 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)。
 
 ## [2.5.0] - 2026-09-11
 
