@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.2",
+  "recordType": "ReviewQueue",
+  "recordId": "kr-2026091100000001",
+  "updatedAt": null,
+  "generatedAt": "2026-09-09",
+  "items": [
+    {
+      "itemId": "kr-2026091100000011",
+      "subject": "408",
+      "topic": "操作系统/FIFO 页面置换",
+      "errorCause": null,
+      "errorCauseStatus": "hypothesis",
+      "nextRetestDate": "2026-09-10",
+      "retestOffsetDays": null,
+      "retestAnchorDate": null,
+      "status": "pending",
+      "masteryEvidence": [],
+      "retestEvidence": []
+    },
+    {
+      "itemId": "kr-2026091100000012",
+      "subject": "408",
+      "topic": "计算机网络/TCP 序号",
+      "errorCause": null,
+      "errorCauseStatus": "hypothesis",
+      "nextRetestDate": "2026-09-14",
+      "retestOffsetDays": null,
+      "retestAnchorDate": null,
+      "status": "pending",
+      "masteryEvidence": [],
+      "retestEvidence": []
+    },
+    {
+      "itemId": "kr-2026091100000013",
+      "subject": "408",
+      "topic": "组成原理/Cache 地址划分",
+      "errorCause": null,
+      "errorCauseStatus": "hypothesis",
+      "nextRetestDate": "2026-09-10",
+      "retestOffsetDays": null,
+      "retestAnchorDate": null,
+      "status": "mastered",
+      "masteryEvidence": [
+        "2026-09-09 看懂了解析"
+      ],
+      "retestEvidence": [
+        {
+          "evidenceType": "solution-seen",
+          "outcome": null,
+          "date": "2026-09-09",
+          "note": "只看过解析，未独立作答或做迁移题。"
+        }
+      ]
+    }
+  ]
+}

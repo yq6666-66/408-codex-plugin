@@ -2,7 +2,7 @@
   "meta": {
     "pluginName": "kaoyan-408",
     "pluginVariant": "new",
-    "pluginVersion": "2.5.0",
+    "pluginVersion": "2.5.1",
     "model": "GPT-6（填写宿主实际返回的模型标识）",
     "reasoningEffort": "填写推理档位，如 medium/high",
     "host": "填写宿主，如 Codex CLI x.y / ChatGPT Desktop",

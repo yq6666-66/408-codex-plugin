@@ -104,6 +104,25 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("三种教学模式", routing)
         self.assertIn("SessionCheckpoint", routing)
 
+    def test_observed_model_failures_have_explicit_guards(self) -> None:
+        beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("一批”就是一条助手回复", beginner)
+        self.assertIn("不得在同一条回复里另写“第二批”", beginner)
+        self.assertIn("提出一个决定结论的最小确认问题", beginner)
+        self.assertIn("左右极限", beginner)
+        self.assertIn("当前轮次存在成功的工具调用", beginner)
+        math = skill_text("kaoyan-math-coach")
+        self.assertIn("对照本轮工具事件", math)
+        self.assertIn("未调用只能标人工复核", math.split("---", 2)[1])
+        tutor = skill_text("kaoyan-408-tutor")
+        self.assertIn("当前回复只展开前四题", tutor.split("---", 2)[1])
+        layer = (REPO / "plugins/kaoyan-408/references/learning-layer-contract.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("只有调用成功且取得可引用输出", layer)
+
     def test_permission_semantics_distinguish_readonly_from_notion_only(self) -> None:
         layer = (REPO / "plugins/kaoyan-408/references/learning-layer-contract.md").read_text(
             encoding="utf-8"

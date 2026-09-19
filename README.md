@@ -2,7 +2,7 @@
 
 `kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
-当前版本：`2.5.0`
+当前版本：`2.5.1`
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
@@ -141,14 +141,14 @@ python scripts/records.py checkpoint create --date 2026-09-11
 新版 Codex CLI/IDE 可添加仓库 marketplace 后安装：
 
 ```powershell
-codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.5.0
+codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.5.1
 codex plugin add kaoyan-408@kaoyan-408
 ```
 
 也可克隆固定版本，在 ChatGPT Desktop 或 Codex Desktop 打开仓库并从 repo marketplace 安装：
 
 ```powershell
-git clone --branch v2.5.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
+git clone --branch v2.5.1 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
 跨平台安装器（统一参数名 `--validate-only`）：
@@ -163,8 +163,8 @@ python scripts/install_local.py install                   # 校验后经官方 C
 消费者固定版本验证（与时间无关：发布 31 天、一年后哈希仍正确的版本均可安装）：
 
 ```powershell
-python scripts/install_local.py verify-release --zip kaoyan-408-2.5.0.zip --sha256 <发布SHA-256> --version 2.5.0
-python scripts/install_local.py verify-tree --dir <已安装插件目录> --version 2.5.0
+python scripts/install_local.py verify-release --zip kaoyan-408-2.5.1.zip --sha256 <发布SHA-256> --version 2.5.1
+python scripts/install_local.py verify-tree --dir <已安装插件目录> --version 2.5.1
 ```
 
 安装器通过官方 CLI 的结构化 JSON 输出识别 Git marketplace / 本地 marketplace；同名但来源不同、缓存目录、文件被改、版本或哈希不一致都会被拒绝并说明原因。消费者安装验证不等于维护者完整发布门禁（官方插件/Skill 校验、Windows/Ubuntu 测试、可重复构建等仍然保留）。
