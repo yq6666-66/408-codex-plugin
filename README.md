@@ -2,7 +2,7 @@
 
 `kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
-当前版本：`2.5.1`
+当前版本：`2.5.2`
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
@@ -56,7 +56,7 @@ python scripts/install_local.py verify-tree --dir <已安装插件目录> --vers
 
 ### 408 状态模拟器
 
-`scripts/study_simulator.py`（纯 Python 标准库）支持 Cache 地址拆分、FIFO / LRU 页面置换、FCFS / RR 调度的分步状态模拟，输出完整状态序列与每步变化，并可生成本地 HTML 演示（上一步/下一步导航）：
+随插件发布的 `scripts/study_simulator.py`（纯 Python 标准库）支持 Cache 地址拆分、FIFO / LRU 页面置换、FCFS / RR 调度的分步状态模拟，输出完整状态序列与每步变化，并可生成本地 HTML 演示（上一步/下一步导航）。在仓库根目录或已安装插件根目录运行：
 
 ```powershell
 python scripts/study_simulator.py cache --addr-bits 16 --block-size 64 --cache-lines 256 --addresses 0,65535
@@ -89,17 +89,24 @@ python scripts/study_simulator.py rr --processes "P1:0:24,P2:0:3,P3:0:3" --quant
 - 新输出使用 **Schema 1.2**；读取端继续兼容 **1.0 / 1.1 / 1.2**，已有 `StudyProfile` / `ProgressSnapshot` / `ReviewQueue` 三类记录全部保留，新增轻量 `SessionCheckpoint`。
 - 1.2 新增：稳定 `recordId`（一次分配持续复用）、`updatedAt`、结构化 `retestEvidence`、`SessionCheckpoint`。
 - **不需要提前迁移整个旧库**：旧记录照常读取；只有真正需要保存升级结果时才补稳定 ID 并持久复用。兼容时保留安全的未知扩展字段与既有掌握状态，不凭空生成旧记录不存在的独立作答证据。
-- 统一 CLI 工具 `scripts/records.py`（纯标准库，文件或 stdin 进、stdout JSON 出、退出码适合自动化）：
+- 随插件发布的统一 CLI 工具 `scripts/records.py`（纯标准库，文件或 stdin 进、stdout JSON 出、退出码适合自动化；在仓库根目录或已安装插件根目录运行）：
 
 ```powershell
 python scripts/records.py validate records.json
 python scripts/records.py normalize old.json          # 1.0/1.1 → 1.2，不伪造证据
-python scripts/records.py merge a.json b.json         # 冲突确定性合并，不丢任何一方
+python scripts/records.py merge a.json b.json         # 较新值生效，mergeConflicts 保留双方证据
 python scripts/records.py due queue.json --date 2026-09-11   # 到期计算必须显式给基准日期
 python scripts/records.py checkpoint create --date 2026-09-11
 ```
 
 详见 [便携学习记录契约](plugins/kaoyan-408/references/portable-learning-records.md)。
+
+安装或连接异常时可运行只读健康检查。它核对版本、13 个 Skill、随包脚本和可选 Obsidian 配置状态，不输出 Vault 绝对路径，也不修改配置或学习记录：
+
+```powershell
+python scripts/health_check.py
+python scripts/health_check.py --json
+```
 
 ---
 
@@ -164,14 +171,14 @@ python scripts/records.py checkpoint create --date 2026-09-11
 新版 Codex CLI/IDE 可添加仓库 marketplace 后安装：
 
 ```powershell
-codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.5.1
+codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.5.2
 codex plugin add kaoyan-408@kaoyan-408
 ```
 
 也可克隆固定版本，在 ChatGPT Desktop 或 Codex Desktop 打开仓库并从 repo marketplace 安装：
 
 ```powershell
-git clone --branch v2.5.1 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
+git clone --branch v2.5.2 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
 跨平台安装器（统一参数名 `--validate-only`）：
@@ -186,8 +193,8 @@ python scripts/install_local.py install                   # 校验后经官方 C
 消费者固定版本验证（与时间无关：发布 31 天、一年后哈希仍正确的版本均可安装）：
 
 ```powershell
-python scripts/install_local.py verify-release --zip kaoyan-408-2.5.1.zip --sha256 <发布SHA-256> --version 2.5.1
-python scripts/install_local.py verify-tree --dir <已安装插件目录> --version 2.5.1
+python scripts/install_local.py verify-release --zip kaoyan-408-2.5.2.zip --sha256 <发布SHA-256> --version 2.5.2
+python scripts/install_local.py verify-tree --dir <已安装插件目录> --version 2.5.2
 ```
 
 安装器通过官方 CLI 的结构化 JSON 输出识别 Git marketplace / 本地 marketplace；同名但来源不同、缓存目录、文件被改、版本或哈希不一致都会被拒绝并说明原因。消费者安装验证不等于维护者完整发布门禁（官方插件/Skill 校验、Windows/Ubuntu 测试、可重复构建等仍然保留）。

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compatibility entrypoint for the runtime helper shipped with the plugin."""
+"""Compatibility entrypoint for the health check shipped with the plugin."""
 
 from __future__ import annotations
 
@@ -8,17 +8,11 @@ import sys
 from pathlib import Path
 
 
-RUNTIME = (
-    Path(__file__).resolve().parents[1]
-    / "plugins"
-    / "kaoyan-408"
-    / "scripts"
-    / "configure_obsidian_brain.py"
-)
+RUNTIME = Path(__file__).resolve().parents[1] / "plugins" / "kaoyan-408" / "scripts" / "health_check.py"
 
 
 def _load_runtime():
-    spec = importlib.util.spec_from_file_location("_kaoyan_408_configure_obsidian_brain", RUNTIME)
+    spec = importlib.util.spec_from_file_location("_kaoyan_408_health_check", RUNTIME)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load runtime helper: {RUNTIME}")
     module = importlib.util.module_from_spec(spec)

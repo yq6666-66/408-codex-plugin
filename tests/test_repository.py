@@ -52,6 +52,18 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertEqual(skills, EXPECTED_SKILLS)
         self.assertEqual(files, set(ALLOWED_RELEASE_FILES))
 
+    def test_runtime_helpers_ship_inside_the_plugin(self) -> None:
+        plugin = REPO / "plugins/kaoyan-408"
+        expected = {
+            "scripts/records.py",
+            "scripts/study_simulator.py",
+            "scripts/configure_obsidian_brain.py",
+            "scripts/health_check.py",
+        }
+        self.assertTrue(expected.issubset(ALLOWED_RELEASE_FILES))
+        for relative in expected:
+            self.assertTrue((plugin / relative).is_file(), relative)
+
     def test_schema_and_eval_case_contracts(self) -> None:
         plugin = REPO / "plugins/kaoyan-408"
         check_portable_schema(plugin)
@@ -103,6 +115,18 @@ class RepositoryContractTests(unittest.TestCase):
         )
         self.assertIn("三种教学模式", routing)
         self.assertIn("SessionCheckpoint", routing)
+
+    def test_teaching_mode_precedence_and_conditional_output(self) -> None:
+        beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("教学模式优先于输出顺序", beginner)
+        self.assertIn("确实帮助理解", beginner)
+        self.assertNotIn("**图解**：必须提供", beginner)
+        portable = (REPO / "plugins/kaoyan-408/references/portable-learning-records.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("不必在正文重复粘贴完整 JSON", portable)
 
     def test_observed_model_failures_have_explicit_guards(self) -> None:
         beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(

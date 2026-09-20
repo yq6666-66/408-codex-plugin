@@ -33,4 +33,4 @@ description: 把既有计划或用户已给出的本次目标、科目和时长�
 
 ## 输出
 
-按公共顺序输出：立即开始动作、分钟严格闭合的时间盒、降级与中断恢复、可选诊断交接卡；最后输出可回填的严格 JSON `ProgressSnapshot 1.2`。计划量写入 `planned`，尚未发生的 `completed/correct/total/rate` 写 `null`，不同单位分项记录。
+按公共顺序输出：立即开始动作、分钟严格闭合的时间盒、降级与中断恢复、可选诊断交接摘要。需要保存或导出时生成可回填的严格 JSON `ProgressSnapshot 1.2`：计划量写入 `planned`，尚未发生的 `completed/correct/total/rate` 写 `null`，不同单位分项记录。已成功持久化并完成写后验证时只报告更新位置与关键变化；无持久化工具、写入失败或用户要求导出时附完整 JSON。

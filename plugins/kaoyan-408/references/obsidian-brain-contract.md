@@ -2,7 +2,7 @@
 
 ## 配置与迁移
 
-每次 Skill 开始时检查当前用户目录 `.codex/kaoyan-408/obsidian-brain.json`。配置 Schema 1.1：
+任务涉及读取历史学习记录、恢复进度、写入学习结果，或用户已启用自动记忆时，检查当前用户目录 `.codex/kaoyan-408/obsidian-brain.json`；普通单题且不涉及记录时不为连接状态额外读取。每次写入前仍须重新验证配置和目标。配置 Schema 1.1：
 
 ```json
 {

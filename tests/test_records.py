@@ -144,7 +144,17 @@ class MergeTests(unittest.TestCase):
         )
         self.assertEqual(record["weeklyHours"], 35)
         self.assertEqual(record["updatedAt"], "2026-09-10")
-        self.assertEqual(merged["mergeConflicts"], [])
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [
+                {
+                    "path": "/weeklyHours",
+                    "a": 20,
+                    "b": 35,
+                    "resolution": "kept-newer",
+                }
+            ],
+        )
 
     def test_merge_equal_updated_at_keeps_first_side_and_records_conflict(self) -> None:
         a = {
