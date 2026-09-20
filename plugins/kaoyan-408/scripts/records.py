@@ -725,7 +725,17 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _configure_windows_stdio() -> None:
+    """Use UTF-8 for PowerShell 7 native-command pipelines on Windows."""
+    if sys.platform != "win32":
+        return
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="strict")
+
+
 def main(argv: list[str] | None = None) -> int:
+    _configure_windows_stdio()
     parser = build_parser()
     args = parser.parse_args(argv)
     try:

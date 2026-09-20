@@ -381,6 +381,30 @@ class CliTests(unittest.TestCase):
         plan = json.loads(read.stdout)
         self.assertEqual(plan["resume"]["currentTask"], "408 操作系统")
 
+    @unittest.skipUnless(sys.platform == "win32", "Windows native-pipe encoding regression")
+    def test_utf8_stdin_works_without_python_utf8_environment(self) -> None:
+        import os
+
+        env = os.environ.copy()
+        env.pop("PYTHONUTF8", None)
+        env.pop("PYTHONIOENCODING", None)
+        payload = json.dumps(
+            {"currentTask": "第五题", "position": "题5未开始"},
+            ensure_ascii=False,
+        )
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "checkpoint", "create", "--date", "2026-09-20"],
+            input=payload,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            env=env,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(json.loads(result.stdout)["currentTask"], "第五题")
+
 
 if __name__ == "__main__":
     unittest.main()
