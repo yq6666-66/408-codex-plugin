@@ -32,6 +32,8 @@ EVIDENCE_OUTCOMES = {"correct", "incorrect", "partial", None}
 MASTERY_CAPABLE = {"independent", "transfer"}
 ITEM_STATUSES = {"pending", "due", "retesting", "mastered", None}
 ERROR_CAUSE_STATUSES = {"confirmed", "hypothesis", None}
+TEACHING_MODES = {"detailed", "hint", "independent", "mock", None}
+ANSWER_STATES = {"hidden", "partial", "revealed", None}
 
 
 class RecordError(RuntimeError):
@@ -456,6 +458,25 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                 isinstance(entry, str) and entry.strip() for entry in value
             )):
                 errors.append(f"{key} must be an array of non-empty strings")
+        if record.get("teachingMode") not in TEACHING_MODES:
+            errors.append("teachingMode must be detailed, hint, independent, mock, or null")
+        if record.get("answerState") not in ANSWER_STATES:
+            errors.append("answerState must be hidden, partial, revealed, or null")
+        hint_level = record.get("hintLevel")
+        if hint_level is not None and (
+            isinstance(hint_level, bool) or not isinstance(hint_level, int) or not 0 <= hint_level <= 3
+        ):
+            errors.append("hintLevel must be an integer from 0 to 3 or null")
+        for key in ("currentQuestion", "materialVersion"):
+            _check_nullable_string(record, key, errors)
+        for key in ("completedQuestions", "remainingQuestions"):
+            value = record.get(key)
+            if value is not None and not (
+                isinstance(value, list)
+                and all(isinstance(entry, str) and entry.strip() for entry in value)
+                and len(value) == len(set(value))
+            ):
+                errors.append(f"{key} must be an array of unique non-empty strings")
     return errors, warnings
 
 
@@ -663,6 +684,13 @@ def build_checkpoint(payload: dict[str, Any], base_date: str | None) -> dict[str
         "dueItems": payload.get("dueItems") or [],
         "pendingRetests": payload.get("pendingRetests") or [],
         "notes": payload.get("notes"),
+        "teachingMode": payload.get("teachingMode"),
+        "answerState": payload.get("answerState"),
+        "hintLevel": payload.get("hintLevel"),
+        "currentQuestion": payload.get("currentQuestion"),
+        "completedQuestions": payload.get("completedQuestions") or [],
+        "remainingQuestions": payload.get("remainingQuestions") or [],
+        "materialVersion": payload.get("materialVersion"),
     }
     if payload.get("checkpointId"):
         checkpoint["checkpointId"] = payload["checkpointId"]
@@ -679,6 +707,13 @@ def read_checkpoint(checkpoint: dict[str, Any], base: date | None, queue: dict[s
         "resume": {
             "currentTask": checkpoint.get("currentTask"),
             "position": checkpoint.get("position"),
+            "teachingMode": checkpoint.get("teachingMode"),
+            "answerState": checkpoint.get("answerState"),
+            "hintLevel": checkpoint.get("hintLevel"),
+            "currentQuestion": checkpoint.get("currentQuestion"),
+            "completedQuestions": checkpoint.get("completedQuestions", []),
+            "remainingQuestions": checkpoint.get("remainingQuestions", []),
+            "materialVersion": checkpoint.get("materialVersion"),
         },
         "dueItems": checkpoint.get("dueItems", []),
         "pendingRetests": checkpoint.get("pendingRetests", []),

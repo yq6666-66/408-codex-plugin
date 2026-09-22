@@ -87,7 +87,7 @@ python scripts/study_simulator.py rr --processes "P1:0:24,P2:0:3,P3:0:3" --quant
 ## 便携学习记录：Schema 1.2 与 records.py
 
 - 新输出使用 **Schema 1.2**；读取端继续兼容 **1.0 / 1.1 / 1.2**，已有 `StudyProfile` / `ProgressSnapshot` / `ReviewQueue` 三类记录全部保留，新增轻量 `SessionCheckpoint`。
-- 1.2 新增：稳定 `recordId`（一次分配持续复用）、`updatedAt`、结构化 `retestEvidence`、`SessionCheckpoint`。
+- 1.2 新增：稳定 `recordId`（一次分配持续复用）、`updatedAt`、结构化 `retestEvidence`、`SessionCheckpoint`；检查点可选保存教学模式、提示层级、答案揭示状态、已完成/剩余题号和材料版本，跨会话继续时避免重复、漏题或提前泄题。
 - **不需要提前迁移整个旧库**：旧记录照常读取；只有真正需要保存升级结果时才补稳定 ID 并持久复用。兼容时保留安全的未知扩展字段与既有掌握状态，不凭空生成旧记录不存在的独立作答证据。
 - 随插件发布的统一 CLI 工具 `scripts/records.py`（纯标准库，文件或 stdin 进、stdout JSON 出、退出码适合自动化；在仓库根目录或已安装插件根目录运行）：
 
@@ -235,7 +235,7 @@ Notion 首次写入需确认绑定“408考研”主页（标记 `kaoyan-408-bra
 
 ## GPT-6 实测与工程测试的区别
 
-工程测试（`python scripts/check.py`、unittest）只证明代码与契约正确；**GPT-6 教学质量必须用真实宿主实测验收**，材料与记录格式见 [`eval/gpt6-acceptance/`](eval/gpt6-acceptance/README.md)（同一组用例可同时跑旧版与新版，保存插件版本、模型版本、推理档位、输入、真实回答、工具调用与判分依据）。截至 v2.5.1 发布，该验收 harness 已完成 17 条真实新旧版本对照。
+工程测试（`python scripts/check.py`、unittest）只证明代码与契约正确；**GPT-6 教学质量必须用真实宿主实测验收**，材料与记录格式见 [`eval/gpt6-acceptance/`](eval/gpt6-acceptance/README.md)（同一组用例可同时跑旧版与新版，保存插件版本、模型版本、推理档位、输入、真实回答、工具调用与判分依据）。维护者可用 `python scripts/gpt6_capture.py --input <原始JSONL> --output <提取证据JSON>` 从原始事件提取回答、真实工具调用、错误、完成状态和来源 SHA-256；判分仍需人工复核。截至 v2.5.1 发布，该验收 harness 已完成 17 条真实新旧版本对照。
 
 ---
 

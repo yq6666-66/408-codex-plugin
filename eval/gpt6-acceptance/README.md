@@ -20,6 +20,11 @@
 3. 新版：同法安装固定 tag [`v2.5.1`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)。
 4. 每版逐条运行 `cases.json` 的用例；图片类用例使用 `materials/` 中的固定材料（或按 input 描述自备并记入 `inputMaterial`）。
 5. 每条用例把模型真实回答、实际工具调用与逐条 checkpoint 判分记入一份 record JSON（模板见 [`record-template.json`](record-template.json)）。**必须粘贴模型真实输出，禁止编造或模拟回答。**
+   原始运行是 Codex CLI JSONL 时，先提取可审计证据；输出只保留回答、工具事件、错误、完成状态、用量和原文件 SHA-256，不采纳模型文字自证工具调用：
+   ```powershell
+   python scripts/gpt6_capture.py --input run.jsonl --case-id gpt6-01-detailed-408 --output capture.json
+   ```
+   `complete: false` 的记录不能参与判分；`errors` 需人工区分非阻塞警告与无效环境。只有 `toolCalls[].success: true` 且原始输出存在时，才能在 record 中声明工具成功。
 6. 校验并出报告：
    ```powershell
    python scripts/gpt6_acceptance.py --record record-v2.4.0.json
@@ -30,6 +35,7 @@
 ## 判分规则
 
 - 每条用例的 `checkpoints` 是判分依据；`verdict` 必须引用回答原文或工具输出作为 evidence。
+- 原始 JSONL 的 `sourceSha256` 用于绑定证据文件；它证明判分引用的是哪组事件，不证明回答正确。提取工具不读取 reasoning 文本，也不自动判定 checkpoint。
 - **不得只因回答中出现指定关键词就判 pass**；checkpoint 要求的是行为与正确性。
 - 对比验收标准：正确性不得回退、关键教学能力不得回退、新流程必须真正完成。
 - harness 会拒绝空白和明显占位文本（如 `TODO`、`模拟回答`）；它不能证明输出来自真实模型，也不能自动核实 evidence 是否支持判分。真实性和判分正确性仍须人工复核。

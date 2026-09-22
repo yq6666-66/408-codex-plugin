@@ -252,6 +252,13 @@ class CheckpointTests(unittest.TestCase):
                 "position": "2016 Text 2 第 3 题",
                 "dueItems": ["kr-1234567890abcdef#1"],
                 "pendingRetests": [],
+                "teachingMode": "hint",
+                "answerState": "partial",
+                "hintLevel": 2,
+                "currentQuestion": "4",
+                "completedQuestions": ["1", "2", "3"],
+                "remainingQuestions": ["4", "5"],
+                "materialVersion": "sha256:fixture-v2",
             },
             "2026-09-11",
         )
@@ -264,6 +271,31 @@ class CheckpointTests(unittest.TestCase):
 
         plan = records.read_checkpoint(checkpoint, None, None)
         self.assertEqual(plan["resume"]["position"], "2016 Text 2 第 3 题")
+        self.assertEqual(plan["resume"]["teachingMode"], "hint")
+        self.assertEqual(plan["resume"]["answerState"], "partial")
+        self.assertEqual(plan["resume"]["hintLevel"], 2)
+        self.assertEqual(plan["resume"]["completedQuestions"], ["1", "2", "3"])
+        self.assertEqual(plan["resume"]["remainingQuestions"], ["4", "5"])
+        self.assertEqual(plan["resume"]["materialVersion"], "sha256:fixture-v2")
+
+    def test_checkpoint_rejects_invalid_teaching_state(self) -> None:
+        checkpoint = records.build_checkpoint(
+            {
+                "currentTask": "任务",
+                "teachingMode": "unknown-mode",
+                "answerState": "leaked",
+                "hintLevel": 8,
+                "completedQuestions": ["1", "1"],
+                "remainingQuestions": ["", 2],
+            },
+            None,
+        )
+        errors, _ = records.validate_current(checkpoint)
+        self.assertTrue(any("teachingMode" in error for error in errors))
+        self.assertTrue(any("answerState" in error for error in errors))
+        self.assertTrue(any("hintLevel" in error for error in errors))
+        self.assertTrue(any("completedQuestions" in error for error in errors))
+        self.assertTrue(any("remainingQuestions" in error for error in errors))
 
     def test_create_without_date_keeps_updated_at_null(self) -> None:
         checkpoint = records.build_checkpoint({"currentTask": None}, None)

@@ -58,6 +58,13 @@
   "updatedAt": "2026-09-11",
   "currentTask": "2014-2018 英语二阅读精读",
   "position": "2016 Text 2 第 3 题讲解完成，第 4 题未开始",
+  "teachingMode": "hint",
+  "answerState": "partial",
+  "hintLevel": 2,
+  "currentQuestion": "2016 Text 2 第 4 题",
+  "completedQuestions": ["2016 Text 2 第 1 题", "2016 Text 2 第 2 题", "2016 Text 2 第 3 题"],
+  "remainingQuestions": ["2016 Text 2 第 4 题", "2016 Text 2 第 5 题"],
+  "materialVersion": "sha256:fixture-v2",
   "dueItems": ["kr-1234567890abcdef#1"],
   "pendingRetests": ["kr-1234567890abcdef#2"],
   "notes": null
@@ -65,6 +72,7 @@
 ```
 
 - “继续上次复习”必须读取真实持久化的 `SessionCheckpoint` 与到期错题后恢复：上次未完成任务、当前学习位置、到期错题、必要的后续复测。
+- 多轮教学需要跨会话延续时，可选保存 `teachingMode`、`answerState`、`hintLevel`、`currentQuestion`、`completedQuestions`、`remainingQuestions` 与 `materialVersion`。答案仍处于 `hidden` 或 `partial` 时，恢复后继续遵守原揭示边界；材料版本不一致时先说明变化并请求最小确认，不把旧作答套到新题面。
 - 读取不到真实记录时明确说明，不得根据模糊聊天历史凭空推断恢复状态。
 
 ## StudyProfile 1.2
