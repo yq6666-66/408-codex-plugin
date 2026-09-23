@@ -22,9 +22,9 @@
 5. 每条用例把模型真实回答、实际工具调用与逐条 checkpoint 判分记入一份 record JSON（模板见 [`record-template.json`](record-template.json)）。**必须粘贴模型真实输出，禁止编造或模拟回答。**
    原始运行是 Codex CLI JSONL 时，先提取可审计证据；输出只保留回答、工具事件、错误、完成状态、用量和原文件 SHA-256，不采纳模型文字自证工具调用：
    ```powershell
-   python scripts/gpt6_capture.py --input run.jsonl --case-id gpt6-01-detailed-408 --output capture.json
+   python scripts/gpt6_capture.py --input run.jsonl --case-id gpt6-01-detailed-408 --input-material-file actual-turns.txt --artifact prompt-image.png=materials/prompt-image.png --output capture.json
    ```
-   `complete: false` 的记录不能参与判分；`errors` 需人工区分非阻塞警告与无效环境。只有 `toolCalls[].success: true` 且原始输出存在时，才能在 record 中声明工具成功。
+   提取结果的 `recordCase` 可合入完整 record；`sourceEvidence` 保留原始 JSONL 哈希，`inputArtifacts` 绑定图片/材料摘要。`complete: false` 的记录不能参与判分；`errors` 需人工区分非阻塞警告与无效环境。只有 `toolCalls[].success: true` 且原始输出存在时，才能在 record 中声明工具成功。
 6. 校验并出报告：
    ```powershell
    python scripts/gpt6_acceptance.py --record record-v2.4.0.json
