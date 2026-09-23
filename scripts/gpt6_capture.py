@@ -77,7 +77,13 @@ def _tool_call(item: dict[str, Any], turn: int) -> dict[str, Any]:
     }
 
 
-def capture(events: list[dict[str, Any]], source_sha256: str, case_id: str | None = None) -> dict[str, Any]:
+def capture(
+    events: list[dict[str, Any]],
+    source_sha256: str,
+    case_id: str | None = None,
+    input_material: str | None = None,
+    artifacts: dict[str, str] | None = None,
+) -> dict[str, Any]:
     thread_id: str | None = None
     turn = 0
     started_turns = 0
@@ -115,7 +121,7 @@ def capture(events: list[dict[str, Any]], source_sha256: str, case_id: str | Non
     model_output = "\n\n".join(
         f"第{entry['turn']}轮模型输出：\n{entry['text']}" for entry in messages
     )
-    return {
+    report = {
         "schemaVersion": "1.0",
         "caseId": case_id,
         "sourceSha256": source_sha256,
@@ -130,6 +136,35 @@ def capture(events: list[dict[str, Any]], source_sha256: str, case_id: str | Non
         "errors": errors,
         "usage": usage,
     }
+    if input_material is not None:
+        report["inputMaterial"] = input_material
+    if artifacts:
+        report["inputArtifacts"] = artifacts
+    if case_id and input_material is not None and report["complete"] and model_output:
+        report["recordCase"] = {
+            "id": case_id,
+            "inputMaterial": input_material,
+            "modelOutput": model_output,
+            "toolCalls": [
+                {
+                    "tool": call["tool"],
+                    "input": call["input"],
+                    "output": call["output"],
+                    "status": call["status"],
+                    "exitCode": call["exitCode"],
+                    "success": call["success"],
+                }
+                for call in tools
+            ],
+            "sourceEvidence": {
+                "jsonlSha256": source_sha256,
+                "threadId": thread_id,
+                "startedTurns": started_turns,
+                "completedTurns": completed_turns,
+            },
+            **({"inputArtifacts": artifacts} if artifacts else {}),
+        }
+    return report
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -137,10 +172,44 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--input", type=Path, required=True, help="raw Codex CLI JSONL")
     parser.add_argument("--output", type=Path, default=None, help="optional extracted JSON path")
     parser.add_argument("--case-id", default=None, help="optional acceptance case ID")
+    parser.add_argument(
+        "--input-material-file",
+        type=Path,
+        default=None,
+        help="UTF-8 text containing the exact user turns and follow-ups, in order",
+    )
+    parser.add_argument(
+        "--artifact",
+        action="append",
+        default=[],
+        metavar="NAME=PATH",
+        help="bind an input image/material by name and SHA-256; may be repeated",
+    )
     args = parser.parse_args(argv)
     try:
         events, digest = load_events(args.input)
-        report = capture(events, digest, args.case_id)
+        input_material = None
+        if args.input_material_file is not None:
+            try:
+                input_material = args.input_material_file.read_text(encoding="utf-8")
+            except (OSError, UnicodeError) as exc:
+                raise CaptureError(
+                    f"cannot read input material file: {exc.__class__.__name__}"
+                ) from exc
+            if not input_material.strip():
+                raise CaptureError("input material file is empty")
+        artifacts: dict[str, str] = {}
+        for binding in args.artifact:
+            name, separator, raw_path = binding.partition("=")
+            if not separator or not name or not raw_path:
+                raise CaptureError("--artifact must use NAME=PATH")
+            if name in artifacts:
+                raise CaptureError(f"duplicate artifact name: {name}")
+            try:
+                artifacts[name] = hashlib.sha256(Path(raw_path).read_bytes()).hexdigest()
+            except OSError as exc:
+                raise CaptureError(f"cannot read artifact {name!r}: {exc.__class__.__name__} ({exc.errno})") from exc
+        report = capture(events, digest, args.case_id, input_material, artifacts)
         text = json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
         if args.output is None:
             sys.stdout.write(text)

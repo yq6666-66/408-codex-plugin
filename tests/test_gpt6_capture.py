@@ -63,6 +63,36 @@ class CaptureTests(unittest.TestCase):
                 gpt6_capture.load_events(path)
         self.assertNotIn("secret", str(caught.exception))
 
+    def test_record_case_preserves_followups_artifact_hash_and_failed_tool(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            artifact = root / "material.png"
+            artifact.write_bytes(b"fixture-image")
+            prompt = "第一轮问题\n第二轮追问\n第三轮提交"
+            report = gpt6_capture.capture(
+                [
+                    {"type": "turn.started"},
+                    {"type": "item.completed", "item": {"type": "agent_message", "text": "实际回答"}},
+                    {"type": "item.completed", "item": {
+                        "type": "command_execution", "command": "unavailable",
+                        "aggregated_output": "tool failed", "exit_code": 1, "status": "completed",
+                    }},
+                    {"type": "turn.completed"},
+                ],
+                "a" * 64,
+                "case-multiturn",
+                prompt,
+                {"material.png": hashlib.sha256(artifact.read_bytes()).hexdigest()},
+            )
+        record_case = report["recordCase"]
+        self.assertEqual(record_case["inputMaterial"], prompt)
+        self.assertEqual(record_case["inputArtifacts"]["material.png"], hashlib.sha256(b"fixture-image").hexdigest())
+        self.assertEqual(len(record_case["toolCalls"]), 1)
+        self.assertEqual(record_case["toolCalls"][0]["output"], "tool failed")
+        self.assertFalse(record_case["toolCalls"][0]["success"])
+        self.assertEqual(record_case["sourceEvidence"]["jsonlSha256"], "a" * 64)
+        self.assertFalse(report["toolCalls"][0]["success"])
+
 
 if __name__ == "__main__":
     unittest.main()

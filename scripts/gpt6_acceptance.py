@@ -88,6 +88,14 @@ def validate_record(record: dict[str, Any], cases: dict[str, dict[str, Any]]) ->
             call = _object(raw_call, label)
             for key in ("tool", "input", "output"):
                 _text(call.get(key), f"{label}.{key}")
+            if "success" in call and not isinstance(call["success"], bool):
+                raise RecordError(f"{label}.success must be a boolean")
+            if "exitCode" in call and call["exitCode"] is not None and (
+                isinstance(call["exitCode"], bool) or not isinstance(call["exitCode"], int)
+            ):
+                raise RecordError(f"{label}.exitCode must be an integer or null")
+            if call.get("success") is True and call.get("exitCode") not in {None, 0}:
+                raise RecordError(f"{label}.success cannot be true with a non-zero exitCode")
         verdicts = entry.get("verdicts")
         if not isinstance(verdicts, list) or not verdicts:
             raise RecordError(f"{case_id}: verdicts must be a non-empty array")

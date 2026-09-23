@@ -1,6 +1,6 @@
 # GPT-6 实际回答验收 harness
 
-**状态：v2.5.1 已完成并公开验证。** 本目录提供可重复的测试材料、记录格式与校验工具；17 条用例已在同一 Windows 宿主上完成 v2.4.0 与 v2.5.1 对照，v2.5.1 为 17/17 用例、60/60 checkpoint，通过严格 `regressionGate`。公开脱敏摘要见 [`results-v2.5.1.md`](results-v2.5.1.md)。工程测试通过不等于模型行为自动通过，判分证据仍需人工复核。
+**已发布基线：v2.5.1。** 旧验收包含 17 条用例，结果为 17/17、60/60 checkpoint，并通过严格 `regressionGate`；历史摘要见 [`results-v2.5.1.md`](results-v2.5.1.md)。当前候选 `v2.5.2` 尚未发布，本目录增加了 3 条多轮状态用例，完整清单现为 20 条。v2.5.2 的真实模型验收仍待完成，不能用工程测试代替。
 
 ## 目的
 
@@ -11,13 +11,13 @@
 
 ## 测试材料
 
-- [`cases.json`](cases.json)：17 个用例，覆盖四科详细回答、简洁覆盖、五题分批、图片缺损、关键符号模糊、模考交卷前不泄题、连续搜题→核验→讲解、政治真题检索、未来年份试卷、院校数据口径、继续上次复习、到期错题、工具不可用降级、计算工具与人工复核区别。
+- [`cases.json`](cases.json)：20 个用例，覆盖数学、英语、408、政治、真题/招生信息、模考、便携记录、工具降级和多轮教学状态。前 17 条是 v2.5.1 已发布基线；18—20 条增加提示续接、多题续讲和题面修正后重算。
 
 ## 运行步骤（新旧版本对比）
 
 1. **同一宿主、同一模型、同一推理档位**：新旧两版必须条件一致。
-2. 旧版：在宿主中安装 v2.4.0（`codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.4.0`）。
-3. 新版：同法安装固定 tag [`v2.5.1`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)。
+2. 历史发布对照：可用固定 tag 安装旧版 v2.4.0，与已发布 v2.5.1 做历史比较。
+3. 当前候选验收：使用 `codex/reliability-hardening` 分支打包的 v2.5.2 候选；记录精确 manifest 版本、包哈希和安装来源。该候选尚未发布，不应把正式安装切换到候选版本。比较新增 18—20 条时，旧版也须在完全相同的输入与 followUps 上重新运行；发布前完整比较必须包含相同的 20 条用例。
 4. 每版逐条运行 `cases.json` 的用例；图片类用例使用 `materials/` 中的固定材料（或按 input 描述自备并记入 `inputMaterial`）。
 5. 每条用例把模型真实回答、实际工具调用与逐条 checkpoint 判分记入一份 record JSON（模板见 [`record-template.json`](record-template.json)）。**必须粘贴模型真实输出，禁止编造或模拟回答。**
    原始运行是 Codex CLI JSONL 时，先提取可审计证据；输出只保留回答、工具事件、错误、完成状态、用量和原文件 SHA-256，不采纳模型文字自证工具调用：
@@ -29,7 +29,8 @@
    ```powershell
    python scripts/gpt6_acceptance.py --record record-v2.4.0.json
    python scripts/gpt6_acceptance.py --record record-v2.5.1.json
-   python scripts/gpt6_acceptance.py --compare record-v2.4.0.json record-v2.5.1.json
+   python scripts/gpt6_acceptance.py --record record-v2.5.2.json
+   python scripts/gpt6_acceptance.py --compare record-v2.4.0.json record-v2.5.2.json
    ```
 
 ## 判分规则
@@ -47,7 +48,7 @@
 
 ## 完整性与退出码
 
-- `--record` 默认要求 `cases.json` 中全部 17 个用例各出现一次，缺失、重复或未知用例均退出 1；单用例记录不能代表完整验收。
+- `--record` 默认要求 `cases.json` 中全部 20 个用例各出现一次，缺失、重复或未知用例均退出 1；单用例记录不能代表完整验收。更新清单后，旧的 17 条记录只适用于原 v2.5.1 历史基线，不能直接用于新清单比较。
 - 必填元数据必须是非空字符串且不能保留填写提示；`pluginVariant` 为 `old` 或 `new`，`runAt` 为带时区的 ISO 8601 时间。
 - `inputMaterial` 和 `modelOutput` 必须是非空的非占位文本（简洁题允许如 `1/2` 的短回答）。`toolCalls` 必须存在；没有调用时用 `[]`。每次调用须记录非空字符串 `tool`、`input`、`output`；实际无输出时明确写“实际无输出”，不要省略字段或编造结果。
 - 每个 checkpoint 必须逐字匹配目录、只判一次且全部覆盖。`verdict` 只允许 `pass`、`partial`、`fail`；`evidence` 必须是非空文本，不能用 `null`、数字或对象。若记录 `overall`，它必须与逐项判分一致。
