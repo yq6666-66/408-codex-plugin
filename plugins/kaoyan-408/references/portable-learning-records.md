@@ -11,6 +11,7 @@
 - `correct` 与 `total` 同时存在时必须满足 `correct <= total`；`total` 为 `0` 时 `correct` 只能为 `0` 或 `null`。三者均有值时，`rate` 必须与 `correct / total` 一致；冲突值只报告并请求确认，不伪造修正。
 - 不加入姓名、账号、凭据、设备路径、原始题面全文或与学习交接无关的信息。
 - 结构化记录必须在需要保存、合并、校验或跨会话交接时生成。若本轮已成功写入并完成读后验证，面向用户的正文只需说明记录类型、更新位置和关键变化，不必在正文重复粘贴完整 JSON；用户要求导出、没有持久化工具、写入失败或需要用户自行携带记录时，提供完整可复制 JSON。
+- 用户明确指定本地目标并要求保存时，在宿主正常审批路径下实际尝试写入该目标，再读回并用可用的记录校验工具核对；不能只凭权限标签推断写入失败。只有写入成功且读回匹配，才能称“已保存”；实际调用被拒绝或失败时如实说明并提供可复制 JSON，不绕过审查。
 - 解析旧对象时保留所有安全的未识别字段及其所在层级，不静默删除；迁移前说明发现的缺失、冲突或不兼容值。若未知字段含凭据、个人标识、设备路径或原始材料全文，隐私边界优先：把原字段值改为 `null`，在根级 `redactedFields` 记录其 JSON Pointer 路径，并明确说明已脱敏。
 - 旧扩展字段与规范字段同名且值冲突时，以有效的新字段承载规范值，把安全的旧值移入根级 `legacyExtensions`，以原 JSON Pointer 为键，并在 `migrationWarnings` 说明；无法安全确定规范值时先请求确认，不声称已经完成迁移。
 - `records.py merge` 遇到同一记录的不同标量时，以较新 `updatedAt` 一侧作为当前值；同时在根级 `mergeConflicts` 保存 JSON Pointer、双方原值和 `kept-newer` 处理结果。时间相同或缺失时保留第一侧并记为 `kept-first`。`updatedAt` 本身只表示版本先后，不重复记作内容冲突。
@@ -73,6 +74,7 @@
 
 - “继续上次复习”必须读取真实持久化的 `SessionCheckpoint` 与到期错题后恢复：上次未完成任务、当前学习位置、到期错题、必要的后续复测。
 - 多轮教学需要跨会话延续时，可选保存 `teachingMode`、`answerState`、`hintLevel`、`currentQuestion`、`completedQuestions`、`remainingQuestions` 与 `materialVersion`。答案仍处于 `hidden` 或 `partial` 时，恢复后继续遵守原揭示边界；材料版本不一致时先说明变化并请求最小确认，不把旧作答套到新题面。
+- 写入或更新检查点后，脚本可用时必须运行插件根目录 `scripts/records.py validate <文件>` 并确认 `valid: true`，再用 `checkpoint read <文件>` 核对当前题面；普通文件读回不能代替 Schema 校验。校验失败不能称已保存。`materialVersion` 仅能是有依据的字符串或 `null`，不得用自增数字代替材料摘要；脚本不可用时说明未做工具校验并提供可复制的 Schema 1.2 记录。
 - 读取不到真实记录时明确说明，不得根据模糊聊天历史凭空推断恢复状态。
 
 ## StudyProfile 1.2
