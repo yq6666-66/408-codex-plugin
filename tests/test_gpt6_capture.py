@@ -55,6 +55,50 @@ class CaptureTests(unittest.TestCase):
         )
         self.assertFalse(report["complete"])
 
+    def test_web_search_results_are_preserved_as_tool_evidence(self) -> None:
+        results = [{"title": "Official page", "url": "https://example.org/paper", "snippet": "2024 paper"}]
+        report = gpt6_capture.capture(
+            [
+                {"type": "turn.started"},
+                {"type": "item.completed", "item": {
+                    "id": "web-1", "type": "web_search", "query": "2024 paper",
+                    "action": {"type": "search", "queries": ["2024 paper"]},
+                    "results": results,
+                }},
+                {"type": "item.completed", "item": {
+                    "id": "web-2", "type": "web_search", "query": "no results",
+                    "action": {"type": "search", "queries": ["no results"]},
+                    "results": [],
+                }},
+                {"type": "turn.completed"},
+            ],
+            "b" * 64,
+        )
+        first, second = report["toolCalls"]
+        self.assertEqual(first["status"], "completed")
+        self.assertIsNone(first["exitCode"])
+        self.assertTrue(first["success"])
+        self.assertEqual(json.loads(first["input"])["action"]["type"], "search")
+        self.assertEqual(json.loads(first["output"]), results)
+        self.assertTrue(second["success"])
+        self.assertEqual(second["output"], "[]")
+
+    def test_completed_command_without_output_cannot_prove_tool_result(self) -> None:
+        report = gpt6_capture.capture(
+            [
+                {"type": "turn.started"},
+                {"type": "item.completed", "item": {
+                    "type": "command_execution", "command": "silent command",
+                    "aggregated_output": "", "exit_code": 0, "status": "completed",
+                }},
+                {"type": "turn.completed"},
+            ],
+            "c" * 64,
+        )
+        call = report["toolCalls"][0]
+        self.assertFalse(call["success"])
+        self.assertEqual(call["output"], "actual no output")
+
     def test_invalid_jsonl_reports_line_without_echoing_content(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "bad.jsonl"

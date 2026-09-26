@@ -56,21 +56,33 @@ def load_events(path: Path) -> tuple[list[dict[str, Any]], str]:
 def _tool_call(item: dict[str, Any], turn: int) -> dict[str, Any]:
     item_type = str(item.get("type"))
     tool = item.get("tool") or item.get("name") or item.get("server") or item_type
-    raw_input = (
-        item.get("command")
-        if item_type == "command_execution"
-        else item.get("arguments", item.get("input", item.get("query", item.get("changes"))))
-    )
-    raw_output = item.get("aggregated_output", item.get("output", item.get("result")))
-    status = item.get("status")
+    if item_type == "web_search":
+        raw_input = {"action": item.get("action"), "query": item.get("query")}
+        raw_output = item.get("results")
+        # Codex CLI emits web_search only as item.completed, without a status or exit code.
+        status = item.get("status") or "completed"
+    else:
+        raw_input = (
+            item.get("command")
+            if item_type == "command_execution"
+            else item.get("arguments", item.get("input", item.get("query", item.get("changes"))))
+        )
+        raw_output = item.get("aggregated_output", item.get("output", item.get("result")))
+        status = item.get("status")
     exit_code = item.get("exit_code", item.get("exitCode"))
-    success = status in {"completed", "success"} and exit_code in {None, 0}
+    has_output = raw_output is not None and raw_output != ""
+    success = (
+        status in {"completed", "success"}
+        and exit_code in {None, 0}
+        and has_output
+        and not item.get("error")
+    )
     return {
         "itemId": str(item.get("id") or ""),
         "turn": turn,
         "tool": str(tool),
         "input": _json_text(raw_input),
-        "output": _json_text(raw_output),
+        "output": _json_text(raw_output) if has_output else "actual no output",
         "status": str(status or "unknown"),
         "exitCode": exit_code,
         "success": success,
