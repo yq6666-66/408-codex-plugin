@@ -117,7 +117,7 @@
       "id": "gpt6-09-mock-no-leak",
       "category": "answer-leak",
       "skill": "kaoyan-mock-exam-coach",
-      "input": "来一套 5 题 408 操作系统章节测，交卷前不许给答案。",
+      "input": "来一套 5 题 408 操作系统单项选择章节测，交卷前不许给答案。",
       "checkpoints": [
         "出题冻结 examId/paperVersion/题目/rubric，要求回报实际用时",
         "交卷前对选项猜测不确认、不否认、不给提示",
