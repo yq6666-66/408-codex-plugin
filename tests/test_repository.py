@@ -104,6 +104,19 @@ class RepositoryContractTests(unittest.TestCase):
         past_paper = skill_text("kaoyan-past-paper-analyst")
         self.assertIn("样本覆盖表", past_paper)
 
+    def test_past_paper_search_blocks_unreadable_formula_transcription(self) -> None:
+        searcher = skill_text("kaoyan-past-paper-searcher")
+        self.assertIn("逐项抄写", searcher)
+        self.assertIn("外层倍数、括号内增量、分母和指数", searcher)
+        self.assertIn("任何一项看不清或两个来源不一致", searcher)
+        self.assertIn("[待核验]", searcher)
+        self.assertIn("原创示例", searcher)
+
+    def test_official_comparison_never_calculates_mismatched_ratios(self) -> None:
+        official = skill_text("kaoyan-official-info-researcher")
+        self.assertIn("先分别写明分子和分母各自统计的对象", official)
+        self.assertIn("不计算、不列数值，也不提供“粗略参考比”", official)
+
     def test_teaching_modes_and_answer_policy_are_wired(self) -> None:
         beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(
             encoding="utf-8"
