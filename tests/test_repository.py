@@ -115,6 +115,8 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("有可用的直接正文读取工具时先获取网页正文", searcher)
         self.assertIn("题面核对：外层倍数=", searcher)
         self.assertIn("括号内增量=", searcher)
+        self.assertIn("用户在同一条请求中要求", searcher)
+        self.assertIn("不得只附交接卡", searcher)
         self.assertIn("[待核验]", searcher)
         self.assertIn("原创示例", searcher)
 
