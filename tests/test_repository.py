@@ -129,6 +129,12 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("先分别写明分子和分母各自统计的对象", official)
         self.assertIn("不计算、不列数值，也不提供“粗略参考比”", official)
 
+    def test_math_coach_requires_option_by_option_explanations(self) -> None:
+        math = skill_text("kaoyan-math-coach")
+        self.assertIn("不得只报答案字母", math)
+        self.assertIn("逐项列出所有可读选项", math)
+        self.assertIn("A、B、C、D", math)
+
     def test_teaching_modes_and_answer_policy_are_wired(self) -> None:
         beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(
             encoding="utf-8"
