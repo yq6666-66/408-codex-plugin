@@ -112,11 +112,14 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("工具输出中必须实际显示完整公式", searcher)
         self.assertIn("Total lines", searcher)
         self.assertIn("仍视为没有读到可核验公式", searcher)
+        self.assertIn("有可用的直接正文读取工具时先获取网页正文", searcher)
         self.assertIn("[待核验]", searcher)
         self.assertIn("原创示例", searcher)
 
     def test_official_comparison_never_calculates_mismatched_ratios(self) -> None:
         official = skill_text("kaoyan-official-info-researcher")
+        self.assertIn("先输出逐项完整的统一口径行", official)
+        self.assertIn("即使输入材料里已经出现", official)
         self.assertIn("先分别写明分子和分母各自统计的对象", official)
         self.assertIn("不计算、不列数值，也不提供“粗略参考比”", official)
 
