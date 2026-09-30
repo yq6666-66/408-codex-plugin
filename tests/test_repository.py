@@ -109,6 +109,9 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("逐项抄写", searcher)
         self.assertIn("外层倍数、括号内增量、分母和指数", searcher)
         self.assertIn("任何一项看不清或两个来源不一致", searcher)
+        self.assertIn("工具输出中必须实际显示完整公式", searcher)
+        self.assertIn("Total lines", searcher)
+        self.assertIn("仍视为没有读到可核验公式", searcher)
         self.assertIn("[待核验]", searcher)
         self.assertIn("原创示例", searcher)
 
