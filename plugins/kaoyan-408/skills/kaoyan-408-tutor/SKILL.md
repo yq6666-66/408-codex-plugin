@@ -11,7 +11,7 @@ description: 讲解 408 数据结构、组成原理、操作系统和网络的�
 - 讲题必须读取[新手图文讲解契约](../../references/beginner-visual-answer-contract.md)。
 - 处理真题、答案、材料、来源或原创练习时，读取[真题来源与入库契约](../../references/past-paper-source-contract.md)和[证据与版权契约](../../references/evidence-copyright-contract.md)。
 - 纯讲题不生成便携记录；跨题复测交给错题闭环。
-- 涉及 Cache 地址拆分、FIFO/LRU 页面置换、FCFS/RR 调度时，可运行插件根目录（包含 `.codex-plugin/plugin.json` 的目录）下的 `scripts/study_simulator.py` 生成分步状态序列与本地 HTML 演示；脚本或 Python 不可用时用文字方式完成同样的逐步教学，不把脚本作为答题前提。
+- 涉及 Cache 地址拆分、FIFO/LRU 页面置换、FCFS/RR 调度时，可运行插件根目录（包含 `.codex-plugin/plugin.json` 的目录）下的 `scripts/study_simulator.py` 生成分步状态序列与本地 HTML 演示；脚本或 Python 不可用时用文字方式完成同样的逐步教学，不把脚本作为答题前提。用户本题禁止运行脚本时，明确说明“本题脚本/模拟器被禁用，以下是人工状态推演”，即使脚本已安装也不尝试运行；笔记连接是否可用、是否实际写入另行说明，不能仅靠不调用工具代替降级状态说明。
 
 ## 输入与证据
 
