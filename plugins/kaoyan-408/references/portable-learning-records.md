@@ -26,6 +26,7 @@
 - ID 一经分配就保持稳定：后续更新复用同一 ID，不随内容变化重算。
 - 旧记录不要求提前迁移；只有真正需要保存升级结果时才补 ID，之后持续复用。补 ID 的确定性规则见 `records.py normalize`：对“尚无 `recordId` 的原始记录内容”做规范 JSON 哈希，因此同一条记录重复 normalize 得到相同 ID；已有 ID 的记录保持原 ID。
 - `ReviewQueue.items` 可选携带同格式的 `itemId`，用于跨次更新稳定定位单个错题。
+- 新记录优先由 `records.py` 生成 ID 并校验。脚本被禁用而只能导出文本时，手工核对 ID 后缀为四组各四位的 `0-9a-f`，实际字符串不带分隔符；`checkpointId` 使用 `kc-`，其他 ID 使用 `kr-`。不拼接科目缩写或日期冒充合法 ID；没有实际校验时明确记录尚未工具校验。
 
 ### 更新时间（`updatedAt`）
 
@@ -65,7 +66,7 @@
   "currentQuestion": "2016 Text 2 第 4 题",
   "completedQuestions": ["2016 Text 2 第 1 题", "2016 Text 2 第 2 题", "2016 Text 2 第 3 题"],
   "remainingQuestions": ["2016 Text 2 第 4 题", "2016 Text 2 第 5 题"],
-  "materialVersion": "sha256:fixture-v2",
+  "materialVersion": null,
   "dueItems": ["kr-1234567890abcdef#1"],
   "pendingRetests": ["kr-1234567890abcdef#2"],
   "notes": null
