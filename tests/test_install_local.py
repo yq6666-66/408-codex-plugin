@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -326,6 +327,38 @@ class ConsumerVerificationTests(unittest.TestCase):
         result = verify_release_bundle(archive, expected_sha256=digest, expected_version=version)
         self.assertEqual(result["version"], version)
         self.assertEqual(int(result["files"]), len(ALLOWED_RELEASE_FILES))
+
+    def test_release_contains_runnable_runtime_helpers(self) -> None:
+        archive, _, _ = self.build_archive("runtime.zip")
+        import zipfile
+
+        extracted = self.root / "runtime"
+        with zipfile.ZipFile(archive) as bundle:
+            bundle.extractall(extracted)
+        commands = (
+            [sys.executable, str(extracted / "scripts" / "records.py"), "--help"],
+            [sys.executable, str(extracted / "scripts" / "study_simulator.py"), "--help"],
+            [sys.executable, str(extracted / "scripts" / "configure_obsidian_brain.py"), "--help"],
+            [
+                sys.executable,
+                str(extracted / "scripts" / "health_check.py"),
+                "--config",
+                str(extracted / "missing-obsidian-config.json"),
+                "--json",
+            ],
+        )
+        for command in commands:
+            with self.subTest(script=Path(command[1]).name):
+                result = subprocess.run(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    encoding="utf-8",
+                    env={**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"},
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_verification_is_independent_of_publication_age(self) -> None:
         """31 days and one year after publication a hash-correct pinned version still verifies."""

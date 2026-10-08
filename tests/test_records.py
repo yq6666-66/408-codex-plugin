@@ -144,7 +144,17 @@ class MergeTests(unittest.TestCase):
         )
         self.assertEqual(record["weeklyHours"], 35)
         self.assertEqual(record["updatedAt"], "2026-09-10")
-        self.assertEqual(merged["mergeConflicts"], [])
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [
+                {
+                    "path": "/weeklyHours",
+                    "a": 20,
+                    "b": 35,
+                    "resolution": "kept-newer",
+                }
+            ],
+        )
 
     def test_merge_equal_updated_at_keeps_first_side_and_records_conflict(self) -> None:
         a = {
@@ -242,6 +252,13 @@ class CheckpointTests(unittest.TestCase):
                 "position": "2016 Text 2 第 3 题",
                 "dueItems": ["kr-1234567890abcdef#1"],
                 "pendingRetests": [],
+                "teachingMode": "hint",
+                "answerState": "partial",
+                "hintLevel": 2,
+                "currentQuestion": "4",
+                "completedQuestions": ["1", "2", "3"],
+                "remainingQuestions": ["4", "5"],
+                "materialVersion": "sha256:fixture-v2",
             },
             "2026-09-11",
         )
@@ -254,6 +271,31 @@ class CheckpointTests(unittest.TestCase):
 
         plan = records.read_checkpoint(checkpoint, None, None)
         self.assertEqual(plan["resume"]["position"], "2016 Text 2 第 3 题")
+        self.assertEqual(plan["resume"]["teachingMode"], "hint")
+        self.assertEqual(plan["resume"]["answerState"], "partial")
+        self.assertEqual(plan["resume"]["hintLevel"], 2)
+        self.assertEqual(plan["resume"]["completedQuestions"], ["1", "2", "3"])
+        self.assertEqual(plan["resume"]["remainingQuestions"], ["4", "5"])
+        self.assertEqual(plan["resume"]["materialVersion"], "sha256:fixture-v2")
+
+    def test_checkpoint_rejects_invalid_teaching_state(self) -> None:
+        checkpoint = records.build_checkpoint(
+            {
+                "currentTask": "任务",
+                "teachingMode": "unknown-mode",
+                "answerState": "leaked",
+                "hintLevel": 8,
+                "completedQuestions": ["1", "1"],
+                "remainingQuestions": ["", 2],
+            },
+            None,
+        )
+        errors, _ = records.validate_current(checkpoint)
+        self.assertTrue(any("teachingMode" in error for error in errors))
+        self.assertTrue(any("answerState" in error for error in errors))
+        self.assertTrue(any("hintLevel" in error for error in errors))
+        self.assertTrue(any("completedQuestions" in error for error in errors))
+        self.assertTrue(any("remainingQuestions" in error for error in errors))
 
     def test_create_without_date_keeps_updated_at_null(self) -> None:
         checkpoint = records.build_checkpoint({"currentTask": None}, None)
@@ -370,6 +412,30 @@ class CliTests(unittest.TestCase):
         self.assertEqual(read.returncode, 0, read.stderr)
         plan = json.loads(read.stdout)
         self.assertEqual(plan["resume"]["currentTask"], "408 操作系统")
+
+    @unittest.skipUnless(sys.platform == "win32", "Windows native-pipe encoding regression")
+    def test_utf8_stdin_works_without_python_utf8_environment(self) -> None:
+        import os
+
+        env = os.environ.copy()
+        env.pop("PYTHONUTF8", None)
+        env.pop("PYTHONIOENCODING", None)
+        payload = json.dumps(
+            {"currentTask": "第五题", "position": "题5未开始"},
+            ensure_ascii=False,
+        )
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "checkpoint", "create", "--date", "2026-09-20"],
+            input=payload,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            env=env,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(json.loads(result.stdout)["currentTask"], "第五题")
 
 
 if __name__ == "__main__":
