@@ -19,7 +19,7 @@ class HealthCheckTests(unittest.TestCase):
             missing_config = Path(temporary) / "missing.json"
             report = health_check.inspect_plugin(REPO / "plugins" / "kaoyan-408", missing_config)
         self.assertEqual(report["status"], "ok")
-        self.assertEqual(report["skills"], {"complete": 13, "expected": 13})
+        self.assertEqual(report["skills"], {"complete": health_check.EXPECTED_SKILL_COUNT, "expected": health_check.EXPECTED_SKILL_COUNT})
         self.assertEqual(report["runtimeHelpers"]["missing"], [])
         self.assertEqual(report["obsidian"]["configStatus"], "absent")
 

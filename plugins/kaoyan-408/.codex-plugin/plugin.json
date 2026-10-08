@@ -1,7 +1,7 @@
 {
   "name": "kaoyan-408",
-  "version": "2.5.2",
-  "description": "面向数学一、数学二、英语一、英语二、408 与政治的中文考研 Skills，提供六科真题搜索与分析、三种教学模式的新手图文讲解、学习规划、学习检查点和可选 Obsidian/Notion 记忆。",
+  "version": "2.6.0",
+  "description": "面向数学一、数学二、英语一、英语二、408与政治的中文考研Skills，提供招生调研、官方招生核验、近两年数据比较、多平台网友评价、真题搜索与教学及可选双知识库。",
   "author": {
     "name": "yq6666-66",
     "url": "https://github.com/yq6666-66"
@@ -17,16 +17,19 @@
     "english-i",
     "english-ii",
     "past-papers",
-    "education"
+    "education",
+    "admissions",
+    "school-selection"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "408考研插件",
-    "shortDescription": "六科真题检索、图文解析与双知识库学习助手",
-    "longDescription": "纯 Skills 考研学习插件，覆盖 2010 年起（不设固定结束年份）数学一、数学二、英语一、英语二、408 与政治的合规真题发现与分析，并提供政治辅导、规划、执行、诊断、错题复测、学习检查点和原创模考。可选连接用户自己的 Obsidian Vault 或已授权 Notion 工作区；发布者不接收笔记、真题或学习记录。",
+    "shortDescription": "招生调研、网友评价、六科真题与学习助手",
+    "longDescription": "纯Skills考研插件，默认408优先并支持用户指定的其他硕士专业，连续调研官方招生详情、最近两个已完成招生年度与多平台网友体验；兼容六科真题检索、详细教学、原创模考与学习规划。查询默认不保存，明确要求后可复用已授权Obsidian或Notion；发布者不接收笔记与记录。",
     "developerName": "yq6666-66",
     "category": "Education",
     "capabilities": [
+      "Admissions Research",
       "Education",
       "Past Paper Research",
       "Tutoring",
@@ -38,9 +41,9 @@
     "privacyPolicyURL": "https://github.com/yq6666-66/408-codex-plugin/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/yq6666-66/408-codex-plugin/blob/main/TERMS.md",
     "defaultPrompt": [
-      "搜索并核验 2010 年起指定科目的合法真题来源",
-      "结合可验证真题，用图解和新手步骤讲清这道数学、英语或 408 题",
-      "把本轮原创解析去重同步到已绑定的 Notion 和 Obsidian"
+      "调研目标院校招生详情、最近两年数据与网友评价，区分官方事实和个人体验",
+      "搜索并核验指定科目的合法真题来源，用新手步骤和逐项选项分析讲清题目",
+      "在我明确要求保存后，把本轮招生报告或原创解析同步到已绑定的Notion和Obsidian"
     ],
     "brandColor": "#0F766E",
     "composerIcon": "./assets/kaoyan-408.svg",

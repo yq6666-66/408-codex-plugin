@@ -1,0 +1,4 @@
+interface:
+  display_name: "考研招生调研员"
+  short_description: "查院校招生详情与近两年数据，整理多平台网友体验、来源缺口和择校参考"
+  default_prompt: "使用 $kaoyan-admissions-researcher 调研目标院校招生详情、最近两年招生情况与多平台网友评价，并区分官方事实和个人体验。"

@@ -92,7 +92,7 @@ class SystemValidatorEvidenceTests(unittest.TestCase):
         incomplete = deepcopy(self.evidence)
         incomplete["results"]["skills"].pop(next(iter(EXPECTED_SKILLS)))
         self.write(incomplete)
-        with self.assertRaisesRegex(EvidenceError, "exactly 13"):
+        with self.assertRaisesRegex(EvidenceError, f"exactly {len(EXPECTED_SKILLS)}"):
             verify_evidence(REPO, self.path, now=self.now)
 
     def test_stale_repository_validator_hash_is_rejected(self) -> None:

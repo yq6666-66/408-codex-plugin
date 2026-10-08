@@ -78,6 +78,7 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertEqual(
             remaining,
             [
+                "admissions-research-contract.md",
                 "beginner-visual-answer-contract.md",
                 "capability-routing-contract.md",
                 "evidence-copyright-contract.md",
@@ -121,7 +122,9 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("原创示例", searcher)
 
     def test_official_comparison_never_calculates_mismatched_ratios(self) -> None:
-        official = skill_text("kaoyan-official-info-researcher")
+        official = (REPO / "plugins/kaoyan-408/references/admissions-research-contract.md").read_text(encoding="utf-8")
+        for name in ("kaoyan-official-info-researcher", "kaoyan-admissions-researcher"):
+            self.assertIn("admissions-research-contract.md", skill_text(name))
         self.assertIn("先输出一行逐项完整的统一口径", official)
         self.assertIn("即使输入材料里已经出现", official)
         self.assertIn("统一口径：招生年度=", official)

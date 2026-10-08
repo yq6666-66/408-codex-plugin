@@ -278,7 +278,7 @@ def verify_evidence(
         raise EvidenceError("plugin validation did not pass")
     skills = results.get("skills")
     if not isinstance(skills, dict) or set(skills) != EXPECTED_SKILLS:
-        raise EvidenceError("quick_validate evidence does not cover exactly 13 Skills")
+        raise EvidenceError(f"quick_validate evidence does not cover exactly {len(EXPECTED_SKILLS)} Skills")
     if any(result != {"passed": True, "exitCode": 0} for result in skills.values()):
         raise EvidenceError("one or more quick_validate results did not pass")
     return document

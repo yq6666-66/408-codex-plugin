@@ -16,7 +16,7 @@ EXPECTED_RUNTIME_HELPERS = {
     "records.py",
     "study_simulator.py",
 }
-EXPECTED_SKILL_COUNT = 13
+EXPECTED_SKILL_COUNT = 14
 
 
 def _read_json(path: Path) -> dict[str, Any]:

@@ -30,9 +30,11 @@ EXPECTED_SKILLS = {
     "kaoyan-past-paper-analyst",
     "kaoyan-material-study-assistant",
     "kaoyan-official-info-researcher",
+    "kaoyan-admissions-researcher",
 }
 
 EXPECTED_REFERENCES = {
+    "admissions-research-contract.md",
     "capability-routing-contract.md",
     "evidence-copyright-contract.md",
     "learning-layer-contract.md",
