@@ -2,7 +2,9 @@
 
 `kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
-当前版本：`2.5.2`
+当前版本：`2.5.2`（未发布候选）；当前稳定版本：`2.5.1`。
+
+v2.5.2 已完成本地工程检查，按 2026-10-08 的简化验收范围准备推送候选分支。完整行为验收尚未确认全通过，已知问题与包哈希见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
@@ -168,7 +170,9 @@ python scripts/health_check.py --json
 
 ## 安装与回退
 
-新版 Codex CLI/IDE 可添加仓库 marketplace 后安装：
+以下 v2.5.2 命令供正式发布后使用，目前尚无正式 v2.5.2 标签。当前稳定版请使用上方 v2.5.1 安装命令。
+
+正式发布后，Codex CLI/IDE 可添加仓库 marketplace 后安装：
 
 ```powershell
 codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.5.2
@@ -199,12 +203,12 @@ python scripts/install_local.py verify-tree --dir <已安装插件目录> --vers
 
 安装器通过官方 CLI 的结构化 JSON 输出识别 Git marketplace / 本地 marketplace；同名但来源不同、缓存目录、文件被改、版本或哈希不一致都会被拒绝并说明原因。消费者安装验证不等于维护者完整发布门禁（官方插件/Skill 校验、Windows/Ubuntu 测试、可重复构建等仍然保留）。
 
-**回退到 v2.4.0**：
+**候选版回退到 v2.5.1**：
 
 ```powershell
 codex plugin remove kaoyan-408
 codex plugin marketplace remove kaoyan-408
-codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.4.0
+codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.5.1
 codex plugin add kaoyan-408@kaoyan-408
 ```
 
