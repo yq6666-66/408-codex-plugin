@@ -1,45 +1,46 @@
 # v2.6.0 本地候选验收
 
-日期：2026-10-09。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。当前插件提交为 `e2dc4dfda768281d33de7970c21e40437e6b8587`。
+日期：2026-10-09。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `14dad8f83d649edef3172f5dbea1607cebd381cd`。
 
-版本保持 `2.6.0`、`Unreleased`。此验收记录创建于首次推送前；分支后按用户要求推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。PR 首个推送 head `3522250` 的远端 required checks `validate`、`windows`、`reproducible` 与 GitGuardian 均通过。后续文档提交会触发新检查，以 PR 当前 head 状态为准。尚未合并、打版本标签、发布 Release 或升级稳定安装；稳定回退版本仍为 v2.5.1。
+版本保持 `2.6.0`、`Unreleased`。分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。本记录中的工程与包证据绑定最终插件内容树；远端检查状态以 PR 最新 head 为准。合并开发代码不会自动打版本标签、发布 Release 或升级稳定安装；稳定版本仍为 v2.5.1。
 
 ## 工程检查
 
-本地工程日志和私有验收材料保存在维护者交付目录。PR `#26` 首个推送 head `3522250` 的 GitHub `validate`、`windows`、`reproducible` checks 及 GitGuardian 均已通过；源码审查修复后形成的新 head 必须重新等待 PR checks。
+本地工程日志和私有验收材料保存在维护者交付目录。以下工程检查均针对最终修复后的插件内容树；远端 PR 检查仍须按最新 head 单独核验。
 
 | 检查 | 结果与边界 |
 | --- | --- |
 | 仓库校验 | 六项检查通过，14 个 Skills 与精确发布允许列表一致 |
 | 官方 validators | 缓存的官方插件 validator 与 14/14 Skill validator 通过；证据脚本 SHA-256 绑定插件树 |
-| Windows 完整测试 | 源码审查修复后 173 项全部通过 |
-| WSL Ubuntu 完整测试 | v2.6 基础候选 166 项，1 项 Windows 原生管道编码测试跳过，其余通过；源码审查修复后的 head 尚待本地完整 Ubuntu 复测及最新远端检查 |
-| Semgrep 1.162.0 | v2.6 基础候选 8 条规则、92 个目标、0 findings；修复后的 head 尚待复测 |
-| 基础候选包 | Windows 重复构建字节一致；Ubuntu SHA-256 相同，45 个文件 |
-| 消费者包验证 | 基础候选 `verify-release` 通过，版本 2.6.0 |
-| 隔离安装 | 基础候选 45 个文件，与提交安装树逐字节一致；稳定安装未修改 |
+| Windows 完整测试 | 184 项全部通过，`scripts/check.py --verify-system-evidence` 成功 |
+| WSL Ubuntu 完整测试 | 184 项通过，1 项 Windows 原生管道编码测试按平台跳过 |
+| 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `5d063781daa48dc30d3e47ddd23d59fea7f30685f06933c7aa624af1459140ae` |
+| Semgrep 1.162.0 | 8 条规则扫描 93 个目标，0 findings |
+| Release 包 | Windows 两次构建、Ubuntu 一次构建及标准文件名包的 SHA-256 一致，共 45 个文件 |
+| 消费者包验证 | 最终包 `verify-release` 通过，版本 2.6.0 |
+| 隔离安装树 | 从最终 ZIP 解包后 `verify-tree` 通过，45 个文件；未改动稳定安装 |
 
-基础候选 ZIP SHA-256：
+最终候选 ZIP `kaoyan-408-2.6.0.zip` SHA-256：
 
 ```text
-20e1f1f657cb9297329cb36a0b8d3f0896ba6b6a063d73d9227d8edb5bce82ee
+0875c42bb540c16e961555eeda0a3e7b6120a37c7f2cf951d7f0d264bd42a9ca
 ```
 
-基础候选安装树 SHA-256：
+最终候选安装树 SHA-256：
 
 ```text
-4b237697396c126dccd8f05ef366245f88703360bede91bf91e1f0b2388cd8ec
+5d063781daa48dc30d3e47ddd23d59fea7f30685f06933c7aa624af1459140ae
 ```
 
 ## 定向真实模型抽查
 
-宿主为 Windows Codex CLI `0.162.0-alpha.2`，模型固定 `gpt-6.1-sol`，推理档位固定 `high`。使用独立配置与安装目录，每个场景使用独立工作目录，多轮教学在各自同一会话中继续。
+此前模型抽查固定使用 Windows Codex CLI `0.162.0-alpha.2`、模型 `gpt-6.1-sol`、推理档位 `high`。当前默认 `codex --version` 为 `0.146.0`，且抽查遇到的 Codex CLI 使用额度尚未恢复，因此本轮没有在最终插件树上重跑该矩阵。
 
 固定集 [cases.json](cases.json) 共 10 类、13 轮、40 个 checkpoints：4 类实时检索，6 类固定虚构材料或原创教学。检索基准日期为 2026-10-08，实际执行日期为 2026-10-09；每条实际来源按当次读取状态判分。虚构材料不证明真实院校数据或平台访问能力。
 
-源码审查修复前，树 `e2dc4df` 的会话计分为 24/40：6 个固定场景检查通过，指定院校检索因 CLI 使用额度而中断，发现院校/网友评价/非计算机专业 3 个实时场景未运行。该结果不代表源码审查修复后的插件树已经通过本矩阵。最终修复树尚无绑定其安装摘要的行为会话记录；不能据旧树结果声明实时招生信息能力已完成验收、不能声明 `10/10` 或 `40/40`，也未运行完整新旧配对回归。
+源码审查修复前，树 `e2dc4df` 的会话计分为 24/40：6 个固定场景检查通过，指定院校检索因 CLI 使用额度而中断，发现院校/网友评价/非计算机专业 3 个实时场景未运行。该结果不适用于最终插件树 `14dad8f`。最终树尚无绑定其安装摘要的行为会话记录；不能据旧树结果声明实时招生信息能力已完成验收、不能声明 `10/10` 或 `40/40`，也未运行完整新旧配对回归。
 
-未完成的模型场景须在 CLI 使用额度恢复后，用更新后精确安装树重新运行并逐 checkpoint 判分。`captured-ungraded` 只表示已保存会话，不代表通过。原始输入、JSONL、私有 rollout、工具输出与会话配置只保存在本地交付目录。
+未完成的模型场景须在合适的 CLI 版本和使用额度可用后，用最终 ZIP 隔离安装并绑定安装树摘要，重新运行及逐 checkpoint 判分。`captured-ungraded` 只表示已保存会话，不代表通过。原始输入、JSONL、私有 rollout、工具输出与会话配置只保存在本地交付目录。
 
 ## 已发现问题与修复
 
