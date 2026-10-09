@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from datetime import date, timedelta
 from pathlib import Path
@@ -34,6 +35,22 @@ ITEM_STATUSES = {"pending", "due", "retesting", "mastered", None}
 ERROR_CAUSE_STATUSES = {"confirmed", "hypothesis", None}
 TEACHING_MODES = {"detailed", "hint", "independent", "mock", None}
 ANSWER_STATES = {"hidden", "partial", "revealed", None}
+SENSITIVE_EXTENSION_KEY = re.compile(
+    r"(?:^|_)(?:api_?key|api_?token|access_?token|refresh_?token|token|secret|password|passwd|"
+    r"credential|authorization|cookie|email|phone|mobile|telephone|id_?card|passport|national_?id|"
+    r"identity_?(?:number|no)|student_?(?:id|number)|candidate_?(?:id|number)|user_?(?:id|name)|"
+    r"account_?(?:id|name)|(?:device|local|home|file|absolute|vault)_?path|path|"
+    r"(?:raw|source|question|paper)_?(?:material|text|content)|(?:real|full)_?name)(?:_|$)|^(?:name)$",
+    re.IGNORECASE,
+)
+SENSITIVE_PATH_VALUE = re.compile(
+    r"(?:\b[A-Za-z]:[\\/]|\\\\[^\\\s]+[\\/][^\\\s]+|/(?:Users|home|root|private|var)/)",
+    re.IGNORECASE,
+)
+SENSITIVE_TOKEN_VALUE = re.compile(
+    r"(?:\bBearer\s+\S+|\b(?:sk|ghp|github_pat|xox[baprs])[-_][A-Za-z0-9_-]{12,})",
+    re.IGNORECASE,
+)
 
 
 class RecordError(RuntimeError):
@@ -131,6 +148,50 @@ def _contains_sentinel(value: Any) -> bool:
     return is_sentinel(value)
 
 
+def _pointer_escape(value: str) -> str:
+    return value.replace("~", "~0").replace("/", "~1")
+
+
+def _is_sensitive_extension_key(key: str) -> bool:
+    separated = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", key)
+    normalized = re.sub(r"[^A-Za-z0-9]+", "_", separated).strip("_")
+    return bool(SENSITIVE_EXTENSION_KEY.search(normalized))
+
+
+def _redact_legacy_extensions(extensions: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    redacted: list[str] = []
+
+    def scrub(value: Any, pointer: str) -> Any:
+        if isinstance(value, dict):
+            output: dict[str, Any] = {}
+            for raw_key, child in value.items():
+                key = str(raw_key)
+                child_pointer = f"{pointer}/{_pointer_escape(key)}"
+                if _is_sensitive_extension_key(key):
+                    output[raw_key] = None
+                    redacted.append(child_pointer)
+                else:
+                    output[raw_key] = scrub(child, child_pointer)
+            return output
+        if isinstance(value, list):
+            return [scrub(child, f"{pointer}/{index}") for index, child in enumerate(value)]
+        if isinstance(value, str) and (
+            SENSITIVE_PATH_VALUE.search(value) or SENSITIVE_TOKEN_VALUE.search(value)
+        ):
+            redacted.append(pointer)
+            return None
+        return value
+
+    cleaned = {
+        key: None if _is_sensitive_extension_key(key) else scrub(value, f"/legacyExtensions/{_pointer_escape(key)}")
+        for key, value in extensions.items()
+    }
+    for key in extensions:
+        if _is_sensitive_extension_key(key):
+            redacted.append(f"/legacyExtensions/{_pointer_escape(key)}")
+    return cleaned, sorted(set(redacted))
+
+
 def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     warnings: list[str] = []
     if _contains_sentinel(record):
@@ -173,14 +234,17 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
         }
         metrics: list[dict[str, Any]] = []
         if "plannedUnits" in record or "completedUnits" in record:
+            raw_unit = _convert_sentinels(record.get("unit")) if "unit" in record else None
+            unit_is_valid = is_non_empty_string(raw_unit)
+            unit = raw_unit if unit_is_valid else "unspecified"
             metrics.append({
                 "subject": None,
                 "name": "overall",
-                "unit": "unspecified",
+                "unit": unit,
                 "planned": _convert_sentinels(record.get("plannedUnits")),
                 "completed": _convert_sentinels(record.get("completedUnits")),
             })
-            if "unit" not in record:
+            if not unit_is_valid:
                 warnings.append("root plannedUnits/completedUnits carry no unit; using 'unspecified'")
         by_subject = record.get("bySubject")
         if isinstance(by_subject, list):
@@ -252,11 +316,14 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
             items.append(item)
         converted["items"] = items
     if unknown:
-        converted["legacyExtensions"] = unknown
+        converted["legacyExtensions"], redacted_fields = _redact_legacy_extensions(unknown)
         warnings.append(
             "unknown legacy fields preserved under legacyExtensions: "
             + ", ".join(sorted(unknown))
         )
+        if redacted_fields:
+            converted["redactedFields"] = redacted_fields
+            warnings.append("sensitive legacy extension values redacted at: " + ", ".join(redacted_fields))
     return converted, warnings
 
 
@@ -306,7 +373,7 @@ def mastery_warnings(item: dict[str, Any], index: int) -> list[str]:
     if isinstance(evidence, list) and any(
         isinstance(entry, dict)
         and entry.get("evidenceType") in MASTERY_CAPABLE
-        and entry.get("outcome") in {"correct", None}
+        and entry.get("outcome") == "correct"
         for entry in evidence
     ):
         return []
@@ -447,13 +514,16 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             if item.get("status") not in ITEM_STATUSES:
                 errors.append(f"items[{index}].status is invalid: {item.get('status')!r}")
             offset, anchor = item.get("retestOffsetDays"), item.get("retestAnchorDate")
-            if isinstance(offset, int) and offset < 0:
+            offset_is_valid = offset is None or (
+                isinstance(offset, int) and not isinstance(offset, bool) and offset >= 0
+            )
+            if not offset_is_valid:
                 errors.append(f"items[{index}].retestOffsetDays must be a non-negative integer or null")
-            if is_plain_date(item.get("nextRetestDate", None)) and isinstance(offset, int):
+            if is_plain_date(item.get("nextRetestDate", None)) and offset is not None:
                 errors.append(
                     f"items[{index}] must not carry nextRetestDate and retestOffsetDays simultaneously"
                 )
-            if isinstance(offset, int) and not is_plain_date(anchor):
+            if isinstance(offset, int) and not isinstance(offset, bool) and offset >= 0 and not is_plain_date(anchor):
                 warnings.append(
                     f"items[{index}] has retestOffsetDays without retestAnchorDate; "
                     "due requires an explicit base date"
@@ -503,6 +573,8 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
         ):
             errors.append("hintLevel must be an integer from 0 to 3 or null")
         for key in ("currentQuestion", "materialVersion"):
+            _check_nullable_string(record, key, errors)
+        for key in ("currentTask", "position"):
             _check_nullable_string(record, key, errors)
         for key in ("completedQuestions", "remainingQuestions"):
             if key not in record:
@@ -583,11 +655,13 @@ def _item_key(item: Any) -> tuple[str, ...] | None:
         return ("itemId", str(item["itemId"]))
     subject = item.get("subject")
     topic = item.get("topic")
-    if subject or topic:
+    if topic:
         return ("topic", str(subject), str(topic))
     name = item.get("name")
     if name:
         return ("metric", str(item.get("subject")), str(name), str(item.get("unit")))
+    if subject or topic:
+        return ("topic", str(subject), str(topic))
     return None
 
 
@@ -688,6 +762,13 @@ def resolve_due(items: list[dict[str, Any]], base: date) -> dict[str, Any]:
     for index, item in enumerate(items):
         if not isinstance(item, dict):
             raise RecordError(f"items[{index}] must be an object")
+        offset_value = item.get("retestOffsetDays")
+        if offset_value is not None and (
+            isinstance(offset_value, bool)
+            or not isinstance(offset_value, int)
+            or offset_value < 0
+        ):
+            raise RecordError(f"items[{index}].retestOffsetDays must be a non-negative integer or null")
         label = item.get("itemId") or f"items[{index}]"
         summary = {
             "item": label,

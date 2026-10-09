@@ -82,6 +82,35 @@ class NormalizeTests(unittest.TestCase):
         )
         self.assertTrue(any("legacyExtensions" in warning for warning in warnings))
 
+    def test_sensitive_legacy_extensions_are_redacted_with_json_pointers(self) -> None:
+        record = {
+            "schemaVersion": "1.0",
+            "targetExam": "408考研",
+            "apiToken": "fake-token-value",
+            "devicePath": r"C:\Users\student\vault",
+            "safeExtension": {"theme": "dark", "email": "student@example.invalid"},
+        }
+        normalized, warnings = records.normalize_to_12(record)
+        extensions = normalized["legacyExtensions"]
+        self.assertIsNone(extensions["apiToken"])
+        self.assertIsNone(extensions["devicePath"])
+        self.assertEqual(extensions["safeExtension"]["theme"], "dark")
+        self.assertIsNone(extensions["safeExtension"]["email"])
+        self.assertEqual(normalized["redactedFields"], [
+            "/legacyExtensions/apiToken",
+            "/legacyExtensions/devicePath",
+            "/legacyExtensions/safeExtension/email",
+        ])
+        self.assertTrue(any("redacted" in warning for warning in warnings))
+
+    def test_legacy_root_unit_is_preserved_during_normalization(self) -> None:
+        normalized, warnings = records.normalize_to_12({
+            "schemaVersion": "1.0", "plannedUnits": 10, "completedUnits": 7, "unit": "hours",
+        })
+        self.assertEqual(normalized["recordType"], "ProgressSnapshot")
+        self.assertEqual(normalized["metrics"][0]["unit"], "hours")
+        self.assertFalse(any("carry no unit" in warning for warning in warnings))
+
     def test_11_record_keeps_existing_identity_and_upgrades_version(self) -> None:
         record = {
             "schemaVersion": "1.1",
@@ -199,6 +228,23 @@ class MergeTests(unittest.TestCase):
                 "b": "pending",
                 "resolution": "kept-newer",
             }],
+        )
+
+    def test_progress_metrics_with_same_subject_keep_distinct_names(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "recordId": "kr-cccccccccccccccc", "period": {"start": None, "end": None},
+            "accuracy": [], "blockers": [],
+        }
+        hours = {"subject": "数学二", "name": "hours", "unit": "hours", "planned": 20, "completed": 10}
+        chapters = {"subject": "数学二", "name": "chapters", "unit": "chapter", "planned": 8, "completed": 3}
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-01", "metrics": [hours]},
+            {**base, "updatedAt": "2026-09-10", "metrics": [chapters]},
+        )
+        self.assertEqual(
+            {item["name"] for item in merged["records"][0]["metrics"]},
+            {"hours", "chapters"},
         )
 
     def test_invalid_nested_record_shapes_return_json_errors_instead_of_tracebacks(self) -> None:
@@ -342,6 +388,14 @@ class CheckpointTests(unittest.TestCase):
                 errors, _ = records.validate_current(invalid)
                 self.assertTrue(any(field in error and "array" in error for error in errors))
 
+    def test_resume_text_fields_must_be_strings_or_null(self) -> None:
+        base = records.build_checkpoint({}, None)
+        for field, value in (("currentTask", {}), ("position", 7)):
+            with self.subTest(field=field):
+                invalid = {**base, field: value}
+                errors, _ = records.validate_current(invalid)
+                self.assertTrue(any(field in error and "string" in error for error in errors))
+
     def test_create_and_read_roundtrip(self) -> None:
         checkpoint = records.build_checkpoint(
             {
@@ -434,6 +488,21 @@ class ValidationTests(unittest.TestCase):
         self.assertTrue(any("simultaneously" in error for error in report["errors"]))
         self.assertTrue(any("evidenceType is invalid" in error for error in report["errors"]))
 
+    def test_retest_offset_must_be_a_non_negative_integer_or_null(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None, "retestAnchorDate": "2026-10-01",
+                "status": "pending", "masteryEvidence": [],
+            }],
+        }
+        for offset in ("3", 3.5, True):
+            with self.subTest(offset=offset):
+                report = records.validate_record({**base, "items": [{**base["items"][0], "retestOffsetDays": offset}]})
+                self.assertFalse(report["valid"])
+                self.assertTrue(any("retestOffsetDays must be a non-negative integer" in e for e in report["errors"]))
+
     def test_mastered_without_independent_evidence_warns(self) -> None:
         record = {
             "schemaVersion": "1.2",
@@ -448,6 +517,20 @@ class ValidationTests(unittest.TestCase):
         }
         report = records.validate_record(record)
         self.assertTrue(report["valid"])
+        self.assertTrue(any("mastered" in warning for warning in report["warnings"]))
+
+    def test_unknown_outcome_does_not_justify_mastered_status(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None, "retestOffsetDays": None,
+                "status": "mastered", "masteryEvidence": [],
+                "retestEvidence": [{"evidenceType": "independent", "outcome": None}],
+            }],
+        }
+        report = records.validate_record(record, strict=True)
+        self.assertFalse(report["valid"])
         self.assertTrue(any("mastered" in warning for warning in report["warnings"]))
 
     def test_legacy_10_input_is_readable(self) -> None:

@@ -51,6 +51,8 @@ def parse_processes(value: str) -> list[dict[str, int]]:
             arrival, burst = int(fields[1]), int(fields[2])
         except ValueError as exc:
             raise SimulatorError(f"arrival and burst must be integers in {chunk!r}") from exc
+        if arrival < 0:
+            raise SimulatorError(f"arrival must be non-negative in {chunk!r}")
         if burst <= 0:
             raise SimulatorError(f"burst must be positive in {chunk!r}")
         processes.append({"name": name, "arrival": arrival, "burst": burst})
@@ -419,6 +421,8 @@ render();
 
 
 def write_html(document: dict[str, Any], path: Path) -> None:
+    if not document.get("steps"):
+        raise SimulatorError("cannot write an HTML player for a simulation with no steps")
     payload = HTML_TEMPLATE.replace("__ALGO__", html.escape(str(document["algorithm"])))
     encoded = json.dumps(document, ensure_ascii=False).replace("</", "<\\/")
     payload = payload.replace("__DATA__", encoded)

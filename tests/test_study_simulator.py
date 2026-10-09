@@ -105,6 +105,10 @@ class FcfsSimulatorTests(unittest.TestCase):
                 with self.assertRaisesRegex(sim.SimulatorError, "name|unique"):
                     sim.parse_processes(process_list)
 
+    def test_negative_arrival_time_is_rejected(self) -> None:
+        with self.assertRaisesRegex(sim.SimulatorError, "arrival must be non-negative"):
+            sim.parse_processes("P1:-5:1")
+
     def test_classic_three_processes(self) -> None:
         document = sim.simulate_fcfs(sim.parse_processes("P1:0:24,P2:0:3,P3:0:3"))
         by_name = {p["name"]: p for p in document["summary"]["processes"]}
@@ -172,6 +176,16 @@ class HtmlOutputTests(unittest.TestCase):
         self.assertIn("后一步", payload)
         self.assertIn("stateChange", payload)
         self.assertIn('"algorithm": "fifo"', payload)
+
+    def test_html_rejects_a_zero_step_simulation_without_writing_a_broken_file(self) -> None:
+        import tempfile
+
+        document = sim.simulate_fifo(2, [], [])
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "empty.html"
+            with self.assertRaisesRegex(sim.SimulatorError, "no steps"):
+                sim.write_html(document, path)
+            self.assertFalse(path.exists())
 
 
 class CliTests(unittest.TestCase):
