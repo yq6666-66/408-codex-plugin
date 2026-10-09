@@ -34,6 +34,7 @@ def parse_int_list(value: str) -> list[int]:
 
 def parse_processes(value: str) -> list[dict[str, int]]:
     processes: list[dict[str, int]] = []
+    process_names: set[str] = set()
     for chunk in value.split(","):
         fields = chunk.strip().split(":")
         if len(fields) != 3:
@@ -41,6 +42,11 @@ def parse_processes(value: str) -> list[dict[str, int]]:
                 f"each process must be name:arrival:burst, got {chunk!r}"
             )
         name = fields[0].strip()
+        if not name:
+            raise SimulatorError("process name must be non-empty")
+        if name in process_names:
+            raise SimulatorError(f"process names must be unique: {name!r}")
+        process_names.add(name)
         try:
             arrival, burst = int(fields[1]), int(fields[2])
         except ValueError as exc:
@@ -74,7 +80,7 @@ def simulate_cache(
     if block_size & (block_size - 1) or cache_lines & (cache_lines - 1):
         raise SimulatorError("block-size and cache-lines must be powers of two")
     offset_bits = block_size.bit_length() - 1
-    index_bits = cache_lines.bit_length() - 1
+    index_bits = cache_lines.bit_length() - 1 if mapping == "direct" else 0
     tag_bits = addr_bits - offset_bits - index_bits
     if tag_bits < 0:
         raise SimulatorError("address space smaller than cache; tag bits would be negative")
@@ -164,6 +170,8 @@ def _replacement_simulate(
         raise SimulatorError("frames must be positive")
     if len(initial) > frames:
         raise SimulatorError("initial pages exceed frame count")
+    if len(set(initial)) != len(initial):
+        raise SimulatorError("initial pages must be unique")
     state: list[int | None] = (initial + [None] * frames)[:frames]
     # FIFO order = insertion order; LRU order = last-use recency (stalest first).
     order: deque[int] = deque(state)

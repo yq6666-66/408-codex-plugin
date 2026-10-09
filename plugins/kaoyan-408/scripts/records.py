@@ -454,7 +454,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             _require(record, key, errors)
         for key in ("dueItems", "pendingRetests"):
             value = record.get(key)
-            if value is not None and not (isinstance(value, list) and all(
+            if not (isinstance(value, list) and all(
                 isinstance(entry, str) and entry.strip() for entry in value
             )):
                 errors.append(f"{key} must be an array of non-empty strings")
@@ -471,7 +471,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             _check_nullable_string(record, key, errors)
         for key in ("completedQuestions", "remainingQuestions"):
             value = record.get(key)
-            if value is not None and not (
+            if not (
                 isinstance(value, list)
                 and all(isinstance(entry, str) and entry.strip() for entry in value)
                 and len(value) == len(set(value))
@@ -530,7 +530,7 @@ def merge_items(
             merged[key] = merge_items(a.get(key), b[key], f"{path}/{key}", conflicts, child_prefer)
         return merged
     if isinstance(a, list) and isinstance(b, list):
-        return merge_lists(a, b, path, conflicts)
+        return merge_lists(a, b, path, conflicts, prefer_b)
     if prefer_b:
         if not path.endswith("/updatedAt"):
             conflicts.append({"path": path, "a": a, "b": b, "resolution": "kept-newer"})
@@ -554,7 +554,14 @@ def _item_key(item: Any) -> tuple[str, ...] | None:
     return None
 
 
-def merge_lists(a: list[Any], b: list[Any], path: str, conflicts: list[dict[str, Any]]) -> list[Any]:
+def merge_lists(
+    a: list[Any],
+    b: list[Any],
+    path: str,
+    conflicts: list[dict[str, Any]],
+    prefer_b: bool = False,
+) -> list[Any]:
+    """Merge keyed list items using the enclosing record's timestamp decision."""
     if any(_item_key(entry) is not None for entry in a) and any(
         _item_key(entry) is not None for entry in b
     ):
@@ -569,7 +576,7 @@ def merge_lists(a: list[Any], b: list[Any], path: str, conflicts: list[dict[str,
             if key is not None and key in index_of:
                 target = merged[index_of[key]]
                 merged[index_of[key]] = merge_items(
-                    target, entry, f"{path}[{key[-1]}]", conflicts
+                    target, entry, f"{path}[{key[-1]}]", conflicts, prefer_b
                 )
             elif entry not in merged:
                 merged.append(entry)
@@ -812,6 +819,13 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"unknown command: {args.command}")  # pragma: no cover - argparse guards
     except RecordError as exc:
         print(json.dumps({"error": str(exc)}, ensure_ascii=False), file=sys.stderr)
+        return 1
+    except (AttributeError, KeyError, OverflowError, TypeError, ValueError) as exc:
+        # Malformed user-supplied JSON must produce the promised CLI error, never a traceback.
+        print(
+            json.dumps({"error": f"invalid record structure ({exc.__class__.__name__})"}, ensure_ascii=False),
+            file=sys.stderr,
+        )
         return 1
     return 0
 

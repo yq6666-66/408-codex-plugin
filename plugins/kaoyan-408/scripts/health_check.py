@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -16,7 +17,23 @@ EXPECTED_RUNTIME_HELPERS = {
     "records.py",
     "study_simulator.py",
 }
-EXPECTED_SKILL_COUNT = 14
+EXPECTED_SKILLS = {
+    "kaoyan-408-planner",
+    "kaoyan-review-executor",
+    "kaoyan-progress-diagnostician",
+    "kaoyan-error-loop-coach",
+    "kaoyan-mock-exam-coach",
+    "kaoyan-408-tutor",
+    "kaoyan-math-coach",
+    "kaoyan-english-coach",
+    "kaoyan-politics-coach",
+    "kaoyan-past-paper-searcher",
+    "kaoyan-past-paper-analyst",
+    "kaoyan-material-study-assistant",
+    "kaoyan-official-info-researcher",
+    "kaoyan-admissions-researcher",
+}
+EXPECTED_SKILL_COUNT = len(EXPECTED_SKILLS)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -31,6 +48,24 @@ def _read_json(path: Path) -> dict[str, Any]:
     if not isinstance(document, dict):
         raise ValueError("root must be an object")
     return document
+
+
+def _validate_brain_config(root: Path, config: dict[str, Any]) -> None:
+    """Delegate schema and field checks to the configuration writer's validator."""
+    validator_path = root / "scripts" / "configure_obsidian_brain.py"
+    spec = importlib.util.spec_from_file_location("_kaoyan_health_brain_config", validator_path)
+    if spec is None or spec.loader is None:
+        raise ImportError("Obsidian config validator is unavailable")
+    module = importlib.util.module_from_spec(spec)
+    previous = sys.dont_write_bytecode
+    sys.modules[spec.name] = module
+    try:
+        sys.dont_write_bytecode = True
+        spec.loader.exec_module(module)
+    finally:
+        sys.dont_write_bytecode = previous
+        sys.modules.pop(spec.name, None)
+    module.validate_config(config, require_paths=False)
 
 
 def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = None) -> dict[str, Any]:
@@ -55,8 +90,10 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
         for path in skills_root.iterdir()
         if path.is_dir() and (path / "SKILL.md").is_file() and (path / "agents" / "openai.yaml").is_file()
     ) if skills_root.is_dir() else []
-    if len(skills) != EXPECTED_SKILL_COUNT:
-        problems.append(f"expected {EXPECTED_SKILL_COUNT} complete Skills, found {len(skills)}")
+    if set(skills) != EXPECTED_SKILLS:
+        missing = sorted(EXPECTED_SKILLS - set(skills))
+        unexpected = sorted(set(skills) - EXPECTED_SKILLS)
+        problems.append(f"Skill set mismatch (missing: {missing}; unexpected: {unexpected})")
 
     scripts_root = root / "scripts"
     missing_helpers = sorted(
@@ -70,16 +107,13 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
     if config.is_file():
         try:
             brain = _read_json(config)
+            _validate_brain_config(root, brain)
             obsidian["configStatus"] = "valid"
-            obsidian["enabled"] = brain.get("enabled") if isinstance(brain.get("enabled"), bool) else None
-            raw_vault = brain.get("vaultPath")
-            if isinstance(raw_vault, str) and raw_vault:
-                obsidian["vaultStatus"] = "available" if Path(raw_vault).is_dir() else "missing"
-            if obsidian["enabled"] is None:
-                problems.append("Obsidian config enabled flag is invalid")
-        except ValueError as exc:
+            obsidian["enabled"] = brain["enabled"]
+            obsidian["vaultStatus"] = "available" if Path(brain["vaultPath"]).is_dir() else "missing"
+        except (ImportError, OSError, ValueError, TypeError, RuntimeError) as exc:
             obsidian["configStatus"] = "invalid"
-            problems.append(f"Obsidian config is unreadable: {exc}")
+            problems.append(f"Obsidian config is unreadable or invalid ({exc.__class__.__name__})")
 
     return {
         "plugin": "kaoyan-408",

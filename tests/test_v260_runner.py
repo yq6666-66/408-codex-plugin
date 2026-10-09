@@ -5,6 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 REPO = Path(__file__).resolve().parents[1]
@@ -24,6 +25,21 @@ class RolloutEvidenceTests(unittest.TestCase):
                 "\n".join(json.dumps(e) for e in events) + "\n", encoding="utf-8"
             )
             return runner.extract_rollout_tools(path)
+
+    def test_rollout_capture_only_attributes_calls_after_the_turn_boundary(self) -> None:
+        events = [
+            {"type": "session_meta", "payload": {}},
+            *self.pair("exec", "Script completed\nprevious turn result"),
+            *self.pair("exec", "Script completed\ncurrent turn result"),
+        ]
+        events[3]["payload"]["call_id"] = "call-2"
+        events[4]["payload"]["call_id"] = "call-2"
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "rollout.jsonl"
+            path.write_text("\n".join(json.dumps(e) for e in events) + "\n", encoding="utf-8")
+            current = runner.extract_rollout_tools(path, start_line=4)
+        self.assertEqual(len(current), 1)
+        self.assertIn("current turn result", current[0]["output"])
 
     def pair(self, name: str, output: str) -> list[dict]:
         return [
@@ -64,6 +80,49 @@ class RolloutEvidenceTests(unittest.TestCase):
                 {**valid, "output": "name: sample-skill\nRequired workflow."},
             ):
                 self.assertEqual(runner.skill_read_proof({"toolCalls": [changed]}, path, "sample-skill"), [])
+
+
+class InstalledPayloadTests(unittest.TestCase):
+    def test_installed_payload_rejects_symlink_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            candidate = root / "skill.md"
+            candidate.write_text("installed content", encoding="utf-8")
+            expected = {"skill.md": b"installed content"}
+            self.assertEqual(runner.read_installed_payload(root, expected), expected)
+
+            real_is_symlink = Path.is_symlink
+
+            def identify_symlink(path: Path) -> bool:
+                return path == candidate or real_is_symlink(path)
+
+            with patch.object(Path, "is_symlink", identify_symlink):
+                with self.assertRaisesRegex(ValueError, "symlink"):
+                    runner.read_installed_payload(root, expected)
+
+
+class FailedTurnSummaryTests(unittest.TestCase):
+    def test_turn_exit_and_stderr_path_survive_empty_raw_capture(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_path = root / "turn-1.input.txt"
+            raw_path = root / "turn-1.jsonl"
+            stderr_path = root / "turn-1.stderr.txt"
+            input_path.write_text("fixed prompt", encoding="utf-8")
+            raw_path.write_bytes(b"")
+            stderr_path.write_text("CLI exited before writing JSONL", encoding="utf-8")
+            summary = {"turns": []}
+
+            turn = runner.begin_turn_record(summary, 1, input_path, raw_path, stderr_path)
+            turn["exitCode"] = 1
+
+            self.assertEqual(len(summary["turns"]), 1)
+            self.assertEqual(turn["exitCode"], 1)
+            self.assertEqual(turn["stderrPath"], "turn-1.stderr.txt")
+            self.assertIsNone(turn["rawSha256"])
+            self.assertFalse(turn["complete"])
+
+
 
 
 if __name__ == "__main__":

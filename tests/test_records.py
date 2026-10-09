@@ -156,6 +156,49 @@ class MergeTests(unittest.TestCase):
             ],
         )
 
+    def test_merge_prefers_newer_updated_at_inside_list_items(self) -> None:
+        item_a = {
+            "subject": "408", "topic": "LRU", "nextRetestDate": "2026-09-05", "status": "pending"
+        }
+        item_b = {
+            "subject": "408", "topic": "LRU", "nextRetestDate": "2026-09-15", "status": "due"
+        }
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "recordId": "kr-bbbbbbbbbbbbbbbb", "generatedAt": "2026-09-01",
+        }
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-01", "items": [item_a]},
+            {**base, "updatedAt": "2026-09-10", "items": [item_b]},
+        )
+        item = merged["records"][0]["items"][0]
+        self.assertEqual(item["nextRetestDate"], "2026-09-15")
+        self.assertEqual(item["status"], "due")
+        self.assertEqual(
+            {conflict["resolution"] for conflict in merged["mergeConflicts"]},
+            {"kept-newer"},
+        )
+
+    def test_invalid_nested_record_shapes_return_json_errors_instead_of_tracebacks(self) -> None:
+        malformed = [
+            {
+                "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+                "period": {"start": None, "end": None}, "metrics": [],
+                "accuracy": [{"subject": "408", "correct": {}, "total": 1, "rate": 0.5}],
+                "blockers": [],
+            },
+            {
+                "schemaVersion": "1.2", "recordType": "ReviewQueue",
+                "recordId": "kr-bbbbbbbbbbbbbbbb", "generatedAt": "2026-09-01", "items": None,
+            },
+        ]
+        for record in malformed:
+            with self.subTest(record_type=record["recordType"]):
+                result = run_cli("validate", stdin=json.dumps(record, ensure_ascii=False))
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertIsInstance(json.loads(result.stderr), dict)
+
     def test_merge_equal_updated_at_keeps_first_side_and_records_conflict(self) -> None:
         a = {
             "schemaVersion": "1.2",
@@ -245,6 +288,14 @@ class DueTests(unittest.TestCase):
 
 
 class CheckpointTests(unittest.TestCase):
+    def test_present_null_question_arrays_are_rejected(self) -> None:
+        base = records.build_checkpoint({}, None)
+        for field in ("completedQuestions", "remainingQuestions"):
+            with self.subTest(field=field):
+                invalid = {**base, field: None}
+                errors, _ = records.validate_current(invalid)
+                self.assertTrue(any(field in error and "array" in error for error in errors))
+
     def test_create_and_read_roundtrip(self) -> None:
         checkpoint = records.build_checkpoint(
             {

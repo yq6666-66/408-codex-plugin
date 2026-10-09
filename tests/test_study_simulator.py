@@ -44,6 +44,9 @@ class CacheSimulatorTests(unittest.TestCase):
         document = sim.simulate_cache(16, 64, 256, "associative", [0, 64, 0])
         self.assertEqual([step["event"] for step in document["steps"]], ["miss", "miss", "hit"])
         self.assertIsNone(document["steps"][0]["index"])
+        self.assertEqual(document["params"]["indexBits"], 0)
+        self.assertEqual(document["params"]["tagBits"], 10)
+        self.assertEqual(len(document["steps"][0]["split"]["tag"]), 10)
 
     def test_out_of_range_address_is_rejected(self) -> None:
         with self.assertRaisesRegex(sim.SimulatorError, "exceeds"):
@@ -55,6 +58,12 @@ class CacheSimulatorTests(unittest.TestCase):
 
 
 class ReplacementSimulatorTests(unittest.TestCase):
+    def test_duplicate_preloaded_pages_are_rejected(self) -> None:
+        for simulate in (sim.simulate_fifo, sim.simulate_lru):
+            with self.subTest(algorithm=simulate.__name__):
+                with self.assertRaisesRegex(sim.SimulatorError, "unique"):
+                    simulate(2, [1, 2], [1, 1])
+
     def test_fifo_belady_three_then_four_frames(self) -> None:
         references = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]
         three = sim.simulate_fifo(3, references, [])
@@ -90,6 +99,12 @@ class ReplacementSimulatorTests(unittest.TestCase):
 
 
 class FcfsSimulatorTests(unittest.TestCase):
+    def test_process_names_must_be_unique_and_non_empty(self) -> None:
+        for process_list in (":0:3", "A:0:3,A:1:2"):
+            with self.subTest(process_list=process_list):
+                with self.assertRaisesRegex(sim.SimulatorError, "name|unique"):
+                    sim.parse_processes(process_list)
+
     def test_classic_three_processes(self) -> None:
         document = sim.simulate_fcfs(sim.parse_processes("P1:0:24,P2:0:3,P3:0:3"))
         by_name = {p["name"]: p for p in document["summary"]["processes"]}

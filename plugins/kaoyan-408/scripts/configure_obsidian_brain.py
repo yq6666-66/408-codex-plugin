@@ -129,7 +129,7 @@ def load_legacy_config(path: Path) -> dict[str, Any]:
     return data
 
 
-def load_config(path: Path) -> dict[str, Any]:
+def load_config(path: Path, *, require_paths: bool = True) -> dict[str, Any]:
     try:
         payload = path.read_text(encoding="utf-8")
     except OSError as exc:
@@ -138,7 +138,7 @@ def load_config(path: Path) -> dict[str, Any]:
         data = json.loads(payload)
     except json.JSONDecodeError as exc:
         raise BrainConfigError(f"invalid config JSON: {exc}") from exc
-    return validate_config(data)
+    return validate_config(data, require_paths=require_paths)
 
 
 def _atomic_write(path: Path, payload: str) -> None:
@@ -373,9 +373,9 @@ def configure(args: argparse.Namespace) -> int:
 
 
 def set_enabled(args: argparse.Namespace, enabled: bool) -> int:
-    config = load_config(args.config.expanduser())
+    config = load_config(args.config.expanduser(), require_paths=enabled)
     config["enabled"] = enabled
-    validate_config(config)
+    validate_config(config, require_paths=enabled)
     if args.dry_run:
         print(f"[DRY-RUN] set enabled={str(enabled).lower()} in {args.config}")
     else:

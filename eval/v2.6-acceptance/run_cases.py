@@ -34,6 +34,38 @@ def file_snapshot(directory: Path) -> dict[str, str]:
     }
 
 
+def read_installed_payload(installed_root: Path, expected_payload: dict[str, bytes]) -> dict[str, bytes]:
+    entries = list(installed_root.rglob("*"))
+    if any(path.is_symlink() for path in entries):
+        raise ValueError("installed plugin tree contains a symlink")
+    payload = {
+        path.relative_to(installed_root).as_posix(): path.read_bytes()
+        for path in entries
+        if path.is_file()
+    }
+    if payload != expected_payload:
+        raise ValueError("installed plugin does not match the exact repository payload")
+    return payload
+
+
+def begin_turn_record(summary: dict, number: int, input_path: Path, raw_path: Path, stderr_path: Path) -> dict:
+    """Record the turn before parsing JSONL, which can fail after a CLI crash."""
+    record = {
+        "number": number,
+        "inputSha256": digest(input_path),
+        "rawSha256": None,
+        "threadId": None,
+        "exitCode": None,
+        "stderrPath": stderr_path.name,
+        "complete": False,
+        "skillReadProofItems": [],
+        "toolCount": 0,
+        "errors": [],
+    }
+    summary["turns"].append(record)
+    return record
+
+
 def skill_read_proof(capture: dict, skill_file: Path, skill: str) -> list[str]:
     expected = str(skill_file).replace("\\", "/").casefold()
     complete_text = skill_file.read_text(encoding="utf-8").replace("\r\n", "\n").strip()
@@ -46,13 +78,15 @@ def skill_read_proof(capture: dict, skill_file: Path, skill: str) -> list[str]:
     return proofs
 
 
-def extract_rollout_tools(path: Path) -> list[dict]:
-    """Expose returned wrapper outputs without interpreting model reasoning."""
+def extract_rollout_tools(path: Path, *, start_line: int = 1) -> list[dict]:
+    """Expose only wrapper calls started at or after the requested turn boundary."""
     if not path.is_file():
         return []
     pending = {}
     calls = []
     for index, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if index < start_line:
+            continue
         event = json.loads(line)
         if event.get("type") != "response_item":
             continue
@@ -88,7 +122,11 @@ def preserve_rollout(home: Path, thread_id: str | None, target: Path) -> dict[st
     if len(matches) != 1:
         return {"status": "unavailable-or-ambiguous"}
     shutil.copyfile(matches[0], target)
-    return {"status": "copied-private", "sha256": digest(target)}
+    return {
+        "status": "copied-private",
+        "sha256": digest(target),
+        "lineCount": len(target.read_text(encoding="utf-8").splitlines()),
+    }
 
 
 def main() -> int:
@@ -126,13 +164,11 @@ def main() -> int:
     from release_payload import ALLOWED_RELEASE_FILES, plugin_tree_digest
     from gpt6_capture import capture, load_events
 
-    payload = {p.relative_to(args.installed_plugin).as_posix(): p.read_bytes() for p in args.installed_plugin.rglob("*") if p.is_file()}
     expected_payload = {
         relative: (args.repository / "plugins" / "kaoyan-408" / relative).read_bytes()
         for relative in ALLOWED_RELEASE_FILES
     }
-    if payload != expected_payload:
-        raise ValueError("installed plugin does not match the exact repository payload")
+    payload = read_installed_payload(args.installed_plugin, expected_payload)
     tree_hash = plugin_tree_digest(payload)
     cli_version = subprocess.check_output([str(args.exe), "--version"], text=True, encoding="utf-8").strip()
     environment = os.environ.copy()
@@ -185,6 +221,7 @@ def main() -> int:
             "verdict": "ungraded",
         }
         thread_id = None
+        next_rollout_line = 1
         try:
             for number, prompt in enumerate(case["turns"], 1):
                 prefix = case_dir / f"turn-{number}"
@@ -193,6 +230,7 @@ def main() -> int:
                 raw_path = prefix.with_suffix(".jsonl")
                 stderr_path = prefix.with_suffix(".stderr.txt")
                 answer_path = prefix.with_suffix(".answer.md")
+                turn_record = begin_turn_record(summary, number, input_path, raw_path, stderr_path)
                 command = [str(args.exe), "exec"]
                 if number > 1:
                     command += ["resume"]
@@ -212,19 +250,28 @@ def main() -> int:
                     result = subprocess.run(command, input=prompt.encode("utf-8"), cwd=workspace,
                                             env=environment, stdout=stdout, stderr=stderr,
                                             timeout=args.timeout, check=False)
+                turn_record["exitCode"] = result.returncode
+                if raw_path.is_file() and raw_path.stat().st_size:
+                    turn_record["rawSha256"] = digest(raw_path)
                 events, sha = load_events(raw_path)
                 report = capture(events, sha, case_id, prompt, materials)
                 if number == 1:
                     thread_id = report.get("threadId")
                 rollout = preserve_rollout(args.codex_home, thread_id, prefix.with_suffix(".rollout.jsonl"))
-                report["rolloutToolCalls"] = extract_rollout_tools(prefix.with_suffix(".rollout.jsonl"))
+                report["rolloutToolCalls"] = extract_rollout_tools(
+                    prefix.with_suffix(".rollout.jsonl"), start_line=next_rollout_line
+                )
+                if isinstance(rollout.get("lineCount"), int):
+                    next_rollout_line = rollout["lineCount"] + 1
                 write_json(prefix.with_suffix(".capture.json"), report)
                 proofs = skill_read_proof(report, skill_file, case["skill"])
-                summary["turns"].append({
-                    "number": number, "inputSha256": digest(input_path), "rawSha256": sha,
-                    "threadId": report.get("threadId"), "exitCode": result.returncode,
-                    "complete": report["complete"], "skillReadProofItems": proofs,
-                    "toolCount": len(report["toolCalls"]), "errors": report["errors"],
+                turn_record.update({
+                    "rawSha256": sha,
+                    "threadId": report.get("threadId"),
+                    "complete": report["complete"],
+                    "skillReadProofItems": proofs,
+                    "toolCount": len(report["toolCalls"]),
+                    "errors": report["errors"],
                     "privateRollout": rollout,
                     "rolloutToolCount": len(report["rolloutToolCalls"]),
                 })

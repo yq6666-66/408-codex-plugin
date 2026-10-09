@@ -81,6 +81,21 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
         self.assertIn("[OK] enabled: true", checked.stdout)
 
+    def test_disable_succeeds_if_vault_is_temporarily_unavailable(self) -> None:
+        configured = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(configured.returncode, 0, configured.stdout + configured.stderr)
+        data = json.loads(self.config.read_text(encoding="utf-8"))
+        data["vaultPath"] = str(self.root / "moved-vault")
+        self.config.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+        disabled = self.run_cli("disable")
+        self.assertEqual(disabled.returncode, 0, disabled.stdout + disabled.stderr)
+        self.assertFalse(json.loads(self.config.read_text(encoding="utf-8"))["enabled"])
+
+        enabled = self.run_cli("enable")
+        self.assertEqual(enabled.returncode, 1)
+        self.assertFalse(json.loads(self.config.read_text(encoding="utf-8"))["enabled"])
+
     def test_dry_run_changes_nothing(self) -> None:
         result = self.run_cli(
             "configure",

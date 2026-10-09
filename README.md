@@ -4,7 +4,7 @@
 
 当前版本：`2.6.0`（未发布候选）；当前稳定版本：`2.5.1`。
 
-v2.6.0 基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性和真题选项逐项讲解。Windows 和 Ubuntu 完整工程门禁、14 个 Skill validator、Semgrep 及确定性 Release ZIP 重复构建均通过。10 类真实定向抽查中，6 类固定材料场景已完成并逐项判分通过；实时场景因 Codex CLI 使用额度限制仅完成一条中断请求，另外三条未运行，实时院校调研、网友评价检索能力仍待完成验收。逐场景状态、边界和候选包信息见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。候选分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。PR首个推送head `3522250` 的 `validate`、`windows`、`reproducible` 及GitGuardian检查均已通过；该head之后的文档状态更新须以PR #26最新CI结果为准；真实实时抽查受 CLI 使用额度限制，细项见候选验收记录。当前尚未合并、打版本标签、发布 Release 或升级稳定安装。
+v2.6.0 基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及审查发现的运行工具缺陷。Windows 和 Ubuntu 完整工程门禁、14 个 Skill validator、Semgrep 及确定性 Release ZIP 重复构建均通过。10 类真实定向抽查中，6 类固定材料场景已完成并逐项判分通过；实时场景因 Codex CLI 使用额度限制仅完成一条中断请求，另外三条未运行，实时院校调研、网友评价检索能力仍待完成验收。逐场景状态、边界和候选包信息见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。候选分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。PR首个推送head `3522250` 的 `validate`、`windows`、`reproducible` 及GitGuardian检查均已通过；该head之后的文档状态更新须以PR #26最新CI结果为准；真实实时抽查受 CLI 使用额度限制，细项见候选验收记录。当前尚未合并、打版本标签、发布 Release 或升级稳定安装。
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 

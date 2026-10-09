@@ -120,6 +120,9 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("不得只附交接卡", searcher)
         self.assertIn("[待核验]", searcher)
         self.assertIn("原创示例", searcher)
+        self.assertIn("仅对数学公式题适用", searcher)
+        self.assertIn("题号、题干关键句、选项", searcher)
+        self.assertIn("不涉及", searcher)
 
     def test_official_comparison_never_calculates_mismatched_ratios(self) -> None:
         official = (REPO / "plugins/kaoyan-408/references/admissions-research-contract.md").read_text(encoding="utf-8")
