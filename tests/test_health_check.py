@@ -29,6 +29,41 @@ class HealthCheckTests(unittest.TestCase):
         self.assertEqual(report["skills"]["complete"], 14)
         self.assertEqual(report["status"], "problem")
         self.assertTrue(any("Skill set" in issue for issue in report["problems"]))
+
+    def test_manifest_identity_and_semver_are_validated(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            plugin = Path(temporary) / "plugin"
+            shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+            manifest_path = plugin / ".codex-plugin" / "plugin.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            for change, expected in (({"name": "other-plugin"}, "manifest name"),
+                                     ({"version": "corrupt"}, "semantic version")):
+                with self.subTest(change=change):
+                    manifest_path.write_text(json.dumps({**manifest, **change}), encoding="utf-8")
+                    report = health_check.inspect_plugin(plugin, Path(temporary) / "missing.json")
+                    self.assertEqual(report["status"], "problem")
+                    self.assertTrue(any(expected in issue for issue in report["problems"]))
+
+    def test_broken_obsidian_validator_is_reported_without_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            plugin = root / "plugin"
+            shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+            config = root / "brain.json"
+            config.write_text(json.dumps({
+                "schemaVersion": "1.1", "enabled": True, "vaultPath": str(root),
+                "projectRoot": "20-project/test", "knowledgeRoot": "30-knowledge/test",
+                "pastPaperRoot": "40-papers/test", "writeMode": "auto-structured",
+                "retrievalScope": "project-first",
+            }), encoding="utf-8")
+            validator = plugin / "scripts" / "configure_obsidian_brain.py"
+            for broken in ("def broken(:\n    pass\n", "def other():\n    pass\n"):
+                with self.subTest(broken=broken):
+                    validator.write_text(broken, encoding="utf-8")
+                    report = health_check.inspect_plugin(plugin, config)
+                    self.assertEqual(report["obsidian"]["configStatus"], "invalid")
+                    self.assertEqual(report["status"], "problem")
+                    self.assertNotIn(str(config), json.dumps(report, ensure_ascii=False))
     def test_repository_plugin_is_self_contained(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             missing_config = Path(temporary) / "missing.json"
@@ -62,45 +97,22 @@ class HealthCheckTests(unittest.TestCase):
                 "writeMode": "auto-structured",
                 "retrievalScope": "project-first",
             }
-            plugin = REPO / "plugins" / "kaoyan-408"
-            config.write_text(json.dumps(valid), encoding="utf-8")
-            healthy = health_check.inspect_plugin(plugin, config)
-            self.assertEqual(healthy["obsidian"]["configStatus"], "valid")
-            self.assertEqual(healthy["obsidian"]["vaultStatus"], "missing")
-
-            for invalid in (
-                {**valid, "schemaVersion": "1.0"},
-                {**valid, "unexpected": "extra key"},
-            ):
-                with self.subTest(schema=invalid.get("schemaVersion", "extra")):
-                    config.write_text(json.dumps(invalid), encoding="utf-8")
-                    report = health_check.inspect_plugin(plugin, config)
-                    self.assertEqual(report["obsidian"]["configStatus"], "invalid")
-                    self.assertEqual(report["status"], "problem")
-                    self.assertNotIn(str(config), json.dumps(report, ensure_ascii=False))
-
-    def test_obsidian_config_schema_and_keys_are_validated(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            config = root / "brain.json"
-            valid = {
-                "schemaVersion": "1.1",
-                "enabled": True,
-                "vaultPath": str(root / "missing-vault"),
-                "projectRoot": "20-project/test",
-                "knowledgeRoot": "30-knowledge/test",
-                "pastPaperRoot": "40-papers/test",
-                "writeMode": "auto-structured",
-                "retrievalScope": "project-first",
-            }
             config.write_text(json.dumps(valid), encoding="utf-8")
             healthy = health_check.inspect_plugin(REPO / "plugins" / "kaoyan-408", config)
             self.assertEqual(healthy["obsidian"]["configStatus"], "valid")
             self.assertEqual(healthy["obsidian"]["vaultStatus"], "missing")
+            self.assertEqual(healthy["status"], "problem")
+
+            config.write_text(json.dumps({**valid, "enabled": False}), encoding="utf-8")
+            disabled = health_check.inspect_plugin(REPO / "plugins" / "kaoyan-408", config)
+            self.assertEqual(disabled["obsidian"]["configStatus"], "valid")
+            self.assertEqual(disabled["obsidian"]["vaultStatus"], "missing")
+            self.assertEqual(disabled["status"], "ok")
 
             for invalid in (
                 {**valid, "schemaVersion": "1.0"},
                 {**valid, "extraOption": True},
+                {**valid, "enabled": False, "schemaVersion": "1.0"},
             ):
                 with self.subTest(invalid=invalid.get("schemaVersion", "unknown-key")):
                     config.write_text(json.dumps(invalid), encoding="utf-8")

@@ -78,6 +78,44 @@ def skill_read_proof(capture: dict, skill_file: Path, skill: str) -> list[str]:
     return proofs
 
 
+def _has_structured_error(value: Any) -> bool:
+    if isinstance(value, dict):
+        if value.get("isError") is True or value.get("is_error") is True:
+            return True
+        if value.get("success") is False or value.get("ok") is False:
+            return True
+        status = value.get("status")
+        if isinstance(status, str) and status.casefold() in {
+            "error", "failed", "denied", "rejected", "timeout", "timed_out",
+        }:
+            return True
+        if any(value.get(key) not in (None, False, "", [], {}) for key in ("error", "errors")):
+            return True
+        return any(
+            _has_structured_error(value[key])
+            for key in ("result", "response", "content", "contents", "payload")
+            if key in value
+        )
+    if isinstance(value, list):
+        return any(_has_structured_error(child) for child in value)
+    return False
+
+
+def _rollout_output_failed(text: str, output_event: dict) -> bool:
+    if output_event.get("isError") is True or output_event.get("is_error") is True:
+        return True
+    lowered = text.casefold().lstrip()
+    if any(phrase in lowered for phrase in ("script failed", "script error:")):
+        return True
+    if lowered.startswith(("error:", "failed:", "access denied", "permission denied")):
+        return True
+    try:
+        structured = json.loads(text)
+    except (json.JSONDecodeError, TypeError):
+        return False
+    return _has_structured_error(structured)
+
+
 def extract_rollout_tools(path: Path, *, start_line: int = 1) -> list[dict]:
     """Expose only wrapper calls started at or after the requested turn boundary."""
     if not path.is_file():
@@ -104,7 +142,7 @@ def extract_rollout_tools(path: Path, *, start_line: int = 1) -> list[dict]:
                 text = "\n".join(v.get("text", "") for v in output if isinstance(v, dict))
             else:
                 text = output if isinstance(output, str) else json.dumps(output, ensure_ascii=False)
-            error = "script failed" in text.casefold() or "script error:" in text.casefold()
+            error = _rollout_output_failed(text, item)
             calls.append({"itemId": call.get("call_id", ""), "tool": call.get("name", "unknown"),
                           "input": call.get("input", call.get("arguments", "")), "output": text,
                           "status": "failed" if error else "returned",
@@ -127,6 +165,11 @@ def preserve_rollout(home: Path, thread_id: str | None, target: Path) -> dict[st
         "sha256": digest(target),
         "lineCount": len(target.read_text(encoding="utf-8").splitlines()),
     }
+
+
+def turn_has_model_output(report: dict) -> bool:
+    output = report.get("modelOutput")
+    return isinstance(output, str) and bool(output.strip())
 
 
 def main() -> int:
@@ -275,7 +318,7 @@ def main() -> int:
                     "privateRollout": rollout,
                     "rolloutToolCount": len(report["rolloutToolCalls"]),
                 })
-                if result.returncode != 0 or not report["complete"]:
+                if result.returncode != 0 or not report["complete"] or not turn_has_model_output(report):
                     raise RuntimeError(f"incomplete actual turn {number}")
                 if number == 1 and not proofs:
                     raise RuntimeError("missing successful exact installed primary Skill read")

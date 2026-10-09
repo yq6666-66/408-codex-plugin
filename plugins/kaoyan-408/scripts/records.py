@@ -505,7 +505,9 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
         for key in ("currentQuestion", "materialVersion"):
             _check_nullable_string(record, key, errors)
         for key in ("completedQuestions", "remainingQuestions"):
-            value = record.get(key)
+            if key not in record:
+                continue
+            value = record[key]
             if not (
                 isinstance(value, list)
                 and all(isinstance(entry, str) and entry.strip() for entry in value)

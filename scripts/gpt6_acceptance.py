@@ -90,6 +90,13 @@ def validate_record(record: dict[str, Any], cases: dict[str, dict[str, Any]]) ->
                 _text(call.get(key), f"{label}.{key}")
             if "success" in call and not isinstance(call["success"], bool):
                 raise RecordError(f"{label}.success must be a boolean")
+            status = call.get("status")
+            if (
+                call.get("success") is True
+                and isinstance(status, str)
+                and status.casefold() in {"failed", "error", "denied", "timeout", "timed_out"}
+            ):
+                raise RecordError(f"{label}.success cannot be true with failing status")
             if "exitCode" in call and call["exitCode"] is not None and (
                 isinstance(call["exitCode"], bool) or not isinstance(call["exitCode"], int)
             ):

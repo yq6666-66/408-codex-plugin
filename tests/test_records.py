@@ -327,6 +327,13 @@ class DueTests(unittest.TestCase):
 
 
 class CheckpointTests(unittest.TestCase):
+    def test_optional_question_arrays_may_be_omitted(self) -> None:
+        checkpoint = records.build_checkpoint({}, None)
+        checkpoint.pop("completedQuestions")
+        checkpoint.pop("remainingQuestions")
+        errors, _ = records.validate_current(checkpoint)
+        self.assertEqual(errors, [])
+
     def test_present_null_question_arrays_are_rejected(self) -> None:
         base = records.build_checkpoint({}, None)
         for field in ("completedQuestions", "remainingQuestions"):

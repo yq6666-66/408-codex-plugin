@@ -62,6 +62,29 @@ class RolloutEvidenceTests(unittest.TestCase):
                 completed = self.extract(self.pair(name, "Script completed\nread result"))
                 self.assertTrue(completed[0]["success"])
 
+    def test_structured_rollout_errors_cannot_prove_success(self) -> None:
+        for output in (
+            '{"error":"access denied"}',
+            '{"isError":true,"message":"permission denied"}',
+            '{"status":"failed","message":"request failed"}',
+        ):
+            with self.subTest(output=output):
+                call = self.extract(self.pair("functions.web_search", output))[0]
+                self.assertFalse(call["success"])
+                self.assertEqual(call["status"], "failed")
+        returned = self.extract(self.pair("functions.web_search", '{"results":["found"]}'))[0]
+        self.assertTrue(returned["success"])
+        application_data = self.extract(
+            self.pair("functions.web_search", '{"results":[{"status":"failed"}]}')
+        )[0]
+        self.assertTrue(application_data["success"])
+
+    def test_completed_turn_requires_non_empty_model_output(self) -> None:
+        self.assertFalse(runner.turn_has_model_output({"modelOutput": ""}))
+        self.assertFalse(runner.turn_has_model_output({"modelOutput": None}))
+        self.assertFalse(runner.turn_has_model_output({}))
+        self.assertTrue(runner.turn_has_model_output({"modelOutput": "answer"}))
+
     def test_unmatched_outputs_do_not_create_evidence(self) -> None:
         events = self.pair("exec", "Script completed")
         events[1]["payload"]["call_id"] = "unrelated"

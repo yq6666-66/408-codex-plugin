@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -34,6 +35,11 @@ EXPECTED_SKILLS = {
     "kaoyan-admissions-researcher",
 }
 EXPECTED_SKILL_COUNT = len(EXPECTED_SKILLS)
+SEMVER_PATTERN = re.compile(
+    r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+    r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
+)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -76,9 +82,14 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
     version: str | None = None
     try:
         manifest = _read_json(manifest_path)
+        if manifest.get("name") != "kaoyan-408":
+            problems.append("manifest name must be kaoyan-408")
         value = manifest.get("version")
         if isinstance(value, str) and value:
-            version = value
+            if SEMVER_PATTERN.fullmatch(value):
+                version = value
+            else:
+                problems.append("manifest version is not valid semantic version")
         else:
             problems.append("manifest version is missing")
     except ValueError as exc:
@@ -110,8 +121,11 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
             _validate_brain_config(root, brain)
             obsidian["configStatus"] = "valid"
             obsidian["enabled"] = brain["enabled"]
-            obsidian["vaultStatus"] = "available" if Path(brain["vaultPath"]).is_dir() else "missing"
-        except (ImportError, OSError, ValueError, TypeError, RuntimeError) as exc:
+            vault_available = Path(brain["vaultPath"]).is_dir()
+            obsidian["vaultStatus"] = "available" if vault_available else "missing"
+            if brain["enabled"] and not vault_available:
+                problems.append("enabled Obsidian Vault is unavailable")
+        except Exception as exc:
             obsidian["configStatus"] = "invalid"
             problems.append(f"Obsidian config is unreadable or invalid ({exc.__class__.__name__})")
 
