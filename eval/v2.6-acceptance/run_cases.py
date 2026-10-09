@@ -36,12 +36,48 @@ def file_snapshot(directory: Path) -> dict[str, str]:
 
 def skill_read_proof(capture: dict, skill_file: Path, skill: str) -> list[str]:
     expected = str(skill_file).replace("\\", "/").casefold()
+    complete_text = skill_file.read_text(encoding="utf-8").replace("\r\n", "\n").strip()
     proofs = []
-    for call in capture.get("toolCalls", []):
+    for call in capture.get("toolCalls", []) + capture.get("rolloutToolCalls", []):
         command = call.get("input", "").replace("\\\\", "\\").replace("\\", "/").casefold()
-        if call.get("success") is True and expected in command and f"name: {skill}" in call.get("output", ""):
+        output = call.get("output", "").replace("\r\n", "\n")
+        if call.get("success") is True and expected in command and f"name: {skill}" in output and complete_text in output:
             proofs.append(call.get("itemId", ""))
     return proofs
+
+
+def extract_rollout_tools(path: Path) -> list[dict]:
+    """Expose returned wrapper outputs without interpreting model reasoning."""
+    if not path.is_file():
+        return []
+    pending = {}
+    calls = []
+    for index, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        event = json.loads(line)
+        if event.get("type") != "response_item":
+            continue
+        item = event.get("payload", {})
+        kind = item.get("type")
+        if kind in {"custom_tool_call", "function_call"}:
+            pending[item.get("call_id")] = (index, item)
+        elif kind in {"custom_tool_call_output", "function_call_output"}:
+            earlier = pending.get(item.get("call_id"))
+            if not earlier:
+                continue
+            call_line, call = earlier
+            output = item.get("output")
+            if isinstance(output, list):
+                text = "\n".join(v.get("text", "") for v in output if isinstance(v, dict))
+            else:
+                text = output if isinstance(output, str) else json.dumps(output, ensure_ascii=False)
+            error = "script failed" in text.casefold() or "script error:" in text.casefold()
+            calls.append({"itemId": call.get("call_id", ""), "tool": call.get("name", "unknown"),
+                          "input": call.get("input", call.get("arguments", "")), "output": text,
+                          "status": "failed" if error else "returned",
+                          "success": bool(text) and not error and (str(call.get("name", "")).rsplit(".", 1)[-1] != "exec" or "Script completed" in text),
+                          "callLine": call_line, "outputLine": index,
+                          "evidenceKind": "private-rollout-wrapper-output"})
+    return calls
 
 
 def preserve_rollout(home: Path, thread_id: str | None, target: Path) -> dict[str, str]:
@@ -66,6 +102,8 @@ def main() -> int:
     parser.add_argument("--effort", required=True)
     parser.add_argument("--case", action="append", default=[])
     parser.add_argument("--timeout", type=int, default=1200)
+    parser.add_argument("--sandbox", choices=["workspace-write", "danger-full-access"], default="workspace-write")
+    parser.add_argument("--stop-file", type=Path, help="if this file exists at a case boundary, stop before starting another model call")
     args = parser.parse_args()
     args.repository = args.repository.resolve()
     args.installed_plugin = args.installed_plugin.resolve()
@@ -85,16 +123,25 @@ def main() -> int:
     if plugin_manifest.get("version") != "2.6.0":
         raise ValueError("installed candidate must be 2.6.0")
     sys.path.insert(0, str(args.repository / "scripts"))
-    from release_payload import plugin_tree_digest
+    from release_payload import ALLOWED_RELEASE_FILES, plugin_tree_digest
     from gpt6_capture import capture, load_events
 
     payload = {p.relative_to(args.installed_plugin).as_posix(): p.read_bytes() for p in args.installed_plugin.rglob("*") if p.is_file()}
+    expected_payload = {
+        relative: (args.repository / "plugins" / "kaoyan-408" / relative).read_bytes()
+        for relative in ALLOWED_RELEASE_FILES
+    }
+    if payload != expected_payload:
+        raise ValueError("installed plugin does not match the exact repository payload")
     tree_hash = plugin_tree_digest(payload)
     cli_version = subprocess.check_output([str(args.exe), "--version"], text=True, encoding="utf-8").strip()
     environment = os.environ.copy()
     environment["CODEX_HOME"] = str(args.codex_home)
     args.output.mkdir(parents=True, exist_ok=True)
     for case_id in selected:
+        if args.stop_file is not None and args.stop_file.exists():
+            print("Stopped at a case boundary; existing captured cases are preserved.", flush=True)
+            return 0
         case = cases[case_id]
         case_dir = args.output / case_id
         case_dir.mkdir(exist_ok=False)
@@ -129,6 +176,7 @@ def main() -> int:
             "cliVersion": cli_version,
             "model": args.model,
             "reasoningEffort": args.effort,
+            "sandboxMode": args.sandbox,
             "queryDate": catalog["queryDate"],
             "timezone": catalog["timezone"],
             "inputArtifacts": materials,
@@ -151,7 +199,7 @@ def main() -> int:
                 command += ["--json", "--skip-git-repo-check", "--model", args.model,
                             "-c", f'model_reasoning_effort="{args.effort}"',
                             "-c", 'approval_policy="never"',
-                            "-c", 'sandbox_mode="workspace-write"',
+                            "-c", f'sandbox_mode="{args.sandbox}"',
                             "-o", str(answer_path)]
                 if number == 1:
                     command += ["-C", str(workspace), "-"]
@@ -166,17 +214,19 @@ def main() -> int:
                                             timeout=args.timeout, check=False)
                 events, sha = load_events(raw_path)
                 report = capture(events, sha, case_id, prompt, materials)
-                write_json(prefix.with_suffix(".capture.json"), report)
                 if number == 1:
                     thread_id = report.get("threadId")
-                proofs = skill_read_proof(report, skill_file, case["skill"])
                 rollout = preserve_rollout(args.codex_home, thread_id, prefix.with_suffix(".rollout.jsonl"))
+                report["rolloutToolCalls"] = extract_rollout_tools(prefix.with_suffix(".rollout.jsonl"))
+                write_json(prefix.with_suffix(".capture.json"), report)
+                proofs = skill_read_proof(report, skill_file, case["skill"])
                 summary["turns"].append({
                     "number": number, "inputSha256": digest(input_path), "rawSha256": sha,
                     "threadId": report.get("threadId"), "exitCode": result.returncode,
                     "complete": report["complete"], "skillReadProofItems": proofs,
                     "toolCount": len(report["toolCalls"]), "errors": report["errors"],
                     "privateRollout": rollout,
+                    "rolloutToolCount": len(report["rolloutToolCalls"]),
                 })
                 if result.returncode != 0 or not report["complete"]:
                     raise RuntimeError(f"incomplete actual turn {number}")
