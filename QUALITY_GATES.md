@@ -37,7 +37,7 @@
 
 ## 发布含义
 
-v2.6.0 基于 v2.5.2 提交 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6` 开发，本次仅交付本地未发布候选、验收记录和可核验包，稳定版本仍为 v2.5.1。工程门禁、真实抽查、远端 CI 和包验证分别记录；本轮尚待检查的项目不视为通过。正式发布、远端推送和稳定安装升级不在此次授权范围。
+v2.6.0 基于 v2.5.2 提交 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6` 开发，当前稳定版本仍为 v2.5.1。候选分支已按用户要求推送，PR 为 [#26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。PR 首个推送 head `3522250` 的远端 required checks `validate`、`windows`、`reproducible` 与 GitGuardian 均通过；后续文档提交触发的检查状态以 PR 最新 head 为准。实时行为验收尚有检查点因 CLI 额度中断或未运行，详见本地 [v2.6.0 验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。本条记录不代表已合并或正式发布。用户尚未授权创建版本标签、正式 Release 或升级稳定安装。
 
 2026-10-08，维护者将 v2.5.2 本次交付范围调整为简化验收与候选分支推送准备。插件提交 `2171696` 的本地工程门禁通过；完整行为验收尚未确认全通过，GitHub required checks 尚待推送后运行。此次准备不代表正式 Release 验收通过，当前稳定回退版本仍为 v2.5.1。具体证据和已知问题见 [v2.5.2 候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 

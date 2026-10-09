@@ -2,11 +2,11 @@
 
 日期：2026-10-09。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。当前插件提交为 `e2dc4dfda768281d33de7970c21e40437e6b8587`。
 
-版本保持 `2.6.0`、`Unreleased`。本次仅交付本地候选；没有远端推送、标签、正式 Release 或稳定安装升级。稳定回退版本仍为 v2.5.1。
+版本保持 `2.6.0`、`Unreleased`。此验收记录创建于首次推送前；分支后按用户要求推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。PR 首个推送 head `3522250` 的远端 required checks `validate`、`windows`、`reproducible` 与 GitGuardian 均通过。后续文档提交会触发新检查，以 PR 当前 head 状态为准。尚未合并、打版本标签、发布 Release 或升级稳定安装；稳定回退版本仍为 v2.5.1。
 
 ## 工程检查
 
-Windows 与 WSL Ubuntu 的检查分别运行，日志和私有验收材料保存在维护者本地交付目录。远端 GitHub CI 未运行，本地 Ubuntu 不替代远端 required checks。
+Windows 与 WSL Ubuntu 的检查分别运行，日志和私有验收材料保存在维护者本地交付目录。PR 首个推送 head 的远端 required checks `validate`、`windows`、`reproducible` 均通过；后续文档提交会触发新 checks，最新状态以 PR 页面为准。本地 Ubuntu 结果不能替代远端 required checks。
 
 | 检查 | 结果与边界 |
 | --- | --- |
