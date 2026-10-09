@@ -135,6 +135,12 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("先分别写明分子和分母各自统计的对象", official)
         self.assertIn("不计算、不列数值，也不提供“粗略参考比”", official)
 
+    def test_old_admissions_report_retrieval_checks_obsidian_configuration(self) -> None:
+        brain = (REPO / "plugins/kaoyan-408/references/obsidian-brain-contract.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("读取用户要求参考的旧招生调研报告", brain)
+
     def test_math_coach_requires_option_by_option_explanations(self) -> None:
         math = skill_text("kaoyan-math-coach")
         self.assertIn("不得只报答案字母", math)

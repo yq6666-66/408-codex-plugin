@@ -179,6 +179,28 @@ class MergeTests(unittest.TestCase):
             {"kept-newer"},
         )
 
+    def test_merge_marks_newer_first_side_as_kept_newer_inside_list_items(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "recordId": "kr-bbbbbbbbbbbbbbbb", "generatedAt": "2026-09-01",
+        }
+        older_item = {"subject": "408", "topic": "LRU", "status": "pending"}
+        newer_item = {"subject": "408", "topic": "LRU", "status": "mastered"}
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-10", "items": [newer_item]},
+            {**base, "updatedAt": "2026-09-01", "items": [older_item]},
+        )
+        self.assertEqual(merged["records"][0]["items"][0]["status"], "mastered")
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [{
+                "path": "/items[LRU]/status",
+                "a": "mastered",
+                "b": "pending",
+                "resolution": "kept-newer",
+            }],
+        )
+
     def test_invalid_nested_record_shapes_return_json_errors_instead_of_tracebacks(self) -> None:
         malformed = [
             {
@@ -196,8 +218,25 @@ class MergeTests(unittest.TestCase):
             with self.subTest(record_type=record["recordType"]):
                 result = run_cli("validate", stdin=json.dumps(record, ensure_ascii=False))
                 self.assertEqual(result.returncode, 1)
-                self.assertNotIn("Traceback", result.stderr)
-                self.assertIsInstance(json.loads(result.stderr), dict)
+                self.assertNotIn("Traceback", result.stdout + result.stderr)
+                report = json.loads(result.stdout)
+                self.assertIsInstance(report, dict)
+                self.assertFalse(report["valid"])
+
+    def test_null_arrays_and_non_numeric_accuracy_are_reported_as_validation_errors(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "period": {"start": None, "end": None}, "metrics": None,
+            "accuracy": [{"subject": "408", "correct": "5", "total": "10", "rate": "0.5"}],
+            "blockers": [],
+        }
+        result = run_cli("validate", stdin=json.dumps(record, ensure_ascii=False))
+        self.assertEqual(result.returncode, 1)
+        errors = json.loads(result.stdout)["errors"]
+        self.assertIn("metrics must be an array", errors)
+        self.assertIn("accuracy[0].correct must be a non-negative integer or null", errors)
+        self.assertIn("accuracy[0].total must be a non-negative integer or null", errors)
+        self.assertIn("accuracy[0].rate must be a number from 0 to 1 or null", errors)
 
     def test_merge_equal_updated_at_keeps_first_side_and_records_conflict(self) -> None:
         a = {
@@ -450,6 +489,44 @@ class CliTests(unittest.TestCase):
             payload = json.loads(result.stdout)
             self.assertEqual(payload["date"], "2026-09-11")
             self.assertEqual(len(payload["due"]), 1)
+
+    def test_due_rejects_non_object_review_items_and_invalid_dates_as_json_errors(self) -> None:
+        queue = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "generatedAt": None, "items": [None],
+        }
+        result = run_cli("due", "-", "--date", "2026-09-11", stdin=json.dumps(queue))
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertIn("items[0] must be an object", json.loads(result.stderr)["error"])
+        invalid_date = run_cli("due", "-", "--date", "not-a-date", stdin="{}")
+        self.assertEqual(invalid_date.returncode, 1)
+        self.assertNotIn("Traceback", invalid_date.stderr)
+        self.assertIsInstance(json.loads(invalid_date.stderr), dict)
+
+    def test_normalize_rejects_malformed_review_queue_items(self) -> None:
+        for record in (
+            {"schemaVersion": "1.0", "items": None},
+            {"schemaVersion": "1.0", "items": [None]},
+            {"schemaVersion": "1.2", "recordType": "ReviewQueue", "items": [None]},
+        ):
+            with self.subTest(record=record):
+                result = run_cli("normalize", stdin=json.dumps(record, ensure_ascii=False))
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertIsInstance(json.loads(result.stderr), dict)
+
+    def test_checkpoint_read_rejects_a_different_record_type(self) -> None:
+        review_queue = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "generatedAt": None, "items": [],
+        }
+        result = run_cli("checkpoint", "read", stdin=json.dumps(review_queue))
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(
+            json.loads(result.stderr)["error"],
+            "checkpoint read requires recordType SessionCheckpoint",
+        )
 
     def test_checkpoint_cli_create_and_read(self) -> None:
         created = run_cli(

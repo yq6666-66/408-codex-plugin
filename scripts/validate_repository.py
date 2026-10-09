@@ -361,6 +361,7 @@ def check_obsidian_brain_contract(plugin: Path) -> None:
     )
     for marker in (
         ".codex/kaoyan-408/obsidian-brain.json",
+        "读取用户要求参考的旧招生调研报告",
         '"schemaVersion": "1.1"',
         '"knowledgeRoot"',
         '"pastPaperRoot"',

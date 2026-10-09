@@ -218,9 +218,11 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
         converted["generatedAt"] = _convert_sentinels(record.get("generatedAt"))
         items: list[dict[str, Any]] = []
         raw_items = record.get("items")
-        for entry in raw_items if isinstance(raw_items, list) else []:
+        if "items" in record and not isinstance(raw_items, list):
+            raise RecordError("items must be an array")
+        for index, entry in enumerate(raw_items if isinstance(raw_items, list) else []):
             if not isinstance(entry, dict):
-                continue
+                raise RecordError(f"items[{index}] must be an object")
             retest_date = entry.get("retestDate")
             item: dict[str, Any] = {
                 "subject": _convert_sentinels(entry.get("subject")),
@@ -275,7 +277,12 @@ def normalize_to_12(record: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     if "updatedAt" not in converted:
         converted["updatedAt"] = None
     if record_type == "ReviewQueue":
-        for index, item in enumerate(converted.get("items", [])):
+        items = converted.get("items", [])
+        if not isinstance(items, list):
+            raise RecordError("items must be an array")
+        for index, item in enumerate(items):
+            if not isinstance(item, dict):
+                raise RecordError(f"items[{index}] must be an object")
             if "retestEvidence" not in item:
                 item["retestEvidence"] = []
             if "itemId" not in item:
@@ -309,6 +316,16 @@ def mastery_warnings(item: dict[str, Any], index: int) -> list[str]:
 def _require(record: dict[str, Any], key: str, errors: list[str]) -> None:
     if key not in record:
         errors.append(f"missing required field: {key}")
+
+
+def _array_or_empty(record: dict[str, Any], key: str, errors: list[str]) -> list[Any]:
+    if key not in record:
+        return []
+    value = record[key]
+    if not isinstance(value, list):
+        errors.append(f"{key} must be an array")
+        return []
+    return value
 
 
 def _check_nullable_string(record: dict[str, Any], key: str, errors: list[str]) -> None:
@@ -367,7 +384,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                 value = period.get(key)
                 if value is not None and not is_plain_date(value):
                     errors.append(f"period.{key} must be a YYYY-MM-DD date or null, got {value!r}")
-        for index, entry in enumerate(record.get("metrics", [])):
+        for index, entry in enumerate(_array_or_empty(record, "metrics", errors)):
             if not isinstance(entry, dict):
                 errors.append(f"metrics[{index}] must be an object")
                 continue
@@ -376,19 +393,37 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                     errors.append(f"metrics[{index}] missing {key}")
             if not is_non_empty_string(entry.get("unit", "")):
                 errors.append(f"metrics[{index}].unit must be a non-empty string")
-        for index, entry in enumerate(record.get("accuracy", [])):
+        for index, entry in enumerate(_array_or_empty(record, "accuracy", errors)):
             if not isinstance(entry, dict):
                 errors.append(f"accuracy[{index}] must be an object")
                 continue
+            for key in ("subject", "correct", "total", "rate"):
+                if key not in entry:
+                    errors.append(f"accuracy[{index}] missing {key}")
             correct, total, rate = entry.get("correct"), entry.get("total"), entry.get("rate")
-            if correct is not None and total is not None and correct > total:
+            correct_valid = correct is None or (
+                isinstance(correct, int) and not isinstance(correct, bool) and correct >= 0
+            )
+            total_valid = total is None or (
+                isinstance(total, int) and not isinstance(total, bool) and total >= 0
+            )
+            rate_valid = rate is None or (
+                isinstance(rate, (int, float)) and not isinstance(rate, bool) and 0 <= rate <= 1
+            )
+            if not correct_valid:
+                errors.append(f"accuracy[{index}].correct must be a non-negative integer or null")
+            if not total_valid:
+                errors.append(f"accuracy[{index}].total must be a non-negative integer or null")
+            if not rate_valid:
+                errors.append(f"accuracy[{index}].rate must be a number from 0 to 1 or null")
+            if correct_valid and total_valid and correct is not None and total is not None and correct > total:
                 errors.append(f"accuracy[{index}].correct must not exceed total")
-            if total == 0:
+            if total_valid and total == 0:
                 if correct not in {None, 0}:
                     errors.append(f"accuracy[{index}].correct must be 0 or null when total is zero")
                 if rate is not None:
                     errors.append(f"accuracy[{index}].rate must be null when total is zero")
-            elif correct is not None and total is not None and rate is not None:
+            elif correct_valid and total_valid and rate_valid and correct is not None and total is not None and rate is not None:
                 if abs(rate - correct / total) > 1e-9:
                     errors.append(f"accuracy[{index}].rate must equal correct / total")
         if not isinstance(record.get("blockers"), list):
@@ -397,7 +432,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
         for key in ("generatedAt", "items"):
             _require(record, key, errors)
         _check_date(record, "generatedAt", errors)
-        for index, item in enumerate(record.get("items", [])):
+        for index, item in enumerate(_array_or_empty(record, "items", errors)):
             if not isinstance(item, dict):
                 errors.append(f"items[{index}] must be an object")
                 continue
@@ -506,11 +541,11 @@ def merge_items(
     b: Any,
     path: str,
     conflicts: list[dict[str, Any]],
-    prefer_b: bool = False,
+    newer: str | None = None,
 ) -> Any:
     """Deterministic two-way merge with an audit trail for scalar conflicts.
 
-    A newer ``updatedAt`` side supplies the active value, while the conflict
+    The newer ``updatedAt`` side supplies the active value, while the conflict
     record retains both inputs. Equal or missing timestamps keep the first
     value and are also recorded. The timestamp field itself is version
     metadata rather than a user-data conflict.
@@ -524,19 +559,19 @@ def merge_items(
     if isinstance(a, dict) and isinstance(b, dict):
         merged = dict(a)
         for key in b:
-            child_prefer = prefer_b
-            if key == "updatedAt":
-                child_prefer = str(b.get(key) or "") > str(a.get(key) or "")
-            merged[key] = merge_items(a.get(key), b[key], f"{path}/{key}", conflicts, child_prefer)
+            merged[key] = merge_items(a.get(key), b[key], f"{path}/{key}", conflicts, newer)
         return merged
     if isinstance(a, list) and isinstance(b, list):
-        return merge_lists(a, b, path, conflicts, prefer_b)
-    if prefer_b:
-        if not path.endswith("/updatedAt"):
-            conflicts.append({"path": path, "a": a, "b": b, "resolution": "kept-newer"})
-        return b
-    conflicts.append({"path": path, "a": a, "b": b, "resolution": "kept-first"})
-    return a
+        return merge_lists(a, b, path, conflicts, newer)
+    if path.endswith("/updatedAt"):
+        return b if newer == "b" else a
+    conflicts.append({
+        "path": path,
+        "a": a,
+        "b": b,
+        "resolution": "kept-newer" if newer in {"a", "b"} else "kept-first",
+    })
+    return b if newer == "b" else a
 
 
 def _item_key(item: Any) -> tuple[str, ...] | None:
@@ -559,7 +594,7 @@ def merge_lists(
     b: list[Any],
     path: str,
     conflicts: list[dict[str, Any]],
-    prefer_b: bool = False,
+    newer: str | None = None,
 ) -> list[Any]:
     """Merge keyed list items using the enclosing record's timestamp decision."""
     if any(_item_key(entry) is not None for entry in a) and any(
@@ -576,7 +611,7 @@ def merge_lists(
             if key is not None and key in index_of:
                 target = merged[index_of[key]]
                 merged[index_of[key]] = merge_items(
-                    target, entry, f"{path}[{key[-1]}]", conflicts, prefer_b
+                    target, entry, f"{path}[{key[-1]}]", conflicts, newer
                 )
             elif entry not in merged:
                 merged.append(entry)
@@ -614,8 +649,11 @@ def merge_records(a: dict[str, Any], b: dict[str, Any]) -> tuple[dict[str, Any],
         # Distinct records: keep both rather than dropping either side.
         return {}, []
     conflicts: list[dict[str, Any]] = []
-    prefer_b = str(b.get("updatedAt") or "") > str(a.get("updatedAt") or "")
-    merged = merge_items(a, b, "", conflicts, prefer_b)
+    updated_a, updated_b = a.get("updatedAt"), b.get("updatedAt")
+    newer = None
+    if is_plain_date(updated_a) and is_plain_date(updated_b) and updated_a != updated_b:
+        newer = "b" if updated_b > updated_a else "a"
+    merged = merge_items(a, b, "", conflicts, newer)
     return merged, conflicts
 
 
@@ -646,6 +684,8 @@ def resolve_due(items: list[dict[str, Any]], base: date) -> dict[str, Any]:
     not_due: list[dict[str, Any]] = []
     needs_base: list[dict[str, Any]] = []
     for index, item in enumerate(items):
+        if not isinstance(item, dict):
+            raise RecordError(f"items[{index}] must be an object")
         label = item.get("itemId") or f"items[{index}]"
         summary = {
             "item": label,
@@ -707,6 +747,8 @@ def build_checkpoint(payload: dict[str, Any], base_date: str | None) -> dict[str
 
 
 def read_checkpoint(checkpoint: dict[str, Any], base: date | None, queue: dict[str, Any] | None) -> dict[str, Any]:
+    if checkpoint.get("recordType") != "SessionCheckpoint":
+        raise RecordError("checkpoint read requires recordType SessionCheckpoint")
     errors, warnings = validate_current(checkpoint)
     if errors:
         raise RecordError("checkpoint is invalid: " + "; ".join(errors))
@@ -729,7 +771,10 @@ def read_checkpoint(checkpoint: dict[str, Any], base: date | None, queue: dict[s
         items: list[dict[str, Any]] = []
         for record in as_record_list(queue):
             if record.get("recordType") == "ReviewQueue":
-                items.extend(record.get("items", []))
+                queue_items = record.get("items", [])
+                if not isinstance(queue_items, list):
+                    raise RecordError("items must be an array")
+                items.extend(queue_items)
         plan["dueReview"] = resolve_due(items, base)
     if warnings:
         plan["warnings"] = warnings
@@ -802,7 +847,10 @@ def main(argv: list[str] | None = None) -> int:
             queue_items: list[dict[str, Any]] = []
             for record in as_record_list(load_document(args.input)):
                 if record.get("recordType") == "ReviewQueue":
-                    queue_items.extend(record.get("items", []))
+                    items = record.get("items", [])
+                    if not isinstance(items, list):
+                        raise RecordError("items must be an array")
+                    queue_items.extend(items)
             emit(resolve_due(queue_items, base))  # type: ignore[arg-type]
             return 0
         if args.command == "checkpoint":
