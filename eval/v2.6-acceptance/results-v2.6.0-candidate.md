@@ -1,6 +1,6 @@
 # v2.6.0 本地候选验收
 
-日期：2026-10-09。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `14dad8f83d649edef3172f5dbea1607cebd381cd`。
+日期：2026-10-09。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `8799602bfafb2c6558c34900705994c7041784bc`。
 
 版本保持 `2.6.0`、`Unreleased`。分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。本记录中的工程与包证据绑定最终插件内容树；远端检查状态以 PR 最新 head 为准。合并开发代码不会自动打版本标签、发布 Release 或升级稳定安装；稳定版本仍为 v2.5.1。
 
@@ -12,9 +12,9 @@
 | --- | --- |
 | 仓库校验 | 六项检查通过，14 个 Skills 与精确发布允许列表一致 |
 | 官方 validators | 缓存的官方插件 validator 与 14/14 Skill validator 通过；证据脚本 SHA-256 绑定插件树 |
-| Windows 完整测试 | 184 项全部通过，`scripts/check.py --verify-system-evidence` 成功 |
-| WSL Ubuntu 完整测试 | 184 项通过，1 项 Windows 原生管道编码测试按平台跳过 |
-| 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `5d063781daa48dc30d3e47ddd23d59fea7f30685f06933c7aa624af1459140ae` |
+| Windows 完整测试 | 189 项全部通过，`scripts/check.py --verify-system-evidence` 成功 |
+| WSL Ubuntu 完整测试 | 189 项通过，1 项 Windows 原生管道编码测试按平台跳过 |
+| 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `eafe823fcd61a5b960179e2a740a29e66b30c56f28bd7f8320d04be47a0e4510` |
 | Semgrep 1.162.0 | 8 条规则扫描 93 个目标，0 findings |
 | Release 包 | Windows 两次构建、Ubuntu 一次构建及标准文件名包的 SHA-256 一致，共 45 个文件 |
 | 消费者包验证 | 最终包 `verify-release` 通过，版本 2.6.0 |
@@ -23,13 +23,13 @@
 最终候选 ZIP `kaoyan-408-2.6.0.zip` SHA-256：
 
 ```text
-0875c42bb540c16e961555eeda0a3e7b6120a37c7f2cf951d7f0d264bd42a9ca
+26913aecec9d90427de1eb079688a6920400169fdbe3eeeba1bb90500a59f1f9
 ```
 
 最终候选安装树 SHA-256：
 
 ```text
-5d063781daa48dc30d3e47ddd23d59fea7f30685f06933c7aa624af1459140ae
+eafe823fcd61a5b960179e2a740a29e66b30c56f28bd7f8320d04be47a0e4510
 ```
 
 ## 定向真实模型抽查
@@ -38,7 +38,7 @@
 
 固定集 [cases.json](cases.json) 共 10 类、13 轮、40 个 checkpoints：4 类实时检索，6 类固定虚构材料或原创教学。检索基准日期为 2026-10-08，实际执行日期为 2026-10-09；每条实际来源按当次读取状态判分。虚构材料不证明真实院校数据或平台访问能力。
 
-源码审查修复前，树 `e2dc4df` 的会话计分为 24/40：6 个固定场景检查通过，指定院校检索因 CLI 使用额度而中断，发现院校/网友评价/非计算机专业 3 个实时场景未运行。该结果不适用于最终插件树 `14dad8f`。最终树尚无绑定其安装摘要的行为会话记录；不能据旧树结果声明实时招生信息能力已完成验收、不能声明 `10/10` 或 `40/40`，也未运行完整新旧配对回归。
+源码审查修复前，树 `e2dc4df` 的会话计分为 24/40：6 个固定场景检查通过，指定院校检索因 CLI 使用额度而中断，发现院校/网友评价/非计算机专业 3 个实时场景未运行。该结果不适用于最终插件树 `8799602`。最终树尚无绑定其安装摘要的行为会话记录；不能据旧树结果声明实时招生信息能力已完成验收、不能声明 `10/10` 或 `40/40`，也未运行完整新旧配对回归。
 
 未完成的模型场景须在合适的 CLI 版本和使用额度可用后，用最终 ZIP 隔离安装并绑定安装树摘要，重新运行及逐 checkpoint 判分。`captured-ungraded` 只表示已保存会话，不代表通过。原始输入、JSONL、私有 rollout、工具输出与会话配置只保存在本地交付目录。
 
