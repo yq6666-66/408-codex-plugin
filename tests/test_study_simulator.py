@@ -48,6 +48,13 @@ class CacheSimulatorTests(unittest.TestCase):
         self.assertEqual(document["params"]["tagBits"], 10)
         self.assertEqual(len(document["steps"][0]["split"]["tag"]), 10)
 
+    def test_fully_associative_reports_evicted_and_resident_blocks(self) -> None:
+        document = sim.simulate_cache(8, 4, 2, "associative", [0, 4, 8])
+        third = document["steps"][2]
+        self.assertEqual(third["evictedBlock"], 0)
+        self.assertEqual(third["residentBlocks"], [1, 2])
+        self.assertIn("replaces block 0", third["stateChange"])
+
     def test_out_of_range_address_is_rejected(self) -> None:
         with self.assertRaisesRegex(sim.SimulatorError, "exceeds"):
             sim.simulate_cache(16, 64, 256, "direct", [1 << 16])
@@ -131,6 +138,22 @@ class FcfsSimulatorTests(unittest.TestCase):
 
 
 class RrSimulatorTests(unittest.TestCase):
+    def test_arrivals_during_a_quantum_are_emitted_in_time_order(self) -> None:
+        document = sim.simulate_rr(sim.parse_processes("P1:0:3,P2:1:1"), 2)
+        events = document["steps"]
+        self.assertEqual(
+            [(step["event"], step.get("process"), step["timeStart"], step["timeEnd"])
+             for step in events],
+            [
+                ("arrival", "P1", 0, 0),
+                ("run", "P1", 0, 1),
+                ("arrival", "P2", 1, 1),
+                ("run", "P1", 1, 2),
+                ("run", "P2", 2, 3),
+                ("run", "P1", 3, 4),
+            ],
+        )
+
     def test_classic_quantum_four(self) -> None:
         document = sim.simulate_rr(sim.parse_processes("P1:0:24,P2:0:3,P3:0:3"), 4)
         by_name = {p["name"]: p for p in document["summary"]["processes"]}

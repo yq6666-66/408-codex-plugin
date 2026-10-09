@@ -94,7 +94,7 @@ def validate_record(record: dict[str, Any], cases: dict[str, dict[str, Any]]) ->
             if (
                 call.get("success") is True
                 and isinstance(status, str)
-                and status.casefold() in {"failed", "error", "denied", "timeout", "timed_out"}
+                and status.casefold() in {"failed", "error", "denied", "rejected", "timeout", "timed_out"}
             ):
                 raise RecordError(f"{label}.success cannot be true with failing status")
             if "exitCode" in call and call["exitCode"] is not None and (

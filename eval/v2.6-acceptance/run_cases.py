@@ -12,6 +12,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 
 def digest(path: Path) -> str:
@@ -138,15 +139,18 @@ def extract_rollout_tools(path: Path, *, start_line: int = 1) -> list[dict]:
                 continue
             call_line, call = earlier
             output = item.get("output")
-            if isinstance(output, list):
+            if output is None:
+                text = ""
+            elif isinstance(output, list):
                 text = "\n".join(v.get("text", "") for v in output if isinstance(v, dict))
             else:
                 text = output if isinstance(output, str) else json.dumps(output, ensure_ascii=False)
             error = _rollout_output_failed(text, item)
+            has_output = bool(text.strip())
             calls.append({"itemId": call.get("call_id", ""), "tool": call.get("name", "unknown"),
                           "input": call.get("input", call.get("arguments", "")), "output": text,
-                          "status": "failed" if error else "returned",
-                          "success": bool(text) and not error and (str(call.get("name", "")).rsplit(".", 1)[-1] != "exec" or "Script completed" in text),
+                          "status": "failed" if error else ("returned" if has_output else "no-output"),
+                          "success": has_output and not error and (str(call.get("name", "")).rsplit(".", 1)[-1] != "exec" or "Script completed" in text),
                           "callLine": call_line, "outputLine": index,
                           "evidenceKind": "private-rollout-wrapper-output"})
     return calls

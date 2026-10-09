@@ -79,6 +79,14 @@ class RolloutEvidenceTests(unittest.TestCase):
         )[0]
         self.assertTrue(application_data["success"])
 
+    def test_null_rollout_output_is_not_successful_evidence(self) -> None:
+        events = self.pair("functions.web_search", "ignored fixture")
+        events[1]["payload"]["output"] = None
+        call = self.extract(events)[0]
+        self.assertEqual(call["output"], "")
+        self.assertEqual(call["status"], "no-output")
+        self.assertFalse(call["success"])
+
     def test_completed_turn_requires_non_empty_model_output(self) -> None:
         self.assertFalse(runner.turn_has_model_output({"modelOutput": ""}))
         self.assertFalse(runner.turn_has_model_output({"modelOutput": None}))

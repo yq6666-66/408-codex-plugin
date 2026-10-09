@@ -503,6 +503,28 @@ class ValidationTests(unittest.TestCase):
                 self.assertFalse(report["valid"])
                 self.assertTrue(any("retestOffsetDays must be a non-negative integer" in e for e in report["errors"]))
 
+    def test_legacy_10_malformed_shapes_are_not_reported_as_valid(self) -> None:
+        for record in (
+            {"schemaVersion": "1.0"},
+            {"schemaVersion": "1.0", "targetExam": "408", "weeklyHours": "many"},
+            {"schemaVersion": "1.0", "recordType": "ProgressSnapshot", "plannedUnits": -1},
+        ):
+            with self.subTest(record=record):
+                report = records.validate_record(record)
+                self.assertFalse(report["valid"])
+                self.assertTrue(report["errors"])
+
+    def test_progress_metric_values_and_nullable_strings_are_validated(self) -> None:
+        report = records.validate_record({
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "period": {"start": None, "end": None},
+            "metrics": [{"subject": {}, "name": 7, "unit": "hours", "planned": -1, "completed": "many"}],
+            "accuracy": [], "blockers": [],
+        })
+        self.assertFalse(report["valid"])
+        for field in ("subject", "name", "planned", "completed"):
+            self.assertTrue(any(f"metrics[0].{field}" in error for error in report["errors"]))
+
     def test_mastered_without_independent_evidence_warns(self) -> None:
         record = {
             "schemaVersion": "1.2",

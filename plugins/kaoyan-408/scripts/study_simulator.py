@@ -94,6 +94,7 @@ def simulate_cache(
     else:
         resident: OrderedDict[int, bool] = OrderedDict()  # capacity-limited, LRU eviction
     for address in addresses:
+        evicted_block = None
         if address < 0 or address > max_address:
             raise SimulatorError(f"address {address} exceeds {addr_bits}-bit range 0..{max_address}")
         block_no = address // block_size
@@ -109,9 +110,9 @@ def simulate_cache(
             tag = block_no
             hit = block_no in resident
             if not hit:
+                if len(resident) >= cache_lines:
+                    evicted_block, _ = resident.popitem(last=False)
                 resident[block_no] = True
-                if len(resident) > cache_lines:
-                    resident.popitem(last=False)
             else:
                 resident.move_to_end(block_no)
         if hit:
@@ -137,9 +138,16 @@ def simulate_cache(
             "stateChange": (
                 f"block {block_no} already resident -> hit"
                 if hit
-                else f"block {block_no} loaded into {'line ' + str(index) if index is not None else 'associative set'}"
+                else (
+                    f"block {block_no} replaces block {evicted_block} in associative set"
+                    if evicted_block is not None
+                    else f"block {block_no} loaded into {'line ' + str(index) if index is not None else 'associative set'}"
+                )
             ),
         })
+        if mapping == "associative":
+            steps[-1]["evictedBlock"] = evicted_block
+            steps[-1]["residentBlocks"] = list(resident.keys())
     return result(
         "cache",
         {
@@ -338,24 +346,48 @@ def simulate_rr(processes: list[dict[str, int]], quantum: int) -> dict[str, Any]
         process = queue.popleft()
         ran = min(quantum, remaining[process["name"]])
         start = time
-        time += ran
+        end = start + ran
         remaining[process["name"]] -= ran
-        admit(time)
+        cursor = start
+        run_segments: list[dict[str, Any]] = []
+        while pending and pending[0]["arrival"] <= end:
+            arrival_time = pending[0]["arrival"]
+            if arrival_time > cursor:
+                segment = {
+                    "step": len(steps) + 1,
+                    "event": "run",
+                    "process": process["name"],
+                    "timeStart": cursor,
+                    "timeEnd": arrival_time,
+                    "stateChange": f"{process['name']} runs {cursor}->{arrival_time}",
+                    "queueAfter": [p["name"] for p in queue],
+                }
+                steps.append(segment)
+                run_segments.append(segment)
+                cursor = arrival_time
+            time = arrival_time
+            admit(time)
+        if cursor < end or not run_segments:
+            segment = {
+                "step": len(steps) + 1,
+                "event": "run",
+                "process": process["name"],
+                "timeStart": cursor,
+                "timeEnd": end,
+                "stateChange": f"{process['name']} runs {cursor}->{end}",
+                "queueAfter": [p["name"] for p in queue],
+            }
+            steps.append(segment)
+            run_segments.append(segment)
+        time = end
         if remaining[process["name"]] > 0:
             queue.append(process)
-            change = f"{process['name']} runs {start}->{time}, preempted with {remaining[process['name']]} left"
+            change = f"{process['name']} runs {run_segments[-1]['timeStart']}->{time}, preempted with {remaining[process['name']]} left"
         else:
             completion[process["name"]] = time
-            change = f"{process['name']} runs {start}->{time} and completes"
-        steps.append({
-            "step": len(steps) + 1,
-            "event": "run",
-            "process": process["name"],
-            "timeStart": start,
-            "timeEnd": time,
-            "stateChange": change,
-            "queueAfter": [p["name"] for p in queue],
-        })
+            change = f"{process['name']} runs {run_segments[-1]['timeStart']}->{time} and completes"
+        run_segments[-1]["stateChange"] = change
+        run_segments[-1]["queueAfter"] = [p["name"] for p in queue]
     summary, _ = _scheduling_summary(processes, completion)
     return result(
         "rr",

@@ -171,6 +171,8 @@ def _atomic_write(path: Path, payload: str) -> None:
 
 
 def _write_if_missing(path: Path, payload: str, actions: list[str], *, dry_run: bool) -> None:
+    if path.is_symlink():
+        raise BrainConfigError(f"refusing to follow symbolic link scaffold file: {path}")
     if path.exists():
         actions.append(f"keep {path}")
         return
@@ -180,6 +182,8 @@ def _write_if_missing(path: Path, payload: str, actions: list[str], *, dry_run: 
 
 
 def _append_once(path: Path, marker: str, addition: str, actions: list[str], *, dry_run: bool) -> None:
+    if path.is_symlink():
+        raise BrainConfigError(f"refusing to follow symbolic link scaffold file: {path}")
     current = path.read_text(encoding="utf-8")
     if marker in current:
         actions.append(f"keep {path}")
@@ -320,6 +324,7 @@ kaoyan-408-brain
     )
     for subject in ("数学一", "数学二", "英语一", "英语二", "408", "政治"):
         subject_dir = past_papers / subject
+        _assert_no_symlink_chain(vault, subject_dir)
         if not dry_run:
             subject_dir.mkdir(parents=True, exist_ok=True)
     index = vault / "00-系统" / "知识库索引.md"
@@ -464,12 +469,15 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> int:
-    args = build_parser().parse_args()
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
     try:
         return args.handler(args)
     except BrainConfigError as exc:
         print(f"[FAIL] {exc}")
+        return 1
+    except (OSError, UnicodeError) as exc:
+        print(f"[FAIL] filesystem operation failed ({exc.__class__.__name__})")
         return 1
 
 

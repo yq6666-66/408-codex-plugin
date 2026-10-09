@@ -161,11 +161,14 @@ class HarnessValidationTests(unittest.TestCase):
             {"tool": "shell", "input": "run", "output": "failed", "success": True, "exitCode": 1}
         ]
         self.assert_rejected(record, "success cannot be true")
-        record["cases"][0]["toolCalls"] = [
-            {"tool": "shell", "input": "run", "output": "failed", "success": True,
-             "status": "failed", "exitCode": 0}
-        ]
-        self.assert_rejected(record, "success cannot be true with failing status")
+        for status in ("failed", "rejected"):
+            with self.subTest(status=status):
+                record = make_record()
+                record["cases"][0]["toolCalls"] = [
+                    {"tool": "shell", "input": "run", "output": "failed", "success": True,
+                     "status": status, "exitCode": 0}
+                ]
+                self.assert_rejected(record, "success cannot be true with failing status")
 
     def test_checkpoint_coverage_uniqueness_and_known_ids(self) -> None:
         for mode in ("unknown-id", "duplicate-checkpoint", "unknown-checkpoint", "unjudged", "non-object"):

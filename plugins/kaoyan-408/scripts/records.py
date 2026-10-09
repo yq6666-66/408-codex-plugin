@@ -411,6 +411,117 @@ def _check_date(record: dict[str, Any], key: str, errors: list[str]) -> None:
         errors.append(f"{key} must be a YYYY-MM-DD date or null, got {value!r}")
 
 
+def _legacy_nullable_string(value: Any) -> bool:
+    return value is None or is_sentinel(value) or isinstance(value, str)
+
+
+def _legacy_nullable_date(value: Any) -> bool:
+    return value is None or is_sentinel(value) or is_plain_date(value)
+
+
+def _legacy_nullable_number(value: Any) -> bool:
+    return value is None or is_sentinel(value) or (
+        isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+    )
+
+
+def _legacy_nullable_integer(value: Any) -> bool:
+    return value is None or is_sentinel(value) or (
+        isinstance(value, int) and not isinstance(value, bool) and value >= 0
+    )
+
+
+def _legacy_nullable_rate(value: Any) -> bool:
+    return value is None or is_sentinel(value) or (
+        isinstance(value, (int, float)) and not isinstance(value, bool) and 0 <= value <= 1
+    )
+
+
+def validate_legacy_10(record: dict[str, Any]) -> list[str]:
+    """Validate the supported Schema 1.0 shapes before labeling them readable."""
+    errors: list[str] = []
+    record_type = record.get("recordType") or infer_record_type_10(record)
+    if record_type not in LEGACY_RECORD_TYPES:
+        return ["Schema 1.0 record has no recognizable legacy record type"]
+
+    if record_type == "StudyProfile":
+        if "targetExam" not in record:
+            errors.append("missing required field: targetExam")
+        for key in ("targetExam", "currentPhase"):
+            if key in record and not _legacy_nullable_string(record[key]):
+                errors.append(f"{key} must be a legacy nullable string")
+        if "targetDate" in record and not _legacy_nullable_date(record["targetDate"]):
+            errors.append("targetDate must be a legacy nullable date")
+        if "weeklyHours" in record and not _legacy_nullable_number(record["weeklyHours"]):
+            errors.append("weeklyHours must be a non-negative legacy number or sentinel")
+        if "constraints" in record:
+            value = record["constraints"]
+            if not (isinstance(value, list) and all(isinstance(entry, str) for entry in value)) and not is_sentinel(value):
+                errors.append("constraints must be a legacy string array or sentinel")
+    elif record_type == "ProgressSnapshot":
+        source_fields = ("period", "plannedUnits", "completedUnits", "accuracy", "sampleSize", "bySubject", "blockers")
+        if not any(key in record for key in source_fields):
+            errors.append("Schema 1.0 ProgressSnapshot requires at least one progress field")
+        if "period" in record:
+            period = record["period"]
+            if not isinstance(period, dict):
+                errors.append("period must be an object")
+            else:
+                for key in ("start", "end"):
+                    if key in period and not _legacy_nullable_date(period[key]):
+                        errors.append(f"period.{key} must be a legacy nullable date")
+        for key in ("plannedUnits", "completedUnits"):
+            if key in record and not _legacy_nullable_number(record[key]):
+                errors.append(f"{key} must be a non-negative legacy number or sentinel")
+        if "accuracy" in record and not _legacy_nullable_rate(record["accuracy"]):
+            errors.append("accuracy must be a legacy nullable rate")
+        if "sampleSize" in record and not _legacy_nullable_integer(record["sampleSize"]):
+            errors.append("sampleSize must be a non-negative legacy integer or sentinel")
+        if "bySubject" in record:
+            entries = record["bySubject"]
+            if not isinstance(entries, list):
+                errors.append("bySubject must be an array")
+            else:
+                for index, entry in enumerate(entries):
+                    if not isinstance(entry, dict):
+                        errors.append(f"bySubject[{index}] must be an object")
+                        continue
+                    for key in ("subject",):
+                        if key in entry and not _legacy_nullable_string(entry[key]):
+                            errors.append(f"bySubject[{index}].{key} must be a legacy nullable string")
+                    for key in ("plannedUnits", "completedUnits"):
+                        if key in entry and not _legacy_nullable_number(entry[key]):
+                            errors.append(f"bySubject[{index}].{key} must be a non-negative legacy number or sentinel")
+                    if "accuracy" in entry and not _legacy_nullable_rate(entry["accuracy"]):
+                        errors.append(f"bySubject[{index}].accuracy must be a legacy nullable rate")
+                    if "sampleSize" in entry and not _legacy_nullable_integer(entry["sampleSize"]):
+                        errors.append(f"bySubject[{index}].sampleSize must be a non-negative legacy integer or sentinel")
+        if "blockers" in record:
+            value = record["blockers"]
+            if not (isinstance(value, list) and all(isinstance(entry, str) for entry in value)) and not is_sentinel(value):
+                errors.append("blockers must be a legacy string array or sentinel")
+    else:  # ReviewQueue
+        if "items" not in record:
+            errors.append("missing required field: items")
+        elif not isinstance(record["items"], list):
+            errors.append("items must be an array")
+        else:
+            for index, item in enumerate(record["items"]):
+                if not isinstance(item, dict):
+                    errors.append(f"items[{index}] must be an object")
+                    continue
+                for key in ("subject", "topic", "errorCause", "status", "retestDate"):
+                    if key in item and not _legacy_nullable_string(item[key]):
+                        errors.append(f"items[{index}].{key} must be a legacy nullable string")
+                if "masteryEvidence" in item:
+                    value = item["masteryEvidence"]
+                    if not (isinstance(value, list) and all(isinstance(entry, str) for entry in value)) and not is_sentinel(value):
+                        errors.append(f"items[{index}].masteryEvidence must be a legacy string array or sentinel")
+        if "generatedAt" in record and not _legacy_nullable_date(record["generatedAt"]):
+            errors.append("generatedAt must be a legacy nullable date")
+    return errors
+
+
 def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
     """Hand-rolled structural validation for Schema 1.1/1.2 records."""
     errors: list[str] = []
@@ -460,6 +571,16 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                     errors.append(f"metrics[{index}] missing {key}")
             if not is_non_empty_string(entry.get("unit", "")):
                 errors.append(f"metrics[{index}].unit must be a non-empty string")
+            for key in ("subject", "name"):
+                value = entry.get(key)
+                if value is not None and not is_non_empty_string(value):
+                    errors.append(f"metrics[{index}].{key} must be a non-empty string or null")
+            for key in ("planned", "completed"):
+                value = entry.get(key)
+                if value is not None and (
+                    isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0
+                ):
+                    errors.append(f"metrics[{index}].{key} must be a non-negative number or null")
         for index, entry in enumerate(_array_or_empty(record, "accuracy", errors)):
             if not isinstance(entry, dict):
                 errors.append(f"accuracy[{index}] must be an object")
@@ -596,7 +717,9 @@ def validate_record(record: dict[str, Any], *, strict: bool = False) -> dict[str
         "recordType": record.get("recordType"),
     }
     if version == "1.0":
-        report["valid"] = True
+        errors = validate_legacy_10(record)
+        report["errors"] = errors
+        report["valid"] = not errors
         report["legacy"] = True
         report["message"] = "Schema 1.0 input is readable; run normalize to upgrade to 1.2"
         report["warnings"] = []
