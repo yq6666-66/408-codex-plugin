@@ -174,6 +174,8 @@ def _write_if_missing(path: Path, payload: str, actions: list[str], *, dry_run: 
     if path.is_symlink():
         raise BrainConfigError(f"refusing to follow symbolic link scaffold file: {path}")
     if path.exists():
+        if not path.is_file():
+            raise BrainConfigError(f"expected a regular scaffold file: {path}")
         actions.append(f"keep {path}")
         return
     actions.append(f"create {path}")

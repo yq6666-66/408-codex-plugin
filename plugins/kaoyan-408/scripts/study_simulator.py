@@ -104,6 +104,7 @@ def simulate_cache(
             tag = block_no // cache_lines
             hit = lines[index] == block_no
             if not hit:
+                evicted_block = lines[index]
                 lines[index] = block_no
         else:
             index = None
@@ -145,7 +146,12 @@ def simulate_cache(
                 )
             ),
         })
-        if mapping == "associative":
+        if mapping == "direct":
+            steps[-1]["evictedBlock"] = evicted_block
+            steps[-1]["residentBlock"] = lines[index]
+            if evicted_block is not None:
+                steps[-1]["stateChange"] = f"block {block_no} replaces block {evicted_block} in line {index}"
+        else:
             steps[-1]["evictedBlock"] = evicted_block
             steps[-1]["residentBlocks"] = list(resident.keys())
     return result(

@@ -194,6 +194,14 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         self.assertEqual(external.read_text(encoding="utf-8"), "keep this note\n")
         self.assertFalse(self.config.exists())
 
+    def test_directory_at_scaffold_note_path_is_rejected(self) -> None:
+        project = self.vault / "20-项目" / "408考研"
+        (project / "学习档案.md").mkdir(parents=True)
+        result = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("expected a regular scaffold file", result.stdout)
+        self.assertFalse(self.config.exists())
+
     def test_filesystem_failure_is_reported_without_traceback(self) -> None:
         arguments = [
             "--config", str(self.config), "configure", "--vault", str(self.vault),

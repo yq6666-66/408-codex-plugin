@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
+import os
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from pathlib import Path
 
 
@@ -136,6 +139,25 @@ class CaptureTests(unittest.TestCase):
         self.assertFalse(record_case["toolCalls"][0]["success"])
         self.assertEqual(record_case["sourceEvidence"]["jsonlSha256"], "a" * 64)
         self.assertFalse(report["toolCalls"][0]["success"])
+
+    def test_cli_refuses_output_that_aliases_source_jsonl(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "source.jsonl"
+            source.write_text('{"type":"thread.started"}\n', encoding="utf-8")
+            original = source.read_bytes()
+            alias = Path(temporary) / "alias.jsonl"
+            try:
+                os.link(source, alias)
+            except OSError as exc:
+                self.skipTest(f"hard links unavailable: {exc}")
+            for output in (source, alias):
+                with self.subTest(output=output):
+                    error = io.StringIO()
+                    with redirect_stderr(error):
+                        code = gpt6_capture.main(["--input", str(source), "--output", str(output)])
+                    self.assertEqual(code, 1)
+                    self.assertIn("must not overwrite or alias", error.getvalue())
+                    self.assertEqual(source.read_bytes(), original)
 
 
 if __name__ == "__main__":

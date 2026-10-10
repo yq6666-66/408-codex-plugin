@@ -114,6 +114,19 @@ class RolloutEvidenceTests(unittest.TestCase):
 
 
 class InstalledPayloadTests(unittest.TestCase):
+    def test_supplied_installed_root_symlink_is_rejected_before_resolving(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            candidate = root / "plugin"
+            candidate.mkdir()
+            alias = root / "installed"
+            try:
+                alias.symlink_to(candidate, target_is_directory=True)
+            except OSError as exc:
+                self.skipTest(f"symbolic links unavailable: {exc}")
+            with self.assertRaisesRegex(ValueError, "root must not be a symlink"):
+                runner.resolve_installed_root(alias)
+
     def test_installed_payload_rejects_symlink_entries(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

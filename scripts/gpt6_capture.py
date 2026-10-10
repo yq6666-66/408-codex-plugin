@@ -24,6 +24,17 @@ class CaptureError(RuntimeError):
     """Raised when a raw event stream cannot be parsed safely."""
 
 
+def ensure_output_does_not_alias_input(input_path: Path, output_path: Path) -> None:
+    try:
+        aliases = input_path.resolve() == output_path.resolve()
+        if not aliases and input_path.exists() and output_path.exists():
+            aliases = input_path.samefile(output_path)
+    except OSError as exc:
+        raise CaptureError(f"cannot compare input and output paths: {exc.__class__.__name__}") from exc
+    if aliases:
+        raise CaptureError("output path must not overwrite or alias the source JSONL")
+
+
 def _json_text(value: Any) -> str:
     if isinstance(value, str):
         return value
@@ -199,6 +210,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     try:
+        if args.output is not None:
+            ensure_output_does_not_alias_input(args.input, args.output)
         events, digest = load_events(args.input)
         input_material = None
         if args.input_material_file is not None:

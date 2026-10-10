@@ -121,6 +121,23 @@ class HealthCheckTests(unittest.TestCase):
                     self.assertEqual(report["status"], "problem")
                     self.assertNotIn(str(config), json.dumps(report, ensure_ascii=False))
 
+    def test_enabled_vault_must_have_required_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            vault = root / "vault"
+            vault.mkdir()
+            config = root / "brain.json"
+            config.write_text(json.dumps({
+                "schemaVersion": "1.1", "enabled": True, "vaultPath": str(vault),
+                "projectRoot": "20-project/test", "knowledgeRoot": "30-knowledge/test",
+                "pastPaperRoot": "40-papers/test", "writeMode": "auto-structured",
+                "retrievalScope": "project-first",
+            }), encoding="utf-8")
+            report = health_check.inspect_plugin(REPO / "plugins" / "kaoyan-408", config)
+        self.assertEqual(report["obsidian"]["configStatus"], "valid")
+        self.assertEqual(report["obsidian"]["vaultStatus"], "incomplete")
+        self.assertEqual(report["status"], "problem")
+
 
 if __name__ == "__main__":
     unittest.main()

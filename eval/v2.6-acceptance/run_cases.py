@@ -35,7 +35,15 @@ def file_snapshot(directory: Path) -> dict[str, str]:
     }
 
 
+def resolve_installed_root(installed_root: Path) -> Path:
+    if installed_root.is_symlink():
+        raise ValueError("installed plugin root must not be a symlink")
+    return installed_root.resolve()
+
+
 def read_installed_payload(installed_root: Path, expected_payload: dict[str, bytes]) -> dict[str, bytes]:
+    if installed_root.is_symlink():
+        raise ValueError("installed plugin root must not be a symlink")
     entries = list(installed_root.rglob("*"))
     if any(path.is_symlink() for path in entries):
         raise ValueError("installed plugin tree contains a symlink")
@@ -191,7 +199,10 @@ def main() -> int:
     parser.add_argument("--stop-file", type=Path, help="if this file exists at a case boundary, stop before starting another model call")
     args = parser.parse_args()
     args.repository = args.repository.resolve()
-    args.installed_plugin = args.installed_plugin.resolve()
+    try:
+        args.installed_plugin = resolve_installed_root(args.installed_plugin)
+    except ValueError as exc:
+        parser.error(str(exc))
     args.codex_home = args.codex_home.resolve()
     args.output = args.output.resolve()
     if args.codex_home == (Path.home() / ".codex").resolve():

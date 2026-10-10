@@ -103,6 +103,20 @@ class NormalizeTests(unittest.TestCase):
         ])
         self.assertTrue(any("redacted" in warning for warning in warnings))
 
+    def test_safe_review_item_extensions_survive_and_sensitive_ones_are_redacted(self) -> None:
+        normalized, _ = records.normalize_to_12({
+            "schemaVersion": "1.0",
+            "items": [{
+                "subject": "408", "topic": "LRU", "status": "pending",
+                "sourceLabel": "学校真题", "difficulty": "中等", "apiToken": "fake-secret",
+            }],
+        })
+        item = normalized["items"][0]
+        self.assertEqual(item["sourceLabel"], "学校真题")
+        self.assertEqual(item["difficulty"], "中等")
+        self.assertIsNone(item["apiToken"])
+        self.assertEqual(normalized["redactedFields"], ["/items/0/apiToken"])
+
     def test_legacy_root_unit_is_preserved_during_normalization(self) -> None:
         normalized, warnings = records.normalize_to_12({
             "schemaVersion": "1.0", "plannedUnits": 10, "completedUnits": 7, "unit": "hours",
@@ -223,12 +237,48 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(
             merged["mergeConflicts"],
             [{
-                "path": "/items[LRU]/status",
+                "path": "/items/0/status",
                 "a": "mastered",
                 "b": "pending",
                 "resolution": "kept-newer",
             }],
         )
+
+    def test_newer_null_scalar_clears_older_value(self) -> None:
+        first = {
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "recordId": "kr-dddddddddddddddd", "updatedAt": "2026-09-01",
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": 20,
+            "currentPhase": "强化", "constraints": [],
+        }
+        second = {**first, "updatedAt": "2026-09-10", "currentPhase": None}
+        merged = records.merge_documents(first, second)
+        self.assertIsNone(merged["records"][0]["currentPhase"])
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [{"path": "/currentPhase", "a": "强化", "b": None, "resolution": "kept-newer"}],
+        )
+
+    def test_keyed_list_conflicts_use_json_pointer_indices(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "recordId": "kr-dddddddddddddddd", "updatedAt": "2026-09-01",
+            "generatedAt": "2026-09-01",
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None,
+                "retestOffsetDays": None, "status": "pending", "masteryEvidence": [],
+                "custom/field": "before",
+            }],
+        }
+        newer = {**base, "updatedAt": "2026-09-10", "generatedAt": "2026-09-10", "items": [{
+            **base["items"][0], "status": "due", "custom/field": "after",
+        }]}
+        merged = records.merge_documents(base, newer)
+        paths = {entry["path"] for entry in merged["mergeConflicts"]}
+        self.assertIn("/items/0/status", paths)
+        self.assertIn("/items/0/custom~1field", paths)
+        self.assertEqual(merged["records"][0]["items"][0]["status"], "due")
 
     def test_progress_metrics_with_same_subject_keep_distinct_names(self) -> None:
         base = {
@@ -245,6 +295,23 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(
             {item["name"] for item in merged["records"][0]["metrics"]},
             {"hours", "chapters"},
+        )
+
+    def test_progress_metrics_keep_distinct_names_even_with_topic_extension(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "recordId": "kr-cccccccccccccccc", "period": {"start": None, "end": None},
+            "accuracy": [], "blockers": [],
+        }
+        hours = {"subject": "math", "name": "hours", "unit": "h", "planned": 10, "completed": 4, "topic": "math"}
+        chapters = {"subject": "math", "name": "chapters", "unit": "count", "planned": 8, "completed": 2, "topic": "math"}
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-01", "metrics": [hours]},
+            {**base, "updatedAt": "2026-09-10", "metrics": [chapters]},
+        )
+        self.assertEqual(
+            {(item["name"], item["unit"]) for item in merged["records"][0]["metrics"]},
+            {("hours", "h"), ("chapters", "count")},
         )
 
     def test_invalid_nested_record_shapes_return_json_errors_instead_of_tracebacks(self) -> None:
@@ -467,8 +534,72 @@ class CheckpointTests(unittest.TestCase):
         plan = records.read_checkpoint(checkpoint, __import__("datetime").date(2026, 9, 11), queue)
         self.assertEqual(plan["dueReview"]["due"][0]["topic"], "到期题")
 
+    def test_read_preserves_notes_and_computes_due_from_record_array(self) -> None:
+        checkpoint = records.build_checkpoint({
+            "currentTask": "408 操作系统", "position": "第 3 章", "notes": "从进程切换继续",
+            "dueItems": [], "pendingRetests": [],
+        }, "2026-09-11")
+        queue_record = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None, "errorCauseStatus": None,
+                "nextRetestDate": "2026-09-10", "retestOffsetDays": None, "status": "due",
+                "masteryEvidence": [],
+            }],
+        }
+        plan = records.read_checkpoint(
+            checkpoint, __import__("datetime").date(2026, 9, 11), [queue_record]
+        )
+        self.assertEqual(plan["resume"]["notes"], "从进程切换继续")
+        self.assertEqual([entry["topic"] for entry in plan["dueReview"]["due"]], ["LRU"])
+
 
 class ValidationTests(unittest.TestCase):
+    def test_record_id_requires_sixteen_lowercase_hex_digits(self) -> None:
+        report = records.validate_record({
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "recordId": "kr-zzzzzzzzzzzzzzzz", "updatedAt": None,
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": None,
+            "currentPhase": None, "constraints": [],
+        })
+        self.assertFalse(report["valid"])
+        self.assertTrue(any(
+            "recordId must match kr- plus 16 lowercase hex digits" in error
+            for error in report["errors"]
+        ))
+
+    def test_dates_require_calendar_date_syntax(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "recordId": "kr-aaaaaaaaaaaaaaaa", "updatedAt": "2026-W41-5",
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": None,
+            "currentPhase": None, "constraints": [],
+        }
+        report = records.validate_record(record)
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("updatedAt must be a YYYY-MM-DD date" in error for error in report["errors"]))
+
+    def test_review_queue_scalar_and_mastery_evidence_types_are_validated(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": {}, "topic": 5, "errorCause": {}, "errorCauseStatus": None,
+                "nextRetestDate": None, "retestOffsetDays": None, "status": "pending",
+                "masteryEvidence": [{}],
+            }],
+        }
+        report = records.validate_record(record)
+        self.assertFalse(report["valid"])
+        for field in ("subject", "topic", "errorCause", "masteryEvidence[0]"):
+            self.assertTrue(any(field in error for error in report["errors"]), field)
+
+    def test_checkpoint_id_and_notes_are_validated(self) -> None:
+        checkpoint = records.build_checkpoint({"notes": "notes"}, None)
+        for field, value in (("checkpointId", "oops"), ("notes", {})):
+            with self.subTest(field=field):
+                errors, _ = records.validate_current({**checkpoint, field: value})
+                self.assertTrue(any(field in error for error in errors))
+
     def test_invalid_12_record_reports_errors(self) -> None:
         record = {
             "schemaVersion": "1.2",

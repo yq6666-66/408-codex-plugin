@@ -25,7 +25,6 @@ from typing import Any
 
 SCHEMA_VERSION_CURRENT = "1.2"
 SENTINELS = {"", "未提供", "unknown"}
-DATE_PATTERN_LENGTH = 10
 RECORD_TYPES = {"StudyProfile", "ProgressSnapshot", "ReviewQueue", "SessionCheckpoint"}
 LEGACY_RECORD_TYPES = {"StudyProfile", "ProgressSnapshot", "ReviewQueue"}
 EVIDENCE_TYPES = {"independent", "hint-assisted", "solution-seen", "redo-after-solution", "transfer"}
@@ -58,7 +57,7 @@ class RecordError(RuntimeError):
 
 
 def is_plain_date(value: Any) -> bool:
-    if not isinstance(value, str) or len(value) != DATE_PATTERN_LENGTH:
+    if not isinstance(value, str) or re.fullmatch(r"\d{4}-\d{2}-\d{2}", value) is None:
         return False
     try:
         date.fromisoformat(value)
@@ -158,7 +157,9 @@ def _is_sensitive_extension_key(key: str) -> bool:
     return bool(SENSITIVE_EXTENSION_KEY.search(normalized))
 
 
-def _redact_legacy_extensions(extensions: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+def _redact_legacy_extensions(
+    extensions: dict[str, Any], *, base_pointer: str = "/legacyExtensions"
+) -> tuple[dict[str, Any], list[str]]:
     redacted: list[str] = []
 
     def scrub(value: Any, pointer: str) -> Any:
@@ -183,12 +184,12 @@ def _redact_legacy_extensions(extensions: dict[str, Any]) -> tuple[dict[str, Any
         return value
 
     cleaned = {
-        key: None if _is_sensitive_extension_key(key) else scrub(value, f"/legacyExtensions/{_pointer_escape(key)}")
+        key: None if _is_sensitive_extension_key(key) else scrub(value, f"{base_pointer}/{_pointer_escape(key)}")
         for key, value in extensions.items()
     }
     for key in extensions:
         if _is_sensitive_extension_key(key):
-            redacted.append(f"/legacyExtensions/{_pointer_escape(key)}")
+            redacted.append(f"{base_pointer}/{_pointer_escape(key)}")
     return cleaned, sorted(set(redacted))
 
 
@@ -206,6 +207,8 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
         "recordType": record_type,
     }
     unknown: dict[str, Any] = {}
+    redacted_fields: list[str] = []
+    extension_conflicts: dict[str, Any] = {}
     known_keys = {
         "targetExam", "targetDate", "weeklyHours", "currentPhase", "constraints",
         "period", "plannedUnits", "completedUnits", "accuracy", "sampleSize",
@@ -313,17 +316,46 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
                 if isinstance(evidence, list)
                 else []
             )
+            known_item_fields = {
+                "subject", "topic", "errorCause", "errorCauseStatus", "nextRetestDate",
+                "retestOffsetDays", "retestAnchorDate", "status", "masteryEvidence",
+            }
+            unknown_item_fields = {
+                key: value for key, value in entry.items() if key not in known_item_fields
+            }
+            if unknown_item_fields:
+                pointer_base = f"/items/{index}"
+                safe_item_fields, item_redacted = _redact_legacy_extensions(
+                    unknown_item_fields, base_pointer=pointer_base
+                )
+                redacted_fields.extend(item_redacted)
+                redacted_item_keys = {
+                    pointer[len(pointer_base) + 1:].replace("~1", "/").replace("~0", "~").split("/", 1)[0]
+                    for pointer in item_redacted
+                    if pointer.startswith(pointer_base + "/")
+                }
+                for key, value in safe_item_fields.items():
+                    if key in item:
+                        if key not in redacted_item_keys:
+                            extension_conflicts[f"{pointer_base}/{_pointer_escape(key)}"] = value
+                    else:
+                        item[key] = value
             items.append(item)
         converted["items"] = items
     if unknown:
-        converted["legacyExtensions"], redacted_fields = _redact_legacy_extensions(unknown)
+        safe_root_extensions, root_redacted = _redact_legacy_extensions(unknown)
+        redacted_fields.extend(root_redacted)
+        converted["legacyExtensions"] = safe_root_extensions
         warnings.append(
             "unknown legacy fields preserved under legacyExtensions: "
             + ", ".join(sorted(unknown))
         )
-        if redacted_fields:
-            converted["redactedFields"] = redacted_fields
-            warnings.append("sensitive legacy extension values redacted at: " + ", ".join(redacted_fields))
+    if extension_conflicts:
+        converted.setdefault("legacyExtensions", {}).update(extension_conflicts)
+        warnings.append("conflicting legacy item extensions preserved under legacyExtensions by JSON Pointer")
+    if redacted_fields:
+        converted["redactedFields"] = sorted(set(redacted_fields))
+        warnings.append("sensitive legacy extension values redacted at: " + ", ".join(sorted(set(redacted_fields))))
     return converted, warnings
 
 
@@ -536,7 +568,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
         return errors, warnings
     if record.get("recordId") is not None:
         rid = record["recordId"]
-        if not isinstance(rid, str) or len(rid) != 19 or not rid.startswith("kr-"):
+        if not isinstance(rid, str) or re.fullmatch(r"kr-[0-9a-f]{16}", rid) is None:
             errors.append(f"recordId must match kr- plus 16 lowercase hex digits, got {rid!r}")
     _check_date(record, "updatedAt", errors)
 
@@ -628,6 +660,14 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                         "nextRetestDate", "retestOffsetDays", "status", "masteryEvidence"):
                 if key not in item:
                     errors.append(f"items[{index}] missing {key}")
+            for key in ("subject", "topic", "errorCause"):
+                if key in item:
+                    _check_nullable_string(item, key, errors)
+            if "itemId" in item and (
+                not isinstance(item["itemId"], str)
+                or re.fullmatch(r"kr-[0-9a-f]{16}", item["itemId"]) is None
+            ):
+                errors.append(f"items[{index}].itemId must match kr- plus 16 lowercase hex digits")
             for key in ("nextRetestDate", "retestAnchorDate"):
                 _check_date(item, key, errors)
             if item.get("errorCauseStatus") not in ERROR_CAUSE_STATUSES:
@@ -651,6 +691,12 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                 )
             if not isinstance(item.get("masteryEvidence"), list):
                 errors.append(f"items[{index}].masteryEvidence must be an array")
+            else:
+                for evidence_index, entry in enumerate(item["masteryEvidence"]):
+                    if not is_non_empty_string(entry):
+                        errors.append(
+                            f"items[{index}].masteryEvidence[{evidence_index}] must be a non-empty string"
+                        )
             evidence = item.get("retestEvidence", [])
             if not isinstance(evidence, list):
                 errors.append(f"items[{index}].retestEvidence must be an array")
@@ -667,6 +713,8 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                         errors.append(
                             f"items[{index}].retestEvidence[{position}].outcome is invalid"
                         )
+                    if "note" in entry:
+                        _check_nullable_string(entry, "note", errors)
                     entry_date = entry.get("date")
                     if entry_date is not None and not is_plain_date(entry_date):
                         errors.append(
@@ -678,6 +726,11 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
     else:  # SessionCheckpoint
         for key in ("updatedAt", "currentTask", "position", "dueItems", "pendingRetests"):
             _require(record, key, errors)
+        if "checkpointId" in record and (
+            not isinstance(record["checkpointId"], str)
+            or re.fullmatch(r"kc-[0-9a-f]{16}", record["checkpointId"]) is None
+        ):
+            errors.append("checkpointId must match kc- plus 16 lowercase hex digits")
         for key in ("dueItems", "pendingRetests"):
             value = record.get(key)
             if not (isinstance(value, list) and all(
@@ -693,7 +746,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             isinstance(hint_level, bool) or not isinstance(hint_level, int) or not 0 <= hint_level <= 3
         ):
             errors.append("hintLevel must be an integer from 0 to 3 or null")
-        for key in ("currentQuestion", "materialVersion"):
+        for key in ("currentQuestion", "materialVersion", "notes"):
             _check_nullable_string(record, key, errors)
         for key in ("currentTask", "position"):
             _check_nullable_string(record, key, errors)
@@ -749,14 +802,15 @@ def merge_items(
     """
     if a == b:
         return a
-    if a is None:
-        return b
-    if b is None:
-        return a
     if isinstance(a, dict) and isinstance(b, dict):
         merged = dict(a)
         for key in b:
-            merged[key] = merge_items(a.get(key), b[key], f"{path}/{key}", conflicts, newer)
+            if key not in a:
+                merged[key] = b[key]
+            else:
+                merged[key] = merge_items(
+                    a[key], b[key], f"{path}/{_pointer_escape(key)}", conflicts, newer
+                )
         return merged
     if isinstance(a, list) and isinstance(b, list):
         return merge_lists(a, b, path, conflicts, newer)
@@ -771,16 +825,18 @@ def merge_items(
     return b if newer == "b" else a
 
 
-def _item_key(item: Any) -> tuple[str, ...] | None:
+def _item_key(item: Any, *, metric: bool = False) -> tuple[str, ...] | None:
     if not isinstance(item, dict):
         return None
     if item.get("itemId"):
         return ("itemId", str(item["itemId"]))
+    name = item.get("name")
+    if metric and name:
+        return ("metric", str(item.get("subject")), str(name), str(item.get("unit")))
     subject = item.get("subject")
     topic = item.get("topic")
     if topic:
         return ("topic", str(subject), str(topic))
-    name = item.get("name")
     if name:
         return ("metric", str(item.get("subject")), str(name), str(item.get("unit")))
     if subject or topic:
@@ -796,21 +852,22 @@ def merge_lists(
     newer: str | None = None,
 ) -> list[Any]:
     """Merge keyed list items using the enclosing record's timestamp decision."""
-    if any(_item_key(entry) is not None for entry in a) and any(
-        _item_key(entry) is not None for entry in b
+    metric_items = path.endswith("/metrics")
+    if any(_item_key(entry, metric=metric_items) is not None for entry in a) and any(
+        _item_key(entry, metric=metric_items) is not None for entry in b
     ):
         merged = list(a)
         index_of: dict[tuple[str, ...], int] = {}
         for index, entry in enumerate(merged):
-            key = _item_key(entry)
+            key = _item_key(entry, metric=metric_items)
             if key is not None and key not in index_of:
                 index_of[key] = index
         for entry in b:
-            key = _item_key(entry)
+            key = _item_key(entry, metric=metric_items)
             if key is not None and key in index_of:
                 target = merged[index_of[key]]
                 merged[index_of[key]] = merge_items(
-                    target, entry, f"{path}[{key[-1]}]", conflicts, newer
+                    target, entry, f"{path}/{index_of[key]}", conflicts, newer
                 )
             elif entry not in merged:
                 merged.append(entry)
@@ -952,7 +1009,11 @@ def build_checkpoint(payload: dict[str, Any], base_date: str | None) -> dict[str
     return checkpoint
 
 
-def read_checkpoint(checkpoint: dict[str, Any], base: date | None, queue: dict[str, Any] | None) -> dict[str, Any]:
+def read_checkpoint(
+    checkpoint: dict[str, Any],
+    base: date | None,
+    queue: dict[str, Any] | list[dict[str, Any]] | None,
+) -> dict[str, Any]:
     if checkpoint.get("recordType") != "SessionCheckpoint":
         raise RecordError("checkpoint read requires recordType SessionCheckpoint")
     errors, warnings = validate_current(checkpoint)
@@ -962,6 +1023,7 @@ def read_checkpoint(checkpoint: dict[str, Any], base: date | None, queue: dict[s
         "resume": {
             "currentTask": checkpoint.get("currentTask"),
             "position": checkpoint.get("position"),
+            "notes": checkpoint.get("notes"),
             "teachingMode": checkpoint.get("teachingMode"),
             "answerState": checkpoint.get("answerState"),
             "hintLevel": checkpoint.get("hintLevel"),
@@ -973,7 +1035,7 @@ def read_checkpoint(checkpoint: dict[str, Any], base: date | None, queue: dict[s
         "dueItems": checkpoint.get("dueItems", []),
         "pendingRetests": checkpoint.get("pendingRetests", []),
     }
-    if base is not None and isinstance(queue, dict):
+    if base is not None and queue is not None:
         items: list[dict[str, Any]] = []
         for record in as_record_list(queue):
             if record.get("recordType") == "ReviewQueue":

@@ -56,7 +56,9 @@ def _read_json(path: Path) -> dict[str, Any]:
     return document
 
 
-def _validate_brain_config(root: Path, config: dict[str, Any]) -> None:
+def _validate_brain_config(
+    root: Path, config: dict[str, Any], *, require_paths: bool = False
+) -> None:
     """Delegate schema and field checks to the configuration writer's validator."""
     validator_path = root / "scripts" / "configure_obsidian_brain.py"
     spec = importlib.util.spec_from_file_location("_kaoyan_health_brain_config", validator_path)
@@ -71,7 +73,7 @@ def _validate_brain_config(root: Path, config: dict[str, Any]) -> None:
     finally:
         sys.dont_write_bytecode = previous
         sys.modules.pop(spec.name, None)
-    module.validate_config(config, require_paths=False)
+    module.validate_config(config, require_paths=require_paths)
 
 
 def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = None) -> dict[str, Any]:
@@ -121,10 +123,16 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
             _validate_brain_config(root, brain)
             obsidian["configStatus"] = "valid"
             obsidian["enabled"] = brain["enabled"]
-            vault_available = Path(brain["vaultPath"]).is_dir()
-            obsidian["vaultStatus"] = "available" if vault_available else "missing"
-            if brain["enabled"] and not vault_available:
-                problems.append("enabled Obsidian Vault is unavailable")
+            vault_path = Path(brain["vaultPath"]).expanduser()
+            if brain["enabled"]:
+                try:
+                    _validate_brain_config(root, brain, require_paths=True)
+                    obsidian["vaultStatus"] = "available"
+                except Exception:
+                    obsidian["vaultStatus"] = "incomplete" if vault_path.is_dir() else "missing"
+                    problems.append("enabled Obsidian Vault is unavailable or incomplete")
+            else:
+                obsidian["vaultStatus"] = "available" if vault_path.is_dir() else "missing"
         except Exception as exc:
             obsidian["configStatus"] = "invalid"
             problems.append(f"Obsidian config is unreadable or invalid ({exc.__class__.__name__})")

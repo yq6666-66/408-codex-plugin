@@ -39,6 +39,9 @@ class CacheSimulatorTests(unittest.TestCase):
         self.assertEqual([step["event"] for step in document["steps"]], ["miss", "miss", "miss"])
         self.assertEqual(document["steps"][1]["index"], 0)
         self.assertEqual(document["steps"][1]["tag"], 1)
+        self.assertEqual(document["steps"][1]["evictedBlock"], 0)
+        self.assertEqual(document["steps"][1]["residentBlock"], 256)
+        self.assertIn("replaces block 0 in line 0", document["steps"][1]["stateChange"])
 
     def test_fully_associative_has_no_index(self) -> None:
         document = sim.simulate_cache(16, 64, 256, "associative", [0, 64, 0])
