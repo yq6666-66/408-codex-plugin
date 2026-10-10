@@ -193,6 +193,79 @@ def _redact_legacy_extensions(
     return cleaned, sorted(set(redacted))
 
 
+def _redact_schema_11_extensions(record: dict[str, Any]) -> list[str]:
+    """Redact sensitive extension keys while preserving safe 1.1 fields in place."""
+    redacted: list[str] = []
+
+    def scrub(obj: dict[str, Any], known: set[str], pointer: str) -> None:
+        extensions = {key: value for key, value in obj.items() if key not in known}
+        if extensions:
+            cleaned, fields = _redact_legacy_extensions(extensions, base_pointer=pointer)
+            obj.update(cleaned)
+            redacted.extend(fields)
+
+    root_known = {
+        "schemaVersion", "recordType", "recordId", "updatedAt", "redactedFields",
+        "legacyExtensions", "migrationWarnings",
+    }
+    record_type = record.get("recordType")
+    root_known.update({
+        "StudyProfile": {
+            "targetExam", "targetDate", "weeklyHours", "currentPhase", "constraints",
+        },
+        "ProgressSnapshot": {"period", "metrics", "accuracy", "blockers"},
+        "ReviewQueue": {"generatedAt", "items"},
+        "SessionCheckpoint": {
+            "checkpointId", "updatedAt", "currentTask", "position", "dueItems",
+            "pendingRetests", "notes", "teachingMode", "answerState", "hintLevel",
+            "currentQuestion", "completedQuestions", "remainingQuestions", "materialVersion",
+        },
+    }.get(record_type, set()))
+    scrub(record, root_known, "")
+
+    composite_fields = {
+        "ProgressSnapshot": {
+            "period": {"start", "end"},
+            "metrics": {"subject", "name", "unit", "planned", "completed"},
+            "accuracy": {"subject", "correct", "total", "rate"},
+        },
+        "ReviewQueue": {
+            "items": {
+                "subject", "topic", "errorCause", "errorCauseStatus", "nextRetestDate",
+                "retestOffsetDays", "retestAnchorDate", "itemId", "status",
+                "masteryEvidence", "retestEvidence",
+            },
+        },
+    }.get(record_type, {})
+    for field, known in composite_fields.items():
+        value = record.get(field)
+        if isinstance(value, dict):
+            scrub(value, known, f"/{_pointer_escape(field)}")
+        elif isinstance(value, list):
+            for index, entry in enumerate(value):
+                if isinstance(entry, dict):
+                    pointer = f"/{_pointer_escape(field)}/{index}"
+                    scrub(entry, known, pointer)
+                    if record_type == "ReviewQueue" and field == "items":
+                        evidence = entry.get("retestEvidence")
+                        if isinstance(evidence, list):
+                            evidence_fields = {"evidenceType", "outcome", "date", "note"}
+                            for evidence_index, evidence_entry in enumerate(evidence):
+                                if isinstance(evidence_entry, dict):
+                                    scrub(
+                                        evidence_entry,
+                                        evidence_fields,
+                                        f"{pointer}/retestEvidence/{evidence_index}",
+                                    )
+
+    legacy_extensions = record.get("legacyExtensions")
+    if isinstance(legacy_extensions, dict):
+        cleaned, fields = _redact_legacy_extensions(legacy_extensions)
+        record["legacyExtensions"] = cleaned
+        redacted.extend(fields)
+    return sorted(set(redacted))
+
+
 def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     warnings: list[str] = []
     if _contains_sentinel(record):
@@ -236,6 +309,7 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
             "end": _convert_sentinels(period.get("end")) if isinstance(period, dict) else None,
         }
         metrics: list[dict[str, Any]] = []
+        accuracy_entries: list[dict[str, Any]] = []
         if "plannedUnits" in record or "completedUnits" in record:
             raw_unit = _convert_sentinels(record.get("unit")) if "unit" in record else None
             unit_is_valid = is_non_empty_string(raw_unit)
@@ -261,10 +335,22 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
                     "planned": _convert_sentinels(entry.get("plannedUnits")),
                     "completed": _convert_sentinels(entry.get("completedUnits")),
                 })
+                if "accuracy" in entry or "sampleSize" in entry:
+                    subject_accuracy = _convert_sentinels(entry.get("accuracy"))
+                    subject_sample_size = _convert_sentinels(entry.get("sampleSize"))
+                    accuracy_entries.append({
+                        "subject": _convert_sentinels(entry.get("subject")),
+                        "correct": None,
+                        "total": subject_sample_size,
+                        "rate": subject_accuracy,
+                    })
+                    if subject_accuracy is not None and subject_sample_size is None:
+                        warnings.append(
+                            "legacy bySubject accuracy has no sampleSize; total set to null"
+                        )
         converted["metrics"] = metrics
         accuracy_value = _convert_sentinels(record.get("accuracy"))
         sample_size = _convert_sentinels(record.get("sampleSize"))
-        accuracy_entries: list[dict[str, Any]] = []
         if isinstance(accuracy_value, (int, float)) or accuracy_value is None:
             accuracy_entries.append({
                 "subject": None,
@@ -367,11 +453,22 @@ def normalize_to_12(record: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     if version == "1.0":
         converted, migrate_warnings = normalize_10_to_11(converted)
         warnings.extend(migrate_warnings)
+    elif version == "1.1":
+        redacted = _redact_schema_11_extensions(converted)
+        if redacted:
+            previous = converted.get("redactedFields")
+            previous_fields = previous if isinstance(previous, list) else []
+            converted["redactedFields"] = sorted({
+                field for field in [*previous_fields, *redacted] if isinstance(field, str)
+            })
+            warnings.append(
+                "sensitive Schema 1.1 extension values redacted at: " + ", ".join(redacted)
+            )
     record_type = converted.get("recordType")
     if record_type not in RECORD_TYPES:
         raise RecordError(f"unknown recordType: {record_type!r}")
     converted["schemaVersion"] = SCHEMA_VERSION_CURRENT
-    if not converted.get("recordId"):
+    if record_type != "SessionCheckpoint" and not converted.get("recordId"):
         converted["recordId"] = stable_id("kr", record)
     if "updatedAt" not in converted:
         converted["updatedAt"] = None
@@ -578,8 +675,13 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
         _check_nullable_string(record, "targetExam", errors)
         _check_date(record, "targetDate", errors)
         _check_nullable_string(record, "currentPhase", errors)
-        if not isinstance(record.get("constraints"), list):
+        constraints = record.get("constraints")
+        if not isinstance(constraints, list):
             errors.append("constraints must be an array")
+        else:
+            for index, constraint in enumerate(constraints):
+                if not is_non_empty_string(constraint):
+                    errors.append(f"constraints[{index}] must be a non-empty string")
         weekly = record.get("weeklyHours")
         if weekly is not None and (not isinstance(weekly, (int, float)) or weekly < 0):
             errors.append("weeklyHours must be a non-negative number or null")
@@ -835,11 +937,7 @@ def _item_key(item: Any, *, metric: bool = False) -> tuple[str, ...] | None:
         return ("metric", str(item.get("subject")), str(name), str(item.get("unit")))
     subject = item.get("subject")
     topic = item.get("topic")
-    if topic:
-        return ("topic", str(subject), str(topic))
-    if name:
-        return ("metric", str(item.get("subject")), str(name), str(item.get("unit")))
-    if subject or topic:
+    if is_non_empty_string(topic):
         return ("topic", str(subject), str(topic))
     return None
 
@@ -894,6 +992,11 @@ def natural_key(record: dict[str, Any]) -> tuple:
 def records_match(a: dict[str, Any], b: dict[str, Any]) -> bool:
     if a.get("recordType") != b.get("recordType"):
         return False
+    if a.get("recordType") == "SessionCheckpoint":
+        checkpoint_a, checkpoint_b = a.get("checkpointId"), b.get("checkpointId")
+        if checkpoint_a and checkpoint_b:
+            return checkpoint_a == checkpoint_b
+        return natural_key(a) == natural_key(b)
     id_a, id_b = a.get("recordId"), b.get("recordId")
     if id_a and id_b:
         return id_a == id_b

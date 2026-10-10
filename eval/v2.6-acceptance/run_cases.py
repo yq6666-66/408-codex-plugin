@@ -347,6 +347,19 @@ def main() -> int:
             "added": sorted(set(after) - set(before)), "removed": sorted(set(before) - set(after)),
             "modified": sorted(p for p in set(before) & set(after) if before[p] != after[p]),
         }
+        try:
+            post_payload = read_installed_payload(args.installed_plugin, expected_payload)
+            post_tree_hash = plugin_tree_digest(post_payload)
+            summary["postRunInstalledTreeHash"] = post_tree_hash
+            if post_tree_hash != tree_hash:
+                summary["status"] = "invalid-environment"
+                summary["error"] = "installed plugin tree changed during acceptance case"
+        except (OSError, ValueError) as error:
+            summary["status"] = "invalid-environment"
+            summary["postRunInstalledTreeHash"] = None
+            summary["error"] = (
+                "installed plugin verification failed after case: " + error.__class__.__name__
+            )
         summary["finishedAt"] = now()
         write_json(case_dir / "run-summary.json", summary)
         if summary["status"] == "invalid-environment":

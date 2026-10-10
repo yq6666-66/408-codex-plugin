@@ -93,6 +93,9 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         disabled = self.run_cli("disable")
         self.assertEqual(disabled.returncode, 0, disabled.stdout + disabled.stderr)
         self.assertFalse(json.loads(self.config.read_text(encoding="utf-8"))["enabled"])
+        checked_disabled = self.run_cli("check")
+        self.assertEqual(checked_disabled.returncode, 0, checked_disabled.stdout + checked_disabled.stderr)
+        self.assertIn("[OK] enabled: false", checked_disabled.stdout)
 
         enabled = self.run_cli("enable")
         self.assertEqual(enabled.returncode, 1)

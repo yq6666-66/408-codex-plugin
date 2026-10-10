@@ -103,6 +103,70 @@ class NormalizeTests(unittest.TestCase):
         ])
         self.assertTrue(any("redacted" in warning for warning in warnings))
 
+    def test_schema_11_extensions_are_redacted_during_upgrade(self) -> None:
+        record = {
+            "schemaVersion": "1.1", "recordType": "ReviewQueue", "generatedAt": None,
+            "apiToken": "root-secret", "sourceLabel": "trusted note",
+            "legacyExtensions": {"password": "nested-secret", "display": "compact"},
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None, "retestOffsetDays": None,
+                "status": "pending", "masteryEvidence": [], "sourceLabel": "旧题",
+                "sessionToken": "item-secret",
+            }],
+        }
+        normalized, warnings = records.normalize_to_12(record)
+        self.assertEqual(normalized["sourceLabel"], "trusted note")
+        self.assertEqual(normalized["items"][0]["sourceLabel"], "旧题")
+        self.assertIsNone(normalized["apiToken"])
+        self.assertIsNone(normalized["items"][0]["sessionToken"])
+        self.assertIsNone(normalized["legacyExtensions"]["password"])
+        self.assertEqual(normalized["legacyExtensions"]["display"], "compact")
+        self.assertEqual(normalized["redactedFields"], [
+            "/apiToken", "/items/0/sessionToken", "/legacyExtensions/password",
+        ])
+        self.assertTrue(any("Schema 1.1" in warning for warning in warnings))
+
+    def test_schema_11_extensions_are_redacted_during_upgrade(self) -> None:
+        record = {
+            "schemaVersion": "1.1", "recordType": "ReviewQueue", "generatedAt": None,
+            "apiToken": "root-secret", "sourceLabel": "trusted note",
+            "legacyExtensions": {"password": "nested-secret", "display": "compact"},
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None, "retestOffsetDays": None,
+                "status": "pending", "masteryEvidence": [], "sourceLabel": "旧题",
+                "sessionToken": "item-secret",
+            }],
+        }
+        normalized, warnings = records.normalize_to_12(record)
+        self.assertEqual(normalized["sourceLabel"], "trusted note")
+        self.assertEqual(normalized["items"][0]["sourceLabel"], "旧题")
+        self.assertIsNone(normalized["apiToken"])
+        self.assertIsNone(normalized["items"][0]["sessionToken"])
+        self.assertIsNone(normalized["legacyExtensions"]["password"])
+        self.assertEqual(normalized["legacyExtensions"]["display"], "compact")
+        self.assertEqual(normalized["redactedFields"], [
+            "/apiToken", "/items/0/sessionToken", "/legacyExtensions/password",
+        ])
+        self.assertTrue(any("Schema 1.1" in warning for warning in warnings))
+
+    def test_schema_10_by_subject_accuracy_survives_upgrade(self) -> None:
+        normalized, _ = records.normalize_to_12({
+            "schemaVersion": "1.0",
+            "period": {"start": "2026-09-01", "end": "2026-09-07"},
+            "bySubject": [{
+                "subject": "408", "plannedUnits": 10, "completedUnits": 8,
+                "accuracy": 0.8, "sampleSize": 10,
+            }],
+        })
+        subject_accuracy = next(
+            entry for entry in normalized["accuracy"] if entry["subject"] == "408"
+        )
+        self.assertIsNone(subject_accuracy["correct"])
+        self.assertEqual(subject_accuracy["total"], 10)
+        self.assertEqual(subject_accuracy["rate"], 0.8)
+
     def test_safe_review_item_extensions_survive_and_sensitive_ones_are_redacted(self) -> None:
         normalized, _ = records.normalize_to_12({
             "schemaVersion": "1.0",
@@ -124,6 +188,22 @@ class NormalizeTests(unittest.TestCase):
         self.assertEqual(normalized["recordType"], "ProgressSnapshot")
         self.assertEqual(normalized["metrics"][0]["unit"], "hours")
         self.assertFalse(any("carry no unit" in warning for warning in warnings))
+
+    def test_schema_10_by_subject_accuracy_survives_upgrade(self) -> None:
+        normalized, _ = records.normalize_to_12({
+            "schemaVersion": "1.0",
+            "period": {"start": "2026-09-01", "end": "2026-09-07"},
+            "bySubject": [{
+                "subject": "408", "plannedUnits": 10, "completedUnits": 8,
+                "accuracy": 0.8, "sampleSize": 10,
+            }],
+        })
+        subject_accuracy = next(
+            entry for entry in normalized["accuracy"] if entry["subject"] == "408"
+        )
+        self.assertIsNone(subject_accuracy["correct"])
+        self.assertEqual(subject_accuracy["total"], 10)
+        self.assertEqual(subject_accuracy["rate"], 0.8)
 
     def test_11_record_keeps_existing_identity_and_upgrades_version(self) -> None:
         record = {
@@ -395,6 +475,29 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(len(merged["records"]), 1)
         self.assertEqual(len(merged["records"][0]["items"]), 1)
 
+    def test_unknown_review_topics_do_not_collapse_by_subject(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "recordId": "kr-eeeeeeeeeeeeeeee", "generatedAt": "2026-09-01",
+        }
+        first = {
+            "subject": "408", "topic": None, "errorCause": "原因甲", "status": "pending",
+            "name": "unclassified", "unit": "same extension",
+        }
+        second = {
+            "subject": "408", "topic": None, "errorCause": "原因乙", "status": "due",
+            "name": "unclassified", "unit": "same extension",
+        }
+        merged = records.merge_documents(
+            {**base, "items": [first]},
+            {**base, "items": [second]},
+        )
+        self.assertEqual(len(merged["records"][0]["items"]), 2)
+        self.assertEqual(
+            {item["errorCause"] for item in merged["records"][0]["items"]},
+            {"原因甲", "原因乙"},
+        )
+
     def test_distinct_records_are_both_kept(self) -> None:
         a = {"schemaVersion": "1.2", "recordType": "SessionCheckpoint", "updatedAt": None,
              "currentTask": "A", "position": None, "dueItems": [], "pendingRetests": []}
@@ -402,6 +505,23 @@ class MergeTests(unittest.TestCase):
              "currentTask": "B", "position": None, "dueItems": [], "pendingRetests": []}
         merged = records.merge_documents({"records": [a]}, {"records": [b]})
         self.assertEqual(len(merged["records"]), 2)
+
+    def test_checkpoints_merge_by_checkpoint_id_not_content_record_id(self) -> None:
+        old = {
+            "schemaVersion": "1.1", "recordType": "SessionCheckpoint",
+            "checkpointId": "kc-aaaaaaaaaaaaaaaa", "updatedAt": "2026-09-01",
+            "currentTask": "408 操作系统", "position": "第 1 题",
+            "dueItems": [], "pendingRetests": [],
+        }
+        new = {**old, "updatedAt": "2026-09-10", "position": "第 2 题"}
+        old_normalized, _ = records.normalize_to_12(old)
+        new_normalized, _ = records.normalize_to_12(new)
+        self.assertNotIn("recordId", old_normalized)
+        self.assertNotIn("recordId", new_normalized)
+        merged = records.merge_documents(old_normalized, new_normalized)
+        self.assertEqual(len(merged["records"]), 1)
+        self.assertEqual(merged["records"][0]["checkpointId"], "kc-aaaaaaaaaaaaaaaa")
+        self.assertEqual(merged["records"][0]["position"], "第 2 题")
 
 
 class DueTests(unittest.TestCase):
@@ -567,6 +687,17 @@ class ValidationTests(unittest.TestCase):
             "recordId must match kr- plus 16 lowercase hex digits" in error
             for error in report["errors"]
         ))
+
+    def test_each_study_profile_constraint_must_be_a_non_empty_string(self) -> None:
+        report = records.validate_record({
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "recordId": "kr-aaaaaaaaaaaaaaaa", "updatedAt": None,
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": None,
+            "currentPhase": None, "constraints": ["valid", {}, "", "unknown"],
+        })
+        self.assertFalse(report["valid"])
+        for index in (1, 2, 3):
+            self.assertTrue(any(f"constraints[{index}]" in error for error in report["errors"]))
 
     def test_dates_require_calendar_date_syntax(self) -> None:
         record = {

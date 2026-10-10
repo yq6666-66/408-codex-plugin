@@ -144,6 +144,17 @@ class InstalledPayloadTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "symlink"):
                     runner.read_installed_payload(root, expected)
 
+    def test_installed_payload_reverification_detects_modified_contents(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            payload_file = root / "payload.txt"
+            payload_file.write_bytes(b"expected")
+            expected = {"payload.txt": b"expected"}
+            self.assertEqual(runner.read_installed_payload(root, expected), expected)
+            payload_file.write_bytes(b"modified during unrestricted run")
+            with self.assertRaisesRegex(ValueError, "does not match the exact repository payload"):
+                runner.read_installed_payload(root, expected)
+
 
 class FailedTurnSummaryTests(unittest.TestCase):
     def test_turn_exit_and_stderr_path_survive_empty_raw_capture(self) -> None:

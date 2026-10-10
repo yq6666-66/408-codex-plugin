@@ -432,7 +432,9 @@ def migrate(args: argparse.Namespace) -> int:
 
 
 def check(args: argparse.Namespace) -> int:
-    config = load_config(args.config.expanduser())
+    config = load_config(args.config.expanduser(), require_paths=False)
+    if config["enabled"]:
+        validate_config(config, require_paths=True)
     print(f"[OK] config: {args.config.expanduser()}")
     print(f"[OK] enabled: {str(config['enabled']).lower()}")
     print(f"[OK] Vault: {config['vaultPath']}")
