@@ -24,9 +24,9 @@ def make_record(variant: str = "new") -> dict:
     return {
         "meta": {
             "pluginName": "kaoyan-408", "pluginVariant": variant,
-            "pluginVersion": "2.5.1" if variant == "new" else "2.4.0",
             "model": "synthetic-test-model", "reasoningEffort": "high",
             "host": "synthetic-test-host", "runAt": "2026-09-11T00:00:00Z",
+            "pluginVersion": "2.5.2" if variant == "new" else "2.4.0",
             "notes": "SYNTHETIC UNIT TEST FIXTURE; NOT MODEL ACCEPTANCE EVIDENCE",
         },
         "cases": [
@@ -70,19 +70,19 @@ class HarnessValidationTests(unittest.TestCase):
         categories = {case["category"] for case in CATALOG.values()}
         for category in ("detailed-answer", "concise-answer", "batching", "defective-input",
                          "answer-leak", "continuous-task", "past-paper", "official-info",
-                         "long-term-memory", "degradation", "computation"):
+                         "long-term-memory", "degradation", "computation", "multi-turn-state"):
             self.assertIn(category, categories)
-        self.assertEqual(len(CATALOG), 17)
+        self.assertEqual(len(CATALOG), 20)
 
     def test_complete_synthetic_fixture_passes_without_mutation(self) -> None:
         record = make_record()
         before = copy.deepcopy(record)
         summary = harness.validate_record(record, CATALOG)
-        self.assertEqual(summary["pass"], 17)
+        self.assertEqual(summary["pass"], len(CATALOG))
         self.assertEqual(record, before)
         code, stdout, stderr = run_records(record)
         self.assertEqual(code, 0, stderr)
-        self.assertEqual(json.loads(stdout)["total"], 17)
+        self.assertEqual(json.loads(stdout)["total"], len(CATALOG))
 
     def test_missing_and_duplicate_cases_are_rejected_by_cli(self) -> None:
         for mode in ("missing", "duplicate"):
@@ -150,6 +150,25 @@ class HarnessValidationTests(unittest.TestCase):
         self.assert_rejected(record, "toolCalls")
         record["cases"][0]["toolCalls"] = [{"tool": "synthetic", "input": "fixture input", "output": "fixture output"}]
         harness.validate_record(record, CATALOG)
+
+    def test_tool_success_evidence_is_typed_and_consistent(self) -> None:
+        record = make_record()
+        record["cases"][0]["toolCalls"] = [
+            {"tool": "shell", "input": "run", "output": "failed", "success": "false"}
+        ]
+        self.assert_rejected(record, "success must be a boolean")
+        record["cases"][0]["toolCalls"] = [
+            {"tool": "shell", "input": "run", "output": "failed", "success": True, "exitCode": 1}
+        ]
+        self.assert_rejected(record, "success cannot be true")
+        for status in ("failed", "rejected"):
+            with self.subTest(status=status):
+                record = make_record()
+                record["cases"][0]["toolCalls"] = [
+                    {"tool": "shell", "input": "run", "output": "failed", "success": True,
+                     "status": status, "exitCode": 0}
+                ]
+                self.assert_rejected(record, "success cannot be true with failing status")
 
     def test_checkpoint_coverage_uniqueness_and_known_ids(self) -> None:
         for mode in ("unknown-id", "duplicate-checkpoint", "unknown-checkpoint", "unjudged", "non-object"):

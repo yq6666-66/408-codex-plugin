@@ -7,6 +7,8 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from contextlib import redirect_stdout
+from io import StringIO
 from unittest.mock import patch
 
 
@@ -80,6 +82,21 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         checked = self.run_cli("check")
         self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
         self.assertIn("[OK] enabled: true", checked.stdout)
+
+    def test_disable_succeeds_if_vault_is_temporarily_unavailable(self) -> None:
+        configured = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(configured.returncode, 0, configured.stdout + configured.stderr)
+        data = json.loads(self.config.read_text(encoding="utf-8"))
+        data["vaultPath"] = str(self.root / "moved-vault")
+        self.config.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+        disabled = self.run_cli("disable")
+        self.assertEqual(disabled.returncode, 0, disabled.stdout + disabled.stderr)
+        self.assertFalse(json.loads(self.config.read_text(encoding="utf-8"))["enabled"])
+
+        enabled = self.run_cli("enable")
+        self.assertEqual(enabled.returncode, 1)
+        self.assertFalse(json.loads(self.config.read_text(encoding="utf-8"))["enabled"])
 
     def test_dry_run_changes_nothing(self) -> None:
         result = self.run_cli(
@@ -161,6 +178,41 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         result = self.run_cli("configure", "--vault", str(link))
         self.assertEqual(result.returncode, 1)
         self.assertIn("symbolic link", result.stdout)
+
+    def test_symbolic_linked_scaffold_file_is_rejected_without_touching_target(self) -> None:
+        project = self.vault / "20-项目" / "408考研"
+        project.mkdir(parents=True)
+        external = self.root / "outside.md"
+        external.write_text("keep this note\n", encoding="utf-8")
+        try:
+            os.symlink(external, project / "学习档案.md")
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"symbolic links unavailable: {exc}")
+        result = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("symbolic link scaffold file", result.stdout)
+        self.assertEqual(external.read_text(encoding="utf-8"), "keep this note\n")
+        self.assertFalse(self.config.exists())
+
+    def test_directory_at_scaffold_note_path_is_rejected(self) -> None:
+        project = self.vault / "20-项目" / "408考研"
+        (project / "学习档案.md").mkdir(parents=True)
+        result = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("expected a regular scaffold file", result.stdout)
+        self.assertFalse(self.config.exists())
+
+    def test_filesystem_failure_is_reported_without_traceback(self) -> None:
+        arguments = [
+            "--config", str(self.config), "configure", "--vault", str(self.vault),
+        ]
+        captured = StringIO()
+        with patch.object(brain, "scaffold_vault", side_effect=OSError("read-only")):
+            with redirect_stdout(captured):
+                code = brain.main(arguments)
+        self.assertEqual(code, 1)
+        self.assertIn("[FAIL] filesystem operation failed (OSError)", captured.getvalue())
+        self.assertNotIn("Traceback", captured.getvalue())
 
 
 if __name__ == "__main__":

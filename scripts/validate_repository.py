@@ -76,8 +76,10 @@ OUTPUT_TAG_SKILLS = {
         "kaoyan-past-paper-analyst",
         "kaoyan-material-study-assistant",
     },
-    "[官方核验]": {"kaoyan-official-info-researcher"},
-    "[待核验]": {"kaoyan-politics-coach", "kaoyan-official-info-researcher"},
+    "[官方核验]": {"kaoyan-official-info-researcher", "kaoyan-admissions-researcher"},
+    "[网友评价]": {"kaoyan-admissions-researcher"},
+    "[调研判断]": {"kaoyan-admissions-researcher"},
+    "[待核验]": {"kaoyan-politics-coach", "kaoyan-official-info-researcher", "kaoyan-admissions-researcher"},
     "[真题证据]": {
         "kaoyan-408-tutor",
         "kaoyan-math-coach",
@@ -359,6 +361,7 @@ def check_obsidian_brain_contract(plugin: Path) -> None:
     )
     for marker in (
         ".codex/kaoyan-408/obsidian-brain.json",
+        "读取用户要求参考的旧招生调研报告",
         '"schemaVersion": "1.1"',
         '"knowledgeRoot"',
         '"pastPaperRoot"',
@@ -760,7 +763,7 @@ def check_forward_cases(repo: Path) -> None:
     forward = load_json(repo / "tests" / "forward-cases.json")
     require(isinstance(forward, dict) and forward.get("schemaVersion") == "2.0", "forward cases must use schemaVersion 2.0")
     cases = forward.get("cases")
-    require(isinstance(cases, list) and len(cases) >= 13, "forward cases must cover at least one case per Skill")
+    require(isinstance(cases, list) and len(cases) >= len(EXPECTED_SKILLS), "forward cases must cover at least one case per Skill")
     ids = [case.get("id") for case in cases if isinstance(case, dict)]
     require(len(ids) == len(cases) and len(set(ids)) == len(ids) and all(isinstance(item, str) and item for item in ids), "forward case IDs must be unique non-empty strings")
     routed: set[str] = set()
@@ -790,7 +793,7 @@ def check_behavior_cases(repo: Path) -> None:
     behavior = load_json(repo / "tests" / "behavior-cases.json")
     require(isinstance(behavior, dict) and behavior.get("schemaVersion") == "2.0", "behavior cases must use schemaVersion 2.0")
     cases = behavior.get("cases")
-    require(isinstance(cases, list) and len(cases) >= 13, "behavior cases must cover at least one scenario per Skill")
+    require(isinstance(cases, list) and len(cases) >= len(EXPECTED_SKILLS), "behavior cases must cover at least one scenario per Skill")
     ids: list[str] = []
     for case in cases:
         require(isinstance(case, dict), "each behavior case must be an object")
@@ -959,7 +962,7 @@ def validate_repo(
 
     skill_root = plugin / "skills"
     skill_dirs = {path.name: path for path in skill_root.iterdir() if path.is_dir()}
-    require(set(skill_dirs) == EXPECTED_SKILLS, "Skill set must match the 13-Skill design")
+    require(set(skill_dirs) == EXPECTED_SKILLS, "Skill set must match the declared design")
     for name in sorted(EXPECTED_SKILLS):
         check_skill(skill_dirs[name])
     check_links(plugin)
@@ -969,7 +972,7 @@ def validate_repo(
         check_git_history(repo)
     return [
         "manifest and marketplace",
-        "13 Skills and openai.yaml files",
+        f"{len(EXPECTED_SKILLS)} Skills and openai.yaml files",
         "shared contracts, generic learning layers, dual brains, teaching modes, portable-record and past-paper JSON Schemas",
         "exact release allowlist, UTF-8/LF, and sensitive-content scan",
         "routing and behavior scenario coverage checks",

@@ -52,6 +52,18 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertEqual(skills, EXPECTED_SKILLS)
         self.assertEqual(files, set(ALLOWED_RELEASE_FILES))
 
+    def test_runtime_helpers_ship_inside_the_plugin(self) -> None:
+        plugin = REPO / "plugins/kaoyan-408"
+        expected = {
+            "scripts/records.py",
+            "scripts/study_simulator.py",
+            "scripts/configure_obsidian_brain.py",
+            "scripts/health_check.py",
+        }
+        self.assertTrue(expected.issubset(ALLOWED_RELEASE_FILES))
+        for relative in expected:
+            self.assertTrue((plugin / relative).is_file(), relative)
+
     def test_schema_and_eval_case_contracts(self) -> None:
         plugin = REPO / "plugins/kaoyan-408"
         check_portable_schema(plugin)
@@ -66,6 +78,7 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertEqual(
             remaining,
             [
+                "admissions-research-contract.md",
                 "beginner-visual-answer-contract.md",
                 "capability-routing-contract.md",
                 "evidence-copyright-contract.md",
@@ -92,6 +105,48 @@ class RepositoryContractTests(unittest.TestCase):
         past_paper = skill_text("kaoyan-past-paper-analyst")
         self.assertIn("样本覆盖表", past_paper)
 
+    def test_past_paper_search_blocks_unreadable_formula_transcription(self) -> None:
+        searcher = skill_text("kaoyan-past-paper-searcher")
+        self.assertIn("逐项抄写", searcher)
+        self.assertIn("外层倍数、括号内增量、分母和指数", searcher)
+        self.assertIn("任何一项看不清或两个来源不一致", searcher)
+        self.assertIn("工具输出中必须实际显示完整公式", searcher)
+        self.assertIn("Total lines", searcher)
+        self.assertIn("仍视为没有读到可核验公式", searcher)
+        self.assertIn("有可用的直接正文读取工具时先获取网页正文", searcher)
+        self.assertIn("题面核对：外层倍数=", searcher)
+        self.assertIn("括号内增量=", searcher)
+        self.assertIn("用户在同一条请求中要求", searcher)
+        self.assertIn("不得只附交接卡", searcher)
+        self.assertIn("[待核验]", searcher)
+        self.assertIn("原创示例", searcher)
+        self.assertIn("仅对数学公式题适用", searcher)
+        self.assertIn("题号、题干关键句、选项", searcher)
+        self.assertIn("不涉及", searcher)
+
+    def test_official_comparison_never_calculates_mismatched_ratios(self) -> None:
+        official = (REPO / "plugins/kaoyan-408/references/admissions-research-contract.md").read_text(encoding="utf-8")
+        for name in ("kaoyan-official-info-researcher", "kaoyan-admissions-researcher"):
+            self.assertIn("admissions-research-contract.md", skill_text(name))
+        self.assertIn("先输出一行逐项完整的统一口径", official)
+        self.assertIn("即使输入材料里已经出现", official)
+        self.assertIn("统一口径：招生年度=", official)
+        self.assertIn("学位类型=", official)
+        self.assertIn("先分别写明分子和分母各自统计的对象", official)
+        self.assertIn("不计算、不列数值，也不提供“粗略参考比”", official)
+
+    def test_old_admissions_report_retrieval_checks_obsidian_configuration(self) -> None:
+        brain = (REPO / "plugins/kaoyan-408/references/obsidian-brain-contract.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("读取用户要求参考的旧招生调研报告", brain)
+
+    def test_math_coach_requires_option_by_option_explanations(self) -> None:
+        math = skill_text("kaoyan-math-coach")
+        self.assertIn("不得只报答案字母", math)
+        self.assertIn("逐项列出所有可读选项", math)
+        self.assertIn("A、B、C、D", math)
+
     def test_teaching_modes_and_answer_policy_are_wired(self) -> None:
         beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(
             encoding="utf-8"
@@ -103,6 +158,18 @@ class RepositoryContractTests(unittest.TestCase):
         )
         self.assertIn("三种教学模式", routing)
         self.assertIn("SessionCheckpoint", routing)
+
+    def test_teaching_mode_precedence_and_conditional_output(self) -> None:
+        beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("教学模式优先于输出顺序", beginner)
+        self.assertIn("确实帮助理解", beginner)
+        self.assertNotIn("**图解**：必须提供", beginner)
+        portable = (REPO / "plugins/kaoyan-408/references/portable-learning-records.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("不必在正文重复粘贴完整 JSON", portable)
 
     def test_observed_model_failures_have_explicit_guards(self) -> None:
         beginner = (REPO / "plugins/kaoyan-408/references/beginner-visual-answer-contract.md").read_text(

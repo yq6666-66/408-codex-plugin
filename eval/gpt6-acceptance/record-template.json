@@ -2,7 +2,7 @@
   "meta": {
     "pluginName": "kaoyan-408",
     "pluginVariant": "new",
-    "pluginVersion": "2.5.1",
+    "pluginVersion": "2.5.2",
     "model": "GPT-6（填写宿主实际返回的模型标识）",
     "reasoningEffort": "填写推理档位，如 medium/high",
     "host": "填写宿主，如 Codex CLI x.y / ChatGPT Desktop",
@@ -15,8 +15,10 @@
       "inputMaterial": "粘贴实际发给模型的完整输入（含图片文件名/路径说明）",
       "modelOutput": "粘贴模型实际回答全文；禁止粘贴编造或模拟的回答",
       "toolCalls": [
-        {"tool": "工具名，如 shell/records.py/web.search", "input": "调用输入", "output": "调用实际返回（无则留空数组）"}
+        {"tool": "工具名，如 shell/records.py/web.search", "input": "调用输入", "output": "调用实际返回（无则留空数组）", "status": "completed", "exitCode": 0, "success": true}
       ],
+      "inputArtifacts": {"材料文件名": "实际文件 SHA-256"},
+      "sourceEvidence": {"jsonlSha256": "原始事件文件 SHA-256", "threadId": "宿主会话 ID"},
       "verdicts": [
         {"checkpoint": "逐字复制 cases.json 中该用例的一条 checkpoint", "verdict": "pass|fail|partial", "evidence": "引用回答原文或工具输出作为依据"}
       ],

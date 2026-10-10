@@ -2,6 +2,8 @@
 
 生效日期：2026-08-04
 
+v2.6.0 候选修订日期：2026-10-08（随正式版本发布生效）。
+
 ## 适用范围
 
 本政策适用于 `kaoyan-408` Skills 插件。插件由公开的静态文件组成，不提供发布者控制的 App、MCP、后台服务、账号系统、模型代理或云端数据存储。用户可以选择让具备本地文件权限的宿主连接其自行配置的 Obsidian Vault，或连接用户自己授权的 Notion 工作区、Udemy 课程、Sider Scholar/Exa 检索、GoodNotes 笔记、Wolfram 计算、A-Z Dictionary 词典、Quizlet 闪卡、Ace Quiz Maker 章节测、Ace Knowledge Graph 图谱、AhaMotion 视频、Vocabulary Trainer 词汇与 Kahoot 互动复习。
@@ -13,6 +15,7 @@
 - ChatGPT 或 Codex 会话；
 - 用户上传的题目、讲义、笔记、试卷或其他文件；
 - 学习计划、作答、进度快照、复测队列或模考记录；
+- 招生调研报告、院校偏好、公开评价整理或招生名单统计；
 - API Key、访问凭据、设备文件、设备路径或设备标识。
 - 网页搜索结果、GitHub 真题来源、Notion 页面 ID、Obsidian 配置，以及各学习应用（Udemy、Sider Scholar、Exa、GoodNotes、Wolfram、A-Z Dictionary、Quizlet、Ace Quiz Maker、Ace Knowledge Graph、AhaMotion、Vocabulary Trainer、Kahoot）的登录态、会话或导出数据。
 
@@ -24,11 +27,15 @@
 
 启用后，宿主可根据公开的大脑契约读取和更新用户指定 Vault 中的 Markdown。默认只保存目标、计划、用户确认的完成记录、错因、复测安排、掌握证据和稳定方法；不保存整段会话、密钥、身份信息或完整付费资料。配置与 Vault 均保存在用户设备上，发布者没有后端接收这些内容。
 
-`StudyProfile`、`ProgressSnapshot` 和 `ReviewQueue` 仍是可复制、可迁移的 Schema 1.1 JSON。用户可以在请求中使用“本次不记忆”切换为单轮只读，也可以关闭本地配置。
+`StudyProfile`、`ProgressSnapshot`、`ReviewQueue` 和 `SessionCheckpoint` 使用可复制、可迁移的 Schema 1.2 JSON，读取端继续兼容 1.0/1.1。招生调研报告使用 Markdown，不改变学习记录 Schema。用户可以在请求中使用“本次不记忆”切换为单轮只读，也可以关闭本地配置。
 
 ## 外部信息核验
 
-当用户要求核验当前招考信息或发现六科真题来源时，Skill 可能建议宿主访问官方页面、GitHub 和公开网页。检索词只包含科目、年份、试卷类型和来源条件，不加入用户作答、学习记录、Notion 页面 ID、Vault 路径或个人信息。宿主的网页搜索记录由宿主服务处理，发布者无法访问。
+当用户要求核验当前招考信息、调研院校或发现六科真题来源时，宿主可访问研招网、院校官网、GitHub 和公开网页；招生调研也可检索知乎、B站、小红书、贴吧及公开经验帖。检索词只包含院校、院系、专业、科目、年份、试卷类型、评价主题和必要来源条件，不加入用户作答、学习记录、Notion 页面 ID、Vault 路径或个人身份信息。宿主的网页搜索记录由宿主服务处理，发布者无法访问。
+
+招生名单只提取必要的复试线、人数和分数区间等汇总统计，不输出考生姓名或考生号。网友评价保留核验所需的平台、标题、直接链接、日期、适用范围和亲历声明，不将作者自述当作已验证身份，不复制完整帖子或评论库。
+
+招生查询默认不写入笔记。只有用户明确要求保存时，宿主才在已授权范围内向 Obsidian `招生调研/` 或 Notion `10｜招生调研` 写入最小 Markdown 报告，按院校、院系、专业与年度定位，保留来源和核验日期；未连接时仅提供可复制内容。只读、本次不记忆及对应知识库写入限制仍优先，旧报告不能替代重新核验。
 
 ## 可选 Udemy / Sider Scholar / GoodNotes 学习层
 

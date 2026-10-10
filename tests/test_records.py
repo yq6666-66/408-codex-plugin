@@ -82,6 +82,49 @@ class NormalizeTests(unittest.TestCase):
         )
         self.assertTrue(any("legacyExtensions" in warning for warning in warnings))
 
+    def test_sensitive_legacy_extensions_are_redacted_with_json_pointers(self) -> None:
+        record = {
+            "schemaVersion": "1.0",
+            "targetExam": "408考研",
+            "apiToken": "fake-token-value",
+            "devicePath": r"C:\Users\student\vault",
+            "safeExtension": {"theme": "dark", "email": "student@example.invalid"},
+        }
+        normalized, warnings = records.normalize_to_12(record)
+        extensions = normalized["legacyExtensions"]
+        self.assertIsNone(extensions["apiToken"])
+        self.assertIsNone(extensions["devicePath"])
+        self.assertEqual(extensions["safeExtension"]["theme"], "dark")
+        self.assertIsNone(extensions["safeExtension"]["email"])
+        self.assertEqual(normalized["redactedFields"], [
+            "/legacyExtensions/apiToken",
+            "/legacyExtensions/devicePath",
+            "/legacyExtensions/safeExtension/email",
+        ])
+        self.assertTrue(any("redacted" in warning for warning in warnings))
+
+    def test_safe_review_item_extensions_survive_and_sensitive_ones_are_redacted(self) -> None:
+        normalized, _ = records.normalize_to_12({
+            "schemaVersion": "1.0",
+            "items": [{
+                "subject": "408", "topic": "LRU", "status": "pending",
+                "sourceLabel": "学校真题", "difficulty": "中等", "apiToken": "fake-secret",
+            }],
+        })
+        item = normalized["items"][0]
+        self.assertEqual(item["sourceLabel"], "学校真题")
+        self.assertEqual(item["difficulty"], "中等")
+        self.assertIsNone(item["apiToken"])
+        self.assertEqual(normalized["redactedFields"], ["/items/0/apiToken"])
+
+    def test_legacy_root_unit_is_preserved_during_normalization(self) -> None:
+        normalized, warnings = records.normalize_to_12({
+            "schemaVersion": "1.0", "plannedUnits": 10, "completedUnits": 7, "unit": "hours",
+        })
+        self.assertEqual(normalized["recordType"], "ProgressSnapshot")
+        self.assertEqual(normalized["metrics"][0]["unit"], "hours")
+        self.assertFalse(any("carry no unit" in warning for warning in warnings))
+
     def test_11_record_keeps_existing_identity_and_upgrades_version(self) -> None:
         record = {
             "schemaVersion": "1.1",
@@ -144,7 +187,169 @@ class MergeTests(unittest.TestCase):
         )
         self.assertEqual(record["weeklyHours"], 35)
         self.assertEqual(record["updatedAt"], "2026-09-10")
-        self.assertEqual(merged["mergeConflicts"], [])
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [
+                {
+                    "path": "/weeklyHours",
+                    "a": 20,
+                    "b": 35,
+                    "resolution": "kept-newer",
+                }
+            ],
+        )
+
+    def test_merge_prefers_newer_updated_at_inside_list_items(self) -> None:
+        item_a = {
+            "subject": "408", "topic": "LRU", "nextRetestDate": "2026-09-05", "status": "pending"
+        }
+        item_b = {
+            "subject": "408", "topic": "LRU", "nextRetestDate": "2026-09-15", "status": "due"
+        }
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "recordId": "kr-bbbbbbbbbbbbbbbb", "generatedAt": "2026-09-01",
+        }
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-01", "items": [item_a]},
+            {**base, "updatedAt": "2026-09-10", "items": [item_b]},
+        )
+        item = merged["records"][0]["items"][0]
+        self.assertEqual(item["nextRetestDate"], "2026-09-15")
+        self.assertEqual(item["status"], "due")
+        self.assertEqual(
+            {conflict["resolution"] for conflict in merged["mergeConflicts"]},
+            {"kept-newer"},
+        )
+
+    def test_merge_marks_newer_first_side_as_kept_newer_inside_list_items(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "recordId": "kr-bbbbbbbbbbbbbbbb", "generatedAt": "2026-09-01",
+        }
+        older_item = {"subject": "408", "topic": "LRU", "status": "pending"}
+        newer_item = {"subject": "408", "topic": "LRU", "status": "mastered"}
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-10", "items": [newer_item]},
+            {**base, "updatedAt": "2026-09-01", "items": [older_item]},
+        )
+        self.assertEqual(merged["records"][0]["items"][0]["status"], "mastered")
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [{
+                "path": "/items/0/status",
+                "a": "mastered",
+                "b": "pending",
+                "resolution": "kept-newer",
+            }],
+        )
+
+    def test_newer_null_scalar_clears_older_value(self) -> None:
+        first = {
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "recordId": "kr-dddddddddddddddd", "updatedAt": "2026-09-01",
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": 20,
+            "currentPhase": "强化", "constraints": [],
+        }
+        second = {**first, "updatedAt": "2026-09-10", "currentPhase": None}
+        merged = records.merge_documents(first, second)
+        self.assertIsNone(merged["records"][0]["currentPhase"])
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [{"path": "/currentPhase", "a": "强化", "b": None, "resolution": "kept-newer"}],
+        )
+
+    def test_keyed_list_conflicts_use_json_pointer_indices(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "recordId": "kr-dddddddddddddddd", "updatedAt": "2026-09-01",
+            "generatedAt": "2026-09-01",
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None,
+                "retestOffsetDays": None, "status": "pending", "masteryEvidence": [],
+                "custom/field": "before",
+            }],
+        }
+        newer = {**base, "updatedAt": "2026-09-10", "generatedAt": "2026-09-10", "items": [{
+            **base["items"][0], "status": "due", "custom/field": "after",
+        }]}
+        merged = records.merge_documents(base, newer)
+        paths = {entry["path"] for entry in merged["mergeConflicts"]}
+        self.assertIn("/items/0/status", paths)
+        self.assertIn("/items/0/custom~1field", paths)
+        self.assertEqual(merged["records"][0]["items"][0]["status"], "due")
+
+    def test_progress_metrics_with_same_subject_keep_distinct_names(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "recordId": "kr-cccccccccccccccc", "period": {"start": None, "end": None},
+            "accuracy": [], "blockers": [],
+        }
+        hours = {"subject": "数学二", "name": "hours", "unit": "hours", "planned": 20, "completed": 10}
+        chapters = {"subject": "数学二", "name": "chapters", "unit": "chapter", "planned": 8, "completed": 3}
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-01", "metrics": [hours]},
+            {**base, "updatedAt": "2026-09-10", "metrics": [chapters]},
+        )
+        self.assertEqual(
+            {item["name"] for item in merged["records"][0]["metrics"]},
+            {"hours", "chapters"},
+        )
+
+    def test_progress_metrics_keep_distinct_names_even_with_topic_extension(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "recordId": "kr-cccccccccccccccc", "period": {"start": None, "end": None},
+            "accuracy": [], "blockers": [],
+        }
+        hours = {"subject": "math", "name": "hours", "unit": "h", "planned": 10, "completed": 4, "topic": "math"}
+        chapters = {"subject": "math", "name": "chapters", "unit": "count", "planned": 8, "completed": 2, "topic": "math"}
+        merged = records.merge_documents(
+            {**base, "updatedAt": "2026-09-01", "metrics": [hours]},
+            {**base, "updatedAt": "2026-09-10", "metrics": [chapters]},
+        )
+        self.assertEqual(
+            {(item["name"], item["unit"]) for item in merged["records"][0]["metrics"]},
+            {("hours", "h"), ("chapters", "count")},
+        )
+
+    def test_invalid_nested_record_shapes_return_json_errors_instead_of_tracebacks(self) -> None:
+        malformed = [
+            {
+                "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+                "period": {"start": None, "end": None}, "metrics": [],
+                "accuracy": [{"subject": "408", "correct": {}, "total": 1, "rate": 0.5}],
+                "blockers": [],
+            },
+            {
+                "schemaVersion": "1.2", "recordType": "ReviewQueue",
+                "recordId": "kr-bbbbbbbbbbbbbbbb", "generatedAt": "2026-09-01", "items": None,
+            },
+        ]
+        for record in malformed:
+            with self.subTest(record_type=record["recordType"]):
+                result = run_cli("validate", stdin=json.dumps(record, ensure_ascii=False))
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stdout + result.stderr)
+                report = json.loads(result.stdout)
+                self.assertIsInstance(report, dict)
+                self.assertFalse(report["valid"])
+
+    def test_null_arrays_and_non_numeric_accuracy_are_reported_as_validation_errors(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "period": {"start": None, "end": None}, "metrics": None,
+            "accuracy": [{"subject": "408", "correct": "5", "total": "10", "rate": "0.5"}],
+            "blockers": [],
+        }
+        result = run_cli("validate", stdin=json.dumps(record, ensure_ascii=False))
+        self.assertEqual(result.returncode, 1)
+        errors = json.loads(result.stdout)["errors"]
+        self.assertIn("metrics must be an array", errors)
+        self.assertIn("accuracy[0].correct must be a non-negative integer or null", errors)
+        self.assertIn("accuracy[0].total must be a non-negative integer or null", errors)
+        self.assertIn("accuracy[0].rate must be a number from 0 to 1 or null", errors)
 
     def test_merge_equal_updated_at_keeps_first_side_and_records_conflict(self) -> None:
         a = {
@@ -235,6 +440,29 @@ class DueTests(unittest.TestCase):
 
 
 class CheckpointTests(unittest.TestCase):
+    def test_optional_question_arrays_may_be_omitted(self) -> None:
+        checkpoint = records.build_checkpoint({}, None)
+        checkpoint.pop("completedQuestions")
+        checkpoint.pop("remainingQuestions")
+        errors, _ = records.validate_current(checkpoint)
+        self.assertEqual(errors, [])
+
+    def test_present_null_question_arrays_are_rejected(self) -> None:
+        base = records.build_checkpoint({}, None)
+        for field in ("completedQuestions", "remainingQuestions"):
+            with self.subTest(field=field):
+                invalid = {**base, field: None}
+                errors, _ = records.validate_current(invalid)
+                self.assertTrue(any(field in error and "array" in error for error in errors))
+
+    def test_resume_text_fields_must_be_strings_or_null(self) -> None:
+        base = records.build_checkpoint({}, None)
+        for field, value in (("currentTask", {}), ("position", 7)):
+            with self.subTest(field=field):
+                invalid = {**base, field: value}
+                errors, _ = records.validate_current(invalid)
+                self.assertTrue(any(field in error and "string" in error for error in errors))
+
     def test_create_and_read_roundtrip(self) -> None:
         checkpoint = records.build_checkpoint(
             {
@@ -242,6 +470,13 @@ class CheckpointTests(unittest.TestCase):
                 "position": "2016 Text 2 第 3 题",
                 "dueItems": ["kr-1234567890abcdef#1"],
                 "pendingRetests": [],
+                "teachingMode": "hint",
+                "answerState": "partial",
+                "hintLevel": 2,
+                "currentQuestion": "4",
+                "completedQuestions": ["1", "2", "3"],
+                "remainingQuestions": ["4", "5"],
+                "materialVersion": "sha256:fixture-v2",
             },
             "2026-09-11",
         )
@@ -254,6 +489,31 @@ class CheckpointTests(unittest.TestCase):
 
         plan = records.read_checkpoint(checkpoint, None, None)
         self.assertEqual(plan["resume"]["position"], "2016 Text 2 第 3 题")
+        self.assertEqual(plan["resume"]["teachingMode"], "hint")
+        self.assertEqual(plan["resume"]["answerState"], "partial")
+        self.assertEqual(plan["resume"]["hintLevel"], 2)
+        self.assertEqual(plan["resume"]["completedQuestions"], ["1", "2", "3"])
+        self.assertEqual(plan["resume"]["remainingQuestions"], ["4", "5"])
+        self.assertEqual(plan["resume"]["materialVersion"], "sha256:fixture-v2")
+
+    def test_checkpoint_rejects_invalid_teaching_state(self) -> None:
+        checkpoint = records.build_checkpoint(
+            {
+                "currentTask": "任务",
+                "teachingMode": "unknown-mode",
+                "answerState": "leaked",
+                "hintLevel": 8,
+                "completedQuestions": ["1", "1"],
+                "remainingQuestions": ["", 2],
+            },
+            None,
+        )
+        errors, _ = records.validate_current(checkpoint)
+        self.assertTrue(any("teachingMode" in error for error in errors))
+        self.assertTrue(any("answerState" in error for error in errors))
+        self.assertTrue(any("hintLevel" in error for error in errors))
+        self.assertTrue(any("completedQuestions" in error for error in errors))
+        self.assertTrue(any("remainingQuestions" in error for error in errors))
 
     def test_create_without_date_keeps_updated_at_null(self) -> None:
         checkpoint = records.build_checkpoint({"currentTask": None}, None)
@@ -274,8 +534,72 @@ class CheckpointTests(unittest.TestCase):
         plan = records.read_checkpoint(checkpoint, __import__("datetime").date(2026, 9, 11), queue)
         self.assertEqual(plan["dueReview"]["due"][0]["topic"], "到期题")
 
+    def test_read_preserves_notes_and_computes_due_from_record_array(self) -> None:
+        checkpoint = records.build_checkpoint({
+            "currentTask": "408 操作系统", "position": "第 3 章", "notes": "从进程切换继续",
+            "dueItems": [], "pendingRetests": [],
+        }, "2026-09-11")
+        queue_record = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None, "errorCauseStatus": None,
+                "nextRetestDate": "2026-09-10", "retestOffsetDays": None, "status": "due",
+                "masteryEvidence": [],
+            }],
+        }
+        plan = records.read_checkpoint(
+            checkpoint, __import__("datetime").date(2026, 9, 11), [queue_record]
+        )
+        self.assertEqual(plan["resume"]["notes"], "从进程切换继续")
+        self.assertEqual([entry["topic"] for entry in plan["dueReview"]["due"]], ["LRU"])
+
 
 class ValidationTests(unittest.TestCase):
+    def test_record_id_requires_sixteen_lowercase_hex_digits(self) -> None:
+        report = records.validate_record({
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "recordId": "kr-zzzzzzzzzzzzzzzz", "updatedAt": None,
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": None,
+            "currentPhase": None, "constraints": [],
+        })
+        self.assertFalse(report["valid"])
+        self.assertTrue(any(
+            "recordId must match kr- plus 16 lowercase hex digits" in error
+            for error in report["errors"]
+        ))
+
+    def test_dates_require_calendar_date_syntax(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "recordId": "kr-aaaaaaaaaaaaaaaa", "updatedAt": "2026-W41-5",
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": None,
+            "currentPhase": None, "constraints": [],
+        }
+        report = records.validate_record(record)
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("updatedAt must be a YYYY-MM-DD date" in error for error in report["errors"]))
+
+    def test_review_queue_scalar_and_mastery_evidence_types_are_validated(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": {}, "topic": 5, "errorCause": {}, "errorCauseStatus": None,
+                "nextRetestDate": None, "retestOffsetDays": None, "status": "pending",
+                "masteryEvidence": [{}],
+            }],
+        }
+        report = records.validate_record(record)
+        self.assertFalse(report["valid"])
+        for field in ("subject", "topic", "errorCause", "masteryEvidence[0]"):
+            self.assertTrue(any(field in error for error in report["errors"]), field)
+
+    def test_checkpoint_id_and_notes_are_validated(self) -> None:
+        checkpoint = records.build_checkpoint({"notes": "notes"}, None)
+        for field, value in (("checkpointId", "oops"), ("notes", {})):
+            with self.subTest(field=field):
+                errors, _ = records.validate_current({**checkpoint, field: value})
+                self.assertTrue(any(field in error for error in errors))
+
     def test_invalid_12_record_reports_errors(self) -> None:
         record = {
             "schemaVersion": "1.2",
@@ -295,6 +619,43 @@ class ValidationTests(unittest.TestCase):
         self.assertTrue(any("simultaneously" in error for error in report["errors"]))
         self.assertTrue(any("evidenceType is invalid" in error for error in report["errors"]))
 
+    def test_retest_offset_must_be_a_non_negative_integer_or_null(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None, "retestAnchorDate": "2026-10-01",
+                "status": "pending", "masteryEvidence": [],
+            }],
+        }
+        for offset in ("3", 3.5, True):
+            with self.subTest(offset=offset):
+                report = records.validate_record({**base, "items": [{**base["items"][0], "retestOffsetDays": offset}]})
+                self.assertFalse(report["valid"])
+                self.assertTrue(any("retestOffsetDays must be a non-negative integer" in e for e in report["errors"]))
+
+    def test_legacy_10_malformed_shapes_are_not_reported_as_valid(self) -> None:
+        for record in (
+            {"schemaVersion": "1.0"},
+            {"schemaVersion": "1.0", "targetExam": "408", "weeklyHours": "many"},
+            {"schemaVersion": "1.0", "recordType": "ProgressSnapshot", "plannedUnits": -1},
+        ):
+            with self.subTest(record=record):
+                report = records.validate_record(record)
+                self.assertFalse(report["valid"])
+                self.assertTrue(report["errors"])
+
+    def test_progress_metric_values_and_nullable_strings_are_validated(self) -> None:
+        report = records.validate_record({
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "period": {"start": None, "end": None},
+            "metrics": [{"subject": {}, "name": 7, "unit": "hours", "planned": -1, "completed": "many"}],
+            "accuracy": [], "blockers": [],
+        })
+        self.assertFalse(report["valid"])
+        for field in ("subject", "name", "planned", "completed"):
+            self.assertTrue(any(f"metrics[0].{field}" in error for error in report["errors"]))
+
     def test_mastered_without_independent_evidence_warns(self) -> None:
         record = {
             "schemaVersion": "1.2",
@@ -309,6 +670,20 @@ class ValidationTests(unittest.TestCase):
         }
         report = records.validate_record(record)
         self.assertTrue(report["valid"])
+        self.assertTrue(any("mastered" in warning for warning in report["warnings"]))
+
+    def test_unknown_outcome_does_not_justify_mastered_status(self) -> None:
+        record = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None, "retestOffsetDays": None,
+                "status": "mastered", "masteryEvidence": [],
+                "retestEvidence": [{"evidenceType": "independent", "outcome": None}],
+            }],
+        }
+        report = records.validate_record(record, strict=True)
+        self.assertFalse(report["valid"])
         self.assertTrue(any("mastered" in warning for warning in report["warnings"]))
 
     def test_legacy_10_input_is_readable(self) -> None:
@@ -358,6 +733,44 @@ class CliTests(unittest.TestCase):
             self.assertEqual(payload["date"], "2026-09-11")
             self.assertEqual(len(payload["due"]), 1)
 
+    def test_due_rejects_non_object_review_items_and_invalid_dates_as_json_errors(self) -> None:
+        queue = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "generatedAt": None, "items": [None],
+        }
+        result = run_cli("due", "-", "--date", "2026-09-11", stdin=json.dumps(queue))
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertIn("items[0] must be an object", json.loads(result.stderr)["error"])
+        invalid_date = run_cli("due", "-", "--date", "not-a-date", stdin="{}")
+        self.assertEqual(invalid_date.returncode, 1)
+        self.assertNotIn("Traceback", invalid_date.stderr)
+        self.assertIsInstance(json.loads(invalid_date.stderr), dict)
+
+    def test_normalize_rejects_malformed_review_queue_items(self) -> None:
+        for record in (
+            {"schemaVersion": "1.0", "items": None},
+            {"schemaVersion": "1.0", "items": [None]},
+            {"schemaVersion": "1.2", "recordType": "ReviewQueue", "items": [None]},
+        ):
+            with self.subTest(record=record):
+                result = run_cli("normalize", stdin=json.dumps(record, ensure_ascii=False))
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertIsInstance(json.loads(result.stderr), dict)
+
+    def test_checkpoint_read_rejects_a_different_record_type(self) -> None:
+        review_queue = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "generatedAt": None, "items": [],
+        }
+        result = run_cli("checkpoint", "read", stdin=json.dumps(review_queue))
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(
+            json.loads(result.stderr)["error"],
+            "checkpoint read requires recordType SessionCheckpoint",
+        )
+
     def test_checkpoint_cli_create_and_read(self) -> None:
         created = run_cli(
             "checkpoint", "create", "--date", "2026-09-11",
@@ -370,6 +783,30 @@ class CliTests(unittest.TestCase):
         self.assertEqual(read.returncode, 0, read.stderr)
         plan = json.loads(read.stdout)
         self.assertEqual(plan["resume"]["currentTask"], "408 操作系统")
+
+    @unittest.skipUnless(sys.platform == "win32", "Windows native-pipe encoding regression")
+    def test_utf8_stdin_works_without_python_utf8_environment(self) -> None:
+        import os
+
+        env = os.environ.copy()
+        env.pop("PYTHONUTF8", None)
+        env.pop("PYTHONIOENCODING", None)
+        payload = json.dumps(
+            {"currentTask": "第五题", "position": "题5未开始"},
+            ensure_ascii=False,
+        )
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "checkpoint", "create", "--date", "2026-09-20"],
+            input=payload,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            env=env,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(json.loads(result.stdout)["currentTask"], "第五题")
 
 
 if __name__ == "__main__":

@@ -39,11 +39,24 @@ class CacheSimulatorTests(unittest.TestCase):
         self.assertEqual([step["event"] for step in document["steps"]], ["miss", "miss", "miss"])
         self.assertEqual(document["steps"][1]["index"], 0)
         self.assertEqual(document["steps"][1]["tag"], 1)
+        self.assertEqual(document["steps"][1]["evictedBlock"], 0)
+        self.assertEqual(document["steps"][1]["residentBlock"], 256)
+        self.assertIn("replaces block 0 in line 0", document["steps"][1]["stateChange"])
 
     def test_fully_associative_has_no_index(self) -> None:
         document = sim.simulate_cache(16, 64, 256, "associative", [0, 64, 0])
         self.assertEqual([step["event"] for step in document["steps"]], ["miss", "miss", "hit"])
         self.assertIsNone(document["steps"][0]["index"])
+        self.assertEqual(document["params"]["indexBits"], 0)
+        self.assertEqual(document["params"]["tagBits"], 10)
+        self.assertEqual(len(document["steps"][0]["split"]["tag"]), 10)
+
+    def test_fully_associative_reports_evicted_and_resident_blocks(self) -> None:
+        document = sim.simulate_cache(8, 4, 2, "associative", [0, 4, 8])
+        third = document["steps"][2]
+        self.assertEqual(third["evictedBlock"], 0)
+        self.assertEqual(third["residentBlocks"], [1, 2])
+        self.assertIn("replaces block 0", third["stateChange"])
 
     def test_out_of_range_address_is_rejected(self) -> None:
         with self.assertRaisesRegex(sim.SimulatorError, "exceeds"):
@@ -55,6 +68,12 @@ class CacheSimulatorTests(unittest.TestCase):
 
 
 class ReplacementSimulatorTests(unittest.TestCase):
+    def test_duplicate_preloaded_pages_are_rejected(self) -> None:
+        for simulate in (sim.simulate_fifo, sim.simulate_lru):
+            with self.subTest(algorithm=simulate.__name__):
+                with self.assertRaisesRegex(sim.SimulatorError, "unique"):
+                    simulate(2, [1, 2], [1, 1])
+
     def test_fifo_belady_three_then_four_frames(self) -> None:
         references = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]
         three = sim.simulate_fifo(3, references, [])
@@ -90,6 +109,16 @@ class ReplacementSimulatorTests(unittest.TestCase):
 
 
 class FcfsSimulatorTests(unittest.TestCase):
+    def test_process_names_must_be_unique_and_non_empty(self) -> None:
+        for process_list in (":0:3", "A:0:3,A:1:2"):
+            with self.subTest(process_list=process_list):
+                with self.assertRaisesRegex(sim.SimulatorError, "name|unique"):
+                    sim.parse_processes(process_list)
+
+    def test_negative_arrival_time_is_rejected(self) -> None:
+        with self.assertRaisesRegex(sim.SimulatorError, "arrival must be non-negative"):
+            sim.parse_processes("P1:-5:1")
+
     def test_classic_three_processes(self) -> None:
         document = sim.simulate_fcfs(sim.parse_processes("P1:0:24,P2:0:3,P3:0:3"))
         by_name = {p["name"]: p for p in document["summary"]["processes"]}
@@ -112,6 +141,22 @@ class FcfsSimulatorTests(unittest.TestCase):
 
 
 class RrSimulatorTests(unittest.TestCase):
+    def test_arrivals_during_a_quantum_are_emitted_in_time_order(self) -> None:
+        document = sim.simulate_rr(sim.parse_processes("P1:0:3,P2:1:1"), 2)
+        events = document["steps"]
+        self.assertEqual(
+            [(step["event"], step.get("process"), step["timeStart"], step["timeEnd"])
+             for step in events],
+            [
+                ("arrival", "P1", 0, 0),
+                ("run", "P1", 0, 1),
+                ("arrival", "P2", 1, 1),
+                ("run", "P1", 1, 2),
+                ("run", "P2", 2, 3),
+                ("run", "P1", 3, 4),
+            ],
+        )
+
     def test_classic_quantum_four(self) -> None:
         document = sim.simulate_rr(sim.parse_processes("P1:0:24,P2:0:3,P3:0:3"), 4)
         by_name = {p["name"]: p for p in document["summary"]["processes"]}
@@ -157,6 +202,16 @@ class HtmlOutputTests(unittest.TestCase):
         self.assertIn("后一步", payload)
         self.assertIn("stateChange", payload)
         self.assertIn('"algorithm": "fifo"', payload)
+
+    def test_html_rejects_a_zero_step_simulation_without_writing_a_broken_file(self) -> None:
+        import tempfile
+
+        document = sim.simulate_fifo(2, [], [])
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "empty.html"
+            with self.assertRaisesRegex(sim.SimulatorError, "no steps"):
+                sim.write_html(document, path)
+            self.assertFalse(path.exists())
 
 
 class CliTests(unittest.TestCase):

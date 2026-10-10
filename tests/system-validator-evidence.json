@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-19T13:38:42Z",
+  "generatedAt": "2026-10-10T16:05:48Z",
   "plugin": {
     "name": "kaoyan-408",
-    "treeSha256": "76006232ffe566bab5164bf68ba206bd686f635dcdab84310c1d261290829383",
-    "version": "2.5.1"
+    "treeSha256": "bfe0356efa97ee659081692f9450bd7f016e9d1fdf547c96ff3a5e78c9510376",
+    "version": "2.6.0"
   },
   "results": {
     "plugin": {
@@ -16,6 +16,10 @@
         "passed": true
       },
       "kaoyan-408-tutor": {
+        "exitCode": 0,
+        "passed": true
+      },
+      "kaoyan-admissions-researcher": {
         "exitCode": 0,
         "passed": true
       },
