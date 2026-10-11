@@ -4,7 +4,7 @@
 
 当前版本：`2.6.0`（未发布候选）；当前稳定版本：`2.5.1`。
 
-v2.6.0 基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。最终 Windows 完整工程门禁 204 项通过，Ubuntu 204 项通过（1 项 Windows 专属测试跳过），14 个 Skill validator 通过，Semgrep 8 条规则扫描 93 个目标且无发现；Windows 与 Ubuntu 的 45 文件 Release ZIP 字节一致。10 类真实定向抽查中，6 类固定材料场景曾在修复前插件树完成并判分通过；实时检索请求受 CLI 配额中断，其他实时场景未运行，最终插件树尚无绑定安装摘要的真实模型会话，因此实时院校招生和网友评价检索能力仍待验收。逐场景状态、最终候选包与证据边界见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。候选分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)；远端检查状态以该 PR 最新 head 为准。本次集成仍保持 `Unreleased`，不打标签、不发布 Release，也不升级稳定安装。
+v2.6.0 基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。截至 2026-10-11，Windows 完整工程门禁 223 项通过，Ubuntu 223 项通过（1 项 Windows 专属测试跳过），官方 Skill validator 14/14 通过，Semgrep 1.162.0 扫描 93 个目标且无发现；Windows 两次构建与 Ubuntu 一次构建的 45 文件候选 ZIP 字节一致，SHA-256 为 `5305e1c37f24a00792ffbd89c980d5c3ef22e3d5ff2df61e48ce526f80adcf80`，隔离 `verify-release` 与 `verify-tree` 均通过，安装树 SHA-256 为 `c687044e7dc0de84a9672084878cdcf7b7b93d794590b18f8c7a952fd62e8f`。前一运行时树完成的 10 类、40 checkpoint 模型抽查不计入最终树通过率；最终树的两次尝试均因 CLI 账户使用额度限制未生成模型回答，其余场景尚未运行，逐项边界见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。候选分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)；远端检查状态以该 PR 最新 head 为准。本次集成仍保持 `Unreleased`，不打标签、不发布 Release，也不升级稳定安装。
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
