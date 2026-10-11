@@ -98,14 +98,44 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
         problems.append(f"manifest is unreadable: {exc}")
 
     skills_root = root / "skills"
-    skills = sorted(
-        path.name
-        for path in skills_root.iterdir()
-        if path.is_dir() and (path / "SKILL.md").is_file() and (path / "agents" / "openai.yaml").is_file()
-    ) if skills_root.is_dir() else []
-    if set(skills) != EXPECTED_SKILLS:
+    skill_entries = list(skills_root.iterdir()) if skills_root.is_dir() else []
+    discovered_skills = {
+        path.name for path in skill_entries if path.is_dir() or path.is_symlink()
+    }
+    skills: list[str] = []
+    for path in sorted(skill_entries, key=lambda entry: entry.name):
+        if not (path.is_dir() or path.is_symlink()):
+            continue
+        if path.is_symlink():
+            problems.append(f"Skill directory must not be a symbolic link: {path.name}")
+            continue
+        skill_doc = path / "SKILL.md"
+        agents_dir = path / "agents"
+        agent_manifest = agents_dir / "openai.yaml"
+        linked_metadata = [
+            name for name, metadata_path in (
+                ("SKILL.md", skill_doc),
+                ("agents/", agents_dir),
+                ("agents/openai.yaml", agent_manifest),
+            ) if metadata_path.is_symlink()
+        ]
+        if linked_metadata:
+            problems.append(
+                f"Skill metadata must not be a symbolic link: {path.name} ({', '.join(linked_metadata)})"
+            )
+        missing_metadata = [
+            name for name, metadata_path in (("SKILL.md", skill_doc), ("agents/openai.yaml", agent_manifest))
+            if not metadata_path.is_file()
+        ]
+        if missing_metadata:
+            problems.append(
+                f"incomplete Skill directory {path.name} (missing: {', '.join(missing_metadata)})"
+            )
+        if not linked_metadata and not missing_metadata:
+            skills.append(path.name)
+    if set(skills) != EXPECTED_SKILLS or discovered_skills != EXPECTED_SKILLS:
         missing = sorted(EXPECTED_SKILLS - set(skills))
-        unexpected = sorted(set(skills) - EXPECTED_SKILLS)
+        unexpected = sorted(discovered_skills - EXPECTED_SKILLS)
         problems.append(f"Skill set mismatch (missing: {missing}; unexpected: {unexpected})")
 
     scripts_root = root / "scripts"

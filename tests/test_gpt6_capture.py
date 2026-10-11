@@ -159,6 +159,54 @@ class CaptureTests(unittest.TestCase):
                     self.assertIn("must not overwrite or alias", error.getvalue())
                     self.assertEqual(source.read_bytes(), original)
 
+    def test_cli_refuses_output_that_aliases_input_material_symlink(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = self.write_jsonl(root, [{"type": "thread.started"}])
+            material = root / "user-turns.txt"
+            material.write_text("exact user input", encoding="utf-8")
+            output = root / "report-alias.json"
+            try:
+                output.symlink_to(material)
+            except OSError as exc:
+                self.skipTest(f"symbolic links unavailable: {exc}")
+            original = material.read_bytes()
+            error = io.StringIO()
+
+            with redirect_stderr(error):
+                code = gpt6_capture.main([
+                    "--input", str(source), "--input-material-file", str(material),
+                    "--output", str(output),
+                ])
+
+            self.assertEqual(code, 1)
+            self.assertIn("must not overwrite or alias an evidence input", error.getvalue())
+            self.assertEqual(material.read_bytes(), original)
+
+    def test_cli_refuses_output_that_aliases_artifact_hardlink(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = self.write_jsonl(root, [{"type": "thread.started"}])
+            artifact = root / "attached-material.bin"
+            artifact.write_bytes(b"original attachment")
+            output = root / "report-hardlink.json"
+            try:
+                os.link(artifact, output)
+            except OSError as exc:
+                self.skipTest(f"hard links unavailable: {exc}")
+            original = artifact.read_bytes()
+            error = io.StringIO()
+
+            with redirect_stderr(error):
+                code = gpt6_capture.main([
+                    "--input", str(source), "--artifact", f"attachment={artifact}",
+                    "--output", str(output),
+                ])
+
+            self.assertEqual(code, 1)
+            self.assertIn("must not overwrite or alias an evidence input", error.getvalue())
+            self.assertEqual(artifact.read_bytes(), original)
+
     def test_cli_reports_output_directory_creation_error_without_traceback(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

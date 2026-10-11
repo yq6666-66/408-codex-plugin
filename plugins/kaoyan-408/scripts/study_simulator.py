@@ -161,6 +161,7 @@ def simulate_cache(
             "blockSize": block_size,
             "cacheLines": cache_lines,
             "mapping": mapping,
+            "replacementPolicy": "LRU" if mapping == "associative" else None,
             "offsetBits": offset_bits,
             "indexBits": index_bits if mapping == "direct" else 0,
             "tagBits": tag_bits,
@@ -389,11 +390,19 @@ def simulate_rr(processes: list[dict[str, int]], quantum: int) -> dict[str, Any]
         if remaining[process["name"]] > 0:
             queue.append(process)
             change = f"{process['name']} runs {run_segments[-1]['timeStart']}->{time}, preempted with {remaining[process['name']]} left"
+            steps.append({
+                "step": len(steps) + 1,
+                "event": "requeue",
+                "process": process["name"],
+                "timeStart": time,
+                "timeEnd": time,
+                "queueAfter": [p["name"] for p in queue],
+                "stateChange": f"{process['name']} is re-enqueued at {time}, queue={[p['name'] for p in queue]}",
+            })
         else:
             completion[process["name"]] = time
             change = f"{process['name']} runs {run_segments[-1]['timeStart']}->{time} and completes"
         run_segments[-1]["stateChange"] = change
-        run_segments[-1]["queueAfter"] = [p["name"] for p in queue]
     summary, _ = _scheduling_summary(processes, completion)
     return result(
         "rr",

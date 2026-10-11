@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -29,6 +30,38 @@ class HealthCheckTests(unittest.TestCase):
         self.assertEqual(report["skills"]["complete"], 14)
         self.assertEqual(report["status"], "problem")
         self.assertTrue(any("Skill set" in issue for issue in report["problems"]))
+
+    def test_incomplete_unexpected_skill_directory_is_not_ignored(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            plugin = Path(temporary) / "plugin"
+            shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+            (plugin / "skills" / "rogue-incomplete").mkdir()
+            report = health_check.inspect_plugin(plugin, Path(temporary) / "missing.json")
+        self.assertEqual(report["status"], "problem")
+        self.assertTrue(any("rogue-incomplete" in issue and "unexpected" in issue for issue in report["problems"]))
+
+    def test_skill_directory_and_required_skill_files_reject_symlinks(self) -> None:
+        for link_target in ("directory", "SKILL.md", "agents/openai.yaml"):
+            with self.subTest(link_target=link_target), tempfile.TemporaryDirectory() as temporary:
+                plugin = Path(temporary) / "plugin"
+                shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+                skills = plugin / "skills"
+                selected = skills / "kaoyan-admissions-researcher"
+                other = skills / "kaoyan-official-info-researcher"
+                try:
+                    if link_target == "directory":
+                        shutil.rmtree(selected)
+                        os.symlink(other, selected, target_is_directory=True)
+                    else:
+                        destination = selected / link_target
+                        target = other / link_target
+                        destination.unlink()
+                        os.symlink(target, destination)
+                except (OSError, NotImplementedError) as exc:
+                    self.skipTest(f"symbolic links unavailable: {exc}")
+                report = health_check.inspect_plugin(plugin, Path(temporary) / "missing.json")
+            self.assertEqual(report["status"], "problem")
+            self.assertTrue(any("symbolic link" in issue for issue in report["problems"]))
 
     def test_manifest_identity_and_semver_are_validated(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

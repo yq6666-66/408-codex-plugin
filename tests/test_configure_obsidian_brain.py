@@ -172,6 +172,26 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         self.assertTrue(legacy.is_file())
         self.assertIn("kaoyan-408-brain", (legacy_project / "主页.md").read_text(encoding="utf-8"))
 
+    def test_migrate_rejects_invalid_legacy_path_types_without_traceback(self) -> None:
+        legacy = self.root / "legacy.json"
+        base = {
+            "schemaVersion": "1.0",
+            "enabled": False,
+            "vaultPath": str(self.vault),
+            "projectRoot": "20-项目/408考研",
+            "writeMode": "auto-structured",
+            "retrievalScope": "project-first",
+        }
+        for field, values in (("vaultPath", (None, 42, [], {})),
+                              ("projectRoot", (None, 42, [], {}))):
+            for value in values:
+                with self.subTest(field=field, value=value):
+                    legacy.write_text(json.dumps({**base, field: value}, ensure_ascii=False), encoding="utf-8")
+                    result = self.run_cli("migrate", "--legacy-config", str(legacy))
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn("[FAIL] legacy " + field, result.stdout)
+                    self.assertNotIn("Traceback", result.stdout + result.stderr)
+
     def test_symbolic_link_vault_is_rejected(self) -> None:
         link = self.root / "vault-link"
         try:

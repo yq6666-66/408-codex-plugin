@@ -24,15 +24,21 @@ class CaptureError(RuntimeError):
     """Raised when a raw event stream cannot be parsed safely."""
 
 
+def ensure_output_does_not_alias_inputs(input_paths: list[Path], output_path: Path) -> None:
+    for input_path in input_paths:
+        try:
+            aliases = input_path.resolve() == output_path.resolve()
+            if not aliases and input_path.exists() and output_path.exists():
+                aliases = input_path.samefile(output_path)
+        except OSError as exc:
+            raise CaptureError(f"cannot compare input and output paths: {exc.__class__.__name__}") from exc
+        if aliases:
+            raise CaptureError("output path must not overwrite or alias an evidence input")
+
+
 def ensure_output_does_not_alias_input(input_path: Path, output_path: Path) -> None:
-    try:
-        aliases = input_path.resolve() == output_path.resolve()
-        if not aliases and input_path.exists() and output_path.exists():
-            aliases = input_path.samefile(output_path)
-    except OSError as exc:
-        raise CaptureError(f"cannot compare input and output paths: {exc.__class__.__name__}") from exc
-    if aliases:
-        raise CaptureError("output path must not overwrite or alias the source JSONL")
+    """Keep the original single-input helper available for callers."""
+    ensure_output_does_not_alias_inputs([input_path], output_path)
 
 
 def _json_text(value: Any) -> str:
@@ -210,8 +216,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     try:
+        artifact_paths: dict[str, Path] = {}
+        for binding in args.artifact:
+            name, separator, raw_path = binding.partition("=")
+            if not separator or not name or not raw_path:
+                raise CaptureError("--artifact must use NAME=PATH")
+            if name in artifact_paths:
+                raise CaptureError(f"duplicate artifact name: {name}")
+            artifact_paths[name] = Path(raw_path)
         if args.output is not None:
-            ensure_output_does_not_alias_input(args.input, args.output)
+            evidence_inputs = [args.input]
+            if args.input_material_file is not None:
+                evidence_inputs.append(args.input_material_file)
+            evidence_inputs.extend(artifact_paths.values())
+            ensure_output_does_not_alias_inputs(evidence_inputs, args.output)
         events, digest = load_events(args.input)
         input_material = None
         if args.input_material_file is not None:
@@ -224,14 +242,9 @@ def main(argv: list[str] | None = None) -> int:
             if not input_material.strip():
                 raise CaptureError("input material file is empty")
         artifacts: dict[str, str] = {}
-        for binding in args.artifact:
-            name, separator, raw_path = binding.partition("=")
-            if not separator or not name or not raw_path:
-                raise CaptureError("--artifact must use NAME=PATH")
-            if name in artifacts:
-                raise CaptureError(f"duplicate artifact name: {name}")
+        for name, artifact_path in artifact_paths.items():
             try:
-                artifacts[name] = hashlib.sha256(Path(raw_path).read_bytes()).hexdigest()
+                artifacts[name] = hashlib.sha256(artifact_path.read_bytes()).hexdigest()
             except OSError as exc:
                 raise CaptureError(f"cannot read artifact {name!r}: {exc.__class__.__name__} ({exc.errno})") from exc
         report = capture(events, digest, args.case_id, input_material, artifacts)

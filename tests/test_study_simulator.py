@@ -58,6 +58,11 @@ class CacheSimulatorTests(unittest.TestCase):
         self.assertEqual(third["residentBlocks"], [1, 2])
         self.assertIn("replaces block 0", third["stateChange"])
 
+    def test_fully_associative_explicitly_uses_lru_replacement(self) -> None:
+        document = sim.simulate_cache(8, 4, 2, "associative", [0, 4, 0, 8])
+        self.assertEqual(document["params"]["replacementPolicy"], "LRU")
+        self.assertEqual(document["steps"][-1]["evictedBlock"], 1)
+
     def test_out_of_range_address_is_rejected(self) -> None:
         with self.assertRaisesRegex(sim.SimulatorError, "exceeds"):
             sim.simulate_cache(16, 64, 256, "direct", [1 << 16])
@@ -143,7 +148,7 @@ class FcfsSimulatorTests(unittest.TestCase):
 class RrSimulatorTests(unittest.TestCase):
     def test_arrivals_during_a_quantum_are_emitted_in_time_order(self) -> None:
         document = sim.simulate_rr(sim.parse_processes("P1:0:3,P2:1:1"), 2)
-        events = document["steps"]
+        events = [step for step in document["steps"] if step["event"] != "requeue"]
         self.assertEqual(
             [(step["event"], step.get("process"), step["timeStart"], step["timeEnd"])
              for step in events],
@@ -174,6 +179,28 @@ class RrSimulatorTests(unittest.TestCase):
         self.assertEqual(
             [(run["process"], run["timeStart"], run["timeEnd"]) for run in runs],
             [("P1", 0, 4), ("P2", 4, 6), ("P1", 6, 10)],
+        )
+
+    def test_boundary_arrival_precedes_requeue_with_monotonic_step_times(self) -> None:
+        document = sim.simulate_rr(sim.parse_processes("P1:0:8,P2:4:2"), 4)
+        steps = document["steps"]
+        self.assertEqual(
+            [(step["event"], step.get("process"), step["timeStart"], step["timeEnd"])
+             for step in steps],
+            [
+                ("arrival", "P1", 0, 0),
+                ("run", "P1", 0, 4),
+                ("arrival", "P2", 4, 4),
+                ("requeue", "P1", 4, 4),
+                ("run", "P2", 4, 6),
+                ("run", "P1", 6, 10),
+            ],
+        )
+        self.assertEqual(steps[1]["queueAfter"], [])
+        self.assertEqual(steps[3]["queueAfter"], ["P2", "P1"])
+        self.assertEqual(
+            [(step["timeStart"], step["timeEnd"]) for step in steps],
+            sorted((step["timeStart"], step["timeEnd"]) for step in steps),
         )
 
     def test_quantum_equal_to_burst_completes_without_requeue(self) -> None:

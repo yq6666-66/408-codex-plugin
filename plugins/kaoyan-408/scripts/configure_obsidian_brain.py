@@ -121,6 +121,10 @@ def load_legacy_config(path: Path) -> dict[str, Any]:
         raise BrainConfigError("legacy config must be a valid Schema 1.0 object")
     if not isinstance(data.get("enabled"), bool):
         raise BrainConfigError("legacy enabled must be boolean")
+    if not isinstance(data.get("vaultPath"), str) or not data["vaultPath"]:
+        raise BrainConfigError("legacy vaultPath must be a non-empty string")
+    if not isinstance(data.get("projectRoot"), str):
+        raise BrainConfigError("legacy projectRoot must be a string")
     if data.get("writeMode") != DEFAULT_WRITE_MODE or data.get("retrievalScope") != DEFAULT_RETRIEVAL_SCOPE:
         raise BrainConfigError("legacy config has unsupported modes")
     vault = _require_real_directory(Path(data.get("vaultPath", "")), "Vault")

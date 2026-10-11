@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -33,6 +34,11 @@ def file_snapshot(directory: Path) -> dict[str, str]:
         for p in sorted(directory.rglob("*"))
         if p.is_file() and ".git" not in p.relative_to(directory).parts
     }
+
+
+def snapshot_digest(snapshot: dict[str, str]) -> str:
+    canonical = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
 def resolve_installed_root(installed_root: Path) -> Path:
@@ -103,14 +109,59 @@ def begin_turn_record(summary: dict, number: int, input_path: Path, raw_path: Pa
 
 def skill_read_proof(capture: dict, skill_file: Path, skill: str) -> list[str]:
     expected = str(skill_file).replace("\\", "/").casefold()
+    exact_path = re.compile(rf"(?<![\w./\\:-]){re.escape(expected)}(?![\w./\\:-])")
     complete_text = skill_file.read_text(encoding="utf-8").replace("\r\n", "\n").strip()
     proofs = []
     for call in capture.get("toolCalls", []) + capture.get("rolloutToolCalls", []):
-        command = call.get("input", "").replace("\\\\", "\\").replace("\\", "/").casefold()
+        command = call.get("input", "")
+        if not isinstance(command, str):
+            continue
+        command = command.replace("\\\\", "\\").replace("\\", "/").casefold()
         output = call.get("output", "").replace("\r\n", "\n")
-        if call.get("success") is True and expected in command and f"name: {skill}" in output and complete_text in output:
+        if call.get("success") is True and exact_path.search(command) and f"name: {skill}" in output and complete_text in output:
             proofs.append(call.get("itemId", ""))
     return proofs
+
+
+def mark_invalid_environment(summary: dict, message: str) -> None:
+    errors = summary.setdefault("environmentErrors", [])
+    if not errors and summary.get("error"):
+        errors.append(summary["error"])
+    errors.append(message)
+    summary["status"] = "invalid-environment"
+    summary["error"] = "; ".join(errors)
+
+
+def record_post_run_snapshots(
+    summary: dict,
+    workspace: Path,
+    workspace_before: dict[str, str],
+    repository: Path,
+    repository_before: dict[str, str],
+) -> None:
+    try:
+        workspace_after = file_snapshot(workspace)
+        summary["workspaceChanges"] = {
+            "added": sorted(set(workspace_after) - set(workspace_before)),
+            "removed": sorted(set(workspace_before) - set(workspace_after)),
+            "modified": sorted(
+                path for path in set(workspace_before) & set(workspace_after)
+                if workspace_before[path] != workspace_after[path]
+            ),
+        }
+    except Exception as exc:
+        summary["workspaceChanges"] = None
+        mark_invalid_environment(summary, f"post-run workspace snapshot failed: {exc.__class__.__name__}")
+
+    summary["repositoryTreeHashBefore"] = snapshot_digest(repository_before)
+    try:
+        repository_after = file_snapshot(repository)
+        summary["repositoryTreeHashAfter"] = snapshot_digest(repository_after)
+        if repository_after != repository_before:
+            mark_invalid_environment(summary, "repository non-.git worktree changed during acceptance case")
+    except Exception as exc:
+        summary["repositoryTreeHashAfter"] = None
+        mark_invalid_environment(summary, f"post-run repository snapshot failed: {exc.__class__.__name__}")
 
 
 def _has_structured_error(value: Any) -> bool:
@@ -237,6 +288,11 @@ def main() -> int:
     args.output = args.output.resolve()
     if args.repository in args.output.parents or args.output == args.repository:
         raise ValueError("raw output must remain outside the repository")
+    try:
+        repository_before = file_snapshot(args.repository)
+    except Exception as exc:
+        parser.error(f"cannot snapshot repository before acceptance: {exc.__class__.__name__}")
+    repository_tree_hash_before = snapshot_digest(repository_before)
     catalog_path, materials_root = acceptance_paths(args.repository)
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     cases = {c["id"]: c for c in catalog["cases"]}
@@ -294,6 +350,7 @@ def main() -> int:
             "installedPlugin": str(args.installed_plugin),
             "installedTreeHash": tree_hash,
             "installedFileCount": len(payload),
+            "repositoryTreeHashBefore": repository_tree_hash_before,
             "catalogSha256": digest(catalog_path),
             "cliVersion": cli_version,
             "model": args.model,
@@ -370,23 +427,18 @@ def main() -> int:
         except (OSError, RuntimeError, subprocess.TimeoutExpired, ValueError) as error:
             summary["status"] = "invalid-environment"
             summary["error"] = str(error)
-        after = file_snapshot(workspace)
-        summary["workspaceChanges"] = {
-            "added": sorted(set(after) - set(before)), "removed": sorted(set(before) - set(after)),
-            "modified": sorted(p for p in set(before) & set(after) if before[p] != after[p]),
-        }
+        record_post_run_snapshots(summary, workspace, before, args.repository, repository_before)
         try:
             post_payload = read_installed_payload(args.installed_plugin, expected_payload)
             post_tree_hash = plugin_tree_digest(post_payload)
             summary["postRunInstalledTreeHash"] = post_tree_hash
             if post_tree_hash != tree_hash:
-                summary["status"] = "invalid-environment"
-                summary["error"] = "installed plugin tree changed during acceptance case"
+                mark_invalid_environment(summary, "installed plugin tree changed during acceptance case")
         except (OSError, ValueError) as error:
-            summary["status"] = "invalid-environment"
             summary["postRunInstalledTreeHash"] = None
-            summary["error"] = (
-                "installed plugin verification failed after case: " + error.__class__.__name__
+            mark_invalid_environment(
+                summary,
+                "installed plugin verification failed after case: " + error.__class__.__name__,
             )
         summary["finishedAt"] = now()
         write_json(case_dir / "run-summary.json", summary)

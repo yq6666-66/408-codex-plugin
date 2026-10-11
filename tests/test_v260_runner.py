@@ -108,6 +108,7 @@ class RolloutEvidenceTests(unittest.TestCase):
             for changed in (
                 {**valid, "success": False},
                 {**valid, "input": str(path.parent / "other.md")},
+                {**valid, "input": f"read {path}.bak"},
                 {**valid, "output": "name: sample-skill\nRequired workflow."},
             ):
                 self.assertEqual(runner.skill_read_proof({"toolCalls": [changed]}, path, "sample-skill"), [])
@@ -219,6 +220,64 @@ class RunnerPathSafetyTests(unittest.TestCase):
                 "candidate repository material",
             )
             self.assertNotEqual(catalog_path, Path(runner.__file__).with_name("cases.json"))
+
+
+class PostRunSnapshotTests(unittest.TestCase):
+    def test_repository_changes_to_catalog_material_plugin_or_worktree_invalidate_case(self) -> None:
+        changed_paths = (
+            "eval/v2.6-acceptance/cases.json",
+            "eval/v2.6-acceptance/materials/example.md",
+            "plugins/kaoyan-408/skills/example/SKILL.md",
+            "README.md",
+        )
+        for changed_path in changed_paths:
+            with self.subTest(path=changed_path), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                repository = root / "repository"
+                affected = repository / changed_path
+                affected.parent.mkdir(parents=True, exist_ok=True)
+                affected.write_text("before", encoding="utf-8")
+                workspace = root / "workspace"
+                workspace.mkdir()
+                workspace_before = runner.file_snapshot(workspace)
+                repository_before = runner.file_snapshot(repository)
+                affected.write_text("changed during candidate run", encoding="utf-8")
+                summary = {"status": "captured-ungraded"}
+
+                runner.record_post_run_snapshots(
+                    summary, workspace, workspace_before, repository, repository_before
+                )
+
+                self.assertEqual(summary["status"], "invalid-environment")
+                self.assertNotEqual(
+                    summary["repositoryTreeHashBefore"], summary["repositoryTreeHashAfter"]
+                )
+                self.assertIn("repository non-.git worktree changed", summary["error"])
+
+    def test_post_run_workspace_snapshot_oserror_is_recorded_without_raising(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repository = root / "repository"
+            repository.mkdir()
+            workspace = root / "workspace"
+            workspace.mkdir()
+            repository_before = runner.file_snapshot(repository)
+            workspace_before = runner.file_snapshot(workspace)
+            summary = {"status": "captured-ungraded"}
+
+            with patch.object(
+                runner, "file_snapshot", side_effect=[PermissionError("access denied"), repository_before]
+            ):
+                runner.record_post_run_snapshots(
+                    summary, workspace, workspace_before, repository, repository_before
+                )
+
+            self.assertEqual(summary["status"], "invalid-environment")
+            self.assertIsNone(summary["workspaceChanges"])
+            self.assertIn("post-run workspace snapshot failed: PermissionError", summary["error"])
+            self.assertEqual(
+                summary["repositoryTreeHashBefore"], summary["repositoryTreeHashAfter"]
+            )
 
 
 class FailedTurnSummaryTests(unittest.TestCase):

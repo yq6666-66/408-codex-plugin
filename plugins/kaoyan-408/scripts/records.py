@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import re
 import sys
 from datetime import date, timedelta
@@ -75,6 +76,14 @@ def is_non_empty_string(value: Any) -> bool:
     return isinstance(value, str) and value.strip() != "" and not is_sentinel(value)
 
 
+def is_non_negative_finite_number(value: Any) -> bool:
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return value >= 0
+    return isinstance(value, float) and math.isfinite(value) and value >= 0
+
+
 def canonical_json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
@@ -115,16 +124,30 @@ def emit(document: Any) -> None:
     print(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=False))
 
 
-def infer_record_type_10(record: dict[str, Any]) -> str | None:
+def _legacy_record_type_candidates(record: dict[str, Any]) -> list[str]:
+    candidates: list[str] = []
+    if any(key in record for key in (
+        "targetExam", "targetDate", "weeklyHours", "currentPhase", "constraints",
+    )):
+        candidates.append("StudyProfile")
+    if any(key in record for key in (
+        "period", "plannedUnits", "completedUnits", "accuracy", "sampleSize", "bySubject", "blockers",
+    )):
+        candidates.append("ProgressSnapshot")
     if "items" in record:
-        return "ReviewQueue"
-    if any(key in record for key in ("bySubject", "sampleSize", "plannedUnits", "completedUnits")):
-        return "ProgressSnapshot"
-    if "targetExam" in record or "currentPhase" in record or "constraints" in record:
-        return "StudyProfile"
-    if "period" in record or "blockers" in record or "accuracy" in record:
-        return "ProgressSnapshot"
-    return None
+        candidates.append("ReviewQueue")
+    return candidates
+
+
+def infer_record_type_10(record: dict[str, Any]) -> str | None:
+    candidates = _legacy_record_type_candidates(record)
+    if len(candidates) > 1:
+        raise RecordError(
+            "ambiguous Schema 1.0 recordType: signatures match "
+            + ", ".join(candidates)
+            + "; keep one type's identifying fields or split the records before migration"
+        )
+    return candidates[0] if candidates else None
 
 
 def _convert_sentinels(value: Any) -> Any:
@@ -273,7 +296,9 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
         warnings.append(
             "legacy sentinel values (empty string / 未提供 / unknown) converted to null or empty arrays"
         )
-    record_type = record.get("recordType") or infer_record_type_10(record)
+    record_type = record.get("recordType")
+    if not record_type:
+        record_type = infer_record_type_10(record)
     if record_type is None:
         raise RecordError("cannot infer recordType from a Schema 1.0 object")
     converted: dict[str, Any] = {
@@ -283,11 +308,15 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
     unknown: dict[str, Any] = {}
     redacted_fields: list[str] = []
     extension_conflicts: dict[str, Any] = {}
-    known_keys = {
-        "targetExam", "targetDate", "weeklyHours", "currentPhase", "constraints",
-        "period", "plannedUnits", "completedUnits", "accuracy", "sampleSize",
-        "bySubject", "blockers", "items", "generatedAt", "unit", "recordType",
+    known_keys_by_type = {
+        "StudyProfile": {"targetExam", "targetDate", "weeklyHours", "currentPhase", "constraints"},
+        "ProgressSnapshot": {
+            "period", "plannedUnits", "completedUnits", "accuracy", "sampleSize",
+            "bySubject", "blockers", "unit",
+        },
+        "ReviewQueue": {"items", "generatedAt"},
     }
+    known_keys = {"recordType"} | known_keys_by_type.get(record_type, set())
     for key, value in record.items():
         if key == "schemaVersion" or key in known_keys:
             continue
@@ -560,9 +589,7 @@ def _legacy_nullable_date(value: Any) -> bool:
 
 
 def _legacy_nullable_number(value: Any) -> bool:
-    return value is None or is_sentinel(value) or (
-        isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
-    )
+    return value is None or is_sentinel(value) or is_non_negative_finite_number(value)
 
 
 def _legacy_nullable_integer(value: Any) -> bool:
@@ -580,7 +607,12 @@ def _legacy_nullable_rate(value: Any) -> bool:
 def validate_legacy_10(record: dict[str, Any]) -> list[str]:
     """Validate the supported Schema 1.0 shapes before labeling them readable."""
     errors: list[str] = []
-    record_type = record.get("recordType") or infer_record_type_10(record)
+    record_type = record.get("recordType")
+    if not record_type:
+        try:
+            record_type = infer_record_type_10(record)
+        except RecordError as exc:
+            return [str(exc)]
     if record_type not in LEGACY_RECORD_TYPES:
         return ["Schema 1.0 record has no recognizable legacy record type"]
 
@@ -708,7 +740,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                 if not is_non_empty_string(constraint):
                     errors.append(f"constraints[{index}] must be a non-empty string")
         weekly = record.get("weeklyHours")
-        if weekly is not None and (not isinstance(weekly, (int, float)) or weekly < 0):
+        if weekly is not None and not is_non_negative_finite_number(weekly):
             errors.append("weeklyHours must be a non-negative number or null")
     elif record_type == "ProgressSnapshot":
         for key in ("period", "metrics", "accuracy", "blockers"):
@@ -718,7 +750,10 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             errors.append("period must be an object")
         else:
             for key in ("start", "end"):
-                value = period.get(key)
+                if key not in period:
+                    errors.append(f"period.{key} is required")
+                    continue
+                value = period[key]
                 if value is not None and not is_plain_date(value):
                     errors.append(f"period.{key} must be a YYYY-MM-DD date or null, got {value!r}")
         for index, entry in enumerate(_array_or_empty(record, "metrics", errors)):
@@ -836,7 +871,11 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                         errors.append(
                             f"items[{index}].retestEvidence[{position}].evidenceType is invalid"
                         )
-                    if entry.get("outcome") not in EVIDENCE_OUTCOMES:
+                    if "outcome" not in entry:
+                        errors.append(
+                            f"items[{index}].retestEvidence[{position}].outcome is required"
+                        )
+                    elif entry["outcome"] not in EVIDENCE_OUTCOMES:
                         errors.append(
                             f"items[{index}].retestEvidence[{position}].outcome is invalid"
                         )
@@ -884,7 +923,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             value = record[key]
             valid_questions = (
                 isinstance(value, list)
-                and all(isinstance(entry, str) and entry.strip() for entry in value)
+                and all(is_non_empty_string(entry) for entry in value)
                 and len(value) == len(set(value))
             )
             if not valid_questions:

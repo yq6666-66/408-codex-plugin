@@ -288,6 +288,32 @@ class NormalizeTests(unittest.TestCase):
                 self.assertFalse(report["valid"])
                 self.assertTrue(report["errors"])
 
+    def test_legacy_record_type_ambiguity_requires_explicit_type(self) -> None:
+        ambiguous_records = (
+            {"schemaVersion": "1.0", "targetExam": "408考研", "period": {}},
+            {"schemaVersion": "1.0", "blockers": [], "items": []},
+            {"schemaVersion": "1.0", "targetExam": "408考研", "items": []},
+        )
+        for record in ambiguous_records:
+            with self.subTest(record=record):
+                with self.assertRaisesRegex(records.RecordError, "ambiguous Schema 1.0 recordType"):
+                    records.normalize_to_12(record)
+                report = records.validate_record(record)
+                self.assertFalse(report["valid"])
+                self.assertTrue(any("ambiguous Schema 1.0 recordType" in error for error in report["errors"]))
+
+    def test_explicit_legacy_record_type_resolves_other_signatures_and_preserves_them(self) -> None:
+        record = {
+            "schemaVersion": "1.0",
+            "recordType": "StudyProfile",
+            "targetExam": "408考研",
+            "items": [{"subject": "408", "topic": "LRU"}],
+        }
+        normalized, _ = records.normalize_to_12(record)
+        self.assertEqual(normalized["recordType"], "StudyProfile")
+        self.assertEqual(normalized["targetExam"], "408考研")
+        self.assertEqual(normalized["legacyExtensions"]["items"], record["items"])
+
     def test_schema_10_by_subject_accuracy_survives_upgrade(self) -> None:
         normalized, _ = records.normalize_to_12({
             "schemaVersion": "1.0",
@@ -710,6 +736,15 @@ class CheckpointTests(unittest.TestCase):
         errors, _ = records.validate_current(checkpoint)
         self.assertTrue(any("completedQuestions" in error and "remainingQuestions" in error for error in errors))
 
+    def test_question_arrays_reject_non_empty_string_sentinels(self) -> None:
+        base = records.build_checkpoint({}, None)
+        for field in ("completedQuestions", "remainingQuestions"):
+            for value in ("unknown", "未提供", "", "   "):
+                with self.subTest(field=field, value=value):
+                    invalid = {**base, field: [value]}
+                    errors, _ = records.validate_current(invalid)
+                    self.assertTrue(any(field in error and "unique non-empty strings" in error for error in errors))
+
     def test_resume_text_fields_must_be_strings_or_null(self) -> None:
         base = records.build_checkpoint({}, None)
         for field, value in (("currentTask", {}), ("position", 7)):
@@ -840,6 +875,70 @@ class ValidationTests(unittest.TestCase):
         self.assertFalse(report["valid"])
         for index in (1, 2, 3):
             self.assertTrue(any(f"constraints[{index}]" in error for error in report["errors"]))
+
+    def test_weekly_hours_rejects_boolean_and_non_finite_numbers(self) -> None:
+        legacy_base = {
+            "schemaVersion": "1.0", "recordType": "StudyProfile", "targetExam": "408考研",
+        }
+        current_base = {
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "targetExam": "408考研", "targetDate": None,
+            "currentPhase": None, "constraints": [],
+        }
+        for base in (legacy_base, current_base):
+            for value in (True, False, float("nan"), float("inf"), float("-inf")):
+                with self.subTest(version=base["schemaVersion"], value=value):
+                    report = records.validate_record({**base, "weeklyHours": value})
+                    self.assertFalse(report["valid"])
+                    self.assertTrue(any("weeklyHours" in error for error in report["errors"]))
+            self.assertTrue(records.validate_record({**base, "weeklyHours": 35.5})["valid"])
+
+    def test_present_period_requires_both_nullable_boundary_keys(self) -> None:
+        for version in ("1.1", "1.2"):
+            base = {
+                "schemaVersion": version, "recordType": "ProgressSnapshot",
+                "period": {"start": None, "end": None},
+                "metrics": [], "accuracy": [], "blockers": [],
+            }
+            with self.subTest(version=version, shape="valid-null-boundaries"):
+                self.assertTrue(records.validate_record(base)["valid"])
+            for period, missing in (({"end": None}, "start"), ({"start": None}, "end")):
+                with self.subTest(version=version, missing=missing):
+                    report = records.validate_record({**base, "period": period})
+                    self.assertFalse(report["valid"])
+                    self.assertTrue(any(f"period.{missing}" in error for error in report["errors"]))
+
+    def test_legacy_partial_period_is_completed_during_migration(self) -> None:
+        legacy = {
+            "schemaVersion": "1.0", "recordType": "ProgressSnapshot",
+            "period": {"start": None},
+        }
+        self.assertTrue(records.validate_record(legacy)["valid"])
+        normalized, _ = records.normalize_to_12(legacy)
+        self.assertEqual(normalized["period"], {"start": None, "end": None})
+        self.assertTrue(records.validate_record(normalized)["valid"])
+
+    def test_retest_evidence_requires_outcome_key_but_allows_explicit_null(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [{
+                "subject": "408", "topic": "LRU", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": None, "retestOffsetDays": None,
+                "status": "pending", "masteryEvidence": [],
+                "retestEvidence": [{"evidenceType": "independent", "outcome": None}],
+            }],
+        }
+        self.assertTrue(records.validate_record(base)["valid"])
+        missing = {
+            **base,
+            "items": [{
+                **base["items"][0],
+                "retestEvidence": [{"evidenceType": "independent"}],
+            }],
+        }
+        report = records.validate_record(missing)
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("outcome" in error for error in report["errors"]))
 
     def test_dates_require_calendar_date_syntax(self) -> None:
         record = {
