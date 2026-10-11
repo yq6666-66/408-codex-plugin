@@ -114,6 +114,25 @@ class RolloutEvidenceTests(unittest.TestCase):
 
 
 class InstalledPayloadTests(unittest.TestCase):
+    def test_repository_plugin_source_cannot_be_used_as_installed_copy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory)
+            source = repository / "plugins" / "kaoyan-408"
+            source.mkdir(parents=True)
+            installed = runner.resolve_installed_root(source)
+
+            with self.assertRaisesRegex(ValueError, "isolated copy"):
+                runner.reject_repository_plugin_source(repository, installed)
+
+            nested = source / "nested-installed-copy"
+            nested.mkdir()
+            with self.assertRaisesRegex(ValueError, "subdirectory"):
+                runner.reject_repository_plugin_source(repository, nested)
+
+            isolated = repository / "candidate-install"
+            isolated.mkdir()
+            runner.reject_repository_plugin_source(repository, isolated)
+
     def test_supplied_installed_root_symlink_is_rejected_before_resolving(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

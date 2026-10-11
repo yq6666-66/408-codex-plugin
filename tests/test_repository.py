@@ -124,6 +124,28 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("题号、题干关键句、选项", searcher)
         self.assertIn("不涉及", searcher)
 
+    def test_past_paper_search_and_teaching_continue_in_one_turn(self) -> None:
+        searcher = skill_text("kaoyan-past-paper-searcher")
+        routing = (REPO / "plugins/kaoyan-408/references/capability-routing-contract.md").read_text(
+            encoding="utf-8"
+        )
+        for text in (
+            "主 Agent 在本轮",
+            "把已核验的题面证据继续交给对应的数学、英语、408 或政治教练",
+            "不得只附交接卡或要求用户再次提交题目",
+            "用户已在会话中提供题面时，不启动真题搜索",
+        ):
+            self.assertIn(text, searcher)
+        for text in (
+            "真题搜索与讲解的同轮串联",
+            "主 Agent 将已核验题面证据交给教练",
+            "不要求用户复制、粘贴或重发题目",
+            "用户已在当前会话提供题面时，由对应学科教练直接讲解",
+            "`真题搜索 → 学科辅导`",
+        ):
+            self.assertIn(text, routing)
+        self.assertNotIn("`真题搜索 → 真题分析 → 学科辅导`", routing)
+
     def test_official_comparison_never_calculates_mismatched_ratios(self) -> None:
         official = (REPO / "plugins/kaoyan-408/references/admissions-research-contract.md").read_text(encoding="utf-8")
         for name in ("kaoyan-official-info-researcher", "kaoyan-admissions-researcher"):

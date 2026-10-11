@@ -43,7 +43,8 @@ SENSITIVE_EXTENSION_KEY = re.compile(
     re.IGNORECASE,
 )
 SENSITIVE_PATH_VALUE = re.compile(
-    r"(?:\b[A-Za-z]:[\\/]|\\\\[^\\\s]+[\\/][^\\\s]+|/(?:Users|home|root|private|var)/)",
+    r"(?:\b[A-Za-z]:[\\/]|\\\\[^\\\s]+[\\/][^\\\s]+|"
+    r"(?<![A-Za-z0-9:/])/(?!/)[^\s\"'<>|,;)]*)",
     re.IGNORECASE,
 )
 SENSITIVE_TOKEN_VALUE = re.compile(
@@ -852,16 +853,26 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             _check_nullable_string(record, key, errors)
         for key in ("currentTask", "position"):
             _check_nullable_string(record, key, errors)
+        question_sets: dict[str, set[str]] = {}
         for key in ("completedQuestions", "remainingQuestions"):
             if key not in record:
                 continue
             value = record[key]
-            if not (
+            valid_questions = (
                 isinstance(value, list)
                 and all(isinstance(entry, str) and entry.strip() for entry in value)
                 and len(value) == len(set(value))
-            ):
+            )
+            if not valid_questions:
                 errors.append(f"{key} must be an array of unique non-empty strings")
+            else:
+                question_sets[key] = set(value)
+        if (
+            "completedQuestions" in question_sets
+            and "remainingQuestions" in question_sets
+            and question_sets["completedQuestions"] & question_sets["remainingQuestions"]
+        ):
+            errors.append("completedQuestions and remainingQuestions must not overlap")
     return errors, warnings
 
 
@@ -927,9 +938,13 @@ def merge_items(
     return b if newer == "b" else a
 
 
-def _item_key(item: Any, *, metric: bool = False) -> tuple[str, ...] | None:
+def _item_key(
+    item: Any, *, metric: bool = False, accuracy: bool = False
+) -> tuple[str, ...] | None:
     if not isinstance(item, dict):
         return None
+    if accuracy and "subject" in item:
+        return ("accuracy", str(item["subject"]))
     if item.get("itemId"):
         return ("itemId", str(item["itemId"]))
     name = item.get("name")
@@ -951,17 +966,18 @@ def merge_lists(
 ) -> list[Any]:
     """Merge keyed list items using the enclosing record's timestamp decision."""
     metric_items = path.endswith("/metrics")
-    if any(_item_key(entry, metric=metric_items) is not None for entry in a) and any(
-        _item_key(entry, metric=metric_items) is not None for entry in b
+    accuracy_items = path.endswith("/accuracy")
+    if any(_item_key(entry, metric=metric_items, accuracy=accuracy_items) is not None for entry in a) and any(
+        _item_key(entry, metric=metric_items, accuracy=accuracy_items) is not None for entry in b
     ):
         merged = list(a)
         index_of: dict[tuple[str, ...], int] = {}
         for index, entry in enumerate(merged):
-            key = _item_key(entry, metric=metric_items)
+            key = _item_key(entry, metric=metric_items, accuracy=accuracy_items)
             if key is not None and key not in index_of:
                 index_of[key] = index
         for entry in b:
-            key = _item_key(entry, metric=metric_items)
+            key = _item_key(entry, metric=metric_items, accuracy=accuracy_items)
             if key is not None and key in index_of:
                 target = merged[index_of[key]]
                 merged[index_of[key]] = merge_items(

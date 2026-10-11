@@ -91,12 +91,12 @@ def validate_record(record: dict[str, Any], cases: dict[str, dict[str, Any]]) ->
             if "success" in call and not isinstance(call["success"], bool):
                 raise RecordError(f"{label}.success must be a boolean")
             status = call.get("status")
-            if (
-                call.get("success") is True
-                and isinstance(status, str)
-                and status.casefold() in {"failed", "error", "denied", "rejected", "timeout", "timed_out"}
-            ):
-                raise RecordError(f"{label}.success cannot be true with failing status")
+            if call.get("success") is True:
+                normalized_status = status.casefold() if isinstance(status, str) else None
+                if normalized_status in {"failed", "error", "denied", "rejected", "timeout", "timed_out"}:
+                    raise RecordError(f"{label}.success cannot be true with failing status")
+                if normalized_status not in {"completed", "success"}:
+                    raise RecordError(f"{label}.success requires an explicit successful status")
             if "exitCode" in call and call["exitCode"] is not None and (
                 isinstance(call["exitCode"], bool) or not isinstance(call["exitCode"], int)
             ):

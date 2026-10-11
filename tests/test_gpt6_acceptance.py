@@ -158,7 +158,8 @@ class HarnessValidationTests(unittest.TestCase):
         ]
         self.assert_rejected(record, "success must be a boolean")
         record["cases"][0]["toolCalls"] = [
-            {"tool": "shell", "input": "run", "output": "failed", "success": True, "exitCode": 1}
+            {"tool": "shell", "input": "run", "output": "failed", "success": True,
+             "status": "completed", "exitCode": 1}
         ]
         self.assert_rejected(record, "success cannot be true")
         for status in ("failed", "rejected"):
@@ -169,6 +170,26 @@ class HarnessValidationTests(unittest.TestCase):
                      "status": status, "exitCode": 0}
                 ]
                 self.assert_rejected(record, "success cannot be true with failing status")
+
+    def test_successful_tool_call_requires_explicit_success_status(self) -> None:
+        for status in (None, "", "running", "unknown", "complete"):
+            with self.subTest(status=status):
+                record = make_record()
+                call = {"tool": "shell", "input": "run", "output": "done", "success": True,
+                        "exitCode": 0}
+                if status is not None:
+                    call["status"] = status
+                record["cases"][0]["toolCalls"] = [call]
+                self.assert_rejected(record, "requires an explicit successful status")
+
+        for status in ("completed", "success", "COMPLETED", "SUCCESS"):
+            with self.subTest(status=status):
+                record = make_record()
+                record["cases"][0]["toolCalls"] = [
+                    {"tool": "shell", "input": "run", "output": "done", "success": True,
+                     "status": status, "exitCode": 0}
+                ]
+                harness.validate_record(record, CATALOG)
 
     def test_checkpoint_coverage_uniqueness_and_known_ids(self) -> None:
         for mode in ("unknown-id", "duplicate-checkpoint", "unknown-checkpoint", "unjudged", "non-object"):

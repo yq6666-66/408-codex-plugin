@@ -41,6 +41,14 @@ def resolve_installed_root(installed_root: Path) -> Path:
     return installed_root.resolve()
 
 
+def reject_repository_plugin_source(repository: Path, installed_root: Path) -> None:
+    """Require acceptance to exercise an isolated install, not repository source files."""
+    source_root = (repository / "plugins" / "kaoyan-408").resolve()
+    resolved_installed = installed_root.resolve()
+    if resolved_installed == source_root or source_root in resolved_installed.parents:
+        raise ValueError("--installed-plugin must be an isolated copy, not the repository plugin source or a subdirectory")
+
+
 def read_installed_payload(installed_root: Path, expected_payload: dict[str, bytes]) -> dict[str, bytes]:
     if installed_root.is_symlink():
         raise ValueError("installed plugin root must not be a symlink")
@@ -201,6 +209,7 @@ def main() -> int:
     args.repository = args.repository.resolve()
     try:
         args.installed_plugin = resolve_installed_root(args.installed_plugin)
+        reject_repository_plugin_source(args.repository, args.installed_plugin)
     except ValueError as exc:
         parser.error(str(exc))
     args.codex_home = args.codex_home.resolve()

@@ -103,6 +103,20 @@ class NormalizeTests(unittest.TestCase):
         ])
         self.assertTrue(any("redacted" in warning for warning in warnings))
 
+    def test_arbitrary_absolute_posix_paths_in_legacy_extensions_are_redacted(self) -> None:
+        normalized, _ = records.normalize_to_12({
+            "schemaVersion": "1.0",
+            "targetExam": "408考研",
+            "cacheLocation": "/workspace/private/session.json",
+            "safeExtension": {"mount": "/opt/student/notes"},
+        })
+        self.assertIsNone(normalized["legacyExtensions"]["cacheLocation"])
+        self.assertIsNone(normalized["legacyExtensions"]["safeExtension"]["mount"])
+        self.assertEqual(normalized["redactedFields"], [
+            "/legacyExtensions/cacheLocation",
+            "/legacyExtensions/safeExtension/mount",
+        ])
+
     def test_schema_11_extensions_are_redacted_during_upgrade(self) -> None:
         record = {
             "schemaVersion": "1.1", "recordType": "ReviewQueue", "generatedAt": None,
@@ -126,6 +140,24 @@ class NormalizeTests(unittest.TestCase):
             "/apiToken", "/items/0/sessionToken", "/legacyExtensions/password",
         ])
         self.assertTrue(any("Schema 1.1" in warning for warning in warnings))
+
+    def test_schema_11_extensions_redact_arbitrary_posix_paths_but_keep_urls(self) -> None:
+        normalized, _ = records.normalize_to_12({
+            "schemaVersion": "1.1",
+            "recordType": "ReviewQueue",
+            "generatedAt": None,
+            "cacheLocation": "/srv/kaoyan/private/cache.db",
+            "sourceUrl": "https://example.invalid/admissions/2027",
+            "legacyExtensions": {"nested": [{"workspace": "/mnt/work/student/vault"}]},
+            "items": [],
+        })
+        self.assertIsNone(normalized["cacheLocation"])
+        self.assertEqual(normalized["sourceUrl"], "https://example.invalid/admissions/2027")
+        self.assertIsNone(normalized["legacyExtensions"]["nested"][0]["workspace"])
+        self.assertEqual(normalized["redactedFields"], [
+            "/cacheLocation",
+            "/legacyExtensions/nested/0/workspace",
+        ])
 
     def test_schema_11_extensions_are_redacted_during_upgrade(self) -> None:
         record = {
@@ -523,6 +555,33 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(merged["records"][0]["checkpointId"], "kc-aaaaaaaaaaaaaaaa")
         self.assertEqual(merged["records"][0]["position"], "第 2 题")
 
+    def test_progress_accuracy_entries_merge_by_subject(self) -> None:
+        old = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "recordId": "kr-aaaaaaaaaaaaaaaa", "updatedAt": "2026-09-01",
+            "period": {"start": "2026-09-01", "end": "2026-09-07"},
+            "metrics": [], "blockers": [],
+            "accuracy": [
+                {"subject": "408", "correct": 6, "total": 10, "rate": 0.6},
+                {"subject": "数学二", "correct": 7, "total": 10, "rate": 0.7},
+            ],
+        }
+        new = {
+            **old,
+            "updatedAt": "2026-09-08",
+            "accuracy": [
+                {"subject": "408", "correct": 16, "total": 20, "rate": 0.8},
+                {"subject": "英语二", "correct": 15, "total": 20, "rate": 0.75},
+            ],
+        }
+        merged = records.merge_documents(old, new)["records"][0]
+        self.assertEqual(len(merged["accuracy"]), 3)
+        accuracy = {entry["subject"]: entry for entry in merged["accuracy"]}
+        self.assertEqual(set(accuracy), {"408", "数学二", "英语二"})
+        self.assertEqual(accuracy["408"], new["accuracy"][0])
+        self.assertEqual(accuracy["数学二"], old["accuracy"][1])
+        self.assertEqual(accuracy["英语二"], new["accuracy"][1])
+
 
 class DueTests(unittest.TestCase):
     def build_queue(self) -> dict:
@@ -574,6 +633,14 @@ class CheckpointTests(unittest.TestCase):
                 invalid = {**base, field: None}
                 errors, _ = records.validate_current(invalid)
                 self.assertTrue(any(field in error and "array" in error for error in errors))
+
+    def test_completed_and_remaining_questions_must_not_overlap(self) -> None:
+        checkpoint = records.build_checkpoint({
+            "completedQuestions": ["1", "2"],
+            "remainingQuestions": ["2", "3"],
+        }, None)
+        errors, _ = records.validate_current(checkpoint)
+        self.assertTrue(any("completedQuestions" in error and "remainingQuestions" in error for error in errors))
 
     def test_resume_text_fields_must_be_strings_or_null(self) -> None:
         base = records.build_checkpoint({}, None)

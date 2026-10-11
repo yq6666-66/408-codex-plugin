@@ -159,6 +159,43 @@ class CaptureTests(unittest.TestCase):
                     self.assertIn("must not overwrite or alias", error.getvalue())
                     self.assertEqual(source.read_bytes(), original)
 
+    def test_cli_reports_output_directory_creation_error_without_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = self.write_jsonl(root, [{"type": "thread.started"}])
+            blocking_file = root / "not-a-directory"
+            blocking_file.write_text("block", encoding="utf-8")
+            output = blocking_file / "report.json"
+            error = io.StringIO()
+
+            with redirect_stderr(error):
+                code = gpt6_capture.main(["--input", str(source), "--output", str(output)])
+
+        self.assertEqual(code, 1)
+        message = error.getvalue()
+        self.assertIn("[FAIL] cannot create output directory:", message)
+        self.assertTrue(any(name in message for name in ("FileExistsError", "NotADirectoryError")))
+        self.assertNotIn(str(output), message)
+        self.assertNotIn("Traceback", message)
+
+    def test_cli_reports_output_write_error_without_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = self.write_jsonl(root, [{"type": "thread.started"}])
+            output = root / "output-is-a-directory"
+            output.mkdir()
+            error = io.StringIO()
+
+            with redirect_stderr(error):
+                code = gpt6_capture.main(["--input", str(source), "--output", str(output)])
+
+        self.assertEqual(code, 1)
+        message = error.getvalue()
+        self.assertIn("[FAIL] cannot write output file:", message)
+        self.assertTrue(any(name in message for name in ("IsADirectoryError", "PermissionError")))
+        self.assertNotIn(str(output), message)
+        self.assertNotIn("Traceback", message)
+
 
 if __name__ == "__main__":
     unittest.main()

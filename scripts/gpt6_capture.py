@@ -239,8 +239,18 @@ def main(argv: list[str] | None = None) -> int:
         if args.output is None:
             sys.stdout.write(text)
         else:
-            args.output.parent.mkdir(parents=True, exist_ok=True)
-            args.output.write_text(text, encoding="utf-8", newline="\n")
+            try:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+            except OSError as exc:
+                raise CaptureError(
+                    f"cannot create output directory: {exc.__class__.__name__} ({exc.errno})"
+                ) from exc
+            try:
+                args.output.write_text(text, encoding="utf-8", newline="\n")
+            except OSError as exc:
+                raise CaptureError(
+                    f"cannot write output file: {exc.__class__.__name__} ({exc.errno})"
+                ) from exc
         return 0 if report["complete"] else 1
     except CaptureError as exc:
         print(f"[FAIL] {exc}", file=sys.stderr)
