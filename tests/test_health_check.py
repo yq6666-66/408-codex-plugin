@@ -83,6 +83,35 @@ class HealthCheckTests(unittest.TestCase):
         serialized = json.dumps(report, ensure_ascii=False)
         self.assertNotIn(str(config), serialized)
 
+    def test_config_directory_is_reported_as_a_path_type_error(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            config = Path(temporary) / "config-directory"
+            config.mkdir()
+            report = health_check.inspect_plugin(REPO / "plugins" / "kaoyan-408", config)
+        self.assertEqual(report["obsidian"]["configStatus"], "invalid")
+        self.assertEqual(report["status"], "problem")
+        self.assertTrue(any("not a regular file" in issue for issue in report["problems"]))
+        self.assertNotIn(str(config), json.dumps(report, ensure_ascii=False))
+
+    def test_existing_non_directory_non_file_config_is_invalid(self) -> None:
+        class ExistingSpecialPath:
+            def resolve(self):
+                return self
+
+            def is_file(self) -> bool:
+                return False
+
+            def is_dir(self) -> bool:
+                return False
+
+            def exists(self) -> bool:
+                return True
+
+        report = health_check.inspect_plugin(REPO / "plugins" / "kaoyan-408", ExistingSpecialPath())
+        self.assertEqual(report["obsidian"]["configStatus"], "invalid")
+        self.assertEqual(report["status"], "problem")
+        self.assertTrue(any("not a regular file" in issue for issue in report["problems"]))
+
     def test_obsidian_config_schema_and_keys_are_validated(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

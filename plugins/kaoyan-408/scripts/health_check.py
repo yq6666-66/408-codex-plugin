@@ -136,6 +136,9 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
         except Exception as exc:
             obsidian["configStatus"] = "invalid"
             problems.append(f"Obsidian config is unreadable or invalid ({exc.__class__.__name__})")
+    elif config.exists():
+        obsidian["configStatus"] = "invalid"
+        problems.append("Obsidian config path is not a regular file")
 
     return {
         "plugin": "kaoyan-408",

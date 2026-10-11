@@ -326,13 +326,23 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
                 warnings.append("root plannedUnits/completedUnits carry no unit; using 'unspecified'")
         by_subject = record.get("bySubject")
         if isinstance(by_subject, list):
-            for entry in by_subject:
+            for subject_index, entry in enumerate(by_subject):
                 if not isinstance(entry, dict):
                     continue
+                raw_subject_unit = (
+                    _convert_sentinels(entry.get("unit")) if "unit" in entry else None
+                )
+                subject_unit_is_valid = is_non_empty_string(raw_subject_unit)
+                subject_unit = raw_subject_unit if subject_unit_is_valid else "unspecified"
+                if "unit" in entry and not subject_unit_is_valid:
+                    warnings.append(
+                        f"legacy bySubject[{subject_index}].unit has no usable value; "
+                        "using 'unspecified'"
+                    )
                 metrics.append({
                     "subject": _convert_sentinels(entry.get("subject")),
                     "name": "workload",
-                    "unit": "unspecified" if "unit" not in entry else entry["unit"],
+                    "unit": subject_unit,
                     "planned": _convert_sentinels(entry.get("plannedUnits")),
                     "completed": _convert_sentinels(entry.get("completedUnits")),
                 })
@@ -586,7 +596,11 @@ def validate_legacy_10(record: dict[str, Any]) -> list[str]:
             errors.append("weeklyHours must be a non-negative legacy number or sentinel")
         if "constraints" in record:
             value = record["constraints"]
-            if not (isinstance(value, list) and all(isinstance(entry, str) for entry in value)) and not is_sentinel(value):
+            if (
+                value is not None
+                and not (isinstance(value, list) and all(isinstance(entry, str) for entry in value))
+                and not is_sentinel(value)
+            ):
                 errors.append("constraints must be a legacy string array or sentinel")
     elif record_type == "ProgressSnapshot":
         source_fields = ("period", "plannedUnits", "completedUnits", "accuracy", "sampleSize", "bySubject", "blockers")
@@ -619,6 +633,8 @@ def validate_legacy_10(record: dict[str, Any]) -> list[str]:
                     for key in ("subject",):
                         if key in entry and not _legacy_nullable_string(entry[key]):
                             errors.append(f"bySubject[{index}].{key} must be a legacy nullable string")
+                    if "unit" in entry and not _legacy_nullable_string(entry["unit"]):
+                        errors.append(f"bySubject[{index}].unit must be a legacy nullable string")
                     for key in ("plannedUnits", "completedUnits"):
                         if key in entry and not _legacy_nullable_number(entry[key]):
                             errors.append(f"bySubject[{index}].{key} must be a non-negative legacy number or sentinel")
@@ -628,7 +644,11 @@ def validate_legacy_10(record: dict[str, Any]) -> list[str]:
                         errors.append(f"bySubject[{index}].sampleSize must be a non-negative legacy integer or sentinel")
         if "blockers" in record:
             value = record["blockers"]
-            if not (isinstance(value, list) and all(isinstance(entry, str) for entry in value)) and not is_sentinel(value):
+            if (
+                value is not None
+                and not (isinstance(value, list) and all(isinstance(entry, str) for entry in value))
+                and not is_sentinel(value)
+            ):
                 errors.append("blockers must be a legacy string array or sentinel")
     else:  # ReviewQueue
         if "items" not in record:
@@ -645,7 +665,11 @@ def validate_legacy_10(record: dict[str, Any]) -> list[str]:
                         errors.append(f"items[{index}].{key} must be a legacy nullable string")
                 if "masteryEvidence" in item:
                     value = item["masteryEvidence"]
-                    if not (isinstance(value, list) and all(isinstance(entry, str) for entry in value)) and not is_sentinel(value):
+                    if (
+                        value is not None
+                        and not (isinstance(value, list) and all(isinstance(entry, str) for entry in value))
+                        and not is_sentinel(value)
+                    ):
                         errors.append(f"items[{index}].masteryEvidence must be a legacy string array or sentinel")
         if "generatedAt" in record and not _legacy_nullable_date(record["generatedAt"]):
             errors.append("generatedAt must be a legacy nullable date")
@@ -1125,6 +1149,9 @@ def build_checkpoint(payload: dict[str, Any], base_date: str | None) -> dict[str
         checkpoint["checkpointId"] = payload["checkpointId"]
     else:
         checkpoint["checkpointId"] = stable_id("kc", {**checkpoint, "updatedAt": None})
+    errors, _ = validate_current(checkpoint)
+    if errors:
+        raise RecordError("checkpoint is invalid: " + "; ".join(errors))
     return checkpoint
 
 

@@ -49,6 +49,24 @@ def reject_repository_plugin_source(repository: Path, installed_root: Path) -> N
         raise ValueError("--installed-plugin must be an isolated copy, not the repository plugin source or a subdirectory")
 
 
+def resolve_codex_home(repository: Path, codex_home: Path, stable_home: Path | None = None) -> Path:
+    """Resolve CODEX_HOME and keep its mutable state outside the repository and stable profile."""
+    resolved_repository = repository.resolve()
+    resolved_home = codex_home.resolve()
+    if resolved_home == resolved_repository or resolved_repository in resolved_home.parents:
+        raise ValueError("refusing CODEX_HOME equal to or inside the repository")
+    stable_home = (Path.home() / ".codex") if stable_home is None else stable_home
+    if resolved_home == stable_home.resolve():
+        raise ValueError("refusing stable CODEX_HOME")
+    return resolved_home
+
+
+def acceptance_paths(repository: Path) -> tuple[Path, Path]:
+    """Return the case catalog and materials from the requested candidate checkout."""
+    acceptance_root = repository.resolve() / "eval" / "v2.6-acceptance"
+    return acceptance_root / "cases.json", acceptance_root / "materials"
+
+
 def read_installed_payload(installed_root: Path, expected_payload: dict[str, bytes]) -> dict[str, bytes]:
     if installed_root.is_symlink():
         raise ValueError("installed plugin root must not be a symlink")
@@ -212,13 +230,14 @@ def main() -> int:
         reject_repository_plugin_source(args.repository, args.installed_plugin)
     except ValueError as exc:
         parser.error(str(exc))
-    args.codex_home = args.codex_home.resolve()
+    try:
+        args.codex_home = resolve_codex_home(args.repository, args.codex_home)
+    except ValueError as exc:
+        parser.error(str(exc))
     args.output = args.output.resolve()
-    if args.codex_home == (Path.home() / ".codex").resolve():
-        raise ValueError("refusing stable CODEX_HOME")
     if args.repository in args.output.parents or args.output == args.repository:
         raise ValueError("raw output must remain outside the repository")
-    catalog_path = Path(__file__).with_name("cases.json")
+    catalog_path, materials_root = acceptance_paths(args.repository)
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     cases = {c["id"]: c for c in catalog["cases"]}
     selected = args.case or list(cases)
@@ -264,7 +283,7 @@ def main() -> int:
         )
         materials = {}
         for name in case.get("materials", []):
-            source = catalog_path.parent / "materials" / name
+            source = materials_root / name
             shutil.copyfile(source, workspace / name)
             materials[name] = digest(source)
         before = file_snapshot(workspace)

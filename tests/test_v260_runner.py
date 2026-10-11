@@ -175,6 +175,52 @@ class InstalledPayloadTests(unittest.TestCase):
                 runner.read_installed_payload(root, expected)
 
 
+class RunnerPathSafetyTests(unittest.TestCase):
+    def test_codex_home_must_be_outside_repository_and_stable_profile(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repository = root / "candidate-repository"
+            repository.mkdir()
+            stable_home = root / "stable-codex"
+            stable_home.mkdir()
+            for unsafe in (repository, repository / "nested-codex"):
+                with self.subTest(path=unsafe), self.assertRaisesRegex(ValueError, "inside the repository"):
+                    runner.resolve_codex_home(repository, unsafe, stable_home)
+
+            with self.assertRaisesRegex(ValueError, "stable CODEX_HOME"):
+                runner.resolve_codex_home(repository, stable_home, stable_home)
+
+            isolated_home = root / "isolated-codex"
+            isolated_home.mkdir()
+            self.assertEqual(
+                runner.resolve_codex_home(repository, isolated_home, stable_home),
+                isolated_home.resolve(),
+            )
+
+    def test_acceptance_assets_are_resolved_from_requested_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "candidate-repository"
+            acceptance_root = repository / "eval" / "v2.6-acceptance"
+            materials_root = acceptance_root / "materials"
+            materials_root.mkdir(parents=True)
+            catalog_content = {"cases": [{"id": "candidate-case"}]}
+            (acceptance_root / "cases.json").write_text(
+                json.dumps(catalog_content), encoding="utf-8"
+            )
+            (materials_root / "candidate-material.md").write_text(
+                "candidate repository material", encoding="utf-8"
+            )
+
+            catalog_path, resolved_materials = runner.acceptance_paths(repository)
+
+            self.assertEqual(json.loads(catalog_path.read_text(encoding="utf-8")), catalog_content)
+            self.assertEqual(
+                (resolved_materials / "candidate-material.md").read_text(encoding="utf-8"),
+                "candidate repository material",
+            )
+            self.assertNotEqual(catalog_path, Path(runner.__file__).with_name("cases.json"))
+
+
 class FailedTurnSummaryTests(unittest.TestCase):
     def test_turn_exit_and_stderr_path_survive_empty_raw_capture(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

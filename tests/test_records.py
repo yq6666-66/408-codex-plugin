@@ -221,6 +221,73 @@ class NormalizeTests(unittest.TestCase):
         self.assertEqual(normalized["metrics"][0]["unit"], "hours")
         self.assertFalse(any("carry no unit" in warning for warning in warnings))
 
+    def test_legacy_by_subject_units_preserve_known_values_and_normalize_unknown_values(self) -> None:
+        for unit, expected in (
+            ("questions", "questions"),
+            (None, "unspecified"),
+            ("", "unspecified"),
+            ("unknown", "unspecified"),
+            ("未提供", "unspecified"),
+        ):
+            with self.subTest(unit=unit):
+                legacy = {
+                    "schemaVersion": "1.0",
+                    "recordType": "ProgressSnapshot",
+                    "bySubject": [{
+                        "subject": "408", "plannedUnits": 10,
+                        "completedUnits": 8, "unit": unit,
+                    }],
+                }
+                self.assertTrue(records.validate_record(legacy)["valid"])
+                normalized, _ = records.normalize_to_12(legacy)
+                self.assertEqual(normalized["metrics"][0]["unit"], expected)
+                self.assertTrue(records.validate_record(normalized)["valid"])
+
+    def test_legacy_by_subject_rejects_non_string_unit(self) -> None:
+        report = records.validate_record({
+            "schemaVersion": "1.0",
+            "recordType": "ProgressSnapshot",
+            "bySubject": [{"subject": "408", "unit": 8}],
+        })
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("bySubject[0].unit" in error for error in report["errors"]))
+
+    def test_null_legacy_collection_fields_validate_as_empty_after_migration(self) -> None:
+        cases = (
+            ({"schemaVersion": "1.0", "recordType": "StudyProfile",
+              "targetExam": "408考研", "constraints": None}, "constraints"),
+            ({"schemaVersion": "1.0", "recordType": "ProgressSnapshot",
+              "blockers": None}, "blockers"),
+            ({"schemaVersion": "1.0", "recordType": "ReviewQueue",
+              "items": [{"masteryEvidence": None}]}, "masteryEvidence"),
+        )
+        for legacy, field in cases:
+            with self.subTest(field=field):
+                self.assertTrue(records.validate_record(legacy)["valid"])
+                normalized, _ = records.normalize_to_12(legacy)
+                value = (
+                    normalized["items"][0][field]
+                    if field == "masteryEvidence"
+                    else normalized[field]
+                )
+                self.assertEqual(value, [])
+                self.assertTrue(records.validate_record(normalized)["valid"])
+
+    def test_non_array_legacy_collection_values_are_still_rejected(self) -> None:
+        cases = (
+            {"schemaVersion": "1.0", "recordType": "StudyProfile",
+             "targetExam": "408考研", "constraints": {}},
+            {"schemaVersion": "1.0", "recordType": "ProgressSnapshot",
+             "blockers": {}},
+            {"schemaVersion": "1.0", "recordType": "ReviewQueue",
+             "items": [{"masteryEvidence": {}}]},
+        )
+        for legacy in cases:
+            with self.subTest(record=legacy):
+                report = records.validate_record(legacy)
+                self.assertFalse(report["valid"])
+                self.assertTrue(report["errors"])
+
     def test_schema_10_by_subject_accuracy_survives_upgrade(self) -> None:
         normalized, _ = records.normalize_to_12({
             "schemaVersion": "1.0",
@@ -635,10 +702,11 @@ class CheckpointTests(unittest.TestCase):
                 self.assertTrue(any(field in error and "array" in error for error in errors))
 
     def test_completed_and_remaining_questions_must_not_overlap(self) -> None:
-        checkpoint = records.build_checkpoint({
+        checkpoint = records.build_checkpoint({}, None)
+        checkpoint.update({
             "completedQuestions": ["1", "2"],
             "remainingQuestions": ["2", "3"],
-        }, None)
+        })
         errors, _ = records.validate_current(checkpoint)
         self.assertTrue(any("completedQuestions" in error and "remainingQuestions" in error for error in errors))
 
@@ -684,23 +752,30 @@ class CheckpointTests(unittest.TestCase):
         self.assertEqual(plan["resume"]["materialVersion"], "sha256:fixture-v2")
 
     def test_checkpoint_rejects_invalid_teaching_state(self) -> None:
-        checkpoint = records.build_checkpoint(
-            {
-                "currentTask": "任务",
-                "teachingMode": "unknown-mode",
-                "answerState": "leaked",
-                "hintLevel": 8,
-                "completedQuestions": ["1", "1"],
-                "remainingQuestions": ["", 2],
-            },
-            None,
-        )
+        checkpoint = records.build_checkpoint({"currentTask": "任务"}, None)
+        checkpoint.update({
+            "teachingMode": "unknown-mode",
+            "answerState": "leaked",
+            "hintLevel": 8,
+            "completedQuestions": ["1", "1"],
+            "remainingQuestions": ["", 2],
+        })
         errors, _ = records.validate_current(checkpoint)
         self.assertTrue(any("teachingMode" in error for error in errors))
         self.assertTrue(any("answerState" in error for error in errors))
         self.assertTrue(any("hintLevel" in error for error in errors))
         self.assertTrue(any("completedQuestions" in error for error in errors))
         self.assertTrue(any("remainingQuestions" in error for error in errors))
+
+    def test_build_checkpoint_rejects_invalid_payloads(self) -> None:
+        for payload in (
+            {"teachingMode": "unknown-mode"},
+            {"dueItems": "not-an-array"},
+            {"completedQuestions": ["1"], "remainingQuestions": ["1"]},
+        ):
+            with self.subTest(payload=payload):
+                with self.assertRaisesRegex(records.RecordError, "checkpoint is invalid"):
+                    records.build_checkpoint(payload, None)
 
     def test_create_without_date_keeps_updated_at_null(self) -> None:
         checkpoint = records.build_checkpoint({"currentTask": None}, None)
