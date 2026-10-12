@@ -6,6 +6,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -89,14 +90,41 @@ class HealthCheckTests(unittest.TestCase):
                 "pastPaperRoot": "40-papers/test", "writeMode": "auto-structured",
                 "retrievalScope": "project-first",
             }), encoding="utf-8")
-            validator = plugin / "scripts" / "configure_obsidian_brain.py"
+            validator = root / "trusted-configure-obsidian-brain.py"
             for broken in ("def broken(:\n    pass\n", "def other():\n    pass\n"):
                 with self.subTest(broken=broken):
                     validator.write_text(broken, encoding="utf-8")
-                    report = health_check.inspect_plugin(plugin, config)
+                    with patch.object(health_check, "_trusted_brain_validator_path", return_value=validator):
+                        report = health_check.inspect_plugin(plugin, config)
                     self.assertEqual(report["obsidian"]["configStatus"], "invalid")
                     self.assertEqual(report["status"], "problem")
                     self.assertNotIn(str(config), json.dumps(report, ensure_ascii=False))
+    def test_health_check_does_not_execute_validator_from_inspected_plugin(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            plugin = root / "plugin"
+            shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+            marker = root / "untrusted-validator-executed.txt"
+            validator = plugin / "scripts" / "configure_obsidian_brain.py"
+            validator.write_text(
+                "from pathlib import Path\n"
+                f"Path({str(marker)!r}).write_text('executed', encoding='utf-8')\n",
+                encoding="utf-8",
+            )
+            config = root / "brain.json"
+            config.write_text(json.dumps({
+                "schemaVersion": "1.1", "enabled": False, "vaultPath": str(root),
+                "projectRoot": "20-project/test", "knowledgeRoot": "30-knowledge/test",
+                "pastPaperRoot": "40-papers/test", "writeMode": "auto-structured",
+                "retrievalScope": "project-first",
+            }), encoding="utf-8")
+
+            report = health_check.inspect_plugin(plugin, config)
+
+            self.assertFalse(marker.exists())
+            self.assertEqual(report["obsidian"]["configStatus"], "valid")
+            self.assertEqual(report["status"], "ok")
+
     def test_repository_plugin_is_self_contained(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             missing_config = Path(temporary) / "missing.json"

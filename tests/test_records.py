@@ -706,6 +706,32 @@ class DueTests(unittest.TestCase):
         self.assertEqual(len(plan["needsBaseDate"]), 1)
         self.assertEqual(plan["needsBaseDate"][0]["topic"], "无锚定")
 
+    def test_due_rejects_malformed_non_null_retest_dates(self) -> None:
+        base = __import__("datetime").date(2026, 9, 11)
+        for item, field in (
+            ({"nextRetestDate": "2026-99-99", "retestOffsetDays": None,
+              "retestAnchorDate": None}, "nextRetestDate"),
+            ({"nextRetestDate": None, "retestOffsetDays": 3,
+              "retestAnchorDate": "2026-99-99"}, "retestAnchorDate"),
+        ):
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(records.RecordError, field):
+                    records.resolve_due([item], base)
+
+        queue = {
+            "schemaVersion": "1.2", "recordType": "ReviewQueue",
+            "generatedAt": None, "items": [{
+                "subject": "408", "topic": "bad date", "errorCause": None,
+                "errorCauseStatus": None, "nextRetestDate": "2026-99-99",
+                "retestOffsetDays": None, "retestAnchorDate": None,
+                "status": "due", "masteryEvidence": [], "retestEvidence": [],
+            }],
+        }
+        result = run_cli("due", "-", "--date", "2026-09-11", stdin=json.dumps(queue))
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertIn("nextRetestDate", json.loads(result.stderr)["error"])
+
     def test_boundary_date_is_inclusive(self) -> None:
         plan = records.resolve_due(self.build_queue()["items"], __import__("datetime").date(2026, 9, 10))
         self.assertEqual([entry["topic"] for entry in plan["due"]], ["已到期"])
@@ -939,6 +965,36 @@ class ValidationTests(unittest.TestCase):
         report = records.validate_record(missing)
         self.assertFalse(report["valid"])
         self.assertTrue(any("outcome" in error for error in report["errors"]))
+
+    def test_progress_accuracy_subject_uses_nullable_non_empty_string(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "period": {"start": None, "end": None},
+            "metrics": [], "accuracy": [], "blockers": [],
+        }
+        valid_entry = {"subject": "408", "correct": None, "total": None, "rate": None}
+        for subject in ("408", None):
+            with self.subTest(subject=subject):
+                report = records.validate_record({**base, "accuracy": [{**valid_entry, "subject": subject}]})
+                self.assertTrue(report["valid"], report["errors"])
+        for subject in (17, "unknown", "未提供", "", "   "):
+            with self.subTest(subject=subject):
+                report = records.validate_record({**base, "accuracy": [{**valid_entry, "subject": subject}]})
+                self.assertFalse(report["valid"])
+                self.assertTrue(any("accuracy[0].subject" in error for error in report["errors"]))
+
+    def test_progress_blocker_items_must_be_non_empty_strings(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+            "period": {"start": None, "end": None},
+            "metrics": [], "accuracy": [], "blockers": [],
+        }
+        self.assertTrue(records.validate_record(base)["valid"])
+        for blockers in ([42], ["unknown"], ["未提供"], [""], ["   "]):
+            with self.subTest(blockers=blockers):
+                report = records.validate_record({**base, "blockers": blockers})
+                self.assertFalse(report["valid"])
+                self.assertTrue(any("blockers[0]" in error for error in report["errors"]))
 
     def test_dates_require_calendar_date_syntax(self) -> None:
         record = {

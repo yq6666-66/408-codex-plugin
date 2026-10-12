@@ -78,7 +78,7 @@ def _assert_no_symlink_chain(vault: Path, target: Path) -> None:
     cursor = vault
     for part in relative.parts:
         cursor = cursor / part
-        if cursor.exists() and cursor.is_symlink():
+        if cursor.is_symlink():
             raise BrainConfigError(f"Vault target traverses a symbolic link: {cursor}")
 
 
@@ -95,6 +95,8 @@ def validate_config(data: Any, *, require_paths: bool = True) -> dict[str, Any]:
         raise BrainConfigError(f"retrievalScope must be {DEFAULT_RETRIEVAL_SCOPE!r}")
     if not isinstance(data["vaultPath"], str) or not data["vaultPath"]:
         raise BrainConfigError("vaultPath must be a non-empty string")
+    if not Path(data["vaultPath"]).is_absolute():
+        raise BrainConfigError("vaultPath must be an absolute path")
     roots: dict[str, PurePosixPath] = {}
     for key in ("projectRoot", "knowledgeRoot", "pastPaperRoot"):
         if not isinstance(data[key], str):
@@ -104,10 +106,15 @@ def validate_config(data: Any, *, require_paths: bool = True) -> dict[str, Any]:
         vault = _require_real_directory(Path(data["vaultPath"]), "Vault")
         for required in ("AGENTS.md", "00-系统/知识库索引.md"):
             candidate = vault / Path(*PurePosixPath(required).parts)
+            _assert_no_symlink_chain(vault, candidate)
             if not candidate.is_file():
                 raise BrainConfigError(f"Vault is missing required file: {required}")
-        for root in roots.values():
-            _assert_no_symlink_chain(vault, vault / Path(*root.parts))
+        if data["enabled"]:
+            for key, root in roots.items():
+                candidate = vault / Path(*root.parts)
+                _assert_no_symlink_chain(vault, candidate)
+                if not candidate.is_dir():
+                    raise BrainConfigError(f"enabled {key} must exist as a Vault directory")
     return data
 
 
@@ -123,6 +130,8 @@ def load_legacy_config(path: Path) -> dict[str, Any]:
         raise BrainConfigError("legacy enabled must be boolean")
     if not isinstance(data.get("vaultPath"), str) or not data["vaultPath"]:
         raise BrainConfigError("legacy vaultPath must be a non-empty string")
+    if not Path(data["vaultPath"]).is_absolute():
+        raise BrainConfigError("legacy vaultPath must be an absolute path")
     if not isinstance(data.get("projectRoot"), str):
         raise BrainConfigError("legacy projectRoot must be a string")
     if data.get("writeMode") != DEFAULT_WRITE_MODE or data.get("retrievalScope") != DEFAULT_RETRIEVAL_SCOPE:
@@ -207,6 +216,8 @@ def scaffold_vault(
     *,
     dry_run: bool,
 ) -> list[str]:
+    for required in ("AGENTS.md", "00-系统/知识库索引.md"):
+        _assert_no_symlink_chain(vault, vault / Path(*PurePosixPath(required).parts))
     project = vault / Path(*project_root.parts)
     knowledge = vault / Path(*knowledge_root.parts)
     past_papers = vault / Path(*past_paper_root.parts)
@@ -371,8 +382,10 @@ def configure(args: argparse.Namespace) -> int:
         "writeMode": DEFAULT_WRITE_MODE,
         "retrievalScope": DEFAULT_RETRIEVAL_SCOPE,
     }
-    validate_config(config)
+    validate_config(config, require_paths=False)
     actions = scaffold_vault(vault, project_root, knowledge_root, past_paper_root, dry_run=args.dry_run)
+    if not args.dry_run:
+        validate_config(config, require_paths=True)
     config_path = args.config.expanduser()
     actions.append(f"write {config_path}")
     if not args.dry_run:
@@ -423,8 +436,10 @@ def migrate(args: argparse.Namespace) -> int:
         "writeMode": DEFAULT_WRITE_MODE,
         "retrievalScope": DEFAULT_RETRIEVAL_SCOPE,
     }
-    validate_config(config)
+    validate_config(config, require_paths=False)
     actions = scaffold_vault(vault, project_root, knowledge_root, past_paper_root, dry_run=args.dry_run)
+    if not args.dry_run and config["enabled"]:
+        validate_config(config, require_paths=True)
     actions.append(f"write {target}")
     if not args.dry_run:
         _atomic_write(target, json.dumps(config, ensure_ascii=False, indent=2) + "\n")

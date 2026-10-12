@@ -56,11 +56,16 @@ def _read_json(path: Path) -> dict[str, Any]:
     return document
 
 
+def _trusted_brain_validator_path() -> Path:
+    """Return the validator bundled beside this already-running trusted checker."""
+    return Path(__file__).resolve().with_name("configure_obsidian_brain.py")
+
+
 def _validate_brain_config(
     root: Path, config: dict[str, Any], *, require_paths: bool = False
 ) -> None:
-    """Delegate schema and field checks to the configuration writer's validator."""
-    validator_path = root / "scripts" / "configure_obsidian_brain.py"
+    """Use the checker-bundled validator, never execute code from the inspected tree."""
+    validator_path = _trusted_brain_validator_path()
     spec = importlib.util.spec_from_file_location("_kaoyan_health_brain_config", validator_path)
     if spec is None or spec.loader is None:
         raise ImportError("Obsidian config validator is unavailable")

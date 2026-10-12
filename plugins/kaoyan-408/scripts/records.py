@@ -782,6 +782,10 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             for key in ("subject", "correct", "total", "rate"):
                 if key not in entry:
                     errors.append(f"accuracy[{index}] missing {key}")
+            if "subject" in entry:
+                subject = entry["subject"]
+                if subject is not None and not is_non_empty_string(subject):
+                    errors.append(f"accuracy[{index}].subject must be a non-empty string or null")
             correct, total, rate = entry.get("correct"), entry.get("total"), entry.get("rate")
             correct_valid = correct is None or (
                 isinstance(correct, int) and not isinstance(correct, bool) and correct >= 0
@@ -808,8 +812,13 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             elif correct_valid and total_valid and rate_valid and correct is not None and total is not None and rate is not None:
                 if abs(rate - correct / total) > 1e-9:
                     errors.append(f"accuracy[{index}].rate must equal correct / total")
-        if not isinstance(record.get("blockers"), list):
+        blockers = record.get("blockers")
+        if not isinstance(blockers, list):
             errors.append("blockers must be an array")
+        else:
+            for index, blocker in enumerate(blockers):
+                if not is_non_empty_string(blocker):
+                    errors.append(f"blockers[{index}] must be a non-empty string")
     elif record_type == "ReviewQueue":
         for key in ("generatedAt", "items"):
             _require(record, key, errors)
@@ -1140,6 +1149,10 @@ def resolve_due(items: list[dict[str, Any]], base: date) -> dict[str, Any]:
         }
         next_date = item.get("nextRetestDate")
         offset, anchor = item.get("retestOffsetDays"), item.get("retestAnchorDate")
+        if next_date is not None and not is_plain_date(next_date):
+            raise RecordError(f"items[{index}].nextRetestDate must be a valid date or null")
+        if anchor is not None and not is_plain_date(anchor):
+            raise RecordError(f"items[{index}].retestAnchorDate must be a valid date or null")
         if is_plain_date(next_date):
             (due if date.fromisoformat(next_date) <= base else not_due).append(summary)
         elif isinstance(offset, int) and is_plain_date(anchor):
