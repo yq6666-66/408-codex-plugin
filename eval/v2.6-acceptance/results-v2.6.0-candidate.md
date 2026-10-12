@@ -1,6 +1,6 @@
 # v2.6.0 本地候选验收
 
-日期：2026-10-12。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `fce5f898d9180364393b54aa882b7138bc1b9a4b`。
+日期：2026-10-12。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `5a839828596e503743e9a8171f17e4eedd64b6bd`。
 
 版本保持 `2.6.0`、`Unreleased`。分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。本记录中的工程与包证据绑定最终插件内容树；远端检查状态以 PR 最新 head 为准。合并开发代码不会自动打版本标签、发布 Release 或升级稳定安装；稳定版本仍为 v2.5.1。
 
@@ -11,9 +11,9 @@
 | 检查 | 结果与边界 |
 | --- | --- |
 | 仓库校验 | 六项检查通过，14 个 Skills 与精确发布允许列表一致 |
-| Windows 完整测试 | 264 项全部通过，`scripts/check.py --verify-system-evidence` 成功 |
-| WSL Ubuntu 完整测试 | 264 项通过，1 项 Windows 原生管道编码测试按平台跳过 |
-| 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `42dd694d0dbb08a4e78bf6ccb2ddaab6092a7e5484e3a918be13a8c92edd1195` |
+| Windows 完整测试 | 265 项全部通过，`scripts/check.py --verify-system-evidence` 成功 |
+| WSL Ubuntu 完整测试 | 265 项通过，1 项 Windows 原生管道编码测试按平台跳过 |
+| 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `8b75be933bb4578592d43e18933c29f8c2d0c1d710808f3782502ce7db81bcbc` |
 | Semgrep 1.162.0 | 8 条规则扫描 93 个目标，0 findings |
 | Release 包 | Windows 两次构建与 Ubuntu 干净克隆一次构建的 SHA-256 一致，共 45 个文件 |
 | 消费者包验证 | 最终包 `verify-release` 通过，版本 2.6.0 |
@@ -22,24 +22,24 @@
 最终候选 ZIP `kaoyan-408-2.6.0.zip` SHA-256：
 
 ```text
-dafdac9de8b708812062b143a43bd3d3ce8aa8781932855caa3fada265463dc2
+58abb1abd1abf19bcb858262498c329e739cfd1d8005d0852f286870f9503312
 ```
 
 最终候选安装树 SHA-256：
 
 ```text
-42dd694d0dbb08a4e78bf6ccb2ddaab6092a7e5484e3a918be13a8c92edd1195
+8b75be933bb4578592d43e18933c29f8c2d0c1d710808f3782502ce7db81bcbc
 ```
 
 ## 定向真实模型抽查
 
-定向模型抽查预设环境为 Windows Codex CLI `0.162.0-alpha.17.2`、模型 `gpt-6.1-sol`、推理档位 `high`、`danger-full-access`；查询日设为 2026-10-08（Asia/Shanghai），场景使用独立工作目录。此前有效尝试仅在旧插件树 `954bd8e` 于 2026-10-11 启动，最终树 `fce5f89` 尚未运行模型场景。最终 ZIP 解包的 45 文件安装树为 `42dd694d0dbb08a4e78bf6ccb2ddaab6092a7e5484e3a918be13a8c92edd1195`，runner 在每个场景后重验安装树并把变化标为 `invalid-environment`。
+定向模型抽查预设环境为 Windows Codex CLI `0.162.0-alpha.17.2`、模型 `gpt-6.1-sol`、推理档位 `high`、`danger-full-access`；查询日设为 2026-10-08（Asia/Shanghai），场景使用独立工作目录。此前有效尝试仅在旧插件树 `954bd8e` 于 2026-10-11 启动，最终树 `5a83982` 尚未运行模型场景。最终 ZIP 解包的 45 文件安装树为 `8b75be933bb4578592d43e18933c29f8c2d0c1d710808f3782502ce7db81bcbc`，runner 在每个场景后重验安装树并把变化标为 `invalid-environment`。
 
 固定集 [cases.json](cases.json) 共 10 类、13 轮、40 个 checkpoints：4 类实时检索，6 类固定虚构材料或原创教学。上一运行时树 `67e61a3` 的独立会话已捕获全部 10 类并人工判为 40/40；运行后另行验证其安装树仍是 `bfe0356efa97ee659081692f9450bd7f016e9d1fdf547c96ff3a5e78c9510376`。这组数据保留为上一候选树的历史行为证据，因树与提交均不同，**不计入最终插件树通过数**。固定 synthetic 材料只验证口径和边界，不证明真实院校或平台访问能力。
 
-最终插件树 `fce5f89` 尚未完成真实模型抽查，**0 个 checkpoint 已判分，验收未完成**。此前在上一插件树 `954bd8e` 上启动的场景 `v260-01-live-school` 与 `v260-06-synthetic-degradation` 均因 Codex CLI 账户额度限制结束为 `invalid-environment`：没有模型回答、工具调用或 Skill 读取证明；这些旧树样本不代表当前最终树。`fce5f89` 上的场景尚未运行，不得把旧树额度失败算作当前树的行为失败或通过。尚未运行原有 20 条完整新旧配对验收。
+最终插件树 `5a83982` 尚未完成真实模型抽查，**0 个 checkpoint 已判分，验收未完成**。此前在上一插件树 `954bd8e` 上启动的场景 `v260-01-live-school` 与 `v260-06-synthetic-degradation` 均因 Codex CLI 账户额度限制结束为 `invalid-environment`：没有模型回答、工具调用或 Skill 读取证明；这些旧树样本不代表当前最终树。`5a83982` 上的场景尚未运行，不得把旧树额度失败算作当前树的行为失败或通过。尚未运行原有 20 条完整新旧配对验收。
 
-待使用额度可用后，应从最终 ZIP 新建独立 CODEX_HOME，在插件树 `fce5f89` 上重新运行全部定向场景并逐 checkpoint 判分，再决定是否重跑 20 类新旧配对验收。旧运行的输入、JSONL、私有 rollout、工具输出与会话配置保存在本地交付目录；`captured-ungraded` 只表示已保存会话，不代表通过。
+待使用额度可用后，应从最终 ZIP 新建独立 CODEX_HOME，在插件树 `5a83982` 上重新运行全部定向场景并逐 checkpoint 判分，再决定是否重跑 20 类新旧配对验收。旧运行的输入、JSONL、私有 rollout、工具输出与会话配置保存在本地交付目录；`captured-ungraded` 只表示已保存会话，不代表通过。
 
 ## 已发现问题与修复
 
@@ -50,6 +50,7 @@ dafdac9de8b708812062b143a43bd3d3ce8aa8781932855caa3fada265463dc2
 3. `30ab9a3` 额外计算全院报录比，把报考端明确的“所有类别”继承给仅写“全院录取”的另一端。`e2dc4df` 明确两端范围必须独立有据，同一简报或“全院”字样不足以确认类别；当前树历史场景已拒绝该额外比例，同时保留可计算的同口径比例。
 4. 最终审查发现验收边界与记录迁移缺口：已补齐任意 POSIX 绝对路径脱敏、准确率按科目合并、已完成/待做题号互斥、checkpoint 创建前结构校验、Schema 1.0 空集合与单位迁移；健康检查将非文件配置路径标为错误，runner 拒绝源码树和仓库内 CODEX_HOME，并从指定仓库加载验收目录；验收证据要求明确成功状态，输出写入异常返回结构化失败。
 5. 最终复核进一步补齐 Schema 一致性和 Obsidian 边界：blockers 与准确率科目字段逐项校验，非法复测日期不再静默漏报；vaultPath 要求绝对路径，启用的目录必须存在，必需文件拒绝符号链接父级，健康检查只使用检查器自带 validator，不执行被检查目录中的脚本。
+6. 最后复核保留 Schema 1.0 ReviewQueue 中已出现的前向兼容排期字段；`nextRetestDate`、`retestOffsetDays`、`retestAnchorDate` 与 `errorCauseStatus` 会迁移到对应 1.2 字段，不会因其已被识别而丢失。
 
 权限不匹配、额度中断与主动停止旧树的样本均单独保留并排除计分。不同 CLI 版本、插件树的旧样本不混入当前树通过统计。
 
