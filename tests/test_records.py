@@ -288,6 +288,34 @@ class NormalizeTests(unittest.TestCase):
                 self.assertFalse(report["valid"])
                 self.assertTrue(report["errors"])
 
+    def test_legacy_review_queue_preserves_forward_compatible_schedule_fields(self) -> None:
+        legacy = {
+            "schemaVersion": "1.0", "recordType": "ReviewQueue", "generatedAt": None,
+            "items": [
+                {
+                    "subject": "408", "topic": "LRU", "errorCause": None,
+                    "errorCauseStatus": "confirmed", "nextRetestDate": "2026-10-01",
+                    "retestOffsetDays": None, "retestAnchorDate": None,
+                    "status": "due", "masteryEvidence": [],
+                },
+                {
+                    "subject": "408", "topic": "FIFO", "errorCause": None,
+                    "errorCauseStatus": None, "nextRetestDate": None,
+                    "retestOffsetDays": 5, "retestAnchorDate": "2026-09-20",
+                    "status": "pending", "masteryEvidence": [],
+                },
+            ],
+        }
+        report = records.validate_record(legacy)
+        self.assertTrue(report["valid"], report["errors"])
+        normalized, _ = records.normalize_to_12(legacy)
+        first, second = normalized["items"]
+        self.assertEqual(first["nextRetestDate"], "2026-10-01")
+        self.assertEqual(first["errorCauseStatus"], "confirmed")
+        self.assertEqual(second["retestOffsetDays"], 5)
+        self.assertEqual(second["retestAnchorDate"], "2026-09-20")
+        self.assertTrue(records.validate_record(normalized)["valid"])
+
     def test_legacy_record_type_ambiguity_requires_explicit_type(self) -> None:
         ambiguous_records = (
             {"schemaVersion": "1.0", "targetExam": "408考研", "period": {}},

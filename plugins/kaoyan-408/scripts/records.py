@@ -421,21 +421,24 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
                 "subject": _convert_sentinels(entry.get("subject")),
                 "topic": _convert_sentinels(entry.get("topic")),
                 "errorCause": _convert_sentinels(entry.get("errorCause")),
-                "errorCauseStatus": None,
-                "nextRetestDate": None,
-                "retestOffsetDays": None,
+                "errorCauseStatus": _convert_sentinels(entry.get("errorCauseStatus")),
+                "nextRetestDate": _convert_sentinels(entry.get("nextRetestDate")),
+                "retestOffsetDays": _convert_sentinels(entry.get("retestOffsetDays")),
+                "retestAnchorDate": _convert_sentinels(entry.get("retestAnchorDate")),
                 "status": _convert_sentinels(entry.get("status")),
                 "masteryEvidence": [],
             }
-            if isinstance(retest_date, str) and retest_date.strip().upper().startswith("D+"):
-                try:
-                    item["retestOffsetDays"] = int(retest_date.strip()[2:])
-                except ValueError:
-                    warnings.append(f"unparseable legacy retestDate {retest_date!r} kept as null")
-            elif is_plain_date(retest_date):
-                item["nextRetestDate"] = retest_date
-            elif retest_date is not None:
-                warnings.append(f"legacy retestDate {retest_date!r} is neither D+N nor a date; set to null")
+            has_forward_schedule = "nextRetestDate" in entry or "retestOffsetDays" in entry
+            if not has_forward_schedule:
+                if isinstance(retest_date, str) and retest_date.strip().upper().startswith("D+"):
+                    try:
+                        item["retestOffsetDays"] = int(retest_date.strip()[2:])
+                    except ValueError:
+                        warnings.append(f"unparseable legacy retestDate {retest_date!r} kept as null")
+                elif is_plain_date(retest_date):
+                    item["nextRetestDate"] = retest_date
+                elif retest_date is not None:
+                    warnings.append(f"legacy retestDate {retest_date!r} is neither D+N nor a date; set to null")
             evidence = entry.get("masteryEvidence")
             item["masteryEvidence"] = (
                 [text for text in evidence if not is_sentinel(text)]
