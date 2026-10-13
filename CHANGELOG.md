@@ -2,7 +2,7 @@
 
 本项目遵循 [Semantic Versioning](https://semver.org/)。
 
-## [2.6.0] - Unreleased
+## [2.6.0] - 2026-10-13
 
 ### 新增
 
@@ -35,11 +35,11 @@
 - 末轮复核将检查点已完成/待完成题号按较新快照合并，拒绝错误类型的空值输入，保留旧进度记录嵌套扩展；健康检查校验 Skill 正文及宿主元数据，HTML 写入失败返回结构化错误，验收快照关闭本地 Python 字节码写入。
 - 同步新 Skill 注册、发布允许列表、校验器、路由和行为场景及根目录文档；本次不改变便携学习记录 Schema，不新增 App、API 或数据库。
 
-### 候选与验收状态
+### 发布与验收状态
 
-- 基于 v2.5.2 提交 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6` 开发；PR #26 已合并，合并提交为 `2d37c1a3e08ee8c1db1888d9c4f33833e1357a8a`。PR #27 准备发布文档；正式标签与 Release 尚未创建，当前稳定版本仍为 v2.5.1。
-- Windows 281 项自动测试、Ubuntu 自动测试、仓库六项检查、Semgrep 8 条规则/93 个目标零发现、官方插件 validator、14/14 Skill validators、Windows/Ubuntu 字节一致构建及隔离安装验证均通过。候选 ZIP SHA-256：`02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`。
-- 真实模型行为验收仍未完成：最终树 0/40 个 checkpoint 已判分，完整新旧 20 类配对验收和真实知识库写入未验证。工程门禁与候选包不表示模型行为验收通过；详细边界见 [质量门禁](QUALITY_GATES.md) 与 [v2.6.0 验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。
+- 基于 v2.5.2 提交 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6` 开发；PR #26 合并提交为 `2d37c1a3e08ee8c1db1888d9c4f33833e1357a8a`，发布说明通过 PR #27 合并。GitHub Release 为 [v2.6.0](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)，当前稳定版本为 v2.6.0，v2.5.1 保留作回退版本。
+- Windows 281 项自动测试、Ubuntu 自动测试、仓库六项检查、Semgrep 8 条规则/93 个目标零发现、官方插件 validator、14/14 Skill validators、Windows/Ubuntu 字节一致构建及隔离安装验证均通过。正式 ZIP SHA-256：`02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`。
+- 真实模型行为验收仍未完成：最终树 0/40 个 checkpoint 已判分，完整新旧 20 类配对验收和真实知识库写入未验证。本次 Release 不表示模型行为验收通过；详细边界见 [质量门禁](QUALITY_GATES.md) 与 [v2.6.0 验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。
 
 ## [2.5.2] - Unreleased
 

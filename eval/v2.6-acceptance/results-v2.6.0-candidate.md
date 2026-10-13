@@ -1,8 +1,8 @@
-# v2.6.0 本地候选验收
+# v2.6.0 发布与验收记录
 
 日期：2026-10-13。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `17175cc`，PR #26 的 squash 合并提交为 `2d37c1a3e08ee8c1db1888d9c4f33833e1357a8a`。
 
-版本保持 `2.6.0 Unreleased`，当前稳定版本仍为 v2.5.1。PR #26 已合入 main；PR #27 正在合入发布说明。正式标签与 Release 尚未创建，将在 PR #27 合并后由 main 上的 `CI` release 工作流创建。
+版本 `2.6.0` 已于 2026-10-13 正式发布，标签为 [`v2.6.0`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)，当前稳定版本为 v2.6.0，v2.5.1 保留作回退版本。PR #26 合并提交为 `2d37c1a3e08ee8c1db1888d9c4f33833e1357a8a`；发布说明 PR #27 合并提交为 `6b67845db05fd881b922f6363b72960098e7e974`。
 
 ## 工程检查
 
@@ -14,25 +14,25 @@
 | Windows 自动测试 | `scripts/check.py --verify-system-evidence` 通过；281 项测试全部通过 |
 | Ubuntu 自动测试 | 281 项通过，1 项 Windows 专属测试按平台跳过 |
 | Semgrep 1.162.0 | 8 条规则扫描 93 个目标，0 findings |
-| GitHub Actions | PR #26 上的 `validate`、`windows`、`reproducible` 与 GitGuardian 均通过；PR #27 的发布文档改动正在重跑相同检查 |
+| GitHub Actions | PR #26、PR #27 的 `validate`、`windows`、`reproducible` 与 GitGuardian 均通过；release workflow run `38408337687` 成功创建正式 Release |
 | 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363` |
-| 候选包 | Windows 与 Ubuntu 构建的 45 文件 ZIP 字节一致，SHA-256 与下方候选包相同 |
+| Release 包 | Windows 与 Ubuntu 构建的 45 文件 ZIP 字节一致，SHA-256 与正式资产相同 |
 | 消费者包验证 | `verify-release` 通过，版本 2.6.0，45 个文件 |
-| 隔离安装树 | 从候选 ZIP 解包后 `verify-tree` 通过，45 个文件；树哈希与插件树匹配 |
+| 隔离安装树 | 从正式 ZIP 解包后 `verify-tree` 通过，45 个文件；树哈希与插件树匹配 |
 
-候选 ZIP `kaoyan-408-2.6.0.zip` SHA-256：
+正式 ZIP `kaoyan-408-2.6.0.zip` SHA-256：
 
 ```text
 02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5
 ```
 
-候选安装树 SHA-256：
+安装树 SHA-256：
 
 ```text
 aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363
 ```
 
-候选包已通过本地 `verify-release` 与 `verify-tree`。GitHub Release 资产链接将在标签发布成功后更新。
+正式资产：[ZIP 下载](https://github.com/yq6666-66/408-codex-plugin/releases/download/v2.6.0/kaoyan-408-2.6.0.zip)；校验文件为 `kaoyan-408-2.6.0.zip.sha256`。已从 GitHub 下载并核验 ZIP 哈希与校验文件一致。
 
 ## 定向真实模型抽查
 
@@ -61,4 +61,4 @@ aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363
 
 本轮尚未完成所有实时院校检索、网友评价与教学场景的当前树判分。没有运行原有 20 条完整新旧配对验收；没有实际写入用户 Obsidian/Notion 知识库。保存功能依照已授权契约实现，查询默认不保存，写入真实知识库的成功行为不作已验证声明。
 
-PR #27 合并并由发布工作流成功创建标签与 Release 前，版本仍为 Unreleased；行为验收也未完成：真实模型 checkpoint 当前 0/40 已判分，完整新旧 20 类配对验收尚未运行，且没有实际写入用户 Obsidian/Notion 知识库。工程及包门禁不代表所有宿主、模型、院校与平台都能获得相同结果；未验证项目保持未验证，不以自动测试替代真实行为验收。
+v2.6.0 已正式发布，但行为验收仍未完成：真实模型 checkpoint 当前 0/40 已判分，完整新旧 20 类配对验收尚未运行，且没有实际写入用户 Obsidian/Notion 知识库。工程及包门禁不代表所有宿主、模型、院校与平台都能获得相同结果；未验证项目保持未验证，不以自动测试替代真实行为验收。
