@@ -30,7 +30,7 @@
 aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363
 ```
 
-候选 ZIP：`C:\Users\admin\Desktop\408-v260-delivery-20261013\final-17175cc\kaoyan-408-2.6.0.zip`
+候选 ZIP 位于本地交付目录 `final-17175cc/kaoyan-408-2.6.0.zip`。
 
 ## 定向真实模型抽查
 
