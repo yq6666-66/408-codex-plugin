@@ -38,7 +38,7 @@ ANSWER_STATES = {"hidden", "partial", "revealed", None}
 SENSITIVE_EXTENSION_KEY = re.compile(
     r"(?:^|_)(?:api_?key|api_?token|access_?token|refresh_?token|token|secret|password|passwd|"
     r"credential|authorization|cookie|email|phone|mobile|telephone|id_?card|passport|national_?id|"
-    r"identity_?(?:number|no)|student_?(?:id|number)|candidate_?(?:id|number)|user_?(?:id|name)|"
+    r"identity_?(?:number|no)|student_?(?:id|number)|candidate_?(?:id|number)|private_?key|user_?(?:id|name)|"
     r"account_?(?:id|name)|(?:device|local|home|file|absolute|vault)_?path|path|"
     r"(?:raw|source|question|paper)_?(?:material|text|content)|(?:real|full)_?name)(?:_|$)|^(?:name)$",
     re.IGNORECASE,
@@ -49,7 +49,8 @@ SENSITIVE_PATH_VALUE = re.compile(
     re.IGNORECASE,
 )
 SENSITIVE_TOKEN_VALUE = re.compile(
-    r"(?:\bBearer\s+\S+|\b(?:sk|ghp|github_pat|xox[baprs])[-_][A-Za-z0-9_-]{12,})",
+    r"(?:\bBearer\s+\S+|\b(?:sk|ghp|github_pat|xox[baprs])[-_][A-Za-z0-9_-]{12,}|"
+    r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----)",
     re.IGNORECASE,
 )
 
@@ -292,6 +293,9 @@ def _redact_schema_11_extensions(record: dict[str, Any]) -> list[str]:
 
 def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     warnings: list[str] = []
+    validation_errors = validate_legacy_10(record)
+    if validation_errors:
+        raise RecordError("invalid Schema 1.0 record: " + "; ".join(validation_errors))
     if _contains_sentinel(record):
         warnings.append(
             "legacy sentinel values (empty string / 未提供 / unknown) converted to null or empty arrays"
@@ -391,7 +395,7 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
         converted["metrics"] = metrics
         accuracy_value = _convert_sentinels(record.get("accuracy"))
         sample_size = _convert_sentinels(record.get("sampleSize"))
-        if isinstance(accuracy_value, (int, float)) or accuracy_value is None:
+        if "accuracy" in record or "sampleSize" in record:
             accuracy_entries.append({
                 "subject": None,
                 "correct": None,
@@ -432,7 +436,13 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
             if not has_forward_schedule:
                 if isinstance(retest_date, str) and retest_date.strip().upper().startswith("D+"):
                     try:
-                        item["retestOffsetDays"] = int(retest_date.strip()[2:])
+                        offset = int(retest_date.strip()[2:])
+                        if offset < 0:
+                            warnings.append(
+                                f"negative legacy retestDate {retest_date!r} kept as null"
+                            )
+                        else:
+                            item["retestOffsetDays"] = offset
                     except ValueError:
                         warnings.append(f"unparseable legacy retestDate {retest_date!r} kept as null")
                 elif is_plain_date(retest_date):
@@ -493,10 +503,19 @@ def normalize_to_12(record: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     warnings: list[str] = []
     converted = json.loads(canonical_json(record))
     version = converted.get("schemaVersion")
+    if version not in {"1.0", "1.1", "1.2"}:
+        raise RecordError(f"unsupported schemaVersion for normalization: {version!r}")
     if version == "1.0":
         converted, migrate_warnings = normalize_10_to_11(converted)
         warnings.extend(migrate_warnings)
-    elif version == "1.1":
+    else:
+        validation_record = converted
+        if version == "1.1" and converted.get("recordType") == "SessionCheckpoint":
+            validation_record = {**converted, "schemaVersion": "1.2"}
+        errors, _ = validate_current(validation_record)
+        if errors:
+            raise RecordError("invalid Schema " + str(version) + " record: " + "; ".join(errors))
+    if version == "1.1":
         redacted = _redact_schema_11_extensions(converted)
         if redacted:
             previous = converted.get("redactedFields")
@@ -723,11 +742,27 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
     if version not in {"1.1", "1.2"}:
         errors.append(f"schemaVersion must be 1.1 or 1.2 at the root, got {version!r}")
         return errors, warnings
-    if record.get("recordId") is not None:
+    if "recordId" in record:
         rid = record["recordId"]
         if not isinstance(rid, str) or re.fullmatch(r"kr-[0-9a-f]{16}", rid) is None:
             errors.append(f"recordId must match kr- plus 16 lowercase hex digits, got {rid!r}")
     _check_date(record, "updatedAt", errors)
+    if "redactedFields" in record:
+        redacted_fields = record["redactedFields"]
+        if not isinstance(redacted_fields, list) or any(
+            not is_non_empty_string(entry) for entry in redacted_fields
+        ):
+            errors.append("redactedFields must be an array of non-empty strings")
+        elif len(set(redacted_fields)) != len(redacted_fields):
+            errors.append("redactedFields must not contain duplicates")
+    if "legacyExtensions" in record and not isinstance(record["legacyExtensions"], dict):
+        errors.append("legacyExtensions must be an object")
+    if "migrationWarnings" in record:
+        migration_warnings = record["migrationWarnings"]
+        if not isinstance(migration_warnings, list) or any(
+            not is_non_empty_string(entry) for entry in migration_warnings
+        ):
+            errors.append("migrationWarnings must be an array of non-empty strings")
 
     if record_type == "StudyProfile":
         for key in ("targetExam", "targetDate", "weeklyHours", "currentPhase", "constraints"):
@@ -774,9 +809,7 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
                     errors.append(f"metrics[{index}].{key} must be a non-empty string or null")
             for key in ("planned", "completed"):
                 value = entry.get(key)
-                if value is not None and (
-                    isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0
-                ):
+                if value is not None and not is_non_negative_finite_number(value):
                     errors.append(f"metrics[{index}].{key} must be a non-negative number or null")
         for index, entry in enumerate(_array_or_empty(record, "accuracy", errors)):
             if not isinstance(entry, dict):
@@ -911,10 +944,8 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
             errors.append("checkpointId must match kc- plus 16 lowercase hex digits")
         for key in ("dueItems", "pendingRetests"):
             value = record.get(key)
-            if not (isinstance(value, list) and all(
-                isinstance(entry, str) and entry.strip() for entry in value
-            )):
-                errors.append(f"{key} must be an array of non-empty strings")
+            if not (isinstance(value, list) and all(is_non_empty_string(entry) for entry in value)):
+                errors.append(f"{key} must be an array of non-empty non-sentinel strings")
         if record.get("teachingMode") not in TEACHING_MODES:
             errors.append("teachingMode must be detailed, hint, independent, mock, or null")
         if record.get("answerState") not in ANSWER_STATES:
@@ -1156,6 +1187,10 @@ def resolve_due(items: list[dict[str, Any]], base: date) -> dict[str, Any]:
             raise RecordError(f"items[{index}].nextRetestDate must be a valid date or null")
         if anchor is not None and not is_plain_date(anchor):
             raise RecordError(f"items[{index}].retestAnchorDate must be a valid date or null")
+        if is_plain_date(next_date) and offset is not None:
+            raise RecordError(
+                f"items[{index}] must not carry both nextRetestDate and retestOffsetDays"
+            )
         if is_plain_date(next_date):
             (due if date.fromisoformat(next_date) <= base else not_due).append(summary)
         elif isinstance(offset, int) and is_plain_date(anchor):

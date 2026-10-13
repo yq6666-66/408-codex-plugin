@@ -35,11 +35,36 @@ EXPECTED_SKILLS = {
     "kaoyan-admissions-researcher",
 }
 EXPECTED_SKILL_COUNT = len(EXPECTED_SKILLS)
+MARKDOWN_LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SEMVER_PATTERN = re.compile(
     r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
     r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
+
+
+def _missing_reference_links(skill_doc: Path, plugin_root: Path) -> list[str]:
+    """Find required local reference links in a Skill whose targets are missing."""
+    try:
+        contents = skill_doc.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        return ["SKILL.md (unreadable; cannot verify references)"]
+    root = plugin_root.resolve()
+    missing: set[str] = set()
+    for match in MARKDOWN_LINK_PATTERN.finditer(contents):
+        target = match.group(1).strip()
+        if target.startswith("<") and target.endswith(">"):
+            target = target[1:-1]
+        if target.startswith(("http://", "https://", "mailto:", "#")):
+            continue
+        local_path = target.split("#", 1)[0].split("?", 1)[0]
+        if "references/" not in local_path.replace("\\", "/"):
+            continue
+        candidate = skill_doc.parent / local_path
+        resolved = candidate.resolve()
+        if root not in resolved.parents or not resolved.is_file() or candidate.is_symlink():
+            missing.add(local_path)
+    return sorted(missing)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -136,6 +161,13 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
             problems.append(
                 f"incomplete Skill directory {path.name} (missing: {', '.join(missing_metadata)})"
             )
+        if skill_doc.is_file() and not skill_doc.is_symlink():
+            missing_references = _missing_reference_links(skill_doc, root)
+            if missing_references:
+                problems.append(
+                    f"missing or unreadable Skill references {path.name}: "
+                    + ", ".join(missing_references)
+                )
         if not linked_metadata and not missing_metadata:
             skills.append(path.name)
     if set(skills) != EXPECTED_SKILLS or discovered_skills != EXPECTED_SKILLS:
@@ -145,10 +177,11 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
 
     scripts_root = root / "scripts"
     missing_helpers = sorted(
-        name for name in EXPECTED_RUNTIME_HELPERS if not (scripts_root / name).is_file()
+        name for name in EXPECTED_RUNTIME_HELPERS
+        if (scripts_root / name).is_symlink() or not (scripts_root / name).is_file()
     )
     if missing_helpers:
-        problems.append("missing runtime helpers: " + ", ".join(missing_helpers))
+        problems.append("missing or symlinked runtime helpers: " + ", ".join(missing_helpers))
 
     config = (config_path or Path.home() / ".codex" / "kaoyan-408" / "obsidian-brain.json").resolve()
     obsidian: dict[str, Any] = {"configStatus": "absent", "enabled": None, "vaultStatus": "not-configured"}

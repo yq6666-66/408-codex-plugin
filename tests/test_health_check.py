@@ -41,6 +41,38 @@ class HealthCheckTests(unittest.TestCase):
         self.assertEqual(report["status"], "problem")
         self.assertTrue(any("rogue-incomplete" in issue and "unexpected" in issue for issue in report["problems"]))
 
+    def test_missing_required_reference_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            plugin = Path(temporary) / "plugin"
+            shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+            required_reference = plugin / "references" / "admissions-research-contract.md"
+            required_reference.unlink()
+            report = health_check.inspect_plugin(plugin, Path(temporary) / "missing.json")
+        self.assertEqual(report["status"], "problem")
+        self.assertTrue(any(
+            "missing or unreadable Skill references" in issue
+            and "admissions-research-contract.md" in issue
+            for issue in report["problems"]
+        ))
+
+    def test_runtime_helper_symlink_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            plugin = root / "plugin"
+            shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+            helper = plugin / "scripts" / "records.py"
+            target = root / "external-records.py"
+            target.write_text("# outside helper", encoding="utf-8")
+            helper.unlink()
+            try:
+                helper.symlink_to(target)
+            except (OSError, NotImplementedError) as exc:
+                self.skipTest(f"symbolic links unavailable: {exc}")
+            report = health_check.inspect_plugin(plugin, root / "missing.json")
+        self.assertEqual(report["status"], "problem")
+        self.assertTrue(any("symlinked runtime helpers" in issue and "records.py" in issue
+                            for issue in report["problems"]))
+
     def test_skill_directory_and_required_skill_files_reject_symlinks(self) -> None:
         for link_target in ("directory", "SKILL.md", "agents/openai.yaml"):
             with self.subTest(link_target=link_target), tempfile.TemporaryDirectory() as temporary:

@@ -158,7 +158,11 @@ def capture(
         "eventCount": len(events),
         "startedTurns": started_turns,
         "completedTurns": completed_turns,
-        "complete": started_turns > 0 and completed_turns == started_turns,
+        "complete": (
+            started_turns > 0
+            and completed_turns == started_turns
+            and any(message["text"].strip() for message in messages)
+        ),
         "agentMessages": messages,
         "modelOutput": model_output,
         "toolCalls": tools,

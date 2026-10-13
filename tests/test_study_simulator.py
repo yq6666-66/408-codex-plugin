@@ -73,6 +73,12 @@ class CacheSimulatorTests(unittest.TestCase):
 
 
 class ReplacementSimulatorTests(unittest.TestCase):
+    def test_negative_or_non_integer_pages_are_rejected(self) -> None:
+        for references, initial in (([-1], []), ([1], [-1]), ([True], [])):
+            with self.subTest(references=references, initial=initial):
+                with self.assertRaisesRegex(sim.SimulatorError, "non-negative integers"):
+                    sim.simulate_fifo(2, references, initial)
+
     def test_duplicate_preloaded_pages_are_rejected(self) -> None:
         for simulate in (sim.simulate_fifo, sim.simulate_lru):
             with self.subTest(algorithm=simulate.__name__):

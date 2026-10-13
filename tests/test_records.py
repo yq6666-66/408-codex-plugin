@@ -54,6 +54,27 @@ class NormalizeTests(unittest.TestCase):
         self.assertEqual(normalized["items"][1]["masteryEvidence"], [])
         self.assertLess(0, len(warnings))
 
+    def test_negative_legacy_relative_retest_date_is_not_migrated(self) -> None:
+        normalized, warnings = records.normalize_to_12({
+            "schemaVersion": "1.0", "recordType": "ReviewQueue",
+            "items": [{"retestDate": "D+-1"}],
+        })
+        item = normalized["items"][0]
+        self.assertIsNone(item["retestOffsetDays"])
+        self.assertIsNone(item["nextRetestDate"])
+        self.assertTrue(any("negative legacy retestDate" in warning for warning in warnings))
+
+    def test_normalize_rejects_unsupported_versions_and_invalid_legacy_shapes(self) -> None:
+        with self.assertRaisesRegex(records.RecordError, "unsupported schemaVersion"):
+            records.normalize_to_12({
+                "schemaVersion": "2.0", "recordType": "StudyProfile", "targetExam": "408",
+            })
+        with self.assertRaisesRegex(records.RecordError, "invalid Schema 1.0 record.*bySubject"):
+            records.normalize_to_12({
+                "schemaVersion": "1.0", "recordType": "ProgressSnapshot",
+                "bySubject": {"subject": "408"},
+            })
+
     def test_assigned_record_id_is_stable_across_renormalization(self) -> None:
         first, _ = records.normalize_to_12(REVIEW_QUEUE_10)
         second, _ = records.normalize_to_12(REVIEW_QUEUE_10)
@@ -87,18 +108,23 @@ class NormalizeTests(unittest.TestCase):
             "schemaVersion": "1.0",
             "targetExam": "408考研",
             "apiToken": "fake-token-value",
+            "privateKey": (
+                "-----BEGIN RSA " + "PRIVATE KEY-----fake-key-----END RSA " + "PRIVATE KEY-----"
+            ),
             "devicePath": r"C:\Users\student\vault",
             "safeExtension": {"theme": "dark", "email": "student@example.invalid"},
         }
         normalized, warnings = records.normalize_to_12(record)
         extensions = normalized["legacyExtensions"]
         self.assertIsNone(extensions["apiToken"])
+        self.assertIsNone(extensions["privateKey"])
         self.assertIsNone(extensions["devicePath"])
         self.assertEqual(extensions["safeExtension"]["theme"], "dark")
         self.assertIsNone(extensions["safeExtension"]["email"])
         self.assertEqual(normalized["redactedFields"], [
             "/legacyExtensions/apiToken",
             "/legacyExtensions/devicePath",
+            "/legacyExtensions/privateKey",
             "/legacyExtensions/safeExtension/email",
         ])
         self.assertTrue(any("redacted" in warning for warning in warnings))
@@ -198,6 +224,12 @@ class NormalizeTests(unittest.TestCase):
         self.assertIsNone(subject_accuracy["correct"])
         self.assertEqual(subject_accuracy["total"], 10)
         self.assertEqual(subject_accuracy["rate"], 0.8)
+
+    def test_missing_root_accuracy_does_not_create_an_empty_overall_entry(self) -> None:
+        normalized, _ = records.normalize_to_12({
+            "schemaVersion": "1.0", "recordType": "ProgressSnapshot", "plannedUnits": 20,
+        })
+        self.assertEqual(normalized["accuracy"], [])
 
     def test_safe_review_item_extensions_survive_and_sensitive_ones_are_redacted(self) -> None:
         normalized, _ = records.normalize_to_12({
@@ -760,6 +792,14 @@ class DueTests(unittest.TestCase):
         self.assertNotIn("Traceback", result.stderr)
         self.assertIn("nextRetestDate", json.loads(result.stderr)["error"])
 
+    def test_due_rejects_conflicting_absolute_and_relative_schedules(self) -> None:
+        item = {
+            "nextRetestDate": "2026-09-10", "retestOffsetDays": 3,
+            "retestAnchorDate": "2026-09-08",
+        }
+        with self.assertRaisesRegex(records.RecordError, "both nextRetestDate and retestOffsetDays"):
+            records.resolve_due([item], __import__("datetime").date(2026, 9, 11))
+
     def test_boundary_date_is_inclusive(self) -> None:
         plan = records.resolve_due(self.build_queue()["items"], __import__("datetime").date(2026, 9, 10))
         self.assertEqual([entry["topic"] for entry in plan["due"]], ["已到期"])
@@ -772,6 +812,14 @@ class CheckpointTests(unittest.TestCase):
         checkpoint.pop("remainingQuestions")
         errors, _ = records.validate_current(checkpoint)
         self.assertEqual(errors, [])
+
+    def test_due_item_arrays_reject_sentinel_placeholders(self) -> None:
+        checkpoint = records.build_checkpoint({}, None)
+        for field in ("dueItems", "pendingRetests"):
+            for sentinel in ("unknown", "未提供"):
+                with self.subTest(field=field, sentinel=sentinel):
+                    errors, _ = records.validate_current({**checkpoint, field: [sentinel]})
+                    self.assertTrue(any(field in error and "sentinel" in error for error in errors))
 
     def test_present_null_question_arrays_are_rejected(self) -> None:
         base = records.build_checkpoint({}, None)
@@ -906,6 +954,25 @@ class CheckpointTests(unittest.TestCase):
 
 
 class ValidationTests(unittest.TestCase):
+    def test_optional_record_metadata_is_validated_against_the_schema(self) -> None:
+        base = {
+            "schemaVersion": "1.2", "recordType": "StudyProfile",
+            "targetExam": "408考研", "targetDate": None, "weeklyHours": None,
+            "currentPhase": None, "constraints": [],
+        }
+        invalid_fields = (
+            ("recordId", None, "recordId must match"),
+            ("redactedFields", ["/safe", {}], "redactedFields"),
+            ("redactedFields", ["/same", "/same"], "must not contain duplicates"),
+            ("legacyExtensions", [], "legacyExtensions must be an object"),
+            ("migrationWarnings", [None], "migrationWarnings"),
+        )
+        for field, value, message in invalid_fields:
+            with self.subTest(field=field, value=value):
+                report = records.validate_record({**base, field: value})
+                self.assertFalse(report["valid"])
+                self.assertTrue(any(message in error for error in report["errors"]))
+
     def test_record_id_requires_sixteen_lowercase_hex_digits(self) -> None:
         report = records.validate_record({
             "schemaVersion": "1.2", "recordType": "StudyProfile",
@@ -1111,6 +1178,17 @@ class ValidationTests(unittest.TestCase):
         self.assertFalse(report["valid"])
         for field in ("subject", "name", "planned", "completed"):
             self.assertTrue(any(f"metrics[0].{field}" in error for error in report["errors"]))
+        for invalid in (float("nan"), float("inf"), float("-inf")):
+            with self.subTest(value=invalid):
+                report = records.validate_record({
+                    "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
+                    "period": {"start": None, "end": None},
+                    "metrics": [{"subject": None, "name": "overall", "unit": "hours",
+                                 "planned": invalid, "completed": None}],
+                    "accuracy": [], "blockers": [],
+                })
+                self.assertFalse(report["valid"])
+                self.assertTrue(any("metrics[0].planned" in error for error in report["errors"]))
 
     def test_mastered_without_independent_evidence_warns(self) -> None:
         record = {

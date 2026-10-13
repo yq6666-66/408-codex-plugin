@@ -185,6 +185,11 @@ def _replacement_simulate(
 ) -> dict[str, Any]:
     if frames <= 0:
         raise SimulatorError("frames must be positive")
+    if any(
+        isinstance(page, bool) or not isinstance(page, int) or page < 0
+        for page in [*initial, *references]
+    ):
+        raise SimulatorError("pages must be non-negative integers")
     if len(initial) > frames:
         raise SimulatorError("initial pages exceed frame count")
     if len(set(initial)) != len(initial):

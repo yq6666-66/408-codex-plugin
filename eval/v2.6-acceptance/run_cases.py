@@ -62,9 +62,19 @@ def resolve_codex_home(repository: Path, codex_home: Path, stable_home: Path | N
     if resolved_home == resolved_repository or resolved_repository in resolved_home.parents:
         raise ValueError("refusing CODEX_HOME equal to or inside the repository")
     stable_home = (Path.home() / ".codex") if stable_home is None else stable_home
-    if resolved_home == stable_home.resolve():
-        raise ValueError("refusing stable CODEX_HOME")
+    resolved_stable_home = stable_home.resolve()
+    if (
+        resolved_home == resolved_stable_home
+        or resolved_stable_home in resolved_home.parents
+        or resolved_home in resolved_stable_home.parents
+    ):
+        raise ValueError("refusing CODEX_HOME overlapping stable CODEX_HOME")
     return resolved_home
+
+
+def thread_id_matches(expected: str | None, actual: Any) -> bool:
+    """Require a resumed capture to identify the original CLI thread."""
+    return isinstance(expected, str) and bool(expected) and actual == expected
 
 
 def acceptance_paths(repository: Path) -> tuple[Path, Path]:
@@ -400,6 +410,13 @@ def main() -> int:
                 report = capture(events, sha, case_id, prompt, materials)
                 if number == 1:
                     thread_id = report.get("threadId")
+                if not thread_id_matches(thread_id, report.get("threadId")):
+                    report["complete"] = False
+                    report.setdefault("errors", []).append({
+                        "turn": number,
+                        "type": "threadId.mismatch",
+                        "message": "captured turn must report the original non-empty thread ID",
+                    })
                 rollout = preserve_rollout(args.codex_home, thread_id, prefix.with_suffix(".rollout.jsonl"))
                 report["rolloutToolCalls"] = extract_rollout_tools(
                     prefix.with_suffix(".rollout.jsonl"), start_line=next_rollout_line

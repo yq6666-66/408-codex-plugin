@@ -188,8 +188,13 @@ class RunnerPathSafetyTests(unittest.TestCase):
                 with self.subTest(path=unsafe), self.assertRaisesRegex(ValueError, "inside the repository"):
                     runner.resolve_codex_home(repository, unsafe, stable_home)
 
-            with self.assertRaisesRegex(ValueError, "stable CODEX_HOME"):
-                runner.resolve_codex_home(repository, stable_home, stable_home)
+            for overlapping in (
+                stable_home,
+                stable_home / "nested-codex",
+                stable_home.parent,
+            ):
+                with self.subTest(path=overlapping), self.assertRaisesRegex(ValueError, "stable CODEX_HOME"):
+                    runner.resolve_codex_home(repository, overlapping, stable_home)
 
             isolated_home = root / "isolated-codex"
             isolated_home.mkdir()
@@ -197,6 +202,13 @@ class RunnerPathSafetyTests(unittest.TestCase):
                 runner.resolve_codex_home(repository, isolated_home, stable_home),
                 isolated_home.resolve(),
             )
+
+    def test_resumed_capture_must_report_the_original_thread_id(self) -> None:
+        self.assertTrue(runner.thread_id_matches("thread-1", "thread-1"))
+        for actual in (None, "", "thread-2"):
+            with self.subTest(actual=actual):
+                self.assertFalse(runner.thread_id_matches("thread-1", actual))
+        self.assertFalse(runner.thread_id_matches(None, "thread-1"))
 
     def test_acceptance_assets_are_resolved_from_requested_repository(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -58,6 +58,22 @@ class CaptureTests(unittest.TestCase):
         )
         self.assertFalse(report["complete"])
 
+    def test_completed_turn_with_only_whitespace_is_not_accepted(self) -> None:
+        report = gpt6_capture.capture(
+            [
+                {"type": "turn.started"},
+                {"type": "item.completed", "item": {
+                    "type": "agent_message", "text": " \n\t "
+                }},
+                {"type": "turn.completed"},
+            ],
+            "0" * 64,
+            "case-empty-output",
+            input_material="test material",
+        )
+        self.assertFalse(report["complete"])
+        self.assertNotIn("recordCase", report)
+
     def test_web_search_results_are_preserved_as_tool_evidence(self) -> None:
         results = [{"title": "Official page", "url": "https://example.org/paper", "snippet": "2024 paper"}]
         report = gpt6_capture.capture(
