@@ -4,13 +4,19 @@
 
 当前版本：`2.6.0`（未发布候选）；当前稳定版本：`2.5.1`。
 
-v2.6.0 基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。截至 2026-10-13，最终插件载荷提交为 `17175cc`：Windows `scripts/check.py --verify-system-evidence` 通过，281 项测试全部通过，仓库六项检查和 validator 证据核对通过；官方插件 validator 通过，14/14 Skill validator 通过。Windows 构建的 45 文件候选 ZIP SHA-256 为 `02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`；隔离 `verify-release` 与 `verify-tree` 均通过，安装树 SHA-256 为 `aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363`。Semgrep 在 Windows 按项目门禁跳过，当前树的 Linux/Ubuntu、Semgrep 与 GitHub PR 检查以最新 head 的 CI 结果为准；此前 `5a83982` 的跨平台结果不代表本次插件树。最终树仍有 0 个模型 checkpoint 已判分，行为验收未完成；`67e61a3` 前一运行时树的 40/40 只作历史记录，不计入最终树。尚未运行完整的新旧 20 类配对验收，边界见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。候选分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)；远端检查状态以该 PR 最新 head 为准。本次集成仍保持 `Unreleased`，不打标签、不发布 Release，也不升级稳定安装。
+v2.6.0 基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。PR #26 已合并；发布说明 PR #27 正在为正式发布准备文档。发布标签和下载资产尚未创建，请继续使用稳定版 v2.5.1。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
-## v2.5.1 验证状态（公开可审计）
+## v2.6.0 候选验证状态
 
-当前稳定版本为 [v2.5.1 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)，发布资产为 `kaoyan-408-2.5.1.zip`。本版本覆盖数学一、数学二、英语一、英语二、408 与政治六科，提供详细讲解、逐级提示、独立作答三种教学模式，并支持在搜索、计算、笔记、测验、文件和定时任务等宿主能力不可用时明确降级；学习规划、检查点、错题闭环、进度诊断和便携学习记录仍可按契约运行。
+候选构建包包含 45 个文件，SHA-256 为 `02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`。Windows `scripts/check.py --verify-system-evidence` 的 281 项测试、仓库检查、官方插件 validator 与 14/14 Skill validators 均通过；PR #26 的 `validate`、`windows`、`reproducible` 与 GitGuardian 检查通过，Linux Semgrep 扫描 93 个目标、8 条规则且无发现。隔离 `verify-release`、`verify-tree` 通过，安装树 SHA-256 为 `aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363`。这些结果验证候选资产，不代表 GitHub Release 已发布。
+
+真实模型行为验收仍未完成：最终树 0/40 个 checkpoint 已判分，完整新旧 20 类配对测试尚未运行，也没有验证向用户 Obsidian/Notion 知识库实际写入。分项证据和剩余限制见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。
+
+## v2.5.1 稳定版本验证状态（公开可审计）
+
+当前稳定版本为 [v2.5.1 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)，发布资产为 `kaoyan-408-2.5.1.zip`。该版本覆盖数学一、数学二、英语一、英语二、408 与政治六科，提供详细讲解、逐级提示、独立作答三种教学模式，并支持在搜索、计算、笔记、测验、文件和定时任务等宿主能力不可用时明确降级；学习规划、检查点、错题闭环、进度诊断和便携学习记录仍可按契约运行。
 
 公开验证结论：
 
@@ -128,7 +134,7 @@ python scripts/health_check.py --json
 
 ### 在哪里使用
 
-- **ChatGPT Desktop / Codex Desktop**：安装 v2.6.0 后在新任务中直接提问，14 个 Skills 按宿主机制加载；当前稳定版 v2.5.1 仍为 13 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
+- **ChatGPT Desktop / Codex Desktop**：当前稳定版 v2.5.1 在新任务中加载 13 个 Skills；v2.6.0 正式发布后将提供 14 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
 - **新版 CLI / IDE**：安装完成后同样在新会话中生效。
 - 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
 
@@ -184,9 +190,7 @@ python scripts/health_check.py --json
 
 ## 安装与回退
 
-以下 v2.6.0 命令仅供正式发布后使用；本次为本地未发布候选，不代表标签或 Release 已存在。当前稳定版请使用上方 v2.5.1 安装命令。本地候选可先用 `python scripts/install_local.py install --validate-only` 验证结构，不升级稳定安装。
-
-正式发布后，Codex CLI/IDE 可添加仓库 marketplace 后安装：
+v2.6.0 发布标签创建前，请继续使用上方稳定版安装命令。发布完成后，Codex CLI/IDE 可添加仓库 marketplace 后安装：
 
 ```powershell
 codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.6.0
@@ -211,13 +215,13 @@ python scripts/install_local.py install                   # 校验后经官方 C
 消费者固定版本验证（与时间无关：发布 31 天、一年后哈希仍正确的版本均可安装）：
 
 ```powershell
-python scripts/install_local.py verify-release --zip kaoyan-408-2.6.0.zip --sha256 <已核验包的SHA-256> --version 2.6.0
+python scripts/install_local.py verify-release --zip kaoyan-408-2.6.0.zip --sha256 02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5 --version 2.6.0
 python scripts/install_local.py verify-tree --dir <隔离安装插件目录> --version 2.6.0
 ```
 
 安装器通过官方 CLI 的结构化 JSON 输出识别 Git marketplace / 本地 marketplace；同名但来源不同、缓存目录、文件被改、版本或哈希不一致都会被拒绝并说明原因。消费者安装验证不等于维护者完整发布门禁（官方插件/Skill 校验、Windows/Ubuntu 测试、可重复构建等仍然保留）。
 
-**候选版回退到 v2.5.1**：
+**回退到 v2.5.1**：
 
 ```powershell
 codex plugin remove kaoyan-408
