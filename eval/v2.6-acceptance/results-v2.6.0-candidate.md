@@ -1,6 +1,6 @@
 # v2.6.0 本地候选验收
 
-日期：2026-10-12。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `5a839828596e503743e9a8171f17e4eedd64b6bd`。
+日期：2026-10-13。开发基线为 v2.5.2 未发布候选 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6`，开发分支为 `codex/v2.6-admissions`。最终插件内容提交为 `682ff7f`。
 
 版本保持 `2.6.0`、`Unreleased`。分支已推送并创建 [PR #26](https://github.com/yq6666-66/408-codex-plugin/pull/26)。本记录中的工程与包证据绑定最终插件内容树；远端检查状态以 PR 最新 head 为准。合并开发代码不会自动打版本标签、发布 Release 或升级稳定安装；稳定版本仍为 v2.5.1。
 
@@ -11,35 +11,37 @@
 | 检查 | 结果与边界 |
 | --- | --- |
 | 仓库校验 | 六项检查通过，14 个 Skills 与精确发布允许列表一致 |
-| Windows 完整测试 | 265 项全部通过，`scripts/check.py --verify-system-evidence` 成功 |
-| WSL Ubuntu 完整测试 | 265 项通过，1 项 Windows 原生管道编码测试按平台跳过 |
-| 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `8b75be933bb4578592d43e18933c29f8c2d0c1d710808f3782502ce7db81bcbc` |
-| Semgrep 1.162.0 | 8 条规则扫描 93 个目标，0 findings |
-| Release 包 | Windows 两次构建与 Ubuntu 干净克隆一次构建的 SHA-256 一致，共 45 个文件 |
-| 消费者包验证 | 最终包 `verify-release` 通过，版本 2.6.0 |
-| 隔离安装树 | 从最终 ZIP 解包后 `verify-tree` 通过，45 个文件；未改动稳定安装 |
+| Windows 自动测试 | `scripts/check.py --verify-system-evidence` 通过；276 项测试全部通过 |
+| Ubuntu 自动测试与 Semgrep | 先前 265 项和 Semgrep 结果绑定旧插件树 `5a83982`，不计入本次最终树；等待 PR 当前 head 的 `reproducible` / Linux 检查 |
+| 仓库校验 | 六项检查通过，14 个 Skills 与精确发布允许列表一致 |
+| 官方 validators | 官方插件 validator 通过；14/14 Skill validator 通过；证据绑定插件树 `371d69e7d6ebc8c5dc2aafcb04d3f0fd953a80d513183fb9d73264886f09d5ea` |
+| Windows Release 包 | 干净插件树构建 45 个文件；跨平台可重复构建等待 PR 当前 head 检查 |
+| 消费者包验证 | 最终包 `verify-release` 通过，版本 2.6.0，45 个文件 |
+| 隔离安装树 | 从最终 ZIP 解包后 `verify-tree` 通过，45 个文件；树哈希与插件树匹配；未改动稳定安装 |
 
 最终候选 ZIP `kaoyan-408-2.6.0.zip` SHA-256：
 
 ```text
-58abb1abd1abf19bcb858262498c329e739cfd1d8005d0852f286870f9503312
+f64e02b7bd02d268f91f181a4334030bad27c8636e1154c53a5131543b31d3c7
 ```
 
 最终候选安装树 SHA-256：
 
 ```text
-8b75be933bb4578592d43e18933c29f8c2d0c1d710808f3782502ce7db81bcbc
+371d69e7d6ebc8c5dc2aafcb04d3f0fd953a80d513183fb9d73264886f09d5ea
+
+候选 ZIP：`C:\Users\admin\Desktop\408-v260-delivery-20261013\final-682ff7f\kaoyan-408-2.6.0.zip`
 ```
 
 ## 定向真实模型抽查
 
-定向模型抽查预设环境为 Windows Codex CLI `0.162.0-alpha.17.2`、模型 `gpt-6.1-sol`、推理档位 `high`、`danger-full-access`；查询日设为 2026-10-08（Asia/Shanghai），场景使用独立工作目录。此前有效尝试仅在旧插件树 `954bd8e` 于 2026-10-11 启动，最终树 `5a83982` 尚未运行模型场景。最终 ZIP 解包的 45 文件安装树为 `8b75be933bb4578592d43e18933c29f8c2d0c1d710808f3782502ce7db81bcbc`，runner 在每个场景后重验安装树并把变化标为 `invalid-environment`。
+定向模型抽查预设环境为 Windows Codex CLI `0.162.0-alpha.17.2`、模型 `gpt-6.1-sol`、推理档位 `high`、`danger-full-access`；查询日设为 2026-10-08（Asia/Shanghai），场景使用独立工作目录。此前有效尝试仅在旧插件树 `954bd8e` 于 2026-10-11 启动，最终树 `682ff7f` 尚未运行模型场景。最终 ZIP 解包的 45 文件安装树为 `371d69e7d6ebc8c5dc2aafcb04d3f0fd953a80d513183fb9d73264886f09d5ea`，runner 在每个场景后重验安装树并把变化标为 `invalid-environment`。
 
 固定集 [cases.json](cases.json) 共 10 类、13 轮、40 个 checkpoints：4 类实时检索，6 类固定虚构材料或原创教学。上一运行时树 `67e61a3` 的独立会话已捕获全部 10 类并人工判为 40/40；运行后另行验证其安装树仍是 `bfe0356efa97ee659081692f9450bd7f016e9d1fdf547c96ff3a5e78c9510376`。这组数据保留为上一候选树的历史行为证据，因树与提交均不同，**不计入最终插件树通过数**。固定 synthetic 材料只验证口径和边界，不证明真实院校或平台访问能力。
 
-最终插件树 `5a83982` 尚未完成真实模型抽查，**0 个 checkpoint 已判分，验收未完成**。此前在上一插件树 `954bd8e` 上启动的场景 `v260-01-live-school` 与 `v260-06-synthetic-degradation` 均因 Codex CLI 账户额度限制结束为 `invalid-environment`：没有模型回答、工具调用或 Skill 读取证明；这些旧树样本不代表当前最终树。`5a83982` 上的场景尚未运行，不得把旧树额度失败算作当前树的行为失败或通过。尚未运行原有 20 条完整新旧配对验收。
+最终插件树 `682ff7f` 尚未完成真实模型抽查，**0 个 checkpoint 已判分，验收未完成**。此前在上一插件树 `954bd8e` 上启动的场景 `v260-01-live-school` 与 `v260-06-synthetic-degradation` 均因 Codex CLI 账户额度限制结束为 `invalid-environment`：没有模型回答、工具调用或 Skill 读取证明；这些旧树样本不代表当前最终树。`682ff7f` 上的场景尚未运行，不得把旧树额度失败算作当前树的行为失败或通过。尚未运行原有 20 条完整新旧配对验收。
 
-待使用额度可用后，应从最终 ZIP 新建独立 CODEX_HOME，在插件树 `5a83982` 上重新运行全部定向场景并逐 checkpoint 判分，再决定是否重跑 20 类新旧配对验收。旧运行的输入、JSONL、私有 rollout、工具输出与会话配置保存在本地交付目录；`captured-ungraded` 只表示已保存会话，不代表通过。
+待使用额度可用后，应从最终 ZIP 新建独立 CODEX_HOME，在插件树 `682ff7f` 上重新运行全部定向场景并逐 checkpoint 判分，再决定是否重跑 20 类新旧配对验收。旧运行的输入、JSONL、私有 rollout、工具输出与会话配置保存在本地交付目录；`captured-ungraded` 只表示已保存会话，不代表通过。
 
 ## 已发现问题与修复
 

@@ -30,6 +30,8 @@
 - 收尾复核修复任意绝对 POSIX 路径脱敏、进度正确率按科目合并、检查点构造与题目集合校验、旧记录空集合和未知单位迁移；健康检查标记非文件配置路径，验收 runner 拒绝仓库内 CODEX_HOME 并从指定候选树读取材料，验收证据要求明确成功状态且输出写入错误返回清晰失败。
 - 最终复核补齐 ProgressSnapshot blockers/accuracy 科目及到期日期校验；Obsidian 配置要求绝对 Vault 路径、启用目录存在并拒绝必需文件的符号链接父级，health_check 只运行随可信检查器的 validator，不执行被检查树中的脚本。
 - 最终迁移复核保留 Schema 1.0 ReviewQueue 已出现的前向兼容排期字段：`nextRetestDate`、`retestOffsetDays`、`retestAnchorDate` 与 `errorCauseStatus`。
+- 合并前复核补齐剩余记录边界：拒绝未知 Schema 版本和结构无效的旧记录，脱敏私钥扩展，不伪造空正确率，校验可选元数据及有限指标，并拒绝负 D+、冲突排期和检查点占位项。
+- 补强运行验收边界：健康检查发现缺失引用和符号链接运行脚本，分页置换拒绝负页号，隔离 CODEX_HOME 不得覆盖稳定配置路径，续轮必须沿用原线程 ID，空白模型输出不计为完成。
 - 同步新 Skill 注册、发布允许列表、校验器、路由和行为场景及根目录文档；本次不改变便携学习记录 Schema，不新增 App、API 或数据库。
 
 ### 候选验收边界
