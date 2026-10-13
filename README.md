@@ -2,21 +2,21 @@
 
 `kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，以及院校招生调研、历年比较与网友评价整理，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
-当前版本：`2.6.0`（正式发布）；当前稳定版本：`2.6.0`。
+当前版本：`2.6.0`（未发布候选）；当前稳定版本：`2.5.1`。
 
-v2.6.0 于 2026-10-13 正式发布，基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。版本标签为 [`v2.6.0`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)，开发合并提交为 `2d37c1a`。发布资产、工程门禁和尚未完成的真实行为验收见下方记录。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
+v2.6.0 基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。PR #26 已合并；发布说明 PR #27 正在为正式发布准备文档。发布标签和下载资产尚未创建，请继续使用稳定版 v2.5.1。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
-## v2.6.0 发布与验收状态
+## v2.6.0 候选验证状态
 
-正式发布资产为 [`kaoyan-408-2.6.0.zip`](https://github.com/yq6666-66/408-codex-plugin/releases/download/v2.6.0/kaoyan-408-2.6.0.zip)，SHA-256 为 `02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`，包含 45 个文件。Windows `scripts/check.py --verify-system-evidence` 的 281 项测试、仓库检查、官方插件 validator 与 14/14 Skill validators 均通过；GitHub `validate`、`windows`、`reproducible` 与 GitGuardian 检查通过，Linux Semgrep 扫描 93 个目标、8 条规则且无发现。隔离 `verify-release`、`verify-tree` 通过，安装树 SHA-256 为 `aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363`。
+候选构建包包含 45 个文件，SHA-256 为 `02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`。Windows `scripts/check.py --verify-system-evidence` 的 281 项测试、仓库检查、官方插件 validator 与 14/14 Skill validators 均通过；PR #26 的 `validate`、`windows`、`reproducible` 与 GitGuardian 检查通过，Linux Semgrep 扫描 93 个目标、8 条规则且无发现。隔离 `verify-release`、`verify-tree` 通过，安装树 SHA-256 为 `aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363`。这些结果验证候选资产，不代表 GitHub Release 已发布。
 
-真实模型行为验收仍未完成：最终树 0/40 个 checkpoint 已判分，完整新旧 20 类配对测试尚未运行，也没有验证向用户 Obsidian/Notion 知识库实际写入。本次 Release 不代表这些行为已通过。分项证据和剩余限制见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。
+真实模型行为验收仍未完成：最终树 0/40 个 checkpoint 已判分，完整新旧 20 类配对测试尚未运行，也没有验证向用户 Obsidian/Notion 知识库实际写入。分项证据和剩余限制见[本轮验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。
 
-## v2.5.1 历史验证状态（公开可审计）
+## v2.5.1 稳定版本验证状态（公开可审计）
 
-此前稳定版本为 [v2.5.1 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)，发布资产为 `kaoyan-408-2.5.1.zip`。该版本覆盖数学一、数学二、英语一、英语二、408 与政治六科，提供详细讲解、逐级提示、独立作答三种教学模式，并支持在搜索、计算、笔记、测验、文件和定时任务等宿主能力不可用时明确降级；学习规划、检查点、错题闭环、进度诊断和便携学习记录仍可按契约运行。
+当前稳定版本为 [v2.5.1 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.5.1)，发布资产为 `kaoyan-408-2.5.1.zip`。该版本覆盖数学一、数学二、英语一、英语二、408 与政治六科，提供详细讲解、逐级提示、独立作答三种教学模式，并支持在搜索、计算、笔记、测验、文件和定时任务等宿主能力不可用时明确降级；学习规划、检查点、错题闭环、进度诊断和便携学习记录仍可按契约运行。
 
 公开验证结论：
 
@@ -134,7 +134,7 @@ python scripts/health_check.py --json
 
 ### 在哪里使用
 
-- **ChatGPT Desktop / Codex Desktop**：安装 v2.6.0 后在新任务中直接提问，14 个 Skills 按宿主机制加载；v2.5.1 有 13 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
+- **ChatGPT Desktop / Codex Desktop**：当前稳定版 v2.5.1 在新任务中加载 13 个 Skills；v2.6.0 正式发布后将提供 14 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
 - **新版 CLI / IDE**：安装完成后同样在新会话中生效。
 - 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
 
@@ -190,7 +190,7 @@ python scripts/health_check.py --json
 
 ## 安装与回退
 
-v2.6.0 已正式发布，是当前稳定版本。Codex CLI/IDE 可添加仓库 marketplace 后安装：
+v2.6.0 发布标签创建前，请继续使用上方稳定版安装命令。发布完成后，Codex CLI/IDE 可添加仓库 marketplace 后安装：
 
 ```powershell
 codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.6.0
