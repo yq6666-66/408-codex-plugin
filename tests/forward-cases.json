@@ -632,22 +632,22 @@
       "id": "official-P2",
       "skillUnderTest": "kaoyan-official-info-researcher",
       "kind": "positive",
-    "prompt": "不用查官网，按 2018—2020 真题直接告诉我 2026 数学一考试范围。",
+      "prompt": "不用查官网，按 2018—2020 真题直接告诉我 2026 数学一考试范围。",
       "expectedPrimary": "kaoyan-official-info-researcher",
       "expectedBehavior": [
-      "拒绝用历年真题替代 2026 年官方考试范围",
-      "无法联网时使用待核验并说明官方入口"
+        "拒绝用历年真题替代 2026 年官方考试范围",
+        "无法联网时使用待核验并说明官方入口"
       ]
     },
     {
       "id": "official-L1",
       "skillUnderTest": "kaoyan-official-info-researcher",
       "kind": "colloquial",
-    "prompt": "有哪些学校考 408？再看下 XX 大学复试考什么、这两年录取多少分。",
+      "prompt": "今年网上报名截止时间以哪个公告为准？请打开官方正文核验。",
       "expectedPrimary": "kaoyan-official-info-researcher",
       "expectedBehavior": [
-      "未指定院校时通过研招网专业目录发现候选单位",
-      "逐校核验复试内容和最近两个招生年度录取统计"
+        "实际核验研招网当年公告",
+        "保留适用年度、日期与直接来源"
       ]
     },
     {
@@ -666,11 +666,11 @@
       "id": "official-M1",
       "skillUnderTest": "kaoyan-official-info-researcher",
       "kind": "compound",
-    "prompt": "先核验目标院校今年 408 招生目录、复试方案和近两年录取统计，再把准确结果交给规划师排计划。",
+      "prompt": "先核验今年数学二官方考试范围，再直接按准确范围交给规划师安排复习。",
       "expectedPrimary": "kaoyan-official-info-researcher",
       "expectedBehavior": [
-        "官方事实阻塞后续规划",
-        "输出最小交接卡"
+        "单项官方考试范围先核验",
+        "主Agent连续串联规划，不要求用户复制交接卡"
       ]
     },
     {
@@ -679,7 +679,10 @@
       "kind": "positive",
       "prompt": "帮我找 2018 年数学一真题的公开来源，并检查 GitHub 文件许可证。",
       "expectedPrimary": "kaoyan-past-paper-searcher",
-      "expectedBehavior": ["执行网页与 GitHub 定向发现", "记录来源、commit、许可证和保存策略"]
+      "expectedBehavior": [
+        "执行网页与 GitHub 定向发现",
+        "记录来源、commit、许可证和保存策略"
+      ]
     },
     {
       "id": "paper-search-P2",
@@ -687,7 +690,10 @@
       "kind": "positive",
       "prompt": "搜索 2010 到 2026 年英语二试卷索引，只要合法来源，不要复制整卷。",
       "expectedPrimary": "kaoyan-past-paper-searcher",
-      "expectedBehavior": ["限制年份与科目", "许可证不明时只建立索引"]
+      "expectedBehavior": [
+        "限制年份与科目",
+        "许可证不明时只建立索引"
+      ]
     },
     {
       "id": "paper-search-L1",
@@ -695,7 +701,10 @@
       "kind": "colloquial",
       "prompt": "GitHub 上有 2022 的 408 卷子没？顺便搜搜网页。",
       "expectedPrimary": "kaoyan-past-paper-searcher",
-      "expectedBehavior": ["识别找卷意图", "不把搜索摘要当成真题证明"]
+      "expectedBehavior": [
+        "识别找卷意图",
+        "不把搜索摘要当成真题证明"
+      ]
     },
     {
       "id": "paper-search-C1",
@@ -704,7 +713,10 @@
       "prompt": "我已经贴出 2021 数学二第 5 题，请一步步讲解并画图。",
       "expectedPrimary": "kaoyan-math-coach",
       "expectedNotPrimary": "kaoyan-past-paper-searcher",
-      "expectedBehavior": ["题面已提供时由数学教练主责", "搜索器不抢占逐题教学"]
+      "expectedBehavior": [
+        "题面已提供时由数学教练主责",
+        "搜索器不抢占逐题教学"
+      ]
     },
     {
       "id": "paper-search-M1",
@@ -712,7 +724,88 @@
       "kind": "compound",
       "prompt": "先找 2019 英语一真题的可靠来源，找到后再交给分析师做整卷覆盖表。",
       "expectedPrimary": "kaoyan-past-paper-searcher",
-      "expectedBehavior": ["先完成来源核验", "用交接卡传递给真题分析师"]
+      "expectedBehavior": [
+        "先完成来源核验",
+        "用交接卡传递给真题分析师"
+      ]
+    },
+    {
+      "id": "admissions-P1",
+      "skillUnderTest": "kaoyan-admissions-researcher",
+      "kind": "positive",
+      "prompt": "请调研浙江省考408的全日制计算机技术专硕，查首批3所学校的招生详情、最近两年情况和网友评价。",
+      "expectedPrimary": "kaoyan-admissions-researcher",
+      "expectedBehavior": [
+        "院校发现并逐院系核验考试科目",
+        "官方事实与体验分开、历史默认最近两个已完成年度"
+      ]
+    },
+    {
+      "id": "admissions-P2",
+      "skillUnderTest": "kaoyan-admissions-researcher",
+      "kind": "positive",
+      "prompt": "比较甲乙两校计算机专硕的历年招生情况，报录比没有同口径官方数据时不要算。",
+      "expectedPrimary": "kaoyan-admissions-researcher",
+      "expectedBehavior": [
+        "明示统一口径",
+        "来源缺失不计算粗略报录比"
+      ]
+    },
+    {
+      "id": "admissions-L1",
+      "skillUnderTest": "kaoyan-admissions-researcher",
+      "kind": "colloquial",
+      "prompt": "这学校复试体验咋样？帮我看知乎B站小红书贴吧上的经验，别只给招生简章。",
+      "expectedPrimary": "kaoyan-admissions-researcher",
+      "expectedBehavior": [
+        "主动多平台检索",
+        "正文可读与线索分开并去重"
+      ]
+    },
+    {
+      "id": "admissions-C1",
+      "skillUnderTest": "kaoyan-admissions-researcher",
+      "kind": "conflict",
+      "prompt": "请核验今年全国硕士报名时间和网上确认公告。",
+      "expectedPrimary": "kaoyan-official-info-researcher",
+      "expectedBehavior": [
+        "报名单项核验由官方信息核验员处理"
+      ],
+      "expectedNotPrimary": "kaoyan-admissions-researcher"
+    },
+    {
+      "id": "admissions-C2",
+      "skillUnderTest": "kaoyan-admissions-researcher",
+      "kind": "conflict",
+      "prompt": "不查学校，请按每周25小时安排数学二和408复习。",
+      "expectedPrimary": "kaoyan-408-planner",
+      "expectedBehavior": [
+        "学习规划不由招生调研员抢占"
+      ],
+      "expectedNotPrimary": "kaoyan-admissions-researcher"
+    },
+    {
+      "id": "admissions-M1",
+      "skillUnderTest": "kaoyan-admissions-researcher",
+      "kind": "compound",
+      "prompt": "先查目标院校的当期招生、近两年数据和跨考体验，再直接帮我安排复习。",
+      "expectedPrimary": "kaoyan-admissions-researcher",
+      "expectedBehavior": [
+        "招生调研先完成所需事实",
+        "主Agent连续交给规划，不要求复制交接卡"
+      ]
+    },
+    {
+      "id": "official-C2",
+      "skillUnderTest": "kaoyan-official-info-researcher",
+      "kind": "conflict",
+      "prompt": "比较三所院校2027年招生详情、2025和2026录取数据以及网上复试评价。",
+      "expectedPrimary": "kaoyan-admissions-researcher",
+      "expectedNotPrimary": "kaoyan-official-info-researcher",
+      "expectedBehavior": [
+        "完整调研由招生调研员主责",
+        "出现当期年份不抢占主要产物"
+      ]
     }
   ]
 }

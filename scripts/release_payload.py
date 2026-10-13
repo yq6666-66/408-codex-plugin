@@ -30,9 +30,11 @@ EXPECTED_SKILLS = {
     "kaoyan-past-paper-analyst",
     "kaoyan-material-study-assistant",
     "kaoyan-official-info-researcher",
+    "kaoyan-admissions-researcher",
 }
 
 EXPECTED_REFERENCES = {
+    "admissions-research-contract.md",
     "capability-routing-contract.md",
     "evidence-copyright-contract.md",
     "learning-layer-contract.md",
@@ -45,7 +47,14 @@ EXPECTED_REFERENCES = {
     "beginner-visual-answer-contract.md",
 }
 
-ALLOWED_PLUGIN_ROOTS = {".codex-plugin", "skills", "references", "assets"}
+EXPECTED_RUNTIME_SCRIPTS = {
+    "configure_obsidian_brain.py",
+    "health_check.py",
+    "records.py",
+    "study_simulator.py",
+}
+
+ALLOWED_PLUGIN_ROOTS = {".codex-plugin", "skills", "references", "assets", "scripts"}
 SEMVER_PATTERN = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$"
 PLACEHOLDER = "TO" + "DO"
 
@@ -81,6 +90,7 @@ def expected_release_files() -> frozenset[str]:
         ".codex-plugin/plugin.json",
         "assets/kaoyan-408.svg",
         *(f"references/{name}" for name in EXPECTED_REFERENCES),
+        *(f"scripts/{name}" for name in EXPECTED_RUNTIME_SCRIPTS),
     }
     for skill in EXPECTED_SKILLS:
         names.add(f"skills/{skill}/SKILL.md")
@@ -244,4 +254,3 @@ def check_mastery_evidence_semantics(record: dict) -> list[str]:
             f"items[{index}] is marked mastered without independent or transfer retest evidence"
         )
     return warnings
-

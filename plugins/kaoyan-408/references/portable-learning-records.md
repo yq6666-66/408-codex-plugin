@@ -10,8 +10,11 @@
 - `unit` 未知时使用兼容值 `"unspecified"`。正确率 `rate` 使用 `0` 到 `1`；`total` 为 `0` 时 `rate` 必须为 `null`。
 - `correct` 与 `total` 同时存在时必须满足 `correct <= total`；`total` 为 `0` 时 `correct` 只能为 `0` 或 `null`。三者均有值时，`rate` 必须与 `correct / total` 一致；冲突值只报告并请求确认，不伪造修正。
 - 不加入姓名、账号、凭据、设备路径、原始题面全文或与学习交接无关的信息。
+- 结构化记录必须在需要保存、合并、校验或跨会话交接时生成。若本轮已成功写入并完成读后验证，面向用户的正文只需说明记录类型、更新位置和关键变化，不必在正文重复粘贴完整 JSON；用户要求导出、没有持久化工具、写入失败或需要用户自行携带记录时，提供完整可复制 JSON。
+- 用户明确指定本地目标并要求保存时，在宿主正常审批路径下实际尝试写入该目标，再读回并用可用的记录校验工具核对；不能只凭权限标签推断写入失败。只有写入成功且读回匹配，才能称“已保存”；实际调用被拒绝或失败时如实说明并提供可复制 JSON，不绕过审查。
 - 解析旧对象时保留所有安全的未识别字段及其所在层级，不静默删除；迁移前说明发现的缺失、冲突或不兼容值。若未知字段含凭据、个人标识、设备路径或原始材料全文，隐私边界优先：把原字段值改为 `null`，在根级 `redactedFields` 记录其 JSON Pointer 路径，并明确说明已脱敏。
 - 旧扩展字段与规范字段同名且值冲突时，以有效的新字段承载规范值，把安全的旧值移入根级 `legacyExtensions`，以原 JSON Pointer 为键，并在 `migrationWarnings` 说明；无法安全确定规范值时先请求确认，不声称已经完成迁移。
+- `records.py merge` 遇到同一记录的不同标量时，以较新 `updatedAt` 一侧作为当前值；同时在根级 `mergeConflicts` 保存 JSON Pointer、双方原值和 `kept-newer` 处理结果。时间相同或缺失时保留第一侧并记为 `kept-first`。`updatedAt` 本身只表示版本先后，不重复记作内容冲突。
 
 机器校验时，Schema 根入口接受 1.1 与 1.2 输出；读取旧记录时使用同一文件的 `#/$defs/legacyInput` 定义（1.0 与 1.1），规范化后再用根入口验证 1.2 结果。
 
@@ -23,6 +26,7 @@
 - ID 一经分配就保持稳定：后续更新复用同一 ID，不随内容变化重算。
 - 旧记录不要求提前迁移；只有真正需要保存升级结果时才补 ID，之后持续复用。补 ID 的确定性规则见 `records.py normalize`：对“尚无 `recordId` 的原始记录内容”做规范 JSON 哈希，因此同一条记录重复 normalize 得到相同 ID；已有 ID 的记录保持原 ID。
 - `ReviewQueue.items` 可选携带同格式的 `itemId`，用于跨次更新稳定定位单个错题。
+- 新记录优先由 `records.py` 生成 ID 并校验。脚本被禁用而只能导出文本时，手工核对 ID 后缀为四组各四位的 `0-9a-f`，实际字符串不带分隔符；`checkpointId` 使用 `kc-`，其他 ID 使用 `kr-`。不拼接科目缩写或日期冒充合法 ID；没有实际校验时明确记录尚未工具校验。
 
 ### 更新时间（`updatedAt`）
 
@@ -56,6 +60,13 @@
   "updatedAt": "2026-09-11",
   "currentTask": "2014-2018 英语二阅读精读",
   "position": "2016 Text 2 第 3 题讲解完成，第 4 题未开始",
+  "teachingMode": "hint",
+  "answerState": "partial",
+  "hintLevel": 2,
+  "currentQuestion": "2016 Text 2 第 4 题",
+  "completedQuestions": ["2016 Text 2 第 1 题", "2016 Text 2 第 2 题", "2016 Text 2 第 3 题"],
+  "remainingQuestions": ["2016 Text 2 第 4 题", "2016 Text 2 第 5 题"],
+  "materialVersion": null,
   "dueItems": ["kr-1234567890abcdef#1"],
   "pendingRetests": ["kr-1234567890abcdef#2"],
   "notes": null
@@ -63,11 +74,13 @@
 ```
 
 - “继续上次复习”必须读取真实持久化的 `SessionCheckpoint` 与到期错题后恢复：上次未完成任务、当前学习位置、到期错题、必要的后续复测。
+- 多轮教学需要跨会话延续时，可选保存 `teachingMode`、`answerState`、`hintLevel`、`currentQuestion`、`completedQuestions`、`remainingQuestions` 与 `materialVersion`。答案仍处于 `hidden` 或 `partial` 时，恢复后继续遵守原揭示边界；材料版本不一致时先说明变化并请求最小确认，不把旧作答套到新题面。
+- 写入或更新检查点后，脚本可用时必须运行插件根目录 `scripts/records.py validate <文件>` 并确认 `valid: true`，再用 `checkpoint read <文件>` 核对当前题面；普通文件读回不能代替 Schema 校验。校验失败不能称已保存。`materialVersion` 仅能是有依据的字符串或 `null`，不得用自增数字代替材料摘要；脚本不可用时说明未做工具校验并提供可复制的 Schema 1.2 记录。
 - 读取不到真实记录时明确说明，不得根据模糊聊天历史凭空推断恢复状态。
 
 ## StudyProfile 1.2
 
-规划师每次输出一个 `StudyProfile`。未知字段写 `null`，`constraints` 没有已知限制时使用空数组。
+规划师在需要保存或导出画像时生成一个 `StudyProfile`。未知字段写 `null`，`constraints` 没有已知限制时使用空数组。
 
 ```json
 {
@@ -85,7 +98,7 @@
 
 ## ProgressSnapshot 1.2
 
-执行器每次输出可回填对象：已计划的数据写入 `planned`，尚未完成的 `completed`、正确率和实际结果写 `null`。诊断师每次输出规范化对象，只整理用户实际提供的数据。
+执行器在需要保存或导出时生成可回填对象：已计划的数据写入 `planned`，尚未完成的 `completed`、正确率和实际结果写 `null`。诊断师需要持久化或导出时生成规范化对象，只整理用户实际提供的数据。
 
 ```json
 {
@@ -121,7 +134,7 @@
 
 ## ReviewQueue 1.2
 
-错题闭环每次输出一个 `ReviewQueue`；模考在用户明确交卷并完成复盘后每次输出一个。没有待复测项时允许 `items: []`，但不得把当场答对直接标为 `mastered`。
+错题闭环在需要保存、更新或导出时生成一个 `ReviewQueue`；模考在用户明确交卷并完成复盘、且确有记录需求时生成。没有待复测项时允许 `items: []`，但不得把当场答对直接标为 `mastered`。
 
 ```json
 {

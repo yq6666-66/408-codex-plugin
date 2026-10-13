@@ -633,6 +633,51 @@
         },
         "notes": {
           "$ref": "#/$defs/nullableString"
+        },
+        "teachingMode": {
+          "enum": [
+            "detailed",
+            "hint",
+            "independent",
+            "mock",
+            null
+          ]
+        },
+        "answerState": {
+          "enum": [
+            "hidden",
+            "partial",
+            "revealed",
+            null
+          ]
+        },
+        "hintLevel": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 3
+        },
+        "currentQuestion": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "completedQuestions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        },
+        "remainingQuestions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        },
+        "materialVersion": {
+          "$ref": "#/$defs/nullableString"
         }
       },
       "additionalProperties": true

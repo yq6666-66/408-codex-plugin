@@ -8,7 +8,7 @@ description: 制定数学一/二、英语一/二、408与政治的阶段、月�
 ## 加载契约
 
 - 始终读取并遵循[能力路由契约](../../references/capability-routing-contract.md)。
-- 每次生成 `StudyProfile`，读取[便携学习记录契约](../../references/portable-learning-records.md)。
+- 需要保存、更新或导出 `StudyProfile` 时，读取[便携学习记录契约](../../references/portable-learning-records.md)。
 - 涉及用户材料、来源或当前官方事实时，读取[证据与版权契约](../../references/evidence-copyright-contract.md)。
 
 ## 主责与前置
@@ -31,4 +31,4 @@ description: 制定数学一/二、英语一/二、408与政治的阶段、月�
 
 ## 输出
 
-按公共顺序输出：规划结论与立即动作、阶段/月度路线、周度配额与闭合校验、调整触发条件、可选交接卡；最后输出严格 JSON 的 `StudyProfile 1.2`，未知值写 `null`；宿主提供可靠当前日期时写 `updatedAt` 绝对日期，否则为 `null`。
+按公共顺序输出：规划结论与立即动作、阶段/月度路线、周度配额与闭合校验、调整触发条件、可选交接摘要。需要保存或导出时生成严格 JSON 的 `StudyProfile 1.2`，未知值写 `null`；宿主提供可靠当前日期时写 `updatedAt` 绝对日期，否则为 `null`。已成功持久化并完成写后验证时，正文只需说明更新位置与关键变化；用户要求导出、无持久化工具或写入失败时附完整可复制 JSON。

@@ -1,0 +1,342 @@
+from __future__ import annotations
+
+import importlib.util
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+
+REPO = Path(__file__).resolve().parents[1]
+SPEC = importlib.util.spec_from_file_location(
+    "v260_runner", REPO / "eval" / "v2.6-acceptance" / "run_cases.py"
+)
+assert SPEC is not None and SPEC.loader is not None
+runner = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(runner)
+
+
+class RolloutEvidenceTests(unittest.TestCase):
+    def extract(self, events: list[dict]) -> list[dict]:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "rollout.jsonl"
+            path.write_text(
+                "\n".join(json.dumps(e) for e in events) + "\n", encoding="utf-8"
+            )
+            return runner.extract_rollout_tools(path)
+
+    def test_rollout_capture_only_attributes_calls_after_the_turn_boundary(self) -> None:
+        events = [
+            {"type": "session_meta", "payload": {}},
+            *self.pair("exec", "Script completed\nprevious turn result"),
+            *self.pair("exec", "Script completed\ncurrent turn result"),
+        ]
+        events[3]["payload"]["call_id"] = "call-2"
+        events[4]["payload"]["call_id"] = "call-2"
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "rollout.jsonl"
+            path.write_text("\n".join(json.dumps(e) for e in events) + "\n", encoding="utf-8")
+            current = runner.extract_rollout_tools(path, start_line=4)
+        self.assertEqual(len(current), 1)
+        self.assertIn("current turn result", current[0]["output"])
+
+    def pair(self, name: str, output: str) -> list[dict]:
+        return [
+            {"type": "response_item", "payload": {
+                "type": "custom_tool_call", "call_id": "call-1", "name": name,
+                "input": "read the installed Skill",
+            }},
+            {"type": "response_item", "payload": {
+                "type": "custom_tool_call_output", "call_id": "call-1", "output": output,
+            }},
+        ]
+
+    def test_wrapper_failures_cannot_prove_success(self) -> None:
+        for name in ("exec", "functions.exec"):
+            with self.subTest(name=name):
+                failed = self.extract(self.pair(name, "Script error: blocked by policy"))
+                self.assertFalse(failed[0]["success"])
+                incomplete = self.extract(self.pair(name, "some output without completion"))
+                self.assertFalse(incomplete[0]["success"])
+                completed = self.extract(self.pair(name, "Script completed\nread result"))
+                self.assertTrue(completed[0]["success"])
+
+    def test_structured_rollout_errors_cannot_prove_success(self) -> None:
+        for output in (
+            '{"error":"access denied"}',
+            '{"isError":true,"message":"permission denied"}',
+            '{"status":"failed","message":"request failed"}',
+        ):
+            with self.subTest(output=output):
+                call = self.extract(self.pair("functions.web_search", output))[0]
+                self.assertFalse(call["success"])
+                self.assertEqual(call["status"], "failed")
+        returned = self.extract(self.pair("functions.web_search", '{"results":["found"]}'))[0]
+        self.assertTrue(returned["success"])
+        application_data = self.extract(
+            self.pair("functions.web_search", '{"results":[{"status":"failed"}]}')
+        )[0]
+        self.assertTrue(application_data["success"])
+
+    def test_null_rollout_output_is_not_successful_evidence(self) -> None:
+        events = self.pair("functions.web_search", "ignored fixture")
+        events[1]["payload"]["output"] = None
+        call = self.extract(events)[0]
+        self.assertEqual(call["output"], "")
+        self.assertEqual(call["status"], "no-output")
+        self.assertFalse(call["success"])
+
+    def test_completed_turn_requires_non_empty_model_output(self) -> None:
+        self.assertFalse(runner.turn_has_model_output({"modelOutput": ""}))
+        self.assertFalse(runner.turn_has_model_output({"modelOutput": None}))
+        self.assertFalse(runner.turn_has_model_output({}))
+        self.assertTrue(runner.turn_has_model_output({"modelOutput": "answer"}))
+
+    def test_unmatched_outputs_do_not_create_evidence(self) -> None:
+        events = self.pair("exec", "Script completed")
+        events[1]["payload"]["call_id"] = "unrelated"
+        self.assertEqual(self.extract(events), [])
+
+    def test_skill_proof_requires_complete_text_exact_path_and_success(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "SKILL.md"
+            body = "---\nname: sample-skill\n---\nRequired workflow.\n"
+            path.write_text(body, encoding="utf-8")
+            valid = {"success": True, "input": str(path), "output": body, "itemId": "read-1"}
+            self.assertEqual(runner.skill_read_proof({"toolCalls": [valid]}, path, "sample-skill"), ["read-1"])
+            for changed in (
+                {**valid, "success": False},
+                {**valid, "input": str(path.parent / "other.md")},
+                {**valid, "input": f"read {path}.bak"},
+                {**valid, "output": "name: sample-skill\nRequired workflow."},
+            ):
+                self.assertEqual(runner.skill_read_proof({"toolCalls": [changed]}, path, "sample-skill"), [])
+
+
+class InstalledPayloadTests(unittest.TestCase):
+    def test_repository_plugin_source_cannot_be_used_as_installed_copy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory)
+            source = repository / "plugins" / "kaoyan-408"
+            source.mkdir(parents=True)
+            installed = runner.resolve_installed_root(source)
+
+            with self.assertRaisesRegex(ValueError, "isolated copy"):
+                runner.reject_repository_plugin_source(repository, installed)
+
+            nested = source / "nested-installed-copy"
+            nested.mkdir()
+            with self.assertRaisesRegex(ValueError, "subdirectory"):
+                runner.reject_repository_plugin_source(repository, nested)
+
+            isolated = repository / "candidate-install"
+            isolated.mkdir()
+            runner.reject_repository_plugin_source(repository, isolated)
+
+    def test_supplied_installed_root_symlink_is_rejected_before_resolving(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            candidate = root / "plugin"
+            candidate.mkdir()
+            alias = root / "installed"
+            try:
+                alias.symlink_to(candidate, target_is_directory=True)
+            except OSError as exc:
+                self.skipTest(f"symbolic links unavailable: {exc}")
+            with self.assertRaisesRegex(ValueError, "root must not be a symlink"):
+                runner.resolve_installed_root(alias)
+
+    def test_installed_payload_rejects_symlink_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            candidate = root / "skill.md"
+            candidate.write_text("installed content", encoding="utf-8")
+            expected = {"skill.md": b"installed content"}
+            self.assertEqual(runner.read_installed_payload(root, expected), expected)
+
+            real_is_symlink = Path.is_symlink
+
+            def identify_symlink(path: Path) -> bool:
+                return path == candidate or real_is_symlink(path)
+
+            with patch.object(Path, "is_symlink", identify_symlink):
+                with self.assertRaisesRegex(ValueError, "symlink"):
+                    runner.read_installed_payload(root, expected)
+
+    def test_installed_payload_reverification_detects_modified_contents(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            payload_file = root / "payload.txt"
+            payload_file.write_bytes(b"expected")
+            expected = {"payload.txt": b"expected"}
+            self.assertEqual(runner.read_installed_payload(root, expected), expected)
+            payload_file.write_bytes(b"modified during unrestricted run")
+            with self.assertRaisesRegex(ValueError, "does not match the exact repository payload"):
+                runner.read_installed_payload(root, expected)
+
+
+class RunnerPathSafetyTests(unittest.TestCase):
+    def test_codex_home_must_be_outside_repository_and_stable_profile(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repository = root / "candidate-repository"
+            repository.mkdir()
+            stable_home = root / "stable-codex"
+            stable_home.mkdir()
+            for unsafe in (repository, repository / "nested-codex"):
+                with self.subTest(path=unsafe), self.assertRaisesRegex(ValueError, "inside the repository"):
+                    runner.resolve_codex_home(repository, unsafe, stable_home)
+
+            for overlapping in (
+                stable_home,
+                stable_home / "nested-codex",
+                stable_home.parent,
+            ):
+                with self.subTest(path=overlapping), self.assertRaisesRegex(ValueError, "stable CODEX_HOME"):
+                    runner.resolve_codex_home(repository, overlapping, stable_home)
+
+            isolated_home = root / "isolated-codex"
+            isolated_home.mkdir()
+            self.assertEqual(
+                runner.resolve_codex_home(repository, isolated_home, stable_home),
+                isolated_home.resolve(),
+            )
+
+    def test_resumed_capture_must_report_the_original_thread_id(self) -> None:
+        self.assertTrue(runner.thread_id_matches("thread-1", "thread-1"))
+        for actual in (None, "", "thread-2"):
+            with self.subTest(actual=actual):
+                self.assertFalse(runner.thread_id_matches("thread-1", actual))
+        self.assertFalse(runner.thread_id_matches(None, "thread-1"))
+
+    def test_acceptance_assets_are_resolved_from_requested_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "candidate-repository"
+            acceptance_root = repository / "eval" / "v2.6-acceptance"
+            materials_root = acceptance_root / "materials"
+            materials_root.mkdir(parents=True)
+            catalog_content = {"cases": [{"id": "candidate-case"}]}
+            (acceptance_root / "cases.json").write_text(
+                json.dumps(catalog_content), encoding="utf-8"
+            )
+            (materials_root / "candidate-material.md").write_text(
+                "candidate repository material", encoding="utf-8"
+            )
+
+            catalog_path, resolved_materials = runner.acceptance_paths(repository)
+
+            self.assertEqual(json.loads(catalog_path.read_text(encoding="utf-8")), catalog_content)
+            self.assertEqual(
+                (resolved_materials / "candidate-material.md").read_text(encoding="utf-8"),
+                "candidate repository material",
+            )
+            self.assertNotEqual(catalog_path, Path(runner.__file__).with_name("cases.json"))
+
+
+class PostRunSnapshotTests(unittest.TestCase):
+    def test_runner_snapshot_prevents_import_bytecode_from_changing_the_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            repository.mkdir()
+            module_path = repository / "probe_module.py"
+            module_path.write_text("VALUE = 42\n", encoding="utf-8")
+            original = sys.dont_write_bytecode
+            try:
+                sys.dont_write_bytecode = False
+                before = runner.snapshot_repository_for_run(repository)
+                spec = importlib.util.spec_from_file_location("acceptance_probe_module", module_path)
+                assert spec is not None and spec.loader is not None
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                after = runner.file_snapshot(repository)
+            finally:
+                sys.dont_write_bytecode = original
+        self.assertEqual(module.VALUE, 42)
+        self.assertEqual(before, after)
+        self.assertFalse(any("__pycache__" in path for path in after))
+
+    def test_repository_changes_to_catalog_material_plugin_or_worktree_invalidate_case(self) -> None:
+        changed_paths = (
+            "eval/v2.6-acceptance/cases.json",
+            "eval/v2.6-acceptance/materials/example.md",
+            "plugins/kaoyan-408/skills/example/SKILL.md",
+            "README.md",
+        )
+        for changed_path in changed_paths:
+            with self.subTest(path=changed_path), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                repository = root / "repository"
+                affected = repository / changed_path
+                affected.parent.mkdir(parents=True, exist_ok=True)
+                affected.write_text("before", encoding="utf-8")
+                workspace = root / "workspace"
+                workspace.mkdir()
+                workspace_before = runner.file_snapshot(workspace)
+                repository_before = runner.file_snapshot(repository)
+                affected.write_text("changed during candidate run", encoding="utf-8")
+                summary = {"status": "captured-ungraded"}
+
+                runner.record_post_run_snapshots(
+                    summary, workspace, workspace_before, repository, repository_before
+                )
+
+                self.assertEqual(summary["status"], "invalid-environment")
+                self.assertNotEqual(
+                    summary["repositoryTreeHashBefore"], summary["repositoryTreeHashAfter"]
+                )
+                self.assertIn("repository non-.git worktree changed", summary["error"])
+
+    def test_post_run_workspace_snapshot_oserror_is_recorded_without_raising(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repository = root / "repository"
+            repository.mkdir()
+            workspace = root / "workspace"
+            workspace.mkdir()
+            repository_before = runner.file_snapshot(repository)
+            workspace_before = runner.file_snapshot(workspace)
+            summary = {"status": "captured-ungraded"}
+
+            with patch.object(
+                runner, "file_snapshot", side_effect=[PermissionError("access denied"), repository_before]
+            ):
+                runner.record_post_run_snapshots(
+                    summary, workspace, workspace_before, repository, repository_before
+                )
+
+            self.assertEqual(summary["status"], "invalid-environment")
+            self.assertIsNone(summary["workspaceChanges"])
+            self.assertIn("post-run workspace snapshot failed: PermissionError", summary["error"])
+            self.assertEqual(
+                summary["repositoryTreeHashBefore"], summary["repositoryTreeHashAfter"]
+            )
+
+
+class FailedTurnSummaryTests(unittest.TestCase):
+    def test_turn_exit_and_stderr_path_survive_empty_raw_capture(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_path = root / "turn-1.input.txt"
+            raw_path = root / "turn-1.jsonl"
+            stderr_path = root / "turn-1.stderr.txt"
+            input_path.write_text("fixed prompt", encoding="utf-8")
+            raw_path.write_bytes(b"")
+            stderr_path.write_text("CLI exited before writing JSONL", encoding="utf-8")
+            summary = {"turns": []}
+
+            turn = runner.begin_turn_record(summary, 1, input_path, raw_path, stderr_path)
+            turn["exitCode"] = 1
+
+            self.assertEqual(len(summary["turns"]), 1)
+            self.assertEqual(turn["exitCode"], 1)
+            self.assertEqual(turn["stderrPath"], "turn-1.stderr.txt")
+            self.assertIsNone(turn["rawSha256"])
+            self.assertFalse(turn["complete"])
+
+
+
+
+if __name__ == "__main__":
+    unittest.main()

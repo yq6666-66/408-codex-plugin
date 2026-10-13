@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-19T13:38:42Z",
+  "generatedAt": "2026-10-13T13:08:34Z",
   "plugin": {
     "name": "kaoyan-408",
-    "treeSha256": "76006232ffe566bab5164bf68ba206bd686f635dcdab84310c1d261290829383",
-    "version": "2.5.1"
+    "treeSha256": "aca0a37feabb42d93ca1c267b984785519f63f4787e558264be0d6ed36d4c363",
+    "version": "2.6.0"
   },
   "results": {
     "plugin": {
@@ -16,6 +16,10 @@
         "passed": true
       },
       "kaoyan-408-tutor": {
+        "exitCode": 0,
+        "passed": true
+      },
+      "kaoyan-admissions-researcher": {
         "exitCode": 0,
         "passed": true
       },
@@ -72,11 +76,11 @@
   "validators": {
     "plugin": {
       "mode": "official-script",
-      "sha256": "1e6cb914505b458856c2cfab7d18a224731c743ef47e0c9d78afe64f35b67f7c",
+      "sha256": "4e84c911479e4d158d723ed8ccc881d3499e580fbf5650e60d379a1a25ac3186",
       "source": "plugin-creator/scripts/validate_plugin.py"
     },
     "skill": {
-      "sha256": "6068513d924ed3559e186dfcdead7439129828dcf402167fd925c06dffbf2806",
+      "sha256": "5347a0a09cfb546bba1c0d1a30dae0a233d9a05f57bd4e7877155c588bcdabf7",
       "source": "skill-creator/scripts/quick_validate.py"
     }
   }

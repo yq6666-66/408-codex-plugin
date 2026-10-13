@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from contextlib import redirect_stdout
+from io import StringIO
 from unittest.mock import patch
 
 
@@ -81,6 +84,24 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
         self.assertIn("[OK] enabled: true", checked.stdout)
 
+    def test_disable_succeeds_if_vault_is_temporarily_unavailable(self) -> None:
+        configured = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(configured.returncode, 0, configured.stdout + configured.stderr)
+        data = json.loads(self.config.read_text(encoding="utf-8"))
+        data["vaultPath"] = str(self.root / "moved-vault")
+        self.config.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+        disabled = self.run_cli("disable")
+        self.assertEqual(disabled.returncode, 0, disabled.stdout + disabled.stderr)
+        self.assertFalse(json.loads(self.config.read_text(encoding="utf-8"))["enabled"])
+        checked_disabled = self.run_cli("check")
+        self.assertEqual(checked_disabled.returncode, 0, checked_disabled.stdout + checked_disabled.stderr)
+        self.assertIn("[OK] enabled: false", checked_disabled.stdout)
+
+        enabled = self.run_cli("enable")
+        self.assertEqual(enabled.returncode, 1)
+        self.assertFalse(json.loads(self.config.read_text(encoding="utf-8"))["enabled"])
+
     def test_dry_run_changes_nothing(self) -> None:
         result = self.run_cli(
             "configure",
@@ -91,6 +112,39 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertFalse(self.config.exists())
         self.assertFalse((self.vault / "20-项目").exists())
+
+    def test_config_requires_absolute_vault_path_and_enabled_roots(self) -> None:
+        config = {
+            "schemaVersion": "1.1", "enabled": True,
+            "vaultPath": str(self.vault),
+            "projectRoot": "20-project/test", "knowledgeRoot": "30-knowledge/test",
+            "pastPaperRoot": "40-papers/test", "writeMode": "auto-structured",
+            "retrievalScope": "project-first",
+        }
+        with self.assertRaisesRegex(brain.BrainConfigError, "vaultPath must be an absolute path"):
+            brain.validate_config({**config, "vaultPath": "relative/vault"}, require_paths=False)
+        with self.assertRaisesRegex(brain.BrainConfigError, "enabled projectRoot"):
+            brain.validate_config(config, require_paths=True)
+        self.assertTrue(brain.validate_config({**config, "enabled": False}, require_paths=True)["enabled"] is False)
+
+    def test_configure_rejects_symlinked_required_file_parent_without_touching_external_note(self) -> None:
+        outside_system = self.root / "outside-system"
+        outside_system.mkdir()
+        external_index = outside_system / "知识库索引.md"
+        external_index.write_text("keep this external index\n", encoding="utf-8")
+        local_system = self.vault / "00-系统"
+        shutil.rmtree(local_system)
+        try:
+            os.symlink(outside_system, local_system, target_is_directory=True)
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"symbolic links unavailable: {exc}")
+
+        result = self.run_cli("configure", "--vault", str(self.vault))
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("symbolic link", result.stdout)
+        self.assertEqual(external_index.read_text(encoding="utf-8"), "keep this external index\n")
+        self.assertFalse(self.config.exists())
 
     def test_path_traversal_is_rejected(self) -> None:
         result = self.run_cli(
@@ -152,6 +206,38 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         self.assertTrue(legacy.is_file())
         self.assertIn("kaoyan-408-brain", (legacy_project / "主页.md").read_text(encoding="utf-8"))
 
+    def test_migrate_rejects_invalid_legacy_path_types_without_traceback(self) -> None:
+        legacy = self.root / "legacy.json"
+        base = {
+            "schemaVersion": "1.0",
+            "enabled": False,
+            "vaultPath": str(self.vault),
+            "projectRoot": "20-项目/408考研",
+            "writeMode": "auto-structured",
+            "retrievalScope": "project-first",
+        }
+        for field, values in (("vaultPath", (None, 42, [], {})),
+                              ("projectRoot", (None, 42, [], {}))):
+            for value in values:
+                with self.subTest(field=field, value=value):
+                    legacy.write_text(json.dumps({**base, field: value}, ensure_ascii=False), encoding="utf-8")
+                    result = self.run_cli("migrate", "--legacy-config", str(legacy))
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn("[FAIL] legacy " + field, result.stdout)
+                    self.assertNotIn("Traceback", result.stdout + result.stderr)
+
+    def test_migrate_rejects_relative_legacy_vault_path(self) -> None:
+        legacy = self.root / "legacy-relative.json"
+        legacy.write_text(json.dumps({
+            "schemaVersion": "1.0", "enabled": False,
+            "vaultPath": "relative/vault", "projectRoot": "20-project/test",
+            "writeMode": "auto-structured", "retrievalScope": "project-first",
+        }), encoding="utf-8")
+        result = self.run_cli("migrate", "--legacy-config", str(legacy))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("legacy vaultPath must be an absolute path", result.stdout)
+        self.assertNotIn("Traceback", result.stdout + result.stderr)
+
     def test_symbolic_link_vault_is_rejected(self) -> None:
         link = self.root / "vault-link"
         try:
@@ -161,6 +247,41 @@ class ObsidianBrainConfigTests(unittest.TestCase):
         result = self.run_cli("configure", "--vault", str(link))
         self.assertEqual(result.returncode, 1)
         self.assertIn("symbolic link", result.stdout)
+
+    def test_symbolic_linked_scaffold_file_is_rejected_without_touching_target(self) -> None:
+        project = self.vault / "20-项目" / "408考研"
+        project.mkdir(parents=True)
+        external = self.root / "outside.md"
+        external.write_text("keep this note\n", encoding="utf-8")
+        try:
+            os.symlink(external, project / "学习档案.md")
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"symbolic links unavailable: {exc}")
+        result = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("symbolic link scaffold file", result.stdout)
+        self.assertEqual(external.read_text(encoding="utf-8"), "keep this note\n")
+        self.assertFalse(self.config.exists())
+
+    def test_directory_at_scaffold_note_path_is_rejected(self) -> None:
+        project = self.vault / "20-项目" / "408考研"
+        (project / "学习档案.md").mkdir(parents=True)
+        result = self.run_cli("configure", "--vault", str(self.vault))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("expected a regular scaffold file", result.stdout)
+        self.assertFalse(self.config.exists())
+
+    def test_filesystem_failure_is_reported_without_traceback(self) -> None:
+        arguments = [
+            "--config", str(self.config), "configure", "--vault", str(self.vault),
+        ]
+        captured = StringIO()
+        with patch.object(brain, "scaffold_vault", side_effect=OSError("read-only")):
+            with redirect_stdout(captured):
+                code = brain.main(arguments)
+        self.assertEqual(code, 1)
+        self.assertIn("[FAIL] filesystem operation failed (OSError)", captured.getvalue())
+        self.assertNotIn("Traceback", captured.getvalue())
 
 
 if __name__ == "__main__":
