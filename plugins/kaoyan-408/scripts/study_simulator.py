@@ -530,6 +530,12 @@ def main(argv: list[str] | None = None) -> int:
     except SimulatorError as exc:
         print(json.dumps({"error": str(exc)}, ensure_ascii=False), file=sys.stderr)
         return 1
+    except OSError as exc:
+        print(
+            json.dumps({"error": f"cannot write HTML output ({exc.__class__.__name__})"}, ensure_ascii=False),
+            file=sys.stderr,
+        )
+        return 1
     emit = json.dumps(document, ensure_ascii=False, indent=2)
     print(emit)
     return 0

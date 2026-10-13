@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -235,6 +236,27 @@ class RunnerPathSafetyTests(unittest.TestCase):
 
 
 class PostRunSnapshotTests(unittest.TestCase):
+    def test_runner_snapshot_prevents_import_bytecode_from_changing_the_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repository"
+            repository.mkdir()
+            module_path = repository / "probe_module.py"
+            module_path.write_text("VALUE = 42\n", encoding="utf-8")
+            original = sys.dont_write_bytecode
+            try:
+                sys.dont_write_bytecode = False
+                before = runner.snapshot_repository_for_run(repository)
+                spec = importlib.util.spec_from_file_location("acceptance_probe_module", module_path)
+                assert spec is not None and spec.loader is not None
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                after = runner.file_snapshot(repository)
+            finally:
+                sys.dont_write_bytecode = original
+        self.assertEqual(module.VALUE, 42)
+        self.assertEqual(before, after)
+        self.assertFalse(any("__pycache__" in path for path in after))
+
     def test_repository_changes_to_catalog_material_plugin_or_worktree_invalidate_case(self) -> None:
         changed_paths = (
             "eval/v2.6-acceptance/cases.json",

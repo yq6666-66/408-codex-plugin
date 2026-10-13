@@ -36,6 +36,12 @@ def file_snapshot(directory: Path) -> dict[str, str]:
     }
 
 
+def snapshot_repository_for_run(repository: Path) -> dict[str, str]:
+    """Prevent runner and validator imports from adding ignored bytecode to the measured tree."""
+    sys.dont_write_bytecode = True
+    return file_snapshot(repository)
+
+
 def snapshot_digest(snapshot: dict[str, str]) -> str:
     canonical = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
@@ -272,6 +278,7 @@ def turn_has_model_output(report: dict) -> bool:
 
 
 def main() -> int:
+    sys.dont_write_bytecode = True
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repository", type=Path, required=True)
     parser.add_argument("--installed-plugin", type=Path, required=True)
@@ -299,7 +306,7 @@ def main() -> int:
     if args.repository in args.output.parents or args.output == args.repository:
         raise ValueError("raw output must remain outside the repository")
     try:
-        repository_before = file_snapshot(args.repository)
+        repository_before = snapshot_repository_for_run(args.repository)
     except Exception as exc:
         parser.error(f"cannot snapshot repository before acceptance: {exc.__class__.__name__}")
     repository_tree_hash_before = snapshot_digest(repository_before)
@@ -325,6 +332,7 @@ def main() -> int:
     cli_version = subprocess.check_output([str(args.exe), "--version"], text=True, encoding="utf-8").strip()
     environment = os.environ.copy()
     environment["CODEX_HOME"] = str(args.codex_home)
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     args.output.mkdir(parents=True, exist_ok=True)
     for case_id in selected:
         if args.stop_file is not None and args.stop_file.exists():

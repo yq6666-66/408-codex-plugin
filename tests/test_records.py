@@ -253,6 +253,14 @@ class NormalizeTests(unittest.TestCase):
         self.assertEqual(normalized["metrics"][0]["unit"], "hours")
         self.assertFalse(any("carry no unit" in warning for warning in warnings))
 
+    def test_safe_legacy_period_extensions_are_preserved_with_a_warning(self) -> None:
+        normalized, warnings = records.normalize_to_12({
+            "schemaVersion": "1.0", "recordType": "ProgressSnapshot",
+            "period": {"start": "2026-01-01", "end": "2026-01-02", "label": "foundation"},
+        })
+        self.assertEqual(normalized["period"]["label"], "foundation")
+        self.assertTrue(any("period fields preserved" in warning for warning in warnings))
+
     def test_legacy_by_subject_units_preserve_known_values_and_normalize_unknown_values(self) -> None:
         for unit, expected in (
             ("questions", "questions"),
@@ -708,6 +716,22 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(merged["records"][0]["checkpointId"], "kc-aaaaaaaaaaaaaaaa")
         self.assertEqual(merged["records"][0]["position"], "第 2 题")
 
+    def test_checkpoint_question_progress_uses_the_newer_snapshot_state(self) -> None:
+        old = {
+            "schemaVersion": "1.2", "recordType": "SessionCheckpoint",
+            "checkpointId": "kc-aaaaaaaaaaaaaaaa", "updatedAt": "2026-09-01",
+            "currentTask": "真题讲解", "position": "Q1 未完成", "dueItems": [],
+            "pendingRetests": [], "completedQuestions": [], "remainingQuestions": ["Q1"],
+        }
+        newer = {
+            **old, "updatedAt": "2026-09-02", "position": "Q1 已完成",
+            "completedQuestions": ["Q1"], "remainingQuestions": [],
+        }
+        merged = records.merge_documents({"records": [old]}, {"records": [newer]})["records"][0]
+        self.assertEqual(merged["completedQuestions"], ["Q1"])
+        self.assertEqual(merged["remainingQuestions"], [])
+        self.assertTrue(records.validate_record(merged)["valid"])
+
     def test_progress_accuracy_entries_merge_by_subject(self) -> None:
         old = {
             "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
@@ -908,6 +932,10 @@ class CheckpointTests(unittest.TestCase):
         for payload in (
             {"teachingMode": "unknown-mode"},
             {"dueItems": "not-an-array"},
+            {"dueItems": ""},
+            {"pendingRetests": False},
+            {"completedQuestions": None},
+            {"remainingQuestions": ""},
             {"completedQuestions": ["1"], "remainingQuestions": ["1"]},
         ):
             with self.subTest(payload=payload):

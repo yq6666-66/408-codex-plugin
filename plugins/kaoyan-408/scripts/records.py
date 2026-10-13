@@ -338,10 +338,24 @@ def normalize_10_to_11(record: dict[str, Any]) -> tuple[dict[str, Any], list[str
         )
     elif record_type == "ProgressSnapshot":
         period = record.get("period")
-        converted["period"] = {
+        converted_period = {
             "start": _convert_sentinels(period.get("start")) if isinstance(period, dict) else None,
             "end": _convert_sentinels(period.get("end")) if isinstance(period, dict) else None,
         }
+        if isinstance(period, dict):
+            period_extensions = {key: value for key, value in period.items() if key not in {"start", "end"}}
+            if period_extensions:
+                safe_extensions, extension_redactions = _redact_legacy_extensions(
+                    period_extensions, base_pointer="/period"
+                )
+                converted_period.update({
+                    key: _convert_sentinels(value) for key, value in safe_extensions.items()
+                })
+                redacted_fields.extend(extension_redactions)
+                warnings.append(
+                    "unknown legacy period fields preserved: " + ", ".join(sorted(period_extensions))
+                )
+        converted["period"] = converted_period
         metrics: list[dict[str, Any]] = []
         accuracy_entries: list[dict[str, Any]] = []
         if "plannedUnits" in record or "completedUnits" in record:
@@ -1135,6 +1149,13 @@ def merge_records(a: dict[str, Any], b: dict[str, Any]) -> tuple[dict[str, Any],
     if is_plain_date(updated_a) and is_plain_date(updated_b) and updated_a != updated_b:
         newer = "b" if updated_b > updated_a else "a"
     merged = merge_items(a, b, "", conflicts, newer)
+    if a.get("recordType") == "SessionCheckpoint":
+        state = b if newer == "b" else a
+        for key in ("completedQuestions", "remainingQuestions"):
+            if key in state:
+                merged[key] = state[key]
+            else:
+                merged.pop(key, None)
     return merged, conflicts
 
 
@@ -1224,18 +1245,18 @@ def build_checkpoint(payload: dict[str, Any], base_date: str | None) -> dict[str
         "updatedAt": base_date,
         "currentTask": payload.get("currentTask"),
         "position": payload.get("position"),
-        "dueItems": payload.get("dueItems") or [],
-        "pendingRetests": payload.get("pendingRetests") or [],
+        "dueItems": payload["dueItems"] if "dueItems" in payload else [],
+        "pendingRetests": payload["pendingRetests"] if "pendingRetests" in payload else [],
         "notes": payload.get("notes"),
         "teachingMode": payload.get("teachingMode"),
         "answerState": payload.get("answerState"),
         "hintLevel": payload.get("hintLevel"),
         "currentQuestion": payload.get("currentQuestion"),
-        "completedQuestions": payload.get("completedQuestions") or [],
-        "remainingQuestions": payload.get("remainingQuestions") or [],
+        "completedQuestions": payload["completedQuestions"] if "completedQuestions" in payload else [],
+        "remainingQuestions": payload["remainingQuestions"] if "remainingQuestions" in payload else [],
         "materialVersion": payload.get("materialVersion"),
     }
-    if payload.get("checkpointId"):
+    if "checkpointId" in payload:
         checkpoint["checkpointId"] = payload["checkpointId"]
     else:
         checkpoint["checkpointId"] = stable_id("kc", {**checkpoint, "updatedAt": None})

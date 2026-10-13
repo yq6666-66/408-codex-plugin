@@ -246,6 +246,19 @@ class HtmlOutputTests(unittest.TestCase):
                 sim.write_html(document, path)
             self.assertFalse(path.exists())
 
+    def test_cli_reports_html_filesystem_errors_without_a_traceback(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as temporary:
+            missing_parent = Path(temporary) / "missing" / "output.html"
+            code, stdout, stderr = CliTests().run_cli(
+                "fifo", "--frames", "2", "--references", "1", "--html", str(missing_parent)
+            )
+        self.assertEqual(code, 1)
+        self.assertEqual(stdout, "")
+        self.assertNotIn("Traceback", stderr)
+        self.assertIn("cannot write HTML output", json.loads(stderr)["error"])
+
 
 class CliTests(unittest.TestCase):
     def run_cli(self, *arguments: str) -> tuple[int, str, str]:

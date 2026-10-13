@@ -43,6 +43,45 @@ SEMVER_PATTERN = re.compile(
 )
 
 
+def _skill_metadata_problems(skill_doc: Path, agent_manifest: Path, expected_name: str) -> list[str]:
+    problems: list[str] = []
+    try:
+        skill_text = skill_doc.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        skill_text = ""
+    frontmatter = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", skill_text, re.DOTALL)
+    if frontmatter is None:
+        problems.append("SKILL.md must contain readable YAML frontmatter")
+    else:
+        fields: dict[str, str] = {}
+        for line in frontmatter.group(1).splitlines():
+            field = re.match(r"^([A-Za-z][A-Za-z0-9_-]*):\s*(.*?)\s*$", line)
+            if field:
+                fields[field.group(1)] = field.group(2).strip().strip("\"'")
+        if fields.get("name") != expected_name:
+            problems.append("SKILL.md frontmatter name must match its directory")
+        if not fields.get("description"):
+            problems.append("SKILL.md frontmatter description must be non-empty")
+        if not re.search(r"(?m)^#\s+\S", skill_text[frontmatter.end():]):
+            problems.append("SKILL.md must contain a non-empty title")
+
+    try:
+        agent_text = agent_manifest.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        agent_text = ""
+    if not re.search(r"(?m)^interface:\s*$", agent_text):
+        problems.append("agents/openai.yaml must contain an interface mapping")
+    interface_fields: dict[str, str] = {}
+    for name in ("display_name", "short_description", "default_prompt"):
+        field = re.search(rf"(?m)^  {name}:\s*(.*?)\s*$", agent_text)
+        interface_fields[name] = field.group(1).strip().strip("\"'") if field else ""
+        if not interface_fields[name]:
+            problems.append(f"agents/openai.yaml interface.{name} must be non-empty")
+    if f"${expected_name}" not in interface_fields["default_prompt"]:
+        problems.append("agents/openai.yaml default_prompt must reference its Skill identity")
+    return problems
+
+
 def _missing_reference_links(skill_doc: Path, plugin_root: Path) -> list[str]:
     """Find required local reference links in a Skill whose targets are missing."""
     try:
@@ -161,6 +200,13 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
             problems.append(
                 f"incomplete Skill directory {path.name} (missing: {', '.join(missing_metadata)})"
             )
+        invalid_metadata: list[str] = []
+        if not linked_metadata and not missing_metadata:
+            invalid_metadata = _skill_metadata_problems(skill_doc, agent_manifest, path.name)
+            if invalid_metadata:
+                problems.append(
+                    f"invalid Skill metadata {path.name}: {', '.join(invalid_metadata)}"
+                )
         if skill_doc.is_file() and not skill_doc.is_symlink():
             missing_references = _missing_reference_links(skill_doc, root)
             if missing_references:
@@ -168,7 +214,7 @@ def inspect_plugin(plugin_root: Path | None = None, config_path: Path | None = N
                     f"missing or unreadable Skill references {path.name}: "
                     + ", ".join(missing_references)
                 )
-        if not linked_metadata and not missing_metadata:
+        if not linked_metadata and not missing_metadata and not invalid_metadata:
             skills.append(path.name)
     if set(skills) != EXPECTED_SKILLS or discovered_skills != EXPECTED_SKILLS:
         missing = sorted(EXPECTED_SKILLS - set(skills))

@@ -28,9 +28,10 @@ class HealthCheckTests(unittest.TestCase):
             renamed = plugin / "skills" / "kaoyan-admissions-researcher"
             renamed.rename(renamed.with_name("unrelated-skill"))
             report = health_check.inspect_plugin(plugin, Path(temporary) / "missing.json")
-        self.assertEqual(report["skills"]["complete"], 14)
+        self.assertEqual(report["skills"]["complete"], 13)
         self.assertEqual(report["status"], "problem")
         self.assertTrue(any("Skill set" in issue for issue in report["problems"]))
+        self.assertTrue(any("frontmatter name must match" in issue for issue in report["problems"]))
 
     def test_incomplete_unexpected_skill_directory_is_not_ignored(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -54,6 +55,20 @@ class HealthCheckTests(unittest.TestCase):
             and "admissions-research-contract.md" in issue
             for issue in report["problems"]
         ))
+
+    def test_empty_skill_metadata_does_not_report_a_healthy_install(self) -> None:
+        for relative_path in (
+            Path("skills/kaoyan-408-tutor/SKILL.md"),
+            Path("skills/kaoyan-408-tutor/agents/openai.yaml"),
+        ):
+            with self.subTest(path=relative_path), tempfile.TemporaryDirectory() as temporary:
+                plugin = Path(temporary) / "plugin"
+                shutil.copytree(REPO / "plugins" / "kaoyan-408", plugin)
+                (plugin / relative_path).write_text("", encoding="utf-8")
+                report = health_check.inspect_plugin(plugin, Path(temporary) / "missing.json")
+            self.assertEqual(report["status"], "problem")
+            self.assertTrue(any("invalid Skill metadata kaoyan-408-tutor" in issue
+                                for issue in report["problems"]))
 
     def test_runtime_helper_symlink_is_reported(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
