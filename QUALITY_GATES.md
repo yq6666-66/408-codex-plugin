@@ -37,7 +37,7 @@
 
 ## 发布含义
 
-v2.6.0 基于 v2.5.2 提交 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6` 开发，PR #26 已合并至 `main`，合并提交为 `2d37c1a3e08ee8c1db1888d9c4f33833e1357a8a`。发布说明 PR #27 已通过 `validate`、`windows`、`reproducible` 与 GitGuardian 检查；正式标签与 GitHub Release 尚待 main 上的 `CI` 工作流手动发布，当前稳定版本仍为 v2.5.1。候选 ZIP SHA-256 为 `02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`。实时行为验收尚有检查点因 CLI 额度中断或未运行，最终树 0/40 个 checkpoint 已判分，完整新旧 20 类配对验收未运行，详见 [v2.6.0 验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。发布工作流只代表工程与资产门禁通过，不表示未完成的模型行为验收通过。
+v2.6.0 基于 v2.5.2 提交 `e31922383dfb3b24f33f77f04ffef1b0c28f97b6` 开发，PR #26 已合并至 `main`，合并提交为 `2d37c1a3e08ee8c1db1888d9c4f33833e1357a8a`。PR #27 合并了发布记录；正式标签 [`v2.6.0`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0) 与 GitHub Release 已由 main 上的 `CI` workflow 发布，当前稳定版本为 v2.6.0，v2.5.1 保留作回退版本。发布前远端 `validate`、`windows`、`reproducible`、GitGuardian 均通过；官方插件 validator 与 14/14 Skill validators 通过，正式 ZIP SHA-256 为 `02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5`。实时行为验收尚有检查点因 CLI 额度中断或未运行，最终树 0/40 个 checkpoint 已判分，完整新旧 20 类配对验收未运行，详见 [v2.6.0 验收记录](eval/v2.6-acceptance/results-v2.6.0-candidate.md)。Release 只代表工程与资产门禁通过，不表示未完成的模型行为验收通过。
 
 2026-10-08，维护者将 v2.5.2 本次交付范围调整为简化验收与候选分支推送准备。插件提交 `2171696` 的本地工程门禁通过；完整行为验收尚未确认全通过，GitHub required checks 尚待推送后运行。此次准备不代表正式 Release 验收通过，当前稳定回退版本仍为 v2.5.1。具体证据和已知问题见 [v2.5.2 候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 

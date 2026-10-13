@@ -1,6 +1,6 @@
 # GPT-6 实际回答验收 harness
 
-**当前稳定版本：v2.5.1。** 本目录记录的是早期 v2.5.1 基线与 v2.5.2 候选的 20 条配对验收 harness，不是 v2.6.0 的行为通过证据。v2.5.1 的 17 条用例、60/60 checkpoint 和 `regressionGate` 历史摘要见 [`results-v2.5.1.md`](results-v2.5.1.md)。v2.5.2 候选的人工判分记录见 [`results-v2.5.2-candidate.md`](results-v2.5.2-candidate.md)；v2.6.0 仍在发布准备，正式 Release 完成后才成为稳定版本，其真实行为验收使用 [`../v2.6-acceptance/`](../v2.6-acceptance/)，目前尚未完成，不能用工程测试代替。
+**当前稳定版本：v2.6.0。** 本目录保留的是早期 v2.5.1 基线与 v2.5.2 候选的 20 条配对验收 harness，不是 v2.6.0 的行为通过证据。v2.5.1 的 17 条用例、60/60 checkpoint 和 `regressionGate` 历史摘要见 [`results-v2.5.1.md`](results-v2.5.1.md)。v2.5.2 候选的人工判分记录见 [`results-v2.5.2-candidate.md`](results-v2.5.2-candidate.md)；v2.6.0 的真实行为验收使用 [`../v2.6-acceptance/`](../v2.6-acceptance/)，目前尚未完成，不能用工程测试代替。
 
 ## 目的
 
