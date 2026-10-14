@@ -15,6 +15,7 @@
 - 解析旧对象时保留所有安全的未识别字段及其所在层级，不静默删除；迁移前说明发现的缺失、冲突或不兼容值。若未知字段含凭据、个人标识、设备路径或原始材料全文，隐私边界优先：把原字段值改为 `null`，在根级 `redactedFields` 记录其 JSON Pointer 路径，并明确说明已脱敏。
 - 旧扩展字段与规范字段同名且值冲突时，以有效的新字段承载规范值，把安全的旧值移入根级 `legacyExtensions`，以原 JSON Pointer 为键，并在 `migrationWarnings` 说明；无法安全确定规范值时先请求确认，不声称已经完成迁移。
 - `records.py merge` 遇到同一记录的不同标量时，以较新 `updatedAt` 一侧作为当前值；同时在根级 `mergeConflicts` 保存 JSON Pointer、双方原值和 `kept-newer` 处理结果。时间相同或缺失时保留第一侧并记为 `kept-first`。`updatedAt` 本身只表示版本先后，不重复记作内容冲突。
+- `SessionCheckpoint` 两侧都有合法 `checkpointRevision` 时，以较高修订号判定新旧；无修订号的旧检查点仍按 `updatedAt` 合并。相同修订号的冲突保留双方值与 `kept-first` 记录，不能据此声称恢复了最新位置。
 
 机器校验时，Schema 根入口接受 1.1 与 1.2 输出；读取旧记录时使用同一文件的 `#/$defs/legacyInput` 定义（1.0 与 1.1），规范化后再用根入口验证 1.2 结果。
 
@@ -57,6 +58,7 @@
   "schemaVersion": "1.2",
   "recordType": "SessionCheckpoint",
   "checkpointId": "kc-0f1e2d3c4b5a6978",
+  "checkpointRevision": 1,
   "updatedAt": "2026-09-11",
   "currentTask": "2014-2018 英语二阅读精读",
   "position": "2016 Text 2 第 3 题讲解完成，第 4 题未开始",
@@ -73,6 +75,8 @@
 }
 ```
 
+- 新检查点从 `checkpointRevision: 1` 开始；每次保存已存在的检查点时保留 `checkpointId` 并将修订号递增 1。修订号只用于比较同一检查点的先后，不能替代材料摘要或用户进度。
+- 迁移旧检查点时不伪造修订号；只有已读到修订号后才递增。两个写入者基于同一旧修订号同时更新时会得到相同修订号，冲突仍须保留并在恢复前核对。
 - “继续上次复习”必须读取真实持久化的 `SessionCheckpoint` 与到期错题后恢复：上次未完成任务、当前学习位置、到期错题、必要的后续复测。
 - 多轮教学需要跨会话延续时，可选保存 `teachingMode`、`answerState`、`hintLevel`、`currentQuestion`、`completedQuestions`、`remainingQuestions` 与 `materialVersion`。答案仍处于 `hidden` 或 `partial` 时，恢复后继续遵守原揭示边界；材料版本不一致时先说明变化并请求最小确认，不把旧作答套到新题面。
 - 写入或更新检查点后，脚本可用时必须运行插件根目录 `scripts/records.py validate <文件>` 并确认 `valid: true`，再用 `checkpoint read <文件>` 核对当前题面；普通文件读回不能代替 Schema 校验。校验失败不能称已保存。`materialVersion` 仅能是有依据的字符串或 `null`，不得用自增数字代替材料摘要；脚本不可用时说明未做工具校验并提供可复制的 Schema 1.2 记录。

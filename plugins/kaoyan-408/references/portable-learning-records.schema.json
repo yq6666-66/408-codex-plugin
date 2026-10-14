@@ -610,6 +610,10 @@
         "checkpointId": {
           "$ref": "#/$defs/checkpointId"
         },
+        "checkpointRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
         "updatedAt": {
           "$ref": "#/$defs/nullableDate"
         },

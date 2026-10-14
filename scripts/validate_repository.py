@@ -471,6 +471,7 @@ def check_portable_schema(plugin: Path) -> None:
             "schemaVersion": "1.2",
             "recordType": "SessionCheckpoint",
             "checkpointId": "kc-0f1e2d3c4b5a6978",
+            "checkpointRevision": 1,
             "updatedAt": None,
             "currentTask": "2009-2018 阅读精读第二轮",
             "position": "英语二 2014 Text 2 第 3 题",
@@ -484,6 +485,15 @@ def check_portable_schema(plugin: Path) -> None:
             validator.validate(sample)
         except JsonSchemaValidationError as exc:
             raise ValidationError(f"portable-record schema rejects a required 1.1/1.2 shape: {exc.message}") from exc
+
+    invalid_checkpoint_revision = {
+        **output_samples[-1],
+        "checkpointRevision": 0,
+    }
+    require(
+        not validator.is_valid(invalid_checkpoint_revision),
+        "portable-record schema must reject non-positive checkpoint revisions",
+    )
 
     bad_evidence_type = {
         "schemaVersion": "1.2",

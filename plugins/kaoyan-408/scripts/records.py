@@ -241,7 +241,7 @@ def _redact_schema_11_extensions(record: dict[str, Any]) -> list[str]:
         "ProgressSnapshot": {"period", "metrics", "accuracy", "blockers"},
         "ReviewQueue": {"generatedAt", "items"},
         "SessionCheckpoint": {
-            "checkpointId", "updatedAt", "currentTask", "position", "dueItems",
+            "checkpointId", "checkpointRevision", "updatedAt", "currentTask", "position", "dueItems",
             "pendingRetests", "notes", "teachingMode", "answerState", "hintLevel",
             "currentQuestion", "completedQuestions", "remainingQuestions", "materialVersion",
         },
@@ -951,6 +951,10 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
     else:  # SessionCheckpoint
         for key in ("updatedAt", "currentTask", "position", "dueItems", "pendingRetests"):
             _require(record, key, errors)
+        if "checkpointRevision" in record:
+            revision = record["checkpointRevision"]
+            if isinstance(revision, bool) or not isinstance(revision, int) or revision < 1:
+                errors.append("checkpointRevision must be a positive integer")
         if "checkpointId" in record and (
             not isinstance(record["checkpointId"], str)
             or re.fullmatch(r"kc-[0-9a-f]{16}", record["checkpointId"]) is None
@@ -1139,6 +1143,10 @@ def records_match(a: dict[str, Any], b: dict[str, Any]) -> bool:
     return natural_key(a) == natural_key(b)
 
 
+def valid_checkpoint_revision(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 1
+
+
 def merge_records(a: dict[str, Any], b: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     if not records_match(a, b):
         # Distinct records: keep both rather than dropping either side.
@@ -1146,7 +1154,18 @@ def merge_records(a: dict[str, Any], b: dict[str, Any]) -> tuple[dict[str, Any],
     conflicts: list[dict[str, Any]] = []
     updated_a, updated_b = a.get("updatedAt"), b.get("updatedAt")
     newer = None
-    if is_plain_date(updated_a) and is_plain_date(updated_b) and updated_a != updated_b:
+    revision_a, revision_b = a.get("checkpointRevision"), b.get("checkpointRevision")
+    if a.get("recordType") == "SessionCheckpoint":
+        for record in (a, b):
+            if "checkpointRevision" in record and not valid_checkpoint_revision(record["checkpointRevision"]):
+                raise RecordError("checkpointRevision must be a positive integer")
+    has_revisions = all(
+        valid_checkpoint_revision(value)
+        for value in (revision_a, revision_b)
+    )
+    if a.get("recordType") == "SessionCheckpoint" and has_revisions and revision_a != revision_b:
+        newer = "b" if revision_b > revision_a else "a"
+    elif is_plain_date(updated_a) and is_plain_date(updated_b) and updated_a != updated_b:
         newer = "b" if updated_b > updated_a else "a"
     merged = merge_items(a, b, "", conflicts, newer)
     if a.get("recordType") == "SessionCheckpoint":
@@ -1258,8 +1277,10 @@ def build_checkpoint(payload: dict[str, Any], base_date: str | None) -> dict[str
     }
     if "checkpointId" in payload:
         checkpoint["checkpointId"] = payload["checkpointId"]
+        checkpoint["checkpointRevision"] = payload.get("checkpointRevision", 1)
     else:
         checkpoint["checkpointId"] = stable_id("kc", {**checkpoint, "updatedAt": None})
+        checkpoint["checkpointRevision"] = 1
     errors, _ = validate_current(checkpoint)
     if errors:
         raise RecordError("checkpoint is invalid: " + "; ".join(errors))
@@ -1278,6 +1299,7 @@ def read_checkpoint(
         raise RecordError("checkpoint is invalid: " + "; ".join(errors))
     plan: dict[str, Any] = {
         "resume": {
+            "checkpointRevision": checkpoint.get("checkpointRevision"),
             "currentTask": checkpoint.get("currentTask"),
             "position": checkpoint.get("position"),
             "notes": checkpoint.get("notes"),

@@ -732,6 +732,102 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(merged["remainingQuestions"], [])
         self.assertTrue(records.validate_record(merged)["valid"])
 
+    def test_checkpoint_merge_uses_revision_when_update_dates_match(self) -> None:
+        older = {
+            "schemaVersion": "1.2", "recordType": "SessionCheckpoint",
+            "checkpointId": "kc-bbbbbbbbbbbbbbbb", "updatedAt": "2026-10-14",
+            "checkpointRevision": 1, "currentTask": "408 操作系统",
+            "position": "Q2", "currentQuestion": "Q2", "completedQuestions": ["Q1"],
+            "remainingQuestions": ["Q2", "Q3"], "dueItems": [], "pendingRetests": [],
+        }
+        newer = {
+            **older, "checkpointRevision": 2, "position": "Q3", "currentQuestion": "Q3",
+            "completedQuestions": ["Q1", "Q2"], "remainingQuestions": ["Q3"],
+        }
+        merged = records.merge_documents(older, newer)
+        reversed_merge = records.merge_documents(newer, older)
+        for result in (merged, reversed_merge):
+            checkpoint = result["records"][0]
+            self.assertEqual(checkpoint["checkpointRevision"], 2)
+            self.assertEqual(checkpoint["position"], "Q3")
+            self.assertEqual(checkpoint["currentQuestion"], "Q3")
+            self.assertEqual(checkpoint["completedQuestions"], ["Q1", "Q2"])
+            self.assertEqual(checkpoint["remainingQuestions"], ["Q3"])
+            self.assertEqual({entry["resolution"] for entry in result["mergeConflicts"]}, {"kept-newer"})
+
+    def test_checkpoint_merge_same_revision_preserves_conflict_and_first_value(self) -> None:
+        first = {
+            "schemaVersion": "1.2", "recordType": "SessionCheckpoint",
+            "checkpointId": "kc-cccccccccccccccc", "updatedAt": "2026-10-14",
+            "checkpointRevision": 3, "currentTask": "英语阅读",
+            "position": "Q2", "dueItems": [], "pendingRetests": [],
+        }
+        second = {**first, "position": "Q3"}
+        merged = records.merge_documents(first, second)
+        self.assertEqual(merged["records"][0]["position"], "Q2")
+        self.assertEqual(
+            merged["mergeConflicts"],
+            [{"path": "/position", "a": "Q2", "b": "Q3", "resolution": "kept-first"}],
+        )
+
+    def test_checkpoint_revision_must_be_a_positive_integer(self) -> None:
+        checkpoint = {
+            "schemaVersion": "1.2", "recordType": "SessionCheckpoint",
+            "checkpointId": "kc-dddddddddddddddd", "updatedAt": "2026-10-14",
+            "currentTask": "408", "position": "Q1", "dueItems": [], "pendingRetests": [],
+        }
+        for invalid_revision in (0, -1, 1.5, True, "2"):
+            with self.subTest(revision=invalid_revision):
+                self.assertFalse(
+                    records.validate_record({**checkpoint, "checkpointRevision": invalid_revision})["valid"]
+                )
+        with self.assertRaisesRegex(records.RecordError, "checkpointRevision must be a positive integer"):
+            records.merge_documents(
+                {**checkpoint, "checkpointRevision": 0},
+                {**checkpoint, "checkpointRevision": 1},
+            )
+
+    def test_new_checkpoint_starts_at_revision_one_and_read_reports_it(self) -> None:
+        created = records.build_checkpoint(
+            {"currentTask": "408 操作系统", "position": "第 3 章", "dueItems": [], "pendingRetests": []},
+            "2026-10-14",
+        )
+        self.assertEqual(created["checkpointRevision"], 1)
+        read = records.read_checkpoint(created, None, None)
+        self.assertEqual(read["resume"]["checkpointRevision"], 1)
+
+    def test_existing_checkpoint_without_revision_starts_at_one_when_saved(self) -> None:
+        saved = records.build_checkpoint(
+            {
+                "checkpointId": "kc-ffffffffffffffff", "currentTask": "英语阅读",
+                "position": "Text 1", "dueItems": [], "pendingRetests": [],
+            },
+            "2026-10-14",
+        )
+        self.assertEqual(saved["checkpointRevision"], 1)
+
+    def test_existing_checkpoint_revision_is_preserved_by_builder(self) -> None:
+        saved = records.build_checkpoint(
+            {
+                "checkpointId": "kc-ffffffffffffffff", "checkpointRevision": 5,
+                "currentTask": "英语阅读", "position": "Text 2", "dueItems": [],
+                "pendingRetests": [],
+            },
+            "2026-10-14",
+        )
+        self.assertEqual(saved["checkpointRevision"], 5)
+
+    def test_legacy_checkpoint_merge_uses_updated_at_when_revisions_are_absent(self) -> None:
+        older = {
+            "schemaVersion": "1.2", "recordType": "SessionCheckpoint",
+            "checkpointId": "kc-eeeeeeeeeeeeeeee", "updatedAt": "2026-10-13",
+            "currentTask": "408", "position": "Q2", "dueItems": [], "pendingRetests": [],
+        }
+        newer = {**older, "updatedAt": "2026-10-14", "position": "Q3"}
+        merged = records.merge_documents(older, newer)
+        self.assertEqual(merged["records"][0]["position"], "Q3")
+        self.assertNotIn("checkpointRevision", merged["records"][0])
+
     def test_progress_accuracy_entries_merge_by_subject(self) -> None:
         old = {
             "schemaVersion": "1.2", "recordType": "ProgressSnapshot",
