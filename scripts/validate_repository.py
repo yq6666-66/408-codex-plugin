@@ -887,6 +887,52 @@ def check_repository_docs(repo: Path) -> None:
     require(entry.get("source", {}).get("path") == "./plugins/kaoyan-408", "marketplace source.path is invalid")
     require(entry.get("policy", {}).get("installation") == "AVAILABLE", "marketplace installation policy is invalid")
     require(entry.get("policy", {}).get("authentication") == "ON_INSTALL", "marketplace authentication policy is invalid")
+    check_cursor_marketplace(repo, manifest)
+
+
+def check_cursor_marketplace(repo: Path, manifest: dict[str, Any]) -> None:
+    """Cursor discovers this repo from root manifests and reuses the Codex skill tree."""
+    cursor_dir = repo / ".cursor-plugin"
+    marketplace_path = cursor_dir / "marketplace.json"
+    plugin_path = cursor_dir / "plugin.json"
+    require(marketplace_path.is_file(), "Cursor marketplace is missing: .cursor-plugin/marketplace.json")
+    require(plugin_path.is_file(), "Cursor plugin manifest is missing: .cursor-plugin/plugin.json")
+    cursor_marketplace = load_json(marketplace_path)
+    cursor_plugin = load_json(plugin_path)
+    version = manifest.get("version")
+
+    require(isinstance(cursor_marketplace, dict), "Cursor marketplace must be an object")
+    require(cursor_marketplace.get("name") == "kaoyan-408", "Cursor marketplace name is invalid")
+    owner = cursor_marketplace.get("owner")
+    require(isinstance(owner, dict) and owner.get("name") == "yq6666-66", "Cursor marketplace owner is invalid")
+    plugins = cursor_marketplace.get("plugins")
+    require(isinstance(plugins, list) and len(plugins) == 1, "Cursor marketplace must contain exactly one plugin")
+    entry = plugins[0]
+    require(isinstance(entry, dict), "Cursor marketplace plugin entry must be an object")
+    require(entry.get("name") == "kaoyan-408", "Cursor marketplace plugin name is invalid")
+    require(entry.get("source") == ".", "Cursor marketplace source must be the repository root")
+    require(entry.get("category") == "Education", "Cursor marketplace category must be Education")
+    require(entry.get("version") == version, "Cursor marketplace version must match plugin.json.version")
+
+    require(isinstance(cursor_plugin, dict), "Cursor plugin manifest must be an object")
+    require(cursor_plugin.get("name") == "kaoyan-408", "Cursor plugin name is invalid")
+    require(cursor_plugin.get("version") == version, "Cursor plugin version must match plugin.json.version")
+    for key in ("mcpServers", "hooks", "rules"):
+        require(key not in cursor_plugin, f"Cursor manifest must not declare {key}")
+    skills = cursor_plugin.get("skills")
+    require(skills == "plugins/kaoyan-408/skills", "Cursor skills path is invalid")
+    skill_root = repo / "plugins" / "kaoyan-408" / "skills"
+    require(skill_root.is_dir(), "Cursor skills directory does not exist")
+    skill_names = {
+        path.name
+        for path in skill_root.iterdir()
+        if path.is_dir() and (path / "SKILL.md").is_file()
+    }
+    require(skill_names == EXPECTED_SKILLS, "Cursor skills directory must match the released Skill set")
+    logo = "plugins/kaoyan-408/assets/kaoyan-408.svg"
+    require(cursor_plugin.get("logo") == logo, "Cursor logo path is invalid")
+    require(entry.get("logo") == logo, "Cursor marketplace logo must match the plugin manifest")
+    require((repo / logo).is_file(), "Cursor logo file does not exist")
 
 
 def _run_git(repo: Path, arguments: list[str], *, input_bytes: bytes | None = None) -> subprocess.CompletedProcess[bytes]:

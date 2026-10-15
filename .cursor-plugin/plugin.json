@@ -1,0 +1,25 @@
+{
+  "name": "kaoyan-408",
+  "version": "2.6.0",
+  "description": "面向数学一、数学二、英语一、英语二、408与政治的中文考研Skills，提供招生调研、官方招生核验、近两年数据比较、多平台网友评价、真题搜索与教学及可选双知识库。",
+  "author": {
+    "name": "yq6666-66"
+  },
+  "homepage": "https://github.com/yq6666-66/408-codex-plugin",
+  "repository": "https://github.com/yq6666-66/408-codex-plugin",
+  "license": "MIT",
+  "keywords": [
+    "kaoyan",
+    "408",
+    "math-i",
+    "math-ii",
+    "english-i",
+    "english-ii",
+    "past-papers",
+    "education",
+    "admissions",
+    "school-selection"
+  ],
+  "logo": "plugins/kaoyan-408/assets/kaoyan-408.svg",
+  "skills": "plugins/kaoyan-408/skills"
+}

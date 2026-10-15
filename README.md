@@ -239,6 +239,8 @@ codex plugin add kaoyan-408@kaoyan-408
 git clone --branch v2.6.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
+Cursor 使用同一套 Skill。在 Customize 里选择 From GitHub Repository，导入 `yq6666-66/408-codex-plugin`。仓库根的 `.cursor-plugin/marketplace.json` 把 `kaoyan-408` 指到现有 `plugins/kaoyan-408/skills`，不复制 Skill，也不改变 Codex 发布包。
+
 跨平台安装器（统一参数名 `--validate-only`）：
 
 ```powershell
