@@ -1,0 +1,45 @@
+{
+  "notice": "完全虚构的检查点样本，不含真实题面、个人进度或知识库位置。",
+  "base": {
+    "schemaVersion": "1.2",
+    "recordType": "SessionCheckpoint",
+    "checkpointId": "kc-1234567890abcdef",
+    "checkpointRevision": 3,
+    "updatedAt": "2026-10-14",
+    "currentTask": "408 页面置换复习",
+    "position": "Q2 提示第一层，尚未作答",
+    "teachingMode": "hint",
+    "answerState": "hidden",
+    "hintLevel": 1,
+    "currentQuestion": "Q2",
+    "completedQuestions": ["Q1"],
+    "remainingQuestions": ["Q2", "Q3"],
+    "materialVersion": "synthetic-v1",
+    "dueItems": [],
+    "pendingRetests": []
+  },
+  "changes": {
+    "position": "Q3 提示第一层，尚未作答",
+    "currentQuestion": "Q3",
+    "completedQuestions": ["Q1", "Q2"],
+    "remainingQuestions": ["Q3"]
+  },
+  "otherCopy": {
+    "schemaVersion": "1.2",
+    "recordType": "SessionCheckpoint",
+    "checkpointId": "kc-1234567890abcdef",
+    "checkpointRevision": 3,
+    "updatedAt": "2026-10-15",
+    "currentTask": "408 页面置换复习",
+    "position": "Q3 提示第一层，尚未作答",
+    "teachingMode": "hint",
+    "answerState": "hidden",
+    "hintLevel": 1,
+    "currentQuestion": "Q3",
+    "completedQuestions": ["Q1", "Q2"],
+    "remainingQuestions": ["Q3"],
+    "materialVersion": "synthetic-v1",
+    "dueItems": [],
+    "pendingRetests": []
+  }
+}

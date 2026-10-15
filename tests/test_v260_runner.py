@@ -116,6 +116,28 @@ class RolloutEvidenceTests(unittest.TestCase):
 
 
 class InstalledPayloadTests(unittest.TestCase):
+    def test_acceptance_requires_the_repository_candidate_version(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repository_plugin = root / "repo" / "plugins" / "kaoyan-408" / ".codex-plugin"
+            installed_plugin = root / "installed" / ".codex-plugin"
+            repository_plugin.mkdir(parents=True)
+            installed_plugin.mkdir(parents=True)
+            (repository_plugin / "plugin.json").write_text(
+                json.dumps({"version": "2.6.1"}), encoding="utf-8"
+            )
+            installed_manifest = installed_plugin / "plugin.json"
+            installed_manifest.write_text(json.dumps({"version": "2.6.0"}), encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "must be 2.6.1"):
+                runner.verify_candidate_version(root / "repo", root / "installed")
+
+            installed_manifest.write_text(json.dumps({"version": "2.6.1"}), encoding="utf-8")
+            self.assertEqual(
+                runner.verify_candidate_version(root / "repo", root / "installed"),
+                "2.6.1",
+            )
+
     def test_repository_plugin_source_cannot_be_used_as_installed_copy(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             repository = Path(directory)
@@ -233,6 +255,17 @@ class RunnerPathSafetyTests(unittest.TestCase):
                 "candidate repository material",
             )
             self.assertNotEqual(catalog_path, Path(runner.__file__).with_name("cases.json"))
+
+    def test_requested_acceptance_suite_is_bound_to_the_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory) / "repo"
+            suite = repository / "eval" / "v2.6.1-acceptance"
+            suite.mkdir(parents=True)
+            catalog, materials = runner.acceptance_paths(repository, Path("eval/v2.6.1-acceptance"))
+            self.assertEqual(catalog, suite / "cases.json")
+            self.assertEqual(materials, suite / "materials")
+            with self.assertRaisesRegex(ValueError, "inside the repository"):
+                runner.acceptance_paths(repository, Path(directory) / "outside-suite")
 
 
 class PostRunSnapshotTests(unittest.TestCase):

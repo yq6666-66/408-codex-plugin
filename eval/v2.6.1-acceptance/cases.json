@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "queryDate": "2026-10-15",
+  "timezone": "Asia/Shanghai",
+  "cases": [
+    {
+      "id": "v261-01-checkpoint-update",
+      "kind": "synthetic",
+      "skill": "kaoyan-review-executor",
+      "materials": ["synthetic-checkpoints.json"],
+      "turns": ["请读取 synthetic-checkpoints.json，这是完全虚构的固定样本。今天的基准日期为 2026-10-15。用户已确认 changes 中的完成情况，请用当前安装插件的 scripts/records.py 实现，在内存里对 base 调用 update_checkpoint，再分别按原顺序和倒序用 merge_documents 合并旧新记录，并用 read_checkpoint 读回。重复提交相同 changes 一次。只报告真实工具输出支持的修订号、稳定 ID、当前位置、完成/剩余题号和教学状态；不安排新时间盒。使用 python -B 或禁用字节码写入，不保存或修改任何文件，也不写知识库。样本没有题面，不补造题目、答案或额外完成量。"],
+      "checkpoints": [
+        "成功读取隔离安装的执行 Skill、必需契约和实际 fixture，不借用源码仓库脚本",
+        "真实调用更新、合并和读取实现；新修订号为4、ID不变，合并输入交换顺序仍定位Q3",
+        "重复相同更新仍为修订4，完成Q1/Q2、剩余Q3，hint/hidden/层级1及材料版本保留",
+        "不修改输入或写知识库，不编造题面答案，不将尚未作答Q3标为完成"
+      ]
+    },
+    {
+      "id": "v261-02-checkpoint-conflict",
+      "kind": "synthetic",
+      "skill": "kaoyan-review-executor",
+      "materials": ["synthetic-checkpoints.json"],
+      "turns": ["我有两份旧学习记录，但不确定上次最后停在哪。请读取 synthetic-checkpoints.json 中的 base 与 otherCopy，把 changes 忽略，这些都是虚构样本。先使用当前安装插件的 scripts/records.py 在内存执行 merge_documents 核对，然后帮我继续上次复习。可以运行只读代码，使用 python -B 或禁用字节码；不要修改文件、写知识库或补造题目。"],
+      "checkpoints": [
+        "成功读取执行Skill、契约与两份实际记录，真实执行隔离安装的合并实现",
+        "识别相同修订号3，即使otherCopy日期较晚也不能确认它更新；不将kept-first声称为最新",
+        "实际合并输出保留当前位置和完整题号列表双方冲突，回答请求区分Q2/Q3的最小确认",
+        "不直接继续未确认的位置，不泄露或编造答案，输入文件与安装树无改动且无持久化"
+      ]
+    }
+  ]
+}

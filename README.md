@@ -6,6 +6,8 @@
 
 v2.6.1 仍在开发中，Release 标签尚未创建；发布前继续使用 v2.6.0。发布后的固定版本命令将使用 `--ref v2.6.1` 与 `--branch v2.6.1`。
 
+本地候选的工程检查、实际模型样本和未验证项目见 [v2.6.1 验证记录](eval/v2.6.1-acceptance/results.md)。
+
 v2.6.0 于 2026-10-13 正式发布，基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。版本标签为 [`v2.6.0`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)，发布合并提交为 `6b67845`。发布资产、工程门禁和行为验收边界见下方记录。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 
 项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
@@ -42,7 +44,7 @@ v2.6.0 于 2026-10-13 正式发布，基于 v2.5.2 未发布候选开发，新�
 
 复合请求也可以一次说完，例如“先查学校招生情况，再按结果安排复习”；Agent 会在同一会话里串联调研与规划，不需要你复制交接内容。外部搜索、计算、笔记等能力是否可用由宿主决定，未实际访问或写入时不会声称已经完成。
 
-发布 ZIP 在 README 更新前已经生成；ZIP 内的 README 仍是标签构建时版本。最新功能说明和使用示例以本仓库 `main` 分支的 README 为准。
+发布 ZIP 保存固定标签的插件文件；最新使用说明和示例见本仓库 `main` 分支的 README。
 
 ---
 
@@ -155,9 +157,10 @@ python scripts/records.py normalize old.json          # 1.0/1.1 → 1.2，不伪
 python scripts/records.py merge a.json b.json         # 较新值生效，mergeConflicts 保留双方证据
 python scripts/records.py due queue.json --date 2026-09-11   # 到期计算必须显式给基准日期
 python scripts/records.py checkpoint create --date 2026-09-11
+python scripts/records.py checkpoint update checkpoint.json --changes changes.json --date 2026-10-15
 ```
 
-详见 [便携学习记录契约](plugins/kaoyan-408/references/portable-learning-records.md)。
+`checkpoint update` 在内容确有变化时自动递增修订号，重复提交相同变更不会增加修订；输入文件保持原样，新记录输出到 stdout。检查点按完整状态合并；相同修订号的冲突需要核对，日期不能代替修订顺序。详见 [便携学习记录契约](plugins/kaoyan-408/references/portable-learning-records.md)。
 
 安装或连接异常时可运行只读健康检查。它核对版本、14 个 Skill、随包脚本和可选 Obsidian 配置状态，不输出 Vault 绝对路径，也不修改配置或学习记录：
 

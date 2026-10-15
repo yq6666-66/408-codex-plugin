@@ -15,7 +15,9 @@
 - 解析旧对象时保留所有安全的未识别字段及其所在层级，不静默删除；迁移前说明发现的缺失、冲突或不兼容值。若未知字段含凭据、个人标识、设备路径或原始材料全文，隐私边界优先：把原字段值改为 `null`，在根级 `redactedFields` 记录其 JSON Pointer 路径，并明确说明已脱敏。
 - 旧扩展字段与规范字段同名且值冲突时，以有效的新字段承载规范值，把安全的旧值移入根级 `legacyExtensions`，以原 JSON Pointer 为键，并在 `migrationWarnings` 说明；无法安全确定规范值时先请求确认，不声称已经完成迁移。
 - `records.py merge` 遇到同一记录的不同标量时，以较新 `updatedAt` 一侧作为当前值；同时在根级 `mergeConflicts` 保存 JSON Pointer、双方原值和 `kept-newer` 处理结果。时间相同或缺失时保留第一侧并记为 `kept-first`。`updatedAt` 本身只表示版本先后，不重复记作内容冲突。
-- `SessionCheckpoint` 两侧都有合法 `checkpointRevision` 时，以较高修订号判定新旧；无修订号的旧检查点仍按 `updatedAt` 合并。相同修订号的冲突保留双方值与 `kept-first` 记录，不能据此声称恢复了最新位置。
+- `SessionCheckpoint` 两侧都有合法 `checkpointRevision` 时，只按修订号判断先后；相同修订号即使日期不同也不能判定新旧。至少一侧没有修订号时才比较 `updatedAt`。没有可靠先后依据时保留第一侧快照，并用 `kept-first` 记录冲突，不能据此声称恢复了最新位置。
+- 检查点的当前位置、教学/答案状态、题号列表、到期与待复测列表按完整快照选取；新快照省略的可选恢复字段不从旧快照补回，旧快照的修订号也不附到胜出的无修订记录。标量、列表及字段存在性差异均保留在 `mergeConflicts`；缺失与 `null` 由 `aPresent`/`bPresent` 区分。合并结果中的 `records` 和 `mergeConflicts` 要一起保留，恢复前先核对涉及恢复字段的 `kept-first` 冲突。
+- 再次合并记录包时保留并去重既有冲突审计；重复导入不表示此前的歧义已经解决。用户确认采用哪一份状态后，再据其确认生成新的检查点。
 
 机器校验时，Schema 根入口接受 1.1 与 1.2 输出；读取旧记录时使用同一文件的 `#/$defs/legacyInput` 定义（1.0 与 1.1），规范化后再用根入口验证 1.2 结果。
 
@@ -75,8 +77,9 @@
 }
 ```
 
-- 新检查点从 `checkpointRevision: 1` 开始；每次保存已存在的检查点时保留 `checkpointId` 并将修订号递增 1。修订号只用于比较同一检查点的先后，不能替代材料摘要或用户进度。
-- 迁移旧检查点时不伪造修订号；只有已读到修订号后才递增。两个写入者基于同一旧修订号同时更新时会得到相同修订号，冲突仍须保留并在恢复前核对。
+- `checkpoint create` 构造新记录，默认从 `checkpointRevision: 1` 开始；显式提供已有 ID 与修订号时按输入构造，不承担递增职责。
+- 更新已有记录使用 `checkpoint update <检查点文件> --changes <变更JSON文件> --date YYYY-MM-DD`。变更文件是仅含恢复字段的 JSON 对象，例如 `{"position":"Q3","currentQuestion":"Q3","completedQuestions":["Q1","Q2"],"remainingQuestions":["Q3"]}`。命令保留 `checkpointId`、已有安全扩展和未变字段，在实际内容变化时自动递增修订号；完全相同的重复更新不递增、不改日期。只向 stdout 输出新记录，不改输入文件。
+- 更新不接受修改 ID、Schema、记录类型、修订号或更新时间；更新时间只从显式 `--date` 获取，未提供时为 `null`。旧记录读取或迁移时不补造历史修订号，首次实际更新从 1 开始；缺少 ID 时先 normalize。两个写入者基于同一旧修订号同时更新仍会产生相同修订号，冲突须在恢复前核对。
 - “继续上次复习”必须读取真实持久化的 `SessionCheckpoint` 与到期错题后恢复：上次未完成任务、当前学习位置、到期错题、必要的后续复测。
 - 多轮教学需要跨会话延续时，可选保存 `teachingMode`、`answerState`、`hintLevel`、`currentQuestion`、`completedQuestions`、`remainingQuestions` 与 `materialVersion`。答案仍处于 `hidden` 或 `partial` 时，恢复后继续遵守原揭示边界；材料版本不一致时先说明变化并请求最小确认，不把旧作答套到新题面。
 - 写入或更新检查点后，脚本可用时必须运行插件根目录 `scripts/records.py validate <文件>` 并确认 `valid: true`，再用 `checkpoint read <文件>` 核对当前题面；普通文件读回不能代替 Schema 校验。校验失败不能称已保存。`materialVersion` 仅能是有依据的字符串或 `null`，不得用自增数字代替材料摘要；脚本不可用时说明未做工具校验并提供可复制的 Schema 1.2 记录。
