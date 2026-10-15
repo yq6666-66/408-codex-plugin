@@ -247,6 +247,8 @@ git clone --branch v2.6.0 --depth 1 https://github.com/yq6666-66/408-codex-plugi
 
 ZCode 用户在**插件市场 → 添加 → 添加插件市场**中填写 `yq6666-66/408-codex-plugin`（或本仓库的 marketplace 根目录），安装 `kaoyan-408` 后到**设置 → 插件**中启用；安装与启用都不需要重启已有会话，新会话生效。ZCode 的 GitHub marketplace 跟随仓库默认分支；需要固定版本时，先对目标标签执行 `git clone --branch v2.6.1 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git`，再把克隆目录作为本地 marketplace 添加。ZCode 侧使用界面安装，不经过 `scripts/install_local.py`（该脚本面向 Codex CLI）。
 
+Cursor 使用同一套 Skill。在 Customize 里选择 From GitHub Repository，导入 `yq6666-66/408-codex-plugin`。仓库根的 `.cursor-plugin/marketplace.json` 把 `kaoyan-408` 指到现有 `plugins/kaoyan-408/skills`，不复制 Skill，也不改变 Codex 发布包。
+
 跨平台安装器（统一参数名 `--validate-only`）：
 
 ```powershell
