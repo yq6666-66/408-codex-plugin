@@ -21,6 +21,7 @@ from yaml.nodes import MappingNode
 from release_payload import (
     ALLOWED_PLUGIN_ROOTS,
     ALLOWED_RELEASE_FILES,
+    CODEBUDDY_MANIFEST_RELATIVE,
     EXPECTED_REFERENCES,
     EXPECTED_SKILLS,
     PLACEHOLDER,
@@ -37,6 +38,37 @@ from release_payload import (
 SEMVER = re.compile(SEMVER_PATTERN)
 FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw", "index", "user"}
 HISTORY_FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw"}
+
+WORKBUDDY_MANIFEST_PART = PurePosixPath(CODEBUDDY_MANIFEST_RELATIVE)
+WORKBUDDY_MARKETPLACE_PART = PurePosixPath(".codebuddy-plugin/marketplace.json")
+WORKBUDDY_MARKETPLACE_NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+WORKBUDDY_CATEGORIES = {
+    "education",
+    "productivity",
+    "developer-tools",
+    "finance",
+    "design",
+    "research",
+    "other",
+}
+WORKBUDDY_MIRRORED_MANIFEST_FIELDS = (
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "keywords",
+)
+WORKBUDDY_FORBIDDEN_MANIFEST_KEYS = (
+    "interface",
+    "apps",
+    "mcpServers",
+    "hooks",
+    "commands",
+    "agents",
+    "userConfig",
+)
 
 DETAILED_TUTOR_SKILLS = {
     "kaoyan-408-tutor",
@@ -244,6 +276,100 @@ def check_manifest(plugin: Path) -> dict[str, Any]:
         require(isinstance(relative, str) and relative.startswith("./"), f"{key} must be a relative path")
         require((plugin / relative[2:]).is_file(), f"{key} target does not exist")
     return manifest
+
+
+def check_codebuddy_manifest(plugin: Path, codex_manifest: dict[str, Any]) -> None:
+    """Validate the WorkBuddy-native manifest mirrors the Codex manifest.
+
+    WorkBuddy reads ``.codebuddy-plugin/plugin.json`` inside the installed plugin
+    directory and resolves ``skills`` relative to that directory, so the manifest
+    must stay inside the release tree and keep the Codex values in sync.
+    """
+    manifest = load_json(plugin / Path(*WORKBUDDY_MANIFEST_PART.parts))
+    require(isinstance(manifest, dict), "WorkBuddy manifest must be an object")
+    require(
+        manifest.get("name") == plugin.name == codex_manifest.get("name"),
+        "WorkBuddy manifest name must match the plugin directory and the Codex manifest",
+    )
+    for field in WORKBUDDY_MIRRORED_MANIFEST_FIELDS:
+        require(
+            manifest.get(field) == codex_manifest.get(field),
+            f"WorkBuddy manifest field must stay identical to the Codex manifest: {field}",
+        )
+    require(manifest.get("skills") == "./skills", "WorkBuddy manifest skills path must be ./skills")
+    require(
+        (plugin / "skills").is_dir(),
+        "WorkBuddy manifest skills directory does not exist",
+    )
+    category = manifest.get("category")
+    require(
+        isinstance(category, str) and category in WORKBUDDY_CATEGORIES,
+        f"WorkBuddy manifest category is invalid: {category}",
+    )
+    for key in WORKBUDDY_FORBIDDEN_MANIFEST_KEYS:
+        require(key not in manifest, f"Skills-only WorkBuddy manifest must not contain {key}")
+
+
+def check_codebuddy_marketplace(repo: Path) -> None:
+    """Validate the WorkBuddy marketplace descriptor published at the repository root.
+
+    The descriptor points WorkBuddy at the shared plugin directory rather than
+    duplicating the Skill tree, so the release payload stays the single source of
+    truth for every host adapter.
+    """
+    marketplace = load_json(repo / Path(*WORKBUDDY_MARKETPLACE_PART.parts))
+    require(isinstance(marketplace, dict), "WorkBuddy marketplace must be an object")
+    name = marketplace.get("name")
+    require(
+        isinstance(name, str) and WORKBUDDY_MARKETPLACE_NAME.fullmatch(name) is not None,
+        "WorkBuddy marketplace name is invalid",
+    )
+    description = marketplace.get("description")
+    require(
+        isinstance(description, str) and description.strip(),
+        "WorkBuddy marketplace description must be a non-empty string",
+    )
+    owner = marketplace.get("owner")
+    require(
+        isinstance(owner, dict) and isinstance(owner.get("name"), str) and owner["name"].strip(),
+        "WorkBuddy marketplace owner.name is required",
+    )
+    metadata = marketplace.get("metadata")
+    require(
+        isinstance(metadata, dict) and isinstance(metadata.get("version"), str) and metadata["version"].strip(),
+        "WorkBuddy marketplace metadata.version is required",
+    )
+    plugins = marketplace.get("plugins")
+    require(
+        isinstance(plugins, list) and len(plugins) == 1,
+        "WorkBuddy marketplace must contain exactly one plugin",
+    )
+    entry = plugins[0]
+    require(isinstance(entry, dict), "WorkBuddy marketplace entry must be an object")
+    require(entry.get("name") == "kaoyan-408", "WorkBuddy marketplace plugin name is invalid")
+    require(
+        entry.get("source") == "./plugins/kaoyan-408",
+        "WorkBuddy marketplace source must be the relative plugin path",
+    )
+    manifest = load_json(
+        repo / Path(*PLUGIN_RELATIVE_PATH.parts) / Path(*WORKBUDDY_MANIFEST_PART.parts)
+    )
+    require(
+        entry.get("version") == manifest.get("version"),
+        "WorkBuddy marketplace version must match the plugin manifest",
+    )
+    require(
+        entry.get("category") == manifest.get("category"),
+        "WorkBuddy marketplace category must match the plugin manifest",
+    )
+    require(
+        entry.get("author") == manifest.get("author"),
+        "WorkBuddy marketplace author must match the plugin manifest",
+    )
+    require(
+        (repo / "plugins" / "kaoyan-408" / "skills").is_dir(),
+        "WorkBuddy marketplace plugin skills directory does not exist",
+    )
 
 
 def check_skill(skill_dir: Path) -> None:
@@ -836,6 +962,7 @@ def check_repository_docs(repo: Path) -> None:
         "THIRD_PARTY_CONTENT.md",
         "QUALITY_GATES.md",
         ".agents/plugins/marketplace.json",
+        ".codebuddy-plugin/marketplace.json",
         "tests/forward-cases.json",
         "tests/behavior-cases.json",
         "tests/system-validator-evidence.json",
@@ -887,6 +1014,7 @@ def check_repository_docs(repo: Path) -> None:
     require(entry.get("source", {}).get("path") == "./plugins/kaoyan-408", "marketplace source.path is invalid")
     require(entry.get("policy", {}).get("installation") == "AVAILABLE", "marketplace installation policy is invalid")
     require(entry.get("policy", {}).get("authentication") == "ON_INSTALL", "marketplace authentication policy is invalid")
+    check_codebuddy_marketplace(repo)
 
 
 def _run_git(repo: Path, arguments: list[str], *, input_bytes: bytes | None = None) -> subprocess.CompletedProcess[bytes]:
@@ -952,7 +1080,8 @@ def validate_repo(
     require(plugin.is_dir(), f"plugin directory does not exist: {plugin}")
 
     check_repository_docs(repo)
-    check_manifest(plugin)
+    manifest = check_manifest(plugin)
+    check_codebuddy_manifest(plugin, manifest)
     check_release_tree(plugin)
     check_obsidian_brain_contract(plugin)
     check_learning_layer_contract(plugin)

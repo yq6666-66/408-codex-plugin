@@ -1,0 +1,26 @@
+{
+  "name": "kaoyan-408",
+  "description": "408考研插件 WorkBuddy 插件市场：招生调研、六科真题检索与详细教学。",
+  "owner": {
+    "name": "yq6666-66",
+    "url": "https://github.com/yq6666-66"
+  },
+  "metadata": {
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "kaoyan-408",
+      "source": "./plugins/kaoyan-408",
+      "version": "2.6.0",
+      "description": "招生调研、官方招生核验、多平台网友评价、六科真题检索与详细教学的中文考研Skills。",
+      "category": "education",
+      "author": {
+        "name": "yq6666-66",
+        "url": "https://github.com/yq6666-66"
+      },
+      "homepage": "https://github.com/yq6666-66/408-codex-plugin",
+      "license": "MIT"
+    }
+  ]
+}
