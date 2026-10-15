@@ -262,8 +262,9 @@ class RunnerPathSafetyTests(unittest.TestCase):
             suite = repository / "eval" / "v2.6.1-acceptance"
             suite.mkdir(parents=True)
             catalog, materials = runner.acceptance_paths(repository, Path("eval/v2.6.1-acceptance"))
-            self.assertEqual(catalog, suite / "cases.json")
-            self.assertEqual(materials, suite / "materials")
+            # resolve() expands Windows 8.3 short names (for example RUNNER~1), so compare resolved paths.
+            self.assertEqual(catalog, (suite / "cases.json").resolve())
+            self.assertEqual(materials, (suite / "materials").resolve())
             with self.assertRaisesRegex(ValueError, "inside the repository"):
                 runner.acceptance_paths(repository, Path(directory) / "outside-suite")
 
