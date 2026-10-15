@@ -1,0 +1,29 @@
+{
+  "name": "kaoyan-408",
+  "description": "408考研插件市场：招生调研、真题检索与六科教学。",
+  "owner": {
+    "name": "yq6666-66",
+    "url": "https://github.com/yq6666-66"
+  },
+  "plugins": [
+    {
+      "name": "kaoyan-408",
+      "source": "./plugins/kaoyan-408",
+      "version": "2.6.1",
+      "description": "招生调研、官方招生核验、多平台网友评价、六科真题检索与详细教学的中文考研Skills。",
+      "displayName": "408考研插件",
+      "displayName_i18n": {
+        "zh-CN": "408考研插件"
+      },
+      "description_i18n": {
+        "zh-CN": "招生调研、官方招生核验、多平台网友评价、六科真题检索与详细教学的中文考研Skills。"
+      },
+      "category": "other",
+      "homepage": "https://github.com/yq6666-66/408-codex-plugin",
+      "author": {
+        "name": "yq6666-66",
+        "url": "https://github.com/yq6666-66"
+      }
+    }
+  ]
+}

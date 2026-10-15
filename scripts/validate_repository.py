@@ -20,6 +20,7 @@ from yaml.nodes import MappingNode
 
 from release_payload import (
     ALLOWED_PLUGIN_ROOTS,
+    CODEBUDDY_MANIFEST_RELATIVE,
     ALLOWED_RELEASE_FILES,
     EXPECTED_REFERENCES,
     EXPECTED_SKILLS,
@@ -27,6 +28,7 @@ from release_payload import (
     PLUGIN_RELATIVE_PATH,
     SEMVER_PATTERN,
     ValidationError,
+    ZCODE_MANIFEST_RELATIVE,
     check_accuracy_semantics,
     check_mastery_evidence_semantics,
     expected_release_files,
@@ -37,6 +39,58 @@ from release_payload import (
 SEMVER = re.compile(SEMVER_PATTERN)
 FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw", "index", "user"}
 HISTORY_FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw"}
+ZCODE_MANIFEST_PART = PurePosixPath(ZCODE_MANIFEST_RELATIVE)
+ZCODE_MARKETPLACE_PART = PurePosixPath(".claude-plugin/marketplace.json")
+ZCODE_MARKETPLACE_NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+ZCODE_MARKETPLACE_CATEGORIES = {
+    "developer-tools",
+    "productivity",
+    "utilities",
+    "legal",
+    "template",
+    "finance",
+    "other",
+}
+ZCODE_MIRRORED_MANIFEST_FIELDS = (
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "keywords",
+)
+
+WORKBUDDY_MANIFEST_PART = PurePosixPath(CODEBUDDY_MANIFEST_RELATIVE)
+WORKBUDDY_MARKETPLACE_PART = PurePosixPath(".codebuddy-plugin/marketplace.json")
+WORKBUDDY_MARKETPLACE_NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+WORKBUDDY_CATEGORIES = {
+    "education",
+    "productivity",
+    "developer-tools",
+    "finance",
+    "design",
+    "research",
+    "other",
+}
+WORKBUDDY_MIRRORED_MANIFEST_FIELDS = (
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "keywords",
+)
+WORKBUDDY_FORBIDDEN_MANIFEST_KEYS = (
+    "interface",
+    "apps",
+    "mcpServers",
+    "hooks",
+    "commands",
+    "agents",
+    "userConfig",
+)
 
 DETAILED_TUTOR_SKILLS = {
     "kaoyan-408-tutor",
@@ -244,6 +298,161 @@ def check_manifest(plugin: Path) -> dict[str, Any]:
         require(isinstance(relative, str) and relative.startswith("./"), f"{key} must be a relative path")
         require((plugin / relative[2:]).is_file(), f"{key} target does not exist")
     return manifest
+
+
+def check_codebuddy_manifest(plugin: Path, codex_manifest: dict[str, Any]) -> None:
+    """Validate the WorkBuddy-native manifest mirrors the Codex manifest.
+
+    WorkBuddy reads ``.codebuddy-plugin/plugin.json`` inside the installed plugin
+    directory and resolves ``skills`` relative to that directory, so the manifest
+    must stay inside the release tree and keep the Codex values in sync.
+    """
+    manifest = load_json(plugin / Path(*WORKBUDDY_MANIFEST_PART.parts))
+    require(isinstance(manifest, dict), "WorkBuddy manifest must be an object")
+    require(
+        manifest.get("name") == plugin.name == codex_manifest.get("name"),
+        "WorkBuddy manifest name must match the plugin directory and the Codex manifest",
+    )
+    for field in WORKBUDDY_MIRRORED_MANIFEST_FIELDS:
+        require(
+            manifest.get(field) == codex_manifest.get(field),
+            f"WorkBuddy manifest field must stay identical to the Codex manifest: {field}",
+        )
+    require(manifest.get("skills") == "./skills", "WorkBuddy manifest skills path must be ./skills")
+    require(
+        (plugin / "skills").is_dir(),
+        "WorkBuddy manifest skills directory does not exist",
+    )
+    category = manifest.get("category")
+    require(
+        isinstance(category, str) and category in WORKBUDDY_CATEGORIES,
+        f"WorkBuddy manifest category is invalid: {category}",
+    )
+    for key in WORKBUDDY_FORBIDDEN_MANIFEST_KEYS:
+        require(key not in manifest, f"Skills-only WorkBuddy manifest must not contain {key}")
+
+def check_codebuddy_marketplace(repo: Path) -> None:
+    """Validate the WorkBuddy marketplace descriptor published at the repository root.
+
+    The descriptor points WorkBuddy at the shared plugin directory rather than
+    duplicating the Skill tree, so the release payload stays the single source of
+    truth for every host adapter.
+    """
+    marketplace = load_json(repo / Path(*WORKBUDDY_MARKETPLACE_PART.parts))
+    require(isinstance(marketplace, dict), "WorkBuddy marketplace must be an object")
+    name = marketplace.get("name")
+    require(
+        isinstance(name, str) and WORKBUDDY_MARKETPLACE_NAME.fullmatch(name) is not None,
+        "WorkBuddy marketplace name is invalid",
+    )
+    description = marketplace.get("description")
+    require(
+        isinstance(description, str) and description.strip(),
+        "WorkBuddy marketplace description must be a non-empty string",
+    )
+    owner = marketplace.get("owner")
+    require(
+        isinstance(owner, dict) and isinstance(owner.get("name"), str) and owner["name"].strip(),
+        "WorkBuddy marketplace owner.name is required",
+    )
+    metadata = marketplace.get("metadata")
+    require(
+        isinstance(metadata, dict) and isinstance(metadata.get("version"), str) and metadata["version"].strip(),
+        "WorkBuddy marketplace metadata.version is required",
+    )
+    plugins = marketplace.get("plugins")
+    require(
+        isinstance(plugins, list) and len(plugins) == 1,
+        "WorkBuddy marketplace must contain exactly one plugin",
+    )
+    entry = plugins[0]
+    require(isinstance(entry, dict), "WorkBuddy marketplace entry must be an object")
+    require(entry.get("name") == "kaoyan-408", "WorkBuddy marketplace plugin name is invalid")
+    require(
+        entry.get("source") == "./plugins/kaoyan-408",
+        "WorkBuddy marketplace source must be the relative plugin path",
+    )
+    manifest = load_json(
+        repo / Path(*PLUGIN_RELATIVE_PATH.parts) / Path(*WORKBUDDY_MANIFEST_PART.parts)
+    )
+    require(
+        entry.get("version") == manifest.get("version"),
+        "WorkBuddy marketplace version must match the plugin manifest",
+    )
+    require(
+        entry.get("category") == manifest.get("category"),
+        "WorkBuddy marketplace category must match the plugin manifest",
+    )
+    require(
+        entry.get("author") == manifest.get("author"),
+        "WorkBuddy marketplace author must match the plugin manifest",
+    )
+    require(
+        (repo / "plugins" / "kaoyan-408" / "skills").is_dir(),
+        "WorkBuddy marketplace plugin skills directory does not exist",
+    )
+
+
+def check_zcode_manifest(plugin: Path, codex_manifest: dict[str, Any]) -> None:
+    """Validate the ZCode-native manifest mirrors the Codex manifest exactly."""
+    manifest = load_json(plugin / Path(*ZCODE_MANIFEST_PART.parts))
+    require(isinstance(manifest, dict), "ZCode manifest must be an object")
+    require(
+        manifest.get("name") == plugin.name == codex_manifest.get("name"),
+        "ZCode manifest name must match the plugin directory and the Codex manifest",
+    )
+    for field in ZCODE_MIRRORED_MANIFEST_FIELDS:
+        require(
+            manifest.get(field) == codex_manifest.get(field),
+            f"ZCode manifest field must stay identical to the Codex manifest: {field}",
+        )
+    require(manifest.get("skills") == "./skills/", "ZCode manifest skills path must be ./skills/")
+    display_name = manifest.get("displayName")
+    require(
+        isinstance(display_name, str) and display_name.strip(),
+        "ZCode manifest displayName must be a non-empty string",
+    )
+    for key in ("apps", "mcpServers", "hooks", "commands", "agents", "userConfig", "interface"):
+        require(key not in manifest, f"Skills-only ZCode manifest must not contain {key}")
+
+
+def check_zcode_marketplace(repo: Path) -> None:
+    """Validate the ZCode marketplace descriptor published at the repository root."""
+    marketplace = load_json(repo / Path(*ZCODE_MARKETPLACE_PART.parts))
+    require(isinstance(marketplace, dict), "ZCode marketplace must be an object")
+    name = marketplace.get("name")
+    require(
+        isinstance(name, str) and ZCODE_MARKETPLACE_NAME.fullmatch(name) is not None,
+        "ZCode marketplace name is invalid",
+    )
+    owner = marketplace.get("owner")
+    require(
+        isinstance(owner, dict) and isinstance(owner.get("name"), str) and owner["name"].strip(),
+        "ZCode marketplace owner.name is required",
+    )
+    plugins = marketplace.get("plugins")
+    require(isinstance(plugins, list) and len(plugins) == 1, "ZCode marketplace must contain exactly one plugin")
+    entry = plugins[0]
+    require(isinstance(entry, dict), "ZCode marketplace entry must be an object")
+    require(entry.get("name") == "kaoyan-408", "ZCode marketplace plugin name is invalid")
+    require(
+        entry.get("source") == "./plugins/kaoyan-408",
+        "ZCode marketplace source must be the relative plugin path",
+    )
+    zcode_manifest = load_json(repo / Path(*PLUGIN_RELATIVE_PATH.parts) / Path(*ZCODE_MANIFEST_PART.parts))
+    require(
+        entry.get("version") == zcode_manifest.get("version"),
+        "ZCode marketplace version must match the plugin manifest",
+    )
+    display_name = entry.get("displayName")
+    require(
+        isinstance(display_name, str) and display_name.strip(),
+        "ZCode marketplace displayName must be a non-empty string",
+    )
+    require(
+        entry.get("category") in ZCODE_MARKETPLACE_CATEGORIES,
+        f"ZCode marketplace category is invalid: {entry.get('category')}",
+    )
 
 
 def check_skill(skill_dir: Path) -> None:
@@ -471,6 +680,7 @@ def check_portable_schema(plugin: Path) -> None:
             "schemaVersion": "1.2",
             "recordType": "SessionCheckpoint",
             "checkpointId": "kc-0f1e2d3c4b5a6978",
+            "checkpointRevision": 1,
             "updatedAt": None,
             "currentTask": "2009-2018 阅读精读第二轮",
             "position": "英语二 2014 Text 2 第 3 题",
@@ -484,6 +694,15 @@ def check_portable_schema(plugin: Path) -> None:
             validator.validate(sample)
         except JsonSchemaValidationError as exc:
             raise ValidationError(f"portable-record schema rejects a required 1.1/1.2 shape: {exc.message}") from exc
+
+    invalid_checkpoint_revision = {
+        **output_samples[-1],
+        "checkpointRevision": 0,
+    }
+    require(
+        not validator.is_valid(invalid_checkpoint_revision),
+        "portable-record schema must reject non-positive checkpoint revisions",
+    )
 
     bad_evidence_type = {
         "schemaVersion": "1.2",
@@ -836,6 +1055,8 @@ def check_repository_docs(repo: Path) -> None:
         "THIRD_PARTY_CONTENT.md",
         "QUALITY_GATES.md",
         ".agents/plugins/marketplace.json",
+        ".claude-plugin/marketplace.json",
+        ".codebuddy-plugin/marketplace.json",
         "tests/forward-cases.json",
         "tests/behavior-cases.json",
         "tests/system-validator-evidence.json",
@@ -887,6 +1108,57 @@ def check_repository_docs(repo: Path) -> None:
     require(entry.get("source", {}).get("path") == "./plugins/kaoyan-408", "marketplace source.path is invalid")
     require(entry.get("policy", {}).get("installation") == "AVAILABLE", "marketplace installation policy is invalid")
     require(entry.get("policy", {}).get("authentication") == "ON_INSTALL", "marketplace authentication policy is invalid")
+    check_zcode_marketplace(repo)
+    check_codebuddy_marketplace(repo)
+
+    check_cursor_marketplace(repo, manifest)
+
+
+def check_cursor_marketplace(repo: Path, manifest: dict[str, Any]) -> None:
+    """Cursor discovers this repo from root manifests and reuses the Codex skill tree."""
+    cursor_dir = repo / ".cursor-plugin"
+    marketplace_path = cursor_dir / "marketplace.json"
+    plugin_path = cursor_dir / "plugin.json"
+    require(marketplace_path.is_file(), "Cursor marketplace is missing: .cursor-plugin/marketplace.json")
+    require(plugin_path.is_file(), "Cursor plugin manifest is missing: .cursor-plugin/plugin.json")
+    cursor_marketplace = load_json(marketplace_path)
+    cursor_plugin = load_json(plugin_path)
+    version = manifest.get("version")
+
+    require(isinstance(cursor_marketplace, dict), "Cursor marketplace must be an object")
+    require(cursor_marketplace.get("name") == "kaoyan-408", "Cursor marketplace name is invalid")
+    owner = cursor_marketplace.get("owner")
+    require(isinstance(owner, dict) and owner.get("name") == "yq6666-66", "Cursor marketplace owner is invalid")
+    plugins = cursor_marketplace.get("plugins")
+    require(isinstance(plugins, list) and len(plugins) == 1, "Cursor marketplace must contain exactly one plugin")
+    entry = plugins[0]
+    require(isinstance(entry, dict), "Cursor marketplace plugin entry must be an object")
+    require(entry.get("name") == "kaoyan-408", "Cursor marketplace plugin name is invalid")
+    require(entry.get("source") == "./", "Cursor marketplace source must be the repository root")
+    require(
+        set(entry) <= {"name", "source", "description", "minClientVersions"},
+        "Cursor marketplace entry has fields the official schema rejects",
+    )
+
+    require(isinstance(cursor_plugin, dict), "Cursor plugin manifest must be an object")
+    require(cursor_plugin.get("name") == "kaoyan-408", "Cursor plugin name is invalid")
+    require(cursor_plugin.get("version") == version, "Cursor plugin version must match plugin.json.version")
+    require(cursor_plugin.get("category") == "Education", "Cursor plugin category must be Education")
+    for key in ("mcpServers", "hooks", "rules", "commands", "agents", "apps", "userConfig"):
+        require(key not in cursor_plugin, f"Cursor manifest must not declare {key}")
+    skills = cursor_plugin.get("skills")
+    require(skills == "plugins/kaoyan-408/skills", "Cursor skills path is invalid")
+    skill_root = repo / "plugins" / "kaoyan-408" / "skills"
+    require(skill_root.is_dir(), "Cursor skills directory does not exist")
+    skill_names = {
+        path.name
+        for path in skill_root.iterdir()
+        if path.is_dir() and (path / "SKILL.md").is_file()
+    }
+    require(skill_names == EXPECTED_SKILLS, "Cursor skills directory must match the released Skill set")
+    logo = "plugins/kaoyan-408/assets/kaoyan-408.svg"
+    require(cursor_plugin.get("logo") == logo, "Cursor logo path is invalid")
+    require((repo / logo).is_file(), "Cursor logo file does not exist")
 
 
 def _run_git(repo: Path, arguments: list[str], *, input_bytes: bytes | None = None) -> subprocess.CompletedProcess[bytes]:
@@ -952,7 +1224,9 @@ def validate_repo(
     require(plugin.is_dir(), f"plugin directory does not exist: {plugin}")
 
     check_repository_docs(repo)
-    check_manifest(plugin)
+    manifest = check_manifest(plugin)
+    check_zcode_manifest(plugin, manifest)
+    check_codebuddy_manifest(plugin, manifest)
     check_release_tree(plugin)
     check_obsidian_brain_contract(plugin)
     check_learning_layer_contract(plugin)

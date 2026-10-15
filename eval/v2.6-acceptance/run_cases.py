@@ -61,6 +61,21 @@ def reject_repository_plugin_source(repository: Path, installed_root: Path) -> N
         raise ValueError("--installed-plugin must be an isolated copy, not the repository plugin source or a subdirectory")
 
 
+def verify_candidate_version(repository: Path, installed_root: Path) -> str:
+    source_manifest = json.loads(
+        (repository / "plugins" / "kaoyan-408" / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
+    )
+    installed_manifest = json.loads(
+        (installed_root / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
+    )
+    candidate_version = source_manifest.get("version")
+    if not isinstance(candidate_version, str) or not candidate_version:
+        raise ValueError("repository plugin manifest has no candidate version")
+    if installed_manifest.get("version") != candidate_version:
+        raise ValueError(f"installed candidate must be {candidate_version}")
+    return candidate_version
+
+
 def resolve_codex_home(repository: Path, codex_home: Path, stable_home: Path | None = None) -> Path:
     """Resolve CODEX_HOME and keep its mutable state outside the repository and stable profile."""
     resolved_repository = repository.resolve()
@@ -83,9 +98,13 @@ def thread_id_matches(expected: str | None, actual: Any) -> bool:
     return isinstance(expected, str) and bool(expected) and actual == expected
 
 
-def acceptance_paths(repository: Path) -> tuple[Path, Path]:
+def acceptance_paths(repository: Path, suite: Path | None = None) -> tuple[Path, Path]:
     """Return the case catalog and materials from the requested candidate checkout."""
-    acceptance_root = repository.resolve() / "eval" / "v2.6-acceptance"
+    repository = repository.resolve()
+    requested = suite if suite is not None else Path("eval/v2.6-acceptance")
+    acceptance_root = (requested if requested.is_absolute() else repository / requested).resolve()
+    if acceptance_root != repository and repository not in acceptance_root.parents:
+        raise ValueError("acceptance suite must be inside the repository")
     return acceptance_root / "cases.json", acceptance_root / "materials"
 
 
@@ -288,6 +307,7 @@ def main() -> int:
     parser.add_argument("--model", required=True)
     parser.add_argument("--effort", required=True)
     parser.add_argument("--case", action="append", default=[])
+    parser.add_argument("--suite", type=Path, help="acceptance suite directory inside the repository")
     parser.add_argument("--timeout", type=int, default=1200)
     parser.add_argument("--sandbox", choices=["workspace-write", "danger-full-access"], default="workspace-write")
     parser.add_argument("--stop-file", type=Path, help="if this file exists at a case boundary, stop before starting another model call")
@@ -310,15 +330,16 @@ def main() -> int:
     except Exception as exc:
         parser.error(f"cannot snapshot repository before acceptance: {exc.__class__.__name__}")
     repository_tree_hash_before = snapshot_digest(repository_before)
-    catalog_path, materials_root = acceptance_paths(args.repository)
+    try:
+        catalog_path, materials_root = acceptance_paths(args.repository, args.suite)
+    except ValueError as exc:
+        parser.error(str(exc))
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     cases = {c["id"]: c for c in catalog["cases"]}
     selected = args.case or list(cases)
     if len(set(selected)) != len(selected) or set(selected) - set(cases):
         raise ValueError("duplicate or unknown case IDs")
-    plugin_manifest = json.loads((args.installed_plugin / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
-    if plugin_manifest.get("version") != "2.6.0":
-        raise ValueError("installed candidate must be 2.6.0")
+    candidate_version = verify_candidate_version(args.repository, args.installed_plugin)
     sys.path.insert(0, str(args.repository / "scripts"))
     from release_payload import ALLOWED_RELEASE_FILES, plugin_tree_digest
     from gpt6_capture import capture, load_events
@@ -364,7 +385,8 @@ def main() -> int:
         summary = {
             "caseId": case_id,
             "kind": case["kind"],
-            "pluginVersion": "2.6.0",
+            "pluginVersion": candidate_version,
+            "acceptanceSuite": catalog_path.parent.relative_to(args.repository).as_posix(),
             "installedPlugin": str(args.installed_plugin),
             "installedTreeHash": tree_hash,
             "installedFileCount": len(payload),

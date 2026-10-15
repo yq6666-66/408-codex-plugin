@@ -6,7 +6,7 @@ Subcommands:
   normalize  Upgrade 1.0/1.1 records to Schema 1.2 without fabricating evidence.
   merge      Deterministically merge two record documents without dropping data.
   due        List due review items using an explicit base date (``--date``).
-  checkpoint Create or read a lightweight SessionCheckpoint.
+  checkpoint Create, update, or read a lightweight SessionCheckpoint.
 
 All successful output is JSON on stdout. Errors go to stderr as JSON with a
 non-zero exit code (0 ok, 1 record error, 2 usage error). Standard library only.
@@ -20,6 +20,7 @@ import json
 import math
 import re
 import sys
+from copy import deepcopy
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,12 @@ ITEM_STATUSES = {"pending", "due", "retesting", "mastered", None}
 ERROR_CAUSE_STATUSES = {"confirmed", "hypothesis", None}
 TEACHING_MODES = {"detailed", "hint", "independent", "mock", None}
 ANSWER_STATES = {"hidden", "partial", "revealed", None}
+CHECKPOINT_STATE_FIELDS = (
+    "checkpointRevision", "updatedAt", "currentTask", "position", "notes",
+    "teachingMode", "answerState", "hintLevel", "currentQuestion",
+    "completedQuestions", "remainingQuestions", "materialVersion", "dueItems", "pendingRetests",
+)
+CHECKPOINT_EDIT_FIELDS = frozenset(CHECKPOINT_STATE_FIELDS) - {"checkpointRevision", "updatedAt"}
 SENSITIVE_EXTENSION_KEY = re.compile(
     r"(?:^|_)(?:api_?key|api_?token|access_?token|refresh_?token|token|secret|password|passwd|"
     r"credential|authorization|cookie|email|phone|mobile|telephone|id_?card|passport|national_?id|"
@@ -241,7 +248,7 @@ def _redact_schema_11_extensions(record: dict[str, Any]) -> list[str]:
         "ProgressSnapshot": {"period", "metrics", "accuracy", "blockers"},
         "ReviewQueue": {"generatedAt", "items"},
         "SessionCheckpoint": {
-            "checkpointId", "updatedAt", "currentTask", "position", "dueItems",
+            "checkpointId", "checkpointRevision", "updatedAt", "currentTask", "position", "dueItems",
             "pendingRetests", "notes", "teachingMode", "answerState", "hintLevel",
             "currentQuestion", "completedQuestions", "remainingQuestions", "materialVersion",
         },
@@ -951,6 +958,10 @@ def validate_current(record: dict[str, Any]) -> tuple[list[str], list[str]]:
     else:  # SessionCheckpoint
         for key in ("updatedAt", "currentTask", "position", "dueItems", "pendingRetests"):
             _require(record, key, errors)
+        if "checkpointRevision" in record:
+            revision = record["checkpointRevision"]
+            if isinstance(revision, bool) or not isinstance(revision, int) or revision < 1:
+                errors.append("checkpointRevision must be a positive integer")
         if "checkpointId" in record and (
             not isinstance(record["checkpointId"], str)
             or re.fullmatch(r"kc-[0-9a-f]{16}", record["checkpointId"]) is None
@@ -1139,6 +1150,10 @@ def records_match(a: dict[str, Any], b: dict[str, Any]) -> bool:
     return natural_key(a) == natural_key(b)
 
 
+def valid_checkpoint_revision(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 1
+
+
 def merge_records(a: dict[str, Any], b: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     if not records_match(a, b):
         # Distinct records: keep both rather than dropping either side.
@@ -1146,17 +1161,44 @@ def merge_records(a: dict[str, Any], b: dict[str, Any]) -> tuple[dict[str, Any],
     conflicts: list[dict[str, Any]] = []
     updated_a, updated_b = a.get("updatedAt"), b.get("updatedAt")
     newer = None
-    if is_plain_date(updated_a) and is_plain_date(updated_b) and updated_a != updated_b:
-        newer = "b" if updated_b > updated_a else "a"
-    merged = merge_items(a, b, "", conflicts, newer)
+    revision_a, revision_b = a.get("checkpointRevision"), b.get("checkpointRevision")
     if a.get("recordType") == "SessionCheckpoint":
+        for record in (a, b):
+            if "checkpointRevision" in record and not valid_checkpoint_revision(record["checkpointRevision"]):
+                raise RecordError("checkpointRevision must be a positive integer")
+    has_revisions = all(
+        valid_checkpoint_revision(value)
+        for value in (revision_a, revision_b)
+    )
+    if a.get("recordType") == "SessionCheckpoint" and has_revisions:
+        if revision_a != revision_b:
+            newer = "b" if revision_b > revision_a else "a"
+    elif is_plain_date(updated_a) and is_plain_date(updated_b) and updated_a != updated_b:
+        newer = "b" if updated_b > updated_a else "a"
+    if a.get("recordType") == "SessionCheckpoint":
+        # Resume state belongs to a complete snapshot. Do not mix old optional
+        # fields or removed queue items into the selected checkpoint.
+        merged = merge_items(
+            {key: value for key, value in a.items() if key not in CHECKPOINT_STATE_FIELDS},
+            {key: value for key, value in b.items() if key not in CHECKPOINT_STATE_FIELDS},
+            "", conflicts, newer,
+        )
         state = b if newer == "b" else a
-        for key in ("completedQuestions", "remainingQuestions"):
+        missing = object()
+        for key in CHECKPOINT_STATE_FIELDS:
             if key in state:
-                merged[key] = state[key]
-            else:
-                merged.pop(key, None)
-    return merged, conflicts
+                merged[key] = deepcopy(state[key])
+            if key == "updatedAt" or a.get(key, missing) == b.get(key, missing):
+                continue
+            conflict = {
+                "path": f"/{key}", "a": a.get(key), "b": b.get(key),
+                "resolution": "kept-newer" if newer is not None else "kept-first",
+            }
+            if key not in a or key not in b:
+                conflict.update({"aPresent": key in a, "bPresent": key in b})
+            conflicts.append(conflict)
+        return merged, conflicts
+    return merge_items(a, b, "", conflicts, newer), conflicts
 
 
 def merge_documents(a: Any, b: Any) -> dict[str, Any]:
@@ -1164,6 +1206,12 @@ def merge_documents(a: Any, b: Any) -> dict[str, Any]:
     records_b = as_record_list(b)
     merged_records: list[dict[str, Any]] = []
     conflicts: list[dict[str, Any]] = []
+    for document in (a, b):
+        if isinstance(document, dict) and "records" in document and "mergeConflicts" in document:
+            previous = document["mergeConflicts"]
+            if not isinstance(previous, list) or any(not isinstance(entry, dict) for entry in previous):
+                raise RecordError("mergeConflicts must be an array of objects")
+            conflicts.extend(deepcopy(previous))
     pending_b = list(records_b)
     for record_a in records_a:
         merged_record = record_a
@@ -1178,7 +1226,14 @@ def merge_documents(a: Any, b: Any) -> dict[str, Any]:
         pending_b = remaining
         merged_records.append(merged_record)
     merged_records.extend(pending_b)
-    return {"records": merged_records, "mergeConflicts": conflicts}
+    unique_conflicts: list[dict[str, Any]] = []
+    fingerprints: set[str] = set()
+    for conflict in conflicts:
+        fingerprint = json.dumps(conflict, ensure_ascii=False, sort_keys=True, allow_nan=False)
+        if fingerprint not in fingerprints:
+            fingerprints.add(fingerprint)
+            unique_conflicts.append(conflict)
+    return {"records": merged_records, "mergeConflicts": unique_conflicts}
 
 
 def resolve_due(items: list[dict[str, Any]], base: date) -> dict[str, Any]:
@@ -1258,12 +1313,47 @@ def build_checkpoint(payload: dict[str, Any], base_date: str | None) -> dict[str
     }
     if "checkpointId" in payload:
         checkpoint["checkpointId"] = payload["checkpointId"]
+        checkpoint["checkpointRevision"] = payload.get("checkpointRevision", 1)
     else:
         checkpoint["checkpointId"] = stable_id("kc", {**checkpoint, "updatedAt": None})
+        checkpoint["checkpointRevision"] = 1
     errors, _ = validate_current(checkpoint)
     if errors:
         raise RecordError("checkpoint is invalid: " + "; ".join(errors))
     return checkpoint
+
+
+def update_checkpoint(
+    checkpoint: dict[str, Any], changes: dict[str, Any], base_date: str | None,
+) -> dict[str, Any]:
+    """Advance one existing snapshot without changing its stable identity."""
+    if not isinstance(checkpoint, dict) or checkpoint.get("recordType") != "SessionCheckpoint":
+        raise RecordError("checkpoint update requires recordType SessionCheckpoint")
+    errors, _ = validate_current(checkpoint)
+    if errors:
+        raise RecordError("checkpoint is invalid: " + "; ".join(errors))
+    if not checkpoint.get("checkpointId"):
+        raise RecordError("checkpoint update requires checkpointId; normalize the record first")
+    if not isinstance(changes, dict):
+        raise RecordError("checkpoint changes must be a JSON object")
+    if any(key not in CHECKPOINT_EDIT_FIELDS for key in changes):
+        raise RecordError("checkpoint changes may contain only mutable resume fields")
+    if base_date is not None and not is_plain_date(base_date):
+        raise RecordError("checkpoint update date must be a YYYY-MM-DD date or null")
+    updated = deepcopy(checkpoint)
+    updated.update(deepcopy(changes))
+    errors, _ = validate_current(updated)
+    if errors:
+        raise RecordError("updated checkpoint is invalid: " + "; ".join(errors))
+    missing = object()
+    if all(checkpoint.get(key, missing) == value for key, value in changes.items()):
+        return deepcopy(checkpoint)
+    updated["checkpointRevision"] = checkpoint.get("checkpointRevision", 0) + 1
+    updated["updatedAt"] = base_date
+    errors, _ = validate_current(updated)
+    if errors:
+        raise RecordError("updated checkpoint is invalid: " + "; ".join(errors))
+    return updated
 
 
 def read_checkpoint(
@@ -1278,6 +1368,7 @@ def read_checkpoint(
         raise RecordError("checkpoint is invalid: " + "; ".join(errors))
     plan: dict[str, Any] = {
         "resume": {
+            "checkpointRevision": checkpoint.get("checkpointRevision"),
             "currentTask": checkpoint.get("currentTask"),
             "position": checkpoint.get("position"),
             "notes": checkpoint.get("notes"),
@@ -1325,11 +1416,15 @@ def build_parser() -> argparse.ArgumentParser:
     due_parser.add_argument("input", nargs="?", default="-")
     due_parser.add_argument("--date", required=True, dest="base_date", help="explicit base date YYYY-MM-DD")
 
-    checkpoint_parser = subparsers.add_parser("checkpoint", help="create or read a SessionCheckpoint")
+    checkpoint_parser = subparsers.add_parser("checkpoint", help="create, update, or read a SessionCheckpoint")
     checkpoint_sub = checkpoint_parser.add_subparsers(dest="checkpoint_command", required=True)
     create_parser = checkpoint_sub.add_parser("create")
     create_parser.add_argument("input", nargs="?", default="-")
     create_parser.add_argument("--date", default=None, dest="base_date")
+    update_parser = checkpoint_sub.add_parser("update")
+    update_parser.add_argument("input", nargs="?", default="-")
+    update_parser.add_argument("--changes", required=True, help="JSON object containing changed resume fields")
+    update_parser.add_argument("--date", default=None, dest="base_date")
     read_parser = checkpoint_sub.add_parser("read")
     read_parser.add_argument("input", nargs="?", default="-")
     read_parser.add_argument("--date", default=None, dest="base_date")
@@ -1385,6 +1480,11 @@ def main(argv: list[str] | None = None) -> int:
                 raise RecordError("checkpoint input must be a JSON object")
             if args.checkpoint_command == "create":
                 emit(build_checkpoint(record, args.base_date))
+                return 0
+            if args.checkpoint_command == "update":
+                if args.input == "-" and args.changes == "-":
+                    raise RecordError("checkpoint update accepts at most one '-' stdin input")
+                emit(update_checkpoint(record, load_document(args.changes), args.base_date))
                 return 0
             queue = load_document(args.queue) if args.queue else None
             emit(read_checkpoint(record, base, queue))

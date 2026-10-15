@@ -1,0 +1,847 @@
+{
+  "schemaVersion": "1.0",
+  "recordedDate": "2026-10-15",
+  "pluginVersion": "2.6.1",
+  "runtimeCommit": "563e205fc188f180ec424736f21e242234971e8f",
+  "installedTreeSha256": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+  "installedFileCount": 45,
+  "cliVersion": "codex-cli 0.162.0-alpha.17.2",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "high",
+  "sandboxMode": "danger-full-access",
+  "gradingMethod": "Primary Agent plus independent subagent review against original rubrics; no maintainer signoff. Raw capture summaries remain captured-ungraded.",
+  "counts": {
+    "cases": 12,
+    "turns": 15,
+    "checkpoints": 48,
+    "pass": 48,
+    "partial": 0,
+    "fail": 0,
+    "liveCheckpoints": 16,
+    "syntheticCheckpoints": 32
+  },
+  "limitations": [
+    "Fixed-host observations do not establish all-input model reliability.",
+    "Live suite cutoff 2026-10-08 differs from actual retrieval 2026-10-15; dynamic pages without historical snapshots cannot prove cutoff-day values.",
+    "Some current admissions fields remain unreadable or unverified; pass evaluates evidence handling, not completeness of admissions facts.",
+    "No old/new 20-category paired acceptance or real user Obsidian/Notion persistence.",
+    "No remote CI, PR, tag or Release for this candidate."
+  ],
+  "cases": [
+    {
+      "caseId": "v260-01-live-school",
+      "kind": "live",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "live-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T09:49:11.481278+00:00",
+      "finishedAt": "2026-10-15T09:57:29.113806+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {},
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "ebafb9b639349539ecf3fdcacf78e9ecc45fe6a3e96642af5c14efa35c217de2",
+          "rawSha256": "d8b3c174303a4eadf031ffedefc30a90d584084d971b8c6e57862e8592ee4dba",
+          "captureSha256": "6662935c952823ef91310f87c9c0fdc41d1113f8cee7e6d1e0c60e53a1765377",
+          "rolloutSha256": "7ea734f16168dac8624b2a86284f9175fb83dae37ec633dbed74ab8f47ed9f31",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 43,
+          "rolloutToolCount": 28,
+          "skillReadProofItems": [
+            "item_1",
+            "call_2051eabeda1048d1846bb216475374b7"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取隔离安装的主责 Skill 及必需契约",
+          "verdict": "pass",
+          "evidence": "读取隔离招生 Skill 和三份必需契约。"
+        },
+        {
+          "number": 2,
+          "criterion": "以研招网或学校官方入口发现并打开正文/附件，关键事实直接引用来源且区分 2027 当期与 2025/2026 历史",
+          "verdict": "pass",
+          "evidence": "实际读取2027官方目录JSON、咨询答复和2025/2026官方正文与图片，按年度列来源。"
+        },
+        {
+          "number": 3,
+          "criterion": "缺失字段不编造，不以搜索摘要证明考试科目，区分计划和实际录取且不输出考生身份",
+          "verdict": "pass",
+          "evidence": "94统考与82推免、目录计划与复试计划分开；无法读取名单时保留人数与分数缺口。"
+        },
+        {
+          "number": 4,
+          "criterion": "当期详情覆盖请求字段，未知有明确缺口，报告先给结论且未经授权无写入",
+          "verdict": "pass",
+          "evidence": "请求字段均有结论或明确缺口；当年复试/调剂不照搬历史；无文件写入。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-02-live-discovery",
+      "kind": "live",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "live-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T09:51:10.235828+00:00",
+      "finishedAt": "2026-10-15T09:56:28.189084+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {},
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "0f329663165db9de92cb38f4776591760f99881237cf14b26af398ec5f53ee16",
+          "rawSha256": "b4889e60635cef03878350ecccd71d57b2b166a70a7718e4197af0fe56b9cdb1",
+          "captureSha256": "68a573eccd10a155555f142f5edaa8cfb7ddcd246480d077ede7274d38fd3768",
+          "rolloutSha256": "1ef93445143036436399316b53a7c40afdc5334807b37aed5f8df90f89780c3b",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 27,
+          "rolloutToolCount": 20,
+          "skillReadProofItems": [
+            "item_1",
+            "call_dc4740ef6c2c4bf292855cc778b4ff4c"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取隔离安装的招生 Skill",
+          "verdict": "pass",
+          "evidence": "读取隔离招生 Skill 与契约。"
+        },
+        {
+          "number": 2,
+          "criterion": "真实检索发现候选且最多详细调研 3 所，不假造 408 筛选接口",
+          "verdict": "pass",
+          "evidence": "真实检索并最多详细展开3校；动态研招网目录未假造408筛选接口。"
+        },
+        {
+          "number": 3,
+          "criterion": "逐个院系专业核验 408 和招生年度，不用全校统一推断",
+          "verdict": "pass",
+          "evidence": "杭电实际解析Excel、浙科大实际查看目录图片、浙大实际读正文，逐院系核对408并区分085400方向和085404。"
+        },
+        {
+          "number": 4,
+          "criterion": "资料不足标待核验并给直接来源，不以编造字段填满候选",
+          "verdict": "pass",
+          "evidence": "验证码、图片日期、院系代码和完整限制等缺口明确；给直接入口，不补造。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-03-synthetic-history",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "regression-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T09:58:14.878523+00:00",
+      "finishedAt": "2026-10-15T09:59:24.433064+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {
+        "synthetic-history.md": "5a4bbb61fccb799f940fe67a6df80100876b71d715f6d57dd78f3ce3893bdb71"
+      },
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "162d48635688e8fca99f797e55e3fd7698a78a2604b1c133bc6059cbad32f33d",
+          "rawSha256": "7b34c57b30ac21a5f20298b3b9f00c6bd037a90f9b49f5bab399698fa52bd271",
+          "captureSha256": "233a11dd77eed1be7e3026e7f61287054a31dac71e963de6820a9c4c1b07cb4a",
+          "rolloutSha256": "ad6f171c1826111b04f7b9c184c7bc5a9d043403877fc8058e5b1de94201f132",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 6,
+          "rolloutToolCount": 3,
+          "skillReadProofItems": [
+            "item_1",
+            "call_a0b4a0c0753244dba33e4d1cd5cb4a2e"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "读取 Skill 和实际 synthetic 材料，不声称真网核验",
+          "verdict": "pass",
+          "evidence": "读取Skill与实际虚构材料，未联网。"
+        },
+        {
+          "number": 2,
+          "criterion": "区分校线/院线/拟录取最低初试分/综合成绩，历史年度口径齐全",
+          "verdict": "pass",
+          "evidence": "七项口径齐全，校线、院线、拟录取初试分与综合分分开。"
+        },
+        {
+          "number": 3,
+          "criterion": "2025 30/40 与 2026 24/36 可计算且标依据样本计算，600/全院录取不计算报录比",
+          "verdict": "pass",
+          "evidence": "30/40=75%、24/36约66.67%；拒算全院600/90或600/24。"
+        },
+        {
+          "number": 4,
+          "criterion": "推免专项调剂分列，缺失分数区间明示，姓名考生号不输出",
+          "verdict": "pass",
+          "evidence": "推免10/12、专项2/3、调剂4/5分列，最高分和最终录取缺口明确，不输出身份。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-04-synthetic-conflicts",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "regression-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T09:59:24.440529+00:00",
+      "finishedAt": "2026-10-15T10:00:21.112023+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {
+        "synthetic-conflicts.md": "ef80059fcc73066baf73d8d5bfb375b37589fc9af62c20083c6d5a41472ea31e"
+      },
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "7fef3d457585e7aafa6c2b43ca95e23b0bd9835bfbd4357a861381ae690330e7",
+          "rawSha256": "39384b01dcbe41e5f4d906373adf3d94ff6b5a71dd9154ae07bf6fc4a78b22ce",
+          "captureSha256": "f48cb1c6723428000ae0625dc30d158b9e96d1092129a7441fe9509010294df2",
+          "rolloutSha256": "f2ef77d426456bc4afc475994add8b17512cfbbd8715f14c00ce2540dd38999d",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 6,
+          "rolloutToolCount": 3,
+          "skillReadProofItems": [
+            "item_1",
+            "call_b68969dc094e4736bf491d11c3a89fac"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "实际读取 Skill 与材料并明示 synthetic",
+          "verdict": "pass",
+          "evidence": "读取Skill与冲突材料，声明虚构且未联网。"
+        },
+        {
+          "number": 2,
+          "criterion": "按适用年度范围和更正声明处理专业课冲突，不能把 2026 页面用于 2027",
+          "verdict": "pass",
+          "evidence": "按2027明确更正关系采用848，不机械按日期或借用2026页面。"
+        },
+        {
+          "number": 3,
+          "criterion": "专业合并导致不可直接比较，含推免计划与统考录取分开",
+          "verdict": "pass",
+          "evidence": "代码合并不能直接跨年比较，含推免计划与普通统考录取分开。"
+        },
+        {
+          "number": 4,
+          "criterion": "拒绝 600/24 粗略报录比，无法裁决的招生人数冲突保留待核验",
+          "verdict": "pass",
+          "evidence": "拒算600/24，30与32的同日计划冲突保持待核验。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-05-live-reviews",
+      "kind": "live",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "live-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T09:56:54.934856+00:00",
+      "finishedAt": "2026-10-15T10:01:32.230252+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {},
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "8e70aed6ab07323f66749396f2ad02613d7f73db2a1816e10c8dd6bca72345e4",
+          "rawSha256": "f4534a75e235b3ddde67972624fc69bdbdf057be58c00f15b6f15483d661c17f",
+          "captureSha256": "fd5096162b10717257851529873e816f0cd0b58c35330f96dd550b8a17d5d802",
+          "rolloutSha256": "02346148fd953965f558ea80cb7e25802e174abed142bf98e43e8b4ce787b0f7",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 28,
+          "rolloutToolCount": 18,
+          "skillReadProofItems": [
+            "item_1",
+            "call_00c0ef5d19c14f8a93d4afc8f4b18cea"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取主责 Skill 并主动检索多平台",
+          "verdict": "pass",
+          "evidence": "读取招生Skill，实际检索知乎、B站、小红书、贴吧与经验博客。"
+        },
+        {
+          "number": 2,
+          "criterion": "实际可读样本与仅摘要/不可读视频线索分开，样本数与独立作者去重可核验",
+          "verdict": "pass",
+          "evidence": "采用2组可读历史文本，转载和原帖去重；不可读页与无字幕视频只作线索。"
+        },
+        {
+          "number": 3,
+          "criterion": "具体评价元数据与自述亲历/推广信号保留未知，支持反对按实际样本呈现",
+          "verdict": "pass",
+          "evidence": "元数据、原作者/转载者、亲历及推广边界明确，正反意见符合正文，没有凑反对样本。"
+        },
+        {
+          "number": 4,
+          "criterion": "不把少量帖子当普遍事实，不将网友政策当官方核验，不捏造政策来源",
+          "verdict": "pass",
+          "evidence": "实际回查4篇官方正文；2020特殊远程经验不外推近年政策或普遍口碑，培养实习样本不足明示。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-06-synthetic-degradation",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "regression-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T10:00:21.120785+00:00",
+      "finishedAt": "2026-10-15T10:01:03.741352+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {
+        "synthetic-degradation.md": "a167fef7068abc2cd0c74d805501f2a19ee6727fcf4c744f97b61fcb36dedff0"
+      },
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "42d2b7e092c9adbcdacc2e438fb609a669f9996096d849a23f3d14c90a7a9c9a",
+          "rawSha256": "27b907f6130d101e9260310e39a1b8449c8baf11412f73fa4c1a09d64721d387",
+          "captureSha256": "6bd84f0e68b0b77e38f49f4af6f880701fb6c0120595fb45bb93e1656cec90cf",
+          "rolloutSha256": "0bdfd5e9b36ab90a1a4f5ba4d61fdac19b628496be3838bc53cae58378b7d178",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 6,
+          "rolloutToolCount": 3,
+          "skillReadProofItems": [
+            "item_1",
+            "call_efb009c4e2194eabb00a29f221360ef0"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "读取实际 Skill 与材料，不冒称真实平台失败",
+          "verdict": "pass",
+          "evidence": "读取实际Skill与虚构材料，不冒称真实平台失败。"
+        },
+        {
+          "number": 2,
+          "criterion": "登录失效附件未读均明确待核验并给官网补查入口",
+          "verdict": "pass",
+          "evidence": "登录页、404、不可读附件均明确待核验并给材料所列入口。"
+        },
+        {
+          "number": 3,
+          "criterion": "不凭摘要确认 408/招生数，视频无内容只线索",
+          "verdict": "pass",
+          "evidence": "摘要408和50人不确认，无字幕视频仅线索，可归纳样本0。"
+        },
+        {
+          "number": 4,
+          "criterion": "保留访问边界与未知字段，不伪造成功工具调用",
+          "verdict": "pass",
+          "evidence": "保留未知，不用记忆补齐或伪造成功访问。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-07-live-noncomputer",
+      "kind": "live",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "live-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T09:57:33.293079+00:00",
+      "finishedAt": "2026-10-15T10:07:57.341429+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {},
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "b501f74c9855e782935df6c9011bc1a03cfbf6fdf0fbbaaed38d80bae1d28a15",
+          "rawSha256": "11c44820320def89a16b37d2f8693a7d6fbcf982064b5bfdcb81e13826de82a1",
+          "captureSha256": "843038b6d4b26ec784b25c5651584e4adbcec8758a57045c95f993501d0f113e",
+          "rolloutSha256": "166c44dccbb74d3c76698359357015adf9ffb9b4c42fc5eb6d67dfba213b3c2b",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 47,
+          "rolloutToolCount": 41,
+          "skillReadProofItems": [
+            "item_1"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取招生 Skill 并适用于用户明确非计算机专业",
+          "verdict": "pass",
+          "evidence": "读取招生Skill，查询与回答围绕明确指定的教育专业，不套408。"
+        },
+        {
+          "number": 2,
+          "criterion": "真实访问官方来源并核验教育专业具体院系学位学习形式",
+          "verdict": "pass",
+          "evidence": "实读2027国优通知和学院修业年限公告，核验教育学院045117全日制教育硕士；限定推免适用范围。"
+        },
+        {
+          "number": 3,
+          "criterion": "不强套 408/计算机筛选，招生年度与历史范围清楚",
+          "verdict": "pass",
+          "evidence": "区分2027和2025/2026，2026的843不沿用为2027四科，截止日与查询日分开。"
+        },
+        {
+          "number": 4,
+          "criterion": "未公布数据不补造，官方线与录取分数不同列",
+          "verdict": "pass",
+          "evidence": "校线341/347、名单最低343/362、普通复试人数10/20及专项分开；2027普通统考目录、拟录取等未知不补造。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-08-synthetic-old-report",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "regression-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T10:01:03.749687+00:00",
+      "finishedAt": "2026-10-15T10:02:04.401441+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {
+        "synthetic-old-report.md": "65e281f87d0c43877c802fd5e2744b3e305da58e5aeae2cbe2589dd093fc65ca"
+      },
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "eddb9396e8e5afe815004bc270e0c4c3ea339aedc98843cb88fbd79d747e9ddc",
+          "rawSha256": "4f0a6ed7b55607512392396c424383f2f0d6da0bed7160bf3df9415d0583aae1",
+          "captureSha256": "0a37abc6985bb983f59a68bf35a3ca2f70c76d291a48fb27585f1c6baf7aaa63",
+          "rolloutSha256": "355605d59212025a88171277e8169edd5a4f9c0be01fd7769b47c4c2803c4eda",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 7,
+          "rolloutToolCount": 3,
+          "skillReadProofItems": [
+            "item_1",
+            "call_6179258037c34185ab697d98ee2476cf"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取 Skill 与旧报告/更新材料，未修改任何源文件或保存报告",
+          "verdict": "pass",
+          "evidence": "读取Skill及旧报告/更新材料，源文件未改。"
+        },
+        {
+          "number": 2,
+          "criterion": "旧 2026 考试科目/代码不代替 2027，新更正来源和核验时间注明",
+          "verdict": "pass",
+          "evidence": "2027按更正采用085400/848，区分发布日、材料查询日和实际读取日。"
+        },
+        {
+          "number": 3,
+          "criterion": "更新未覆盖的学费和录取区间保持待核验，不把旧值视为确认",
+          "verdict": "pass",
+          "evidence": "旧学费不继承，2025区间不充当2026数据，当前未覆盖字段保留缺口。"
+        },
+        {
+          "number": 4,
+          "criterion": "只输出 Markdown，无强制记录 JSON 或伪造持久化",
+          "verdict": "pass",
+          "evidence": "聊天Markdown输出，无强制JSON、持久化或真实官方核验声明。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-09-synthetic-mock",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "regression-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T10:02:04.407147+00:00",
+      "finishedAt": "2026-10-15T10:04:55.365947+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {},
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "9f935a42b5d434db34296f1d3ae35a29e3400ddec26b0dff910da98362a03ab7",
+          "rawSha256": "1db719eca3bc843fef988c36d6441d2220d27a09f5b8b0cb866e3bcc33f8b5ab",
+          "captureSha256": "e42c9a42c3c5a20d89d6914073c3c54d358f5b5f025ada8dec17f6d3d0805add",
+          "rolloutSha256": "a1f46dccb2b878614e5f6de6eb4c25e393610e7a476086774b462c69eac703c2",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 5,
+          "rolloutToolCount": 3,
+          "skillReadProofItems": [
+            "item_1"
+          ]
+        },
+        {
+          "number": 2,
+          "inputSha256": "e33037c794f27608537e770fb1f38911fa801e5d37fe44f8665b08a408b1bb42",
+          "rawSha256": "8d7c1b2e366f394295ff7341668021b485b29059f4ab58c89acc8901337f66e6",
+          "captureSha256": "23689b748281c0dd9c2d27e9955f291bf252712a0b99cef4fdd2e569faf56216",
+          "rolloutSha256": "d579ff44450651bf94e182fa5044a9be4d08189c10cddbe2d6758d931f40adbc",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 0,
+          "rolloutToolCount": 0,
+          "skillReadProofItems": []
+        },
+        {
+          "number": 3,
+          "inputSha256": "29caf5ba8b7566eae81b0b6c60bedc8a2d884a4427619c0bd2adedd431e9a7ac",
+          "rawSha256": "f32894ec3acc41b5d7b01d956569879beaf702374d5e34e1757d8cfe777684dc",
+          "captureSha256": "952f86e4d162c13a9c8d0c2b0689586d426e608b4b6958bef50747ff4c6beb8b",
+          "rolloutSha256": "856048bf5158c1e92e3b16c45fbacb83a16270eea173aeebd0101d34b17c6564",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 1,
+          "rolloutToolCount": 1,
+          "skillReadProofItems": [
+            "item_1"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取模考 Skill，开卷冻结所有字段且题面均完整、恰有一个正确选项",
+          "verdict": "pass",
+          "evidence": "冻结ID、版本、四道完整单选及评分规则，独立求解均有唯一正确项。"
+        },
+        {
+          "number": 2,
+          "criterion": "前两轮所有用户可见输出/工具输入/元数据不泄露答案或提示，部分作答不收卷",
+          "verdict": "pass",
+          "evidence": "前两轮可见正文、工具输入和元数据均不泄题，部分作答不收卷。"
+        },
+        {
+          "number": 3,
+          "criterion": "至少两道 SJF 用精确数据正确求解，不把一般规律替代具体算例",
+          "verdict": "pass",
+          "evidence": "两道SJF独立复算为3.5ms与P4完成9ms，第三轮求解相符。"
+        },
+        {
+          "number": 4,
+          "criterion": "交卷映射不变，逐题依据/分数/合计一致，缺陷题作废并重算有效总分，用时标用户回报",
+          "verdict": "pass",
+          "evidence": "正确项C/A/B/D，全A得0/5/0/0，合计5/20，无作废题，12分钟标用户回报。"
+        }
+      ]
+    },
+    {
+      "caseId": "v260-10-synthetic-options",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6-acceptance",
+      "catalogSha256": "e57b8725529a0b2313ed2aee8189345291e4b48d660518f34cf904d6054e8364",
+      "artifactGroup": "regression-563e205",
+      "queryDate": "2026-10-08",
+      "startedAt": "2026-10-15T10:04:55.372038+00:00",
+      "finishedAt": "2026-10-15T10:06:21.111053+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {},
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "dfe25949bb5eb27150774ebce54d6728c731a214848fd6974002ed49181dcbb2",
+          "rawSha256": "67e2e4e34e469f6b0fa2050bdb01a04faf945e735593dd95fda46f7ec35aaf9a",
+          "captureSha256": "258b37068aa2f42f93e9d475c0af4a2c83726bb0a4ca89932fbe7a294cb8475e",
+          "rolloutSha256": "f323a996a5b145867336211134e58d430987ab5cd38ac5bdab4435313b41fdaf",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 6,
+          "rolloutToolCount": 3,
+          "skillReadProofItems": [
+            "item_1",
+            "call_454d50b2e5554bb585a98487871a0d21"
+          ]
+        },
+        {
+          "number": 2,
+          "inputSha256": "cc423354bcea3e586cc7d3154fe35bb74607212c17c5dbb5fb6243f9f2daaa94",
+          "rawSha256": "0ba7de10a2def39409ae1834cabe60e3b39ec0528e052f3128c633e8ed4aaaac",
+          "captureSha256": "75e5cf64f6ef22513064214c3804dd7c68c09807200b8f1f200d4c09a1270aea",
+          "rolloutSha256": "32fadce5d855747354b924795b8c5c39305e667fd1e34a065d2ddb7b54a3f57e",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 0,
+          "rolloutToolCount": 0,
+          "skillReadProofItems": []
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取主责 408 教学 Skill 与必需契约，题源标用户材料而不猜年份",
+          "verdict": "pass",
+          "evidence": "读取教学Skill与契约，题源标用户材料，年份未知。"
+        },
+        {
+          "number": 2,
+          "criterion": "第一轮独立模拟 FIFO 得 4 次且结论 B，完整分析四项",
+          "verdict": "pass",
+          "evidence": "FIFO缺页/缺页/缺页/命中/缺页，共4次，选B，模拟与独立复核一致。"
+        },
+        {
+          "number": 3,
+          "criterion": "第二轮 D 不可见明确保留缺口，分析可见选项不补造 D",
+          "verdict": "pass",
+          "evidence": "第二轮D不可见不补造，也不声称完整选项唯一性已核验。"
+        },
+        {
+          "number": 4,
+          "criterion": "详细模式不简化为只说正确项，题面保真和来源核验状态明确",
+          "verdict": "pass",
+          "evidence": "第一轮完整分析ABCD，第二轮完整分析可见ABC并标D缺口，均无写入。"
+        }
+      ]
+    },
+    {
+      "caseId": "v261-01-checkpoint-update",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6.1-acceptance",
+      "catalogSha256": "0e68a2f0463dd364f8289eb9c5ea7cc798d20a796acaf9d6f7b375868d2fb76f",
+      "artifactGroup": "checkpoint-563e205",
+      "queryDate": "2026-10-15",
+      "startedAt": "2026-10-15T03:32:39.765447+00:00",
+      "finishedAt": "2026-10-15T03:33:39.490063+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {
+        "synthetic-checkpoints.json": "6d9b8bdb6ca7bf0560f056892b582b38ef253e9e4011860cdee1a051d28b9201"
+      },
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "90a16e5142909c80e6ac65d8a2cc1d4cae09cf32a412f7f425505bfaece45516",
+          "rawSha256": "b4ca600a1ebfbd0b5eb47aa007e1ff6f10662d9de84a7f8ab1c70bed0a5937c5",
+          "captureSha256": "fa8142bf9874d33aac805640c166ea732339a9d264aaad4a87105a7566df008b",
+          "rolloutSha256": "f354b84f5f58aa3b7e0bc01c9543ffaa6adeffb5eafd66923e2ec3d833149a56",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 8,
+          "rolloutToolCount": 4,
+          "skillReadProofItems": [
+            "item_1",
+            "call_935c20b02b7f47a3bb702a4eff71560a"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取隔离安装的执行 Skill、必需契约和实际 fixture，不借用源码仓库脚本",
+          "verdict": "pass",
+          "evidence": "读取隔离执行Skill、契约、fixture和隔离安装脚本。"
+        },
+        {
+          "number": 2,
+          "criterion": "真实调用更新、合并和读取实现；新修订号为4、ID不变，合并输入交换顺序仍定位Q3",
+          "verdict": "pass",
+          "evidence": "实际调用update_checkpoint、merge_documents、read_checkpoint，修订4、ID稳定、正倒序均Q3。"
+        },
+        {
+          "number": 3,
+          "criterion": "重复相同更新仍为修订4，完成Q1/Q2、剩余Q3，hint/hidden/层级1及材料版本保留",
+          "verdict": "pass",
+          "evidence": "重复更新仍修订4，完成Q1/Q2、剩Q3，hint/hidden/1及synthetic-v1保留。"
+        },
+        {
+          "number": 4,
+          "criterion": "不修改输入或写知识库，不编造题面答案，不将尚未作答Q3标为完成",
+          "verdict": "pass",
+          "evidence": "inputUnchanged为true，未写知识库或编造题面，Q3保持未作答。"
+        }
+      ]
+    },
+    {
+      "caseId": "v261-02-checkpoint-conflict",
+      "kind": "synthetic",
+      "acceptanceSuite": "eval/v2.6.1-acceptance",
+      "catalogSha256": "0e68a2f0463dd364f8289eb9c5ea7cc798d20a796acaf9d6f7b375868d2fb76f",
+      "artifactGroup": "checkpoint-563e205",
+      "queryDate": "2026-10-15",
+      "startedAt": "2026-10-15T03:34:26.908899+00:00",
+      "finishedAt": "2026-10-15T03:35:18.145401+00:00",
+      "captureStatus": "captured-ungraded",
+      "inputArtifacts": {
+        "synthetic-checkpoints.json": "6d9b8bdb6ca7bf0560f056892b582b38ef253e9e4011860cdee1a051d28b9201"
+      },
+      "workspaceChanges": {
+        "added": [],
+        "removed": [],
+        "modified": []
+      },
+      "repositoryTreeHashBefore": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "repositoryTreeHashAfter": "7b3c553a804d1f2acb61228d1ca758a91ac47a2daec6a54e3a841da3455c71ec",
+      "installedTreeHashBefore": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "installedTreeHashAfter": "cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed",
+      "turns": [
+        {
+          "number": 1,
+          "inputSha256": "3f6de82931a8c15778ec82b4e148e2a7d17fbfeaf36f8d1fd727f6788ea0abe5",
+          "rawSha256": "d75ab41f19e138fc809018cbad6cf8be91822400438ad24d504134e5fda6fbbc",
+          "captureSha256": "2b7db988dbf94f191153ce55a17282197c6d322d82d81ad145c303f6d5038654",
+          "rolloutSha256": "e2a88ec5ccc501c2875d5be55dcf1b2b7f7d2a8c109f136fea3763afc3dd9106",
+          "complete": true,
+          "exitCode": 0,
+          "toolCount": 8,
+          "rolloutToolCount": 4,
+          "skillReadProofItems": [
+            "item_1"
+          ]
+        }
+      ],
+      "checkpoints": [
+        {
+          "number": 1,
+          "criterion": "成功读取执行Skill、契约与两份实际记录，真实执行隔离安装的合并实现",
+          "verdict": "pass",
+          "evidence": "读取执行Skill、契约与实际记录，并真实执行隔离合并脚本。"
+        },
+        {
+          "number": 2,
+          "criterion": "识别相同修订号3，即使otherCopy日期较晚也不能确认它更新；不将kept-first声称为最新",
+          "verdict": "pass",
+          "evidence": "相同修订3不按日期判最新，kept-first不称最新状态。"
+        },
+        {
+          "number": 3,
+          "criterion": "实际合并输出保留当前位置和完整题号列表双方冲突，回答请求区分Q2/Q3的最小确认",
+          "verdict": "pass",
+          "evidence": "position/currentQuestion/completedQuestions/remainingQuestions四项冲突保留双方完整值；请求Q2/Q3最小确认。"
+        },
+        {
+          "number": 4,
+          "criterion": "不直接继续未确认的位置，不泄露或编造答案，输入文件与安装树无改动且无持久化",
+          "verdict": "pass",
+          "evidence": "确认前不推进，不泄露或编造答案，输入、工作区和安装树均未改。"
+        }
+      ]
+    }
+  ]
+}

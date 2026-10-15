@@ -54,7 +54,10 @@ EXPECTED_RUNTIME_SCRIPTS = {
     "study_simulator.py",
 }
 
-ALLOWED_PLUGIN_ROOTS = {".codex-plugin", "skills", "references", "assets", "scripts"}
+ALLOWED_PLUGIN_ROOTS = {".codex-plugin", ".zcode-plugin", ".codebuddy-plugin", "skills", "references", "assets", "scripts"}
+CODEX_MANIFEST_RELATIVE = ".codex-plugin/plugin.json"
+ZCODE_MANIFEST_RELATIVE = ".zcode-plugin/plugin.json"
+CODEBUDDY_MANIFEST_RELATIVE = ".codebuddy-plugin/plugin.json"
 SEMVER_PATTERN = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$"
 PLACEHOLDER = "TO" + "DO"
 
@@ -87,7 +90,9 @@ def read_utf8_text(path: Path, *, require_lf: bool = True) -> str:
 
 def expected_release_files() -> frozenset[str]:
     names = {
-        ".codex-plugin/plugin.json",
+        CODEX_MANIFEST_RELATIVE,
+        ZCODE_MANIFEST_RELATIVE,
+        CODEBUDDY_MANIFEST_RELATIVE,
         "assets/kaoyan-408.svg",
         *(f"references/{name}" for name in EXPECTED_REFERENCES),
         *(f"scripts/{name}" for name in EXPECTED_RUNTIME_SCRIPTS),

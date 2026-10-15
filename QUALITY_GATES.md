@@ -5,7 +5,9 @@
 
 ## 自动阻塞项
 
-- 插件 manifest、marketplace、14 个 Skill frontmatter 与 14 个 `agents/openai.yaml` 的真实 YAML/JSON 解析。
+- 插件双清单（Codex `.codex-plugin/plugin.json` 与 ZCode `.zcode-plugin/plugin.json`）、Codex marketplace、ZCode marketplace（`.claude-plugin/marketplace.json`）、14 个 Skill frontmatter 与 14 个 `agents/openai.yaml` 的真实 YAML/JSON 解析；ZCode 清单须与 Codex 清单逐字段一致，ZCode 市场条目版本与分类须合法且与清单版本一致。
+- Cursor 根目录导入入口：marketplace source 指向仓库根、插件版本与 Codex 一致、Skill 与 logo 路径存在，拒绝 commands、agents、MCP、hooks 等非 Skill 组件。
+- WorkBuddy 适配面：插件内 `.codebuddy-plugin/plugin.json` 与仓库根 `.codebuddy-plugin/marketplace.json` 的存在性、字段与 Codex 清单的一致性、`skills` 相对路径、版本/分类/作者同步，以及该清单在发布允许列表内的精确位置。
 - 完整路径发布允许列表、UTF-8/LF、符号链接、路径穿越、重复 ZIP 成员和脏插件树检查。
 - 便携学习记录 Schema 1.2/1.1 输出、1.0/1.1 兼容输入、正确率数值关系、掌握证据语义（独立/迁移证据之外不构成掌握）与 SessionCheckpoint 形状验证。
 - 路由场景的唯一 ID、主责 Skill、最近邻冲突、每 Skill 至少一例的全覆盖校验（不再固定场景总数，避免脆弱断言）。
@@ -34,6 +36,10 @@
 使用固定材料验证统计口径与降级规则，使用实时页面验证实际检索能力，分别报告结果。固定材料不能证明访问过真实网页，静态规则不能代替模型回答。关键抽查失败时须修复并重测受影响场景，未运行、工具失败、无输出或未完成判分均不得写为通过；本轮抽查是 v2.6.0 行为验收要求，当前发布版本尚未完成该验收，不沿用旧版的通过率。
 
 一般体验抽查仍可按需用于发现复合路由、简洁输出和知识库降级问题，但不得替代上述定向验收或生成确定性的模型质量保证。
+
+## 宿主兼容性报告（不阻塞）
+
+`python scripts/simulate_workbuddy_host.py` 静态检查 WorkBuddy 声明的加载链（市场描述 → 插件清单 → Skill 树及 Markdown 相对引用），不启动客户端、不执行随包脚本，也不模拟裁剪安装，输出带文件与证据的宿主兼容性条目：插件根目录标记、用户配置命名空间、`agents/openai.yaml`、frontmatter 字段白名单、Skill 目录外的相对链接。该脚本只作报告，默认退出码 `0`；`--fail-on high` 可把它变成门禁。条目描述的是宿主耦合现状，不是已修复或已验收结论。
 
 ## 发布含义
 
