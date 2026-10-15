@@ -1,12 +1,12 @@
 # 408考研插件
 
-`kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex、ChatGPT 与 ZCode 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，以及院校招生调研、历年比较与网友评价整理，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
+`kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，并提供 Cursor、ZCode、WorkBuddy 安装适配，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，以及院校招生调研、历年比较与网友评价整理，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
 当前版本：`2.6.1`（开发中）；当前稳定版本：`2.6.0`。
 
 v2.6.1 仍在开发中，Release 标签尚未创建；发布前继续使用 v2.6.0。发布后的固定版本命令将使用 `--ref v2.6.1` 与 `--branch v2.6.1`。
 
-本地候选的工程检查、实际模型样本和未验证项目见 [v2.6.1 验证记录](eval/v2.6.1-acceptance/results.md)。
+本次 Cursor、ZCode、WorkBuddy 适配集成的工程检查与验收边界见 [宿主集成记录](eval/v2.6.1-acceptance/host-integration-results.md)。适配前 45 文件运行时的 48 点模型样本见 [原候选验证记录](eval/v2.6.1-acceptance/results.md)，不外推为三个新宿主的真实客户端验收。
 
 v2.6.0 于 2026-10-13 正式发布，基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。版本标签为 [`v2.6.0`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)，发布合并提交为 `6b67845`。发布资产、工程门禁和行为验收边界见下方记录。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 
@@ -177,8 +177,8 @@ python scripts/health_check.py --json
 
 - **ChatGPT Desktop / Codex Desktop**：当前稳定版 v2.6.0 在新任务中加载 14 个 Skills；v2.5.1 历史版本包含 13 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
 - **新 CLI / IDE**：安装完成后同样在新会话中生效。
-- **ZCode**：仓库提供 ZCode marketplace 描述（`.claude-plugin/marketplace.json`）与 ZCode 原生清单（`plugins/kaoyan-408/.zcode-plugin/plugin.json`），在插件市场添加 `yq6666-66/408-codex-plugin` 后安装并启用，即可加载同样 14 个 Skills；Skill 行为与 Codex 宿主一致。
-- **WorkBuddy**：仓库同时提供 WorkBuddy 原生清单（`plugins/kaoyan-408/.codebuddy-plugin/plugin.json`）与根目录插件市场描述（`.codebuddy-plugin/marketplace.json`），WorkBuddy 从 `source` 指向的插件目录读取 14 个 Skills。该适配以独立 PR 提交审查，见“安装与回退 → WorkBuddy”。
+- **ZCode**：仓库提供 ZCode marketplace 描述（`.claude-plugin/marketplace.json`）与 ZCode 原生清单（`plugins/kaoyan-408/.zcode-plugin/plugin.json`），两份清单指向现有 14 个 Skills；目前完成离线清单与路径校验，真实 ZCode 客户端安装及行为验收待完成。
+- **WorkBuddy**：仓库同时提供 WorkBuddy 原生清单（`plugins/kaoyan-408/.codebuddy-plugin/plugin.json`）与根目录插件市场描述（`.codebuddy-plugin/marketplace.json`），WorkBuddy 从 `source` 指向的插件目录读取 14 个 Skills。该适配已与 Cursor、ZCode 入口一并集成；真实 WorkBuddy 客户端安装及行为验收待完成，见“安装与回退 → WorkBuddy”。
 - 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
 
 ### 记忆控制（权限语义严格区分）
@@ -246,9 +246,9 @@ codex plugin add kaoyan-408@kaoyan-408
 git clone --branch v2.6.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
-ZCode 用户在**插件市场 → 添加 → 添加插件市场**中填写 `yq6666-66/408-codex-plugin`（或本仓库的 marketplace 根目录），安装 `kaoyan-408` 后到**设置 → 插件**中启用；安装与启用都不需要重启已有会话，新会话生效。ZCode 的 GitHub marketplace 跟随仓库默认分支；需要固定版本时，先对目标标签执行 `git clone --branch v2.6.1 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git`，再把克隆目录作为本地 marketplace 添加。ZCode 侧使用界面安装，不经过 `scripts/install_local.py`（该脚本面向 Codex CLI）。
+ZCode 用户可在**插件市场 → 添加 → 添加插件市场**中填写 `yq6666-66/408-codex-plugin`，或添加本仓库的本地目录，再安装并启用 `kaoyan-408`。GitHub marketplace 跟随默认分支。当前 v2.6.1 尚未创建发布标签，固定候选时应检出集成提交，再将仓库根目录作为本地 marketplace 添加；正式发布后才使用上文预留的 v2.6.1 标签命令。ZCode 侧使用界面安装，不经过面向 Codex CLI 的 `scripts/install_local.py`。这些步骤依据适配清单整理，尚未做真实客户端安装验收。
 
-Cursor 使用同一套 Skill。在 Customize 里选择 From GitHub Repository，导入 `yq6666-66/408-codex-plugin`。仓库根的 `.cursor-plugin/marketplace.json` 把 `kaoyan-408` 指到现有 `plugins/kaoyan-408/skills`，不复制 Skill，也不改变 Codex 发布包。
+Cursor 使用同一套 Skill。在 Customize 里选择 From GitHub Repository，导入 `yq6666-66/408-codex-plugin`。仓库根的 `.cursor-plugin/marketplace.json` 把 `kaoyan-408` 指到现有 `plugins/kaoyan-408/skills`，不复制 Skill。Cursor 的入口文件保留在仓库根，ZCode 与 WorkBuddy 的原生清单随插件包分发。Cursor 客户端实际导入仍待验证。
 
 跨平台安装器（统一参数名 `--validate-only`）：
 
@@ -284,16 +284,16 @@ python scripts/install_local.py verify-tree --dir <隔离安装插件目录> --v
 市场内插件：kaoyan-408
 ```
 
-安装后在新会话中生效，Skills、契约、随包脚本与 Obsidian / Notion 配置流程与 Codex 侧完全一致。仓库自带两条可离线复现的校验入口：
+WorkBuddy 复用相同的 Skills、契约和随包脚本；工具可用性、权限与实际执行效果仍取决于宿主。必须按完整插件目录安装，不要逐个复制 Skill，否则共享引用会缺失。真实客户端安装与三种教学模式尚未验收；Obsidian 配置仍使用现有 `~/.codex/kaoyan-408/` 命名空间。仓库自带两条离线检查入口：
 
 ```powershell
 python scripts/validate_repository.py            # 含 WorkBuddy 清单与市场描述的契约校验
-python scripts/simulate_workbuddy_host.py        # 模拟 WorkBuddy 加载链，输出宿主兼容性缺陷
+python scripts/simulate_workbuddy_host.py        # 静态检查声明的加载路径，输出宿主兼容性条目
 ```
 
-`simulate_workbuddy_host.py` 只报告、不阻塞：默认退出码为 `0`，加 `--fail-on high` 可让高危及以上缺陷返回 `1`。它模拟市场描述 → 插件清单 → Skill 树 → 共享契约与脚本的完整解析，并把 Codex 专属耦合（根目录标记、用户配置命名空间、`agents/openai.yaml`、frontmatter 字段白名单）列为带文件与证据的条目。
+`simulate_workbuddy_host.py` 只报告、不阻塞：默认退出码为 `0`，加 `--fail-on high` 可让高危及以上缺陷返回 `1`。它静态检查市场描述 → 插件清单 → Skill 树及 Markdown 相对引用，不启动 WorkBuddy、不执行随包脚本，也不模拟裁剪安装；并把 Codex 专属耦合（根目录标记、用户配置命名空间、`agents/openai.yaml`、frontmatter 字段白名单）列为带文件与证据的条目。
 
-**已知边界**：`plugins/kaoyan-408/.codebuddy-plugin/plugin.json` 位于发布允许列表内，因此新增该文件会改变发布包的精确文件清单；已发布的 `kaoyan-408-2.6.0.zip`（45 个文件）与新树不再一致，下一次发布必须以新树重新构建并更新 README 的哈希。按目录安装或用 `verify-release` 校验旧 ZIP 时请先确认版本。
+**版本边界**：当前 v2.6.1 候选包含 Codex、ZCode 与 WorkBuddy 原生清单，共 47 个发布文件；已发布的 v2.6.0 ZIP 保持原有 45 文件及哈希。上文消费者校验示例仍针对稳定版；候选构建与哈希见宿主集成记录，不能用稳定版 ZIP 代替候选安装树验证。
 
 **回退到 v2.5.1**：
 

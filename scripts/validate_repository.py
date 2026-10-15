@@ -1144,7 +1144,7 @@ def check_cursor_marketplace(repo: Path, manifest: dict[str, Any]) -> None:
     require(cursor_plugin.get("name") == "kaoyan-408", "Cursor plugin name is invalid")
     require(cursor_plugin.get("version") == version, "Cursor plugin version must match plugin.json.version")
     require(cursor_plugin.get("category") == "Education", "Cursor plugin category must be Education")
-    for key in ("mcpServers", "hooks", "rules"):
+    for key in ("mcpServers", "hooks", "rules", "commands", "agents", "apps", "userConfig"):
         require(key not in cursor_plugin, f"Cursor manifest must not declare {key}")
     skills = cursor_plugin.get("skills")
     require(skills == "plugins/kaoyan-408/skills", "Cursor skills path is invalid")
