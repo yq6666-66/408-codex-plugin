@@ -1,6 +1,6 @@
 # 408考研插件
 
-`kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，以及院校招生调研、历年比较与网友评价整理，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
+`kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex、ChatGPT 与 ZCode 中，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，以及院校招生调研、历年比较与网友评价整理，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
 当前版本：`2.6.1`（开发中）；当前稳定版本：`2.6.0`。
 
@@ -10,7 +10,7 @@ v2.6.1 仍在开发中，Release 标签尚未创建；发布前继续使用 v2.6
 
 v2.6.0 于 2026-10-13 正式发布，基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。版本标签为 [`v2.6.0`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)，发布合并提交为 `6b67845`。发布资产、工程门禁和行为验收边界见下方记录。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 
-项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
+项目没有 App、MCP、后台服务、云端题库、账号或 API Key。网页搜索、图片生成、各学习层和本地文件能力由当前 ChatGPT/Codex/ZCode 宿主决定；未连接或权限不足时插件明确降级，不伪造搜索结果或学习记录。
 
 ## 功能作用与快速上手
 
@@ -176,7 +176,8 @@ python scripts/health_check.py --json
 ### 在哪里使用
 
 - **ChatGPT Desktop / Codex Desktop**：当前稳定版 v2.6.0 在新任务中加载 14 个 Skills；v2.5.1 历史版本包含 13 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
-- **新版 CLI / IDE**：安装完成后同样在新会话中生效。
+- **新 CLI / IDE**：安装完成后同样在新会话中生效。
+- **ZCode**：仓库提供 ZCode marketplace 描述（`.claude-plugin/marketplace.json`）与 ZCode 原生清单（`plugins/kaoyan-408/.zcode-plugin/plugin.json`），在插件市场添加 `yq6666-66/408-codex-plugin` 后安装并启用，即可加载同样 14 个 Skills；Skill 行为与 Codex 宿主一致。
 - 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
 
 ### 记忆控制（权限语义严格区分）
@@ -243,6 +244,8 @@ codex plugin add kaoyan-408@kaoyan-408
 ```powershell
 git clone --branch v2.6.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
+
+ZCode 用户在**插件市场 → 添加 → 添加插件市场**中填写 `yq6666-66/408-codex-plugin`（或本仓库的 marketplace 根目录），安装 `kaoyan-408` 后到**设置 → 插件**中启用；安装与启用都不需要重启已有会话，新会话生效。ZCode 的 GitHub marketplace 跟随仓库默认分支；需要固定版本时，先对目标标签执行 `git clone --branch v2.6.1 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git`，再把克隆目录作为本地 marketplace 添加。ZCode 侧使用界面安装，不经过 `scripts/install_local.py`（该脚本面向 Codex CLI）。
 
 跨平台安装器（统一参数名 `--validate-only`）：
 

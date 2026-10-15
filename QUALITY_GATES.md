@@ -5,7 +5,7 @@
 
 ## 自动阻塞项
 
-- 插件 manifest、marketplace、14 个 Skill frontmatter 与 14 个 `agents/openai.yaml` 的真实 YAML/JSON 解析。
+- 插件双清单（Codex `.codex-plugin/plugin.json` 与 ZCode `.zcode-plugin/plugin.json`）、Codex marketplace、ZCode marketplace（`.claude-plugin/marketplace.json`）、14 个 Skill frontmatter 与 14 个 `agents/openai.yaml` 的真实 YAML/JSON 解析；ZCode 清单须与 Codex 清单逐字段一致，ZCode 市场条目版本与分类须合法且与清单版本一致。
 - 完整路径发布允许列表、UTF-8/LF、符号链接、路径穿越、重复 ZIP 成员和脏插件树检查。
 - 便携学习记录 Schema 1.2/1.1 输出、1.0/1.1 兼容输入、正确率数值关系、掌握证据语义（独立/迁移证据之外不构成掌握）与 SessionCheckpoint 形状验证。
 - 路由场景的唯一 ID、主责 Skill、最近邻冲突、每 Skill 至少一例的全覆盖校验（不再固定场景总数，避免脆弱断言）。

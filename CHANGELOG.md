@@ -4,6 +4,10 @@
 
 ## [2.6.1] - Unreleased
 
+### 新增
+
+- 增加 ZCode 宿主适配：仓库根新增 ZCode marketplace 描述 `.claude-plugin/marketplace.json`，插件内新增 ZCode 原生清单 `.zcode-plugin/plugin.json`，并同步发布允许列表、仓库校验、ZCode 同步测试与验证器证据；14 个 Skill 的正文、契约与运行脚本行为不变。
+
 ### 调整
 
 - 新检查点使用递增修订号，允许在日期相同的情况下按修订顺序合并；无修订号的历史记录仍按日期合并，相同修订号的恢复位置冲突会明确保留并要求核对。
