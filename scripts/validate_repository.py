@@ -27,6 +27,7 @@ from release_payload import (
     PLUGIN_RELATIVE_PATH,
     SEMVER_PATTERN,
     ValidationError,
+    ZCODE_MANIFEST_RELATIVE,
     check_accuracy_semantics,
     check_mastery_evidence_semantics,
     expected_release_files,
@@ -37,6 +38,27 @@ from release_payload import (
 SEMVER = re.compile(SEMVER_PATTERN)
 FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw", "index", "user"}
 HISTORY_FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw"}
+ZCODE_MANIFEST_PART = PurePosixPath(ZCODE_MANIFEST_RELATIVE)
+ZCODE_MARKETPLACE_PART = PurePosixPath(".claude-plugin/marketplace.json")
+ZCODE_MARKETPLACE_NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+ZCODE_MARKETPLACE_CATEGORIES = {
+    "developer-tools",
+    "productivity",
+    "utilities",
+    "legal",
+    "template",
+    "finance",
+    "other",
+}
+ZCODE_MIRRORED_MANIFEST_FIELDS = (
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "keywords",
+)
 
 DETAILED_TUTOR_SKILLS = {
     "kaoyan-408-tutor",
@@ -244,6 +266,68 @@ def check_manifest(plugin: Path) -> dict[str, Any]:
         require(isinstance(relative, str) and relative.startswith("./"), f"{key} must be a relative path")
         require((plugin / relative[2:]).is_file(), f"{key} target does not exist")
     return manifest
+
+
+def check_zcode_manifest(plugin: Path, codex_manifest: dict[str, Any]) -> None:
+    """Validate the ZCode-native manifest mirrors the Codex manifest exactly."""
+    manifest = load_json(plugin / Path(*ZCODE_MANIFEST_PART.parts))
+    require(isinstance(manifest, dict), "ZCode manifest must be an object")
+    require(
+        manifest.get("name") == plugin.name == codex_manifest.get("name"),
+        "ZCode manifest name must match the plugin directory and the Codex manifest",
+    )
+    for field in ZCODE_MIRRORED_MANIFEST_FIELDS:
+        require(
+            manifest.get(field) == codex_manifest.get(field),
+            f"ZCode manifest field must stay identical to the Codex manifest: {field}",
+        )
+    require(manifest.get("skills") == "./skills/", "ZCode manifest skills path must be ./skills/")
+    display_name = manifest.get("displayName")
+    require(
+        isinstance(display_name, str) and display_name.strip(),
+        "ZCode manifest displayName must be a non-empty string",
+    )
+    for key in ("apps", "mcpServers", "hooks", "commands", "agents", "userConfig", "interface"):
+        require(key not in manifest, f"Skills-only ZCode manifest must not contain {key}")
+
+
+def check_zcode_marketplace(repo: Path) -> None:
+    """Validate the ZCode marketplace descriptor published at the repository root."""
+    marketplace = load_json(repo / Path(*ZCODE_MARKETPLACE_PART.parts))
+    require(isinstance(marketplace, dict), "ZCode marketplace must be an object")
+    name = marketplace.get("name")
+    require(
+        isinstance(name, str) and ZCODE_MARKETPLACE_NAME.fullmatch(name) is not None,
+        "ZCode marketplace name is invalid",
+    )
+    owner = marketplace.get("owner")
+    require(
+        isinstance(owner, dict) and isinstance(owner.get("name"), str) and owner["name"].strip(),
+        "ZCode marketplace owner.name is required",
+    )
+    plugins = marketplace.get("plugins")
+    require(isinstance(plugins, list) and len(plugins) == 1, "ZCode marketplace must contain exactly one plugin")
+    entry = plugins[0]
+    require(isinstance(entry, dict), "ZCode marketplace entry must be an object")
+    require(entry.get("name") == "kaoyan-408", "ZCode marketplace plugin name is invalid")
+    require(
+        entry.get("source") == "./plugins/kaoyan-408",
+        "ZCode marketplace source must be the relative plugin path",
+    )
+    zcode_manifest = load_json(repo / Path(*PLUGIN_RELATIVE_PATH.parts) / Path(*ZCODE_MANIFEST_PART.parts))
+    require(
+        entry.get("version") == zcode_manifest.get("version"),
+        "ZCode marketplace version must match the plugin manifest",
+    )
+    display_name = entry.get("displayName")
+    require(
+        isinstance(display_name, str) and display_name.strip(),
+        "ZCode marketplace displayName must be a non-empty string",
+    )
+    require(
+        entry.get("category") in ZCODE_MARKETPLACE_CATEGORIES,
+        f"ZCode marketplace category is invalid: {entry.get('category')}",
+    )
 
 
 def check_skill(skill_dir: Path) -> None:
@@ -846,6 +930,7 @@ def check_repository_docs(repo: Path) -> None:
         "THIRD_PARTY_CONTENT.md",
         "QUALITY_GATES.md",
         ".agents/plugins/marketplace.json",
+        ".claude-plugin/marketplace.json",
         "tests/forward-cases.json",
         "tests/behavior-cases.json",
         "tests/system-validator-evidence.json",
@@ -897,6 +982,7 @@ def check_repository_docs(repo: Path) -> None:
     require(entry.get("source", {}).get("path") == "./plugins/kaoyan-408", "marketplace source.path is invalid")
     require(entry.get("policy", {}).get("installation") == "AVAILABLE", "marketplace installation policy is invalid")
     require(entry.get("policy", {}).get("authentication") == "ON_INSTALL", "marketplace authentication policy is invalid")
+    check_zcode_marketplace(repo)
 
 
 def _run_git(repo: Path, arguments: list[str], *, input_bytes: bytes | None = None) -> subprocess.CompletedProcess[bytes]:
@@ -962,7 +1048,8 @@ def validate_repo(
     require(plugin.is_dir(), f"plugin directory does not exist: {plugin}")
 
     check_repository_docs(repo)
-    check_manifest(plugin)
+    manifest = check_manifest(plugin)
+    check_zcode_manifest(plugin, manifest)
     check_release_tree(plugin)
     check_obsidian_brain_contract(plugin)
     check_learning_layer_contract(plugin)
