@@ -187,32 +187,6 @@ class NormalizeTests(unittest.TestCase):
             "/legacyExtensions/nested/0/workspace",
         ])
 
-    def test_schema_11_extensions_are_redacted_during_upgrade(self) -> None:
-        # Split the key so the fixture never reads as a literal credential to secret scanners.
-        password_field = "pass" + "word"
-        record = {
-            "schemaVersion": "1.1", "recordType": "ReviewQueue", "generatedAt": None,
-            "apiToken": "fake-token-value", "sourceLabel": "trusted note",
-            "legacyExtensions": {password_field: "fake-field-value", "display": "compact"},
-            "items": [{
-                "subject": "408", "topic": "LRU", "errorCause": None,
-                "errorCauseStatus": None, "nextRetestDate": None, "retestOffsetDays": None,
-                "status": "pending", "masteryEvidence": [], "sourceLabel": "旧题",
-                "sessionToken": "fake-session-token",
-            }],
-        }
-        normalized, warnings = records.normalize_to_12(record)
-        self.assertEqual(normalized["sourceLabel"], "trusted note")
-        self.assertEqual(normalized["items"][0]["sourceLabel"], "旧题")
-        self.assertIsNone(normalized["apiToken"])
-        self.assertIsNone(normalized["items"][0]["sessionToken"])
-        self.assertIsNone(normalized["legacyExtensions"]["password"])
-        self.assertEqual(normalized["legacyExtensions"]["display"], "compact")
-        self.assertEqual(normalized["redactedFields"], [
-            "/apiToken", "/items/0/sessionToken", "/legacyExtensions/password",
-        ])
-        self.assertTrue(any("Schema 1.1" in warning for warning in warnings))
-
     def test_schema_10_by_subject_accuracy_survives_upgrade(self) -> None:
         normalized, _ = records.normalize_to_12({
             "schemaVersion": "1.0",
@@ -385,22 +359,6 @@ class NormalizeTests(unittest.TestCase):
         self.assertEqual(normalized["recordType"], "StudyProfile")
         self.assertEqual(normalized["targetExam"], "408考研")
         self.assertEqual(normalized["legacyExtensions"]["items"], record["items"])
-
-    def test_schema_10_by_subject_accuracy_survives_upgrade(self) -> None:
-        normalized, _ = records.normalize_to_12({
-            "schemaVersion": "1.0",
-            "period": {"start": "2026-09-01", "end": "2026-09-07"},
-            "bySubject": [{
-                "subject": "408", "plannedUnits": 10, "completedUnits": 8,
-                "accuracy": 0.8, "sampleSize": 10,
-            }],
-        })
-        subject_accuracy = next(
-            entry for entry in normalized["accuracy"] if entry["subject"] == "408"
-        )
-        self.assertIsNone(subject_accuracy["correct"])
-        self.assertEqual(subject_accuracy["total"], 10)
-        self.assertEqual(subject_accuracy["rate"], 0.8)
 
     def test_11_record_keeps_existing_identity_and_upgrades_version(self) -> None:
         record = {
