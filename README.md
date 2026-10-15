@@ -178,6 +178,7 @@ python scripts/health_check.py --json
 - **ChatGPT Desktop / Codex Desktop**：当前稳定版 v2.6.0 在新任务中加载 14 个 Skills；v2.5.1 历史版本包含 13 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
 - **新 CLI / IDE**：安装完成后同样在新会话中生效。
 - **ZCode**：仓库提供 ZCode marketplace 描述（`.claude-plugin/marketplace.json`）与 ZCode 原生清单（`plugins/kaoyan-408/.zcode-plugin/plugin.json`），在插件市场添加 `yq6666-66/408-codex-plugin` 后安装并启用，即可加载同样 14 个 Skills；Skill 行为与 Codex 宿主一致。
+- **WorkBuddy**：仓库同时提供 WorkBuddy 原生清单（`plugins/kaoyan-408/.codebuddy-plugin/plugin.json`）与根目录插件市场描述（`.codebuddy-plugin/marketplace.json`），WorkBuddy 从 `source` 指向的插件目录读取 14 个 Skills。该适配以独立 PR 提交审查，见“安装与回退 → WorkBuddy”。
 - 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
 
 ### 记忆控制（权限语义严格区分）
@@ -266,6 +267,33 @@ python scripts/install_local.py verify-tree --dir <隔离安装插件目录> --v
 ```
 
 安装器通过官方 CLI 的结构化 JSON 输出识别 Git marketplace / 本地 marketplace；同名但来源不同、缓存目录、文件被改、版本或哈希不一致都会被拒绝并说明原因。消费者安装验证不等于维护者完整发布门禁（官方插件/Skill 校验、Windows/Ubuntu 测试、可重复构建等仍然保留）。
+
+### WorkBuddy
+
+本仓库为 WorkBuddy 提供两处适配文件，插件本体与 14 个 Skills 与 Codex / ChatGPT 共用同一份 `plugins/kaoyan-408/` 目录：
+
+| 文件 | 作用 |
+| --- | --- |
+| `plugins/kaoyan-408/.codebuddy-plugin/plugin.json` | WorkBuddy 原生清单；`version`、`description`、`author`、`license`、`keywords` 等字段与 `.codex-plugin/plugin.json` 保持一致，`skills` 指向插件目录内的 `./skills` |
+| `.codebuddy-plugin/marketplace.json` | 仓库根插件市场描述；`source` 为 `./plugins/kaoyan-408`，`version`、`category`、`author` 与插件清单保持一致 |
+
+添加市场并安装（WorkBuddy 从上面的市场描述解析插件目录，再读取插件目录内的原生清单）：
+
+```text
+插件市场地址：https://github.com/yq6666-66/408-codex-plugin
+市场内插件：kaoyan-408
+```
+
+安装后在新会话中生效，Skills、契约、随包脚本与 Obsidian / Notion 配置流程与 Codex 侧完全一致。仓库自带两条可离线复现的校验入口：
+
+```powershell
+python scripts/validate_repository.py            # 含 WorkBuddy 清单与市场描述的契约校验
+python scripts/simulate_workbuddy_host.py        # 模拟 WorkBuddy 加载链，输出宿主兼容性缺陷
+```
+
+`simulate_workbuddy_host.py` 只报告、不阻塞：默认退出码为 `0`，加 `--fail-on high` 可让高危及以上缺陷返回 `1`。它模拟市场描述 → 插件清单 → Skill 树 → 共享契约与脚本的完整解析，并把 Codex 专属耦合（根目录标记、用户配置命名空间、`agents/openai.yaml`、frontmatter 字段白名单）列为带文件与证据的条目。
+
+**已知边界**：`plugins/kaoyan-408/.codebuddy-plugin/plugin.json` 位于发布允许列表内，因此新增该文件会改变发布包的精确文件清单；已发布的 `kaoyan-408-2.6.0.zip`（45 个文件）与新树不再一致，下一次发布必须以新树重新构建并更新 README 的哈希。按目录安装或用 `verify-release` 校验旧 ZIP 时请先确认版本。
 
 **回退到 v2.5.1**：
 
