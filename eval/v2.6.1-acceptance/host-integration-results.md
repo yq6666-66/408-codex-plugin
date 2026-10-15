@@ -1,37 +1,42 @@
 # v2.6.1 多宿主适配集成记录
 
-记录日期：2026-10-15。集成 PR [#30 Cursor](https://github.com/yq6666-66/408-codex-plugin/pull/30)、[#31 ZCode](https://github.com/yq6666-66/408-codex-plugin/pull/31)、[#32 WorkBuddy](https://github.com/yq6666-66/408-codex-plugin/pull/32)，包含 PR #31 携带的既有 v2.6.1 检查点修复。版本仍为开发候选 `2.6.1`，当前稳定版为 `2.6.0`；本次集成不创建发布标签或 Release。
+记录日期：2026-10-15。集成 [#30 Cursor](https://github.com/yq6666-66/408-codex-plugin/pull/30)、[#31 ZCode](https://github.com/yq6666-66/408-codex-plugin/pull/31)、[#32 WorkBuddy](https://github.com/yq6666-66/408-codex-plugin/pull/32)，包含 #31 携带的既有 v2.6.1 检查点修复。集成入口为 [PR #33](https://github.com/yq6666-66/408-codex-plugin/pull/33)。版本仍为开发候选 2.6.1，稳定版为 2.6.0；本次不创建发布标签或 Release。
 
-## 集成与修复
+## 集成与补充修复
 
-- Cursor 根目录 `.cursor-plugin/` 使用仓库根作为 source，直接引用既有 14 Skill 目录；ZCode 的 `.claude-plugin/marketplace.json` 与 WorkBuddy 的 `.codebuddy-plugin/marketplace.json` 指向同一插件目录。三份宿主适配版本均同步为 2.6.1。
-- 发布允许列表保留 Codex 清单，同时加入 `.zcode-plugin/plugin.json` 与 `.codebuddy-plugin/plugin.json`，共 47 个文件；没有复制或修改 Skill 正文、共享契约及随包运行脚本。
-- 合并保留三种宿主各自的清单与 marketplace 校验，解决 README、QUALITY_GATES、release_payload 和 validate_repository 的重叠修改。
-- Cursor 门禁原先会放过 commands/agents 等非 Skill 组件，现已拒绝，新增 5 项合法与变异测试；先复现错误放行，再修复通过。
-- WorkBuddy 诊断原先可能忽略失效的 source/skills 并错误通过，现沿声明路径解析，畸形或缺失配置、无效路径、越界符号链接、空 Skill 树均报告 blocker。新增 13 项测试，包含不执行随包代码及 JSON/文本门禁输出；先复现失败，再修复通过。
+- Cursor 的根目录 `.cursor-plugin/` 以仓库根为 source，直接引用现有 14 Skill 目录。ZCode 与 WorkBuddy 的市场描述指向同一插件目录；三份适配版本同步为 2.6.1。
+- 精确发布允许列表包含 Codex、ZCode、WorkBuddy 三份原生清单，共 47 文件；Cursor 根目录导入入口保留在仓库根。
+- 保留三种宿主各自的 manifest/marketplace 检查，合并 README、QUALITY_GATES、release_payload 与 validate_repository 的重叠修改。
+- Cursor Skills-only 门禁补拒 commands/agents 等非 Skill 组件，新增 5 项正例与变异测试，先复现错误放行再修复。
+- WorkBuddy 静态诊断沿声明 source/skills 解析，畸形或缺失清单、无效路径、越界链接、空 Skill 树均形成 blocker。新增 13 项测试，包含不执行随包代码及 JSON/文本门禁输出，先复现失败再修复。
+- 追加宿主能力边界：两份检索 Skill 明确只有 URL 抓取不代表具备搜索发现能力；已知正文不足以核验的当前事实保留缺口。共享路由明确守卫拒绝脚本时不绕过，区分人工推导、脚本核验与未保存。
+- 去除 records 测试中的两组完全相同的重复方法。所有唯一测试方法 AST 保持不变，records 实际可发现测试仍为 102；新增 3 项测试发现门禁，防止以后静默覆盖。SECURITY 文档更新版本、14 Skill、脚本架构及审计边界。
 
 ## 工程与安装证据
 
-`python scripts/check.py --verify-system-evidence` 在 Windows / Python 3.14 上通过：**340 项测试全部成功**（488.058 秒，无跳过）、仓库六项检查通过、官方验证器证据匹配。Windows 按既有规则跳过 Semgrep，由固定版本 Linux CI 承担该项。
+第一阶段提交 `5f2e4a9` 的 Windows/Python 3.14 `scripts/check.py --verify-system-evidence`：340 项测试全部成功（488.058 秒，无跳过）、仓库六项检查及官方证据核对通过。该提交的 [GitHub run](https://github.com/yq6666-66/408-codex-plugin/actions/runs/38763473489) 的 validate、windows、reproducible 均通过。
 
-本记录归档时 GitHub 集成检查尚待运行。`validate`、`windows`、`reproducible` 必须在集成 PR 最新 head 上通过后才合并；远端结果以该 PR 的实际检查记录为准，不把本地 Windows 结果写成 Ubuntu 或远端已通过。
+用户补充报告后追加了检索/守卫降级及重复方法修复，最终完整套件含 343 项测试；本地追加门禁 3/3、NormalizeTests 24/24 通过。归档时最终 head 的 CI 尚待运行，**最终 Windows、Ubuntu、Semgrep 与跨平台字节一致性以 PR #33 最新 head 的实际检查为准**，不沿用第一阶段结果冒称最终通过。
 
-官方插件验证器与 14/14 Skill 验证器已实际重跑，通过后的证据保存于 `tests/system-validator-evidence.json`，绑定插件树：
+最终插件与安装证据：
 
-`5003420e7aa1b6ad0f02e1a0fa21aa1591f3a64c61b7e6b665d5ca2ec76080d3`
+- 官方固定来源的插件验证器及 14/14 Skill 验证器已实际重跑，通过后的 `tests/system-validator-evidence.json` 绑定树 `17e514cb484449485eb846fc55d93220a9ec1a8f9d14ab62934a577b2b2dbcea`；来源见 [固定校验器说明](validator-provenance.md)。没有手改通过状态或树摘要。
+- `kaoyan-408-2.6.1.zip` 为 47 文件，SHA-256 `e70877b6dcdd1e86a6ede9ca5b552285bd8fab1f5d0631af106f8137aa2c2e8d`；构建及消费者 verify-release 通过。
+- 官方 Codex CLI 0.162.0-alpha.17.2 在独立、未复制登录凭据的配置目录完成本地 marketplace 添加、实际安装及列表查询；installed/enabled 为 true，版本 2.6.1，缓存 verify-tree 为上述 47 文件树，通过。
+- WorkBuddy 静态诊断发现 14 Skill、47 个相对链接，0 断链、0 加载错误，blocker 门禁退出 0。既有 high/high/medium/low/low 五项静态耦合条目保留，不是实际客户端故障或行为验证。
 
-校验器固定来源与依赖哈希沿用 [来源说明](validator-provenance.md)，没有手改通过状态或树摘要。
+## 模型与历史证据
 
-- 当前候选：`kaoyan-408-2.6.1.zip`，47 文件。
-- ZIP SHA-256：`a349f51ccd08dd14b07c014c1c02aad8f1e26b25b12fcf48623cb6ad4a47aa45`。
-- Windows 构建及消费者 `verify-release` 通过。
-- 官方 Codex CLI `0.162.0-alpha.17.2` 在独立、未复制登录凭据的配置目录完成本地 marketplace 添加、安装与列表查询；版本 2.6.1，installed/enabled 均为 true。实际缓存 `verify-tree` 为 47 文件、上述树哈希，通过。
-- WorkBuddy 离线静态诊断：14 Skill、47 个相对链接解析成功、0 断链、0 加载错误，`--fail-on blocker` 退出 0。保留原有 high/high/medium/low/low 五项静态宿主耦合条目，这些不是实际客户端故障或行为验证。
+追加降级规则后，在固定 Codex CLI / gpt-6.1-sol / high 上实际运行 3 类合成能力约束场景、3 轮、12 检查点，经主 Agent 与独立子 Agent 核对原始工具及最终回答为 **12 pass、0 partial、0 fail**：
 
-## 行为证据与边界
+| 场景 | 结果 | 核对 |
+| --- | --- | --- |
+| 只有 URL 抓取的官方核验 | 4 pass | 仅分析虚构用户材料，报名日期之外保持未知，明确无法搜索发现来源 |
+| 没有搜索发现的招生调研 | 4 pass | 不凑 3 校、不猜 URL，首页不能证明 408、专业或人数 |
+| 脚本被守卫拒绝 | 4 pass | 不执行、复制或包装脚本；FIFO 人工推导 4 次，明确不能声称工具已核验 |
 
-与适配前归档 ZIP 逐文件比较：原有 **45 个文件全部逐字节相同**，仅新增 ZCode 与 WorkBuddy 两份原生清单；根目录 Cursor 入口不进入 Codex 插件 ZIP。旧 45 文件包及校验和已独立保留，没有覆盖旧证据。
+逐项 rubric、工具证据摘要和 input/raw/capture/rollout SHA-256 见 [能力降级判分索引](../host-capability-acceptance/agent-grades.json)。采集绑定运行时提交 `77979cb` 和最终 47 文件树；原始 summary 保留 captured-ungraded，判分另存。三个工作区无变更、仓库和安装树前后摘要相同。这里的守卫/无搜索是固定虚构材料设定，**不是实际启动 Mimosa 或完成三个新客户端验收**。
 
-[原候选 48 点模型验收](results.md) 与 [逐项判分索引](agent-grades.json) 仍绑定提交 `563e205`、45 文件树 `cf24e46494d0ed0ef154dcd828fa790569df90667947825d6f0948f9122019ed`。本轮没有把旧采集记录改绑 47 文件树，也没有重新宣称在三个新宿主运行过这些模型场景。内容未变化的比较证据仅说明继承了同一份教学与记录实现。
+[旧候选 48 点模型证据](results.md) 继续绑定提交 563e205、旧 45 文件树 cf24e464…。最终包相对旧包新增两份原生清单，改动两份检索 Skill 及一份共享路由契约；其余 42 个旧文件（含四个随包运行脚本）逐字节一致。旧 48 点不能改绑新树，也不与新 12 点混算通过率。各阶段旧包及校验和分别归档，没有覆盖历史证据。
 
-Cursor、ZCode、WorkBuddy 客户端的实际导入、Skill 发现、工具调用及三种教学模式端到端验收仍待完成。离线诊断不启动 WorkBuddy、不执行随包脚本、不模拟裁剪安装。安装要求完整插件目录；逐 Skill 扁平复制不受支持。Obsidian 配置仍使用既有 Codex 命名空间。完整新旧 20 类配对与真实用户 Obsidian/Notion 写入仍未验证。
+Cursor、ZCode、WorkBuddy 真实客户端安装、Skill 发现、工具调用与三种教学模式仍待端到端验收。离线诊断不执行随包代码，也不模拟裁剪安装；必须整插件安装，不支持逐 Skill 扁平复制。Obsidian 配置保留原命名空间。完整新旧 20 类配对与真实用户 Obsidian/Notion 写入未验证；本次也不构成完整安全审计通过，提交守卫/静态扫描放行不替代该审计。

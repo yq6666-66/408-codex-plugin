@@ -6,12 +6,14 @@
 
 ### 新增
 
-- 增加 ZCode 宿主适配：仓库根新增 ZCode marketplace 描述 `.claude-plugin/marketplace.json`，插件内新增 ZCode 原生清单 `.zcode-plugin/plugin.json`，并同步发布允许列表、仓库校验、ZCode 同步测试与验证器证据；14 个 Skill 的正文、契约与运行脚本行为不变。
+- 增加 ZCode 宿主适配：仓库根新增 ZCode marketplace 描述 `.claude-plugin/marketplace.json`，插件内新增 ZCode 原生清单 `.zcode-plugin/plugin.json`，并同步发布允许列表、仓库校验、ZCode 同步测试与验证器证据；适配层复用同一份 14 Skill 目录，四个随包运行脚本保持原实现。
 
 - 集成 Cursor 根目录导入入口与 WorkBuddy 原生清单/市场描述，三个宿主适配均复用同一份 14 Skill 树；所有适配版本同步为 2.6.1，候选发布允许列表为 47 文件。
 
 ### 调整
 
+- 明确仅有 URL 抓取但无搜索发现工具时的官方核验与招生调研降级；宿主守卫拒绝脚本时不绕过，并区分人工推导、工具核验与未保存。新增 3 类合成能力约束场景，当前 47 文件树上 12/12 检查点经 Agent 独立复核通过。
+- 去除两组相同的重复 records 测试方法，保持全部唯一断言及 102 项记录测试，增加 3 项 AST 发现门禁；同步 SECURITY 的支持版本、14 Skill 与审计边界。
 - 补强 Cursor Skills-only 门禁，拒绝 commands/agents 等非 Skill 组件；WorkBuddy 离线诊断沿声明路径检查加载失败，不把空 Skill 或失效路径报告为通过，新增相应回归测试。
 - 安装与验证文档区分离线适配、旧 45 文件模型证据与新 47 文件候选，不将清单复用视为新宿主真实行为已验收。
 - 新检查点使用递增修订号，允许在日期相同的情况下按修订顺序合并；无修订号的历史记录仍按日期合并，相同修订号的恢复位置冲突会明确保留并要求核对。

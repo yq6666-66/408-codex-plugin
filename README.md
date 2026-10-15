@@ -181,6 +181,8 @@ python scripts/health_check.py --json
 - **WorkBuddy**：仓库同时提供 WorkBuddy 原生清单（`plugins/kaoyan-408/.codebuddy-plugin/plugin.json`）与根目录插件市场描述（`.codebuddy-plugin/marketplace.json`），WorkBuddy 从 `source` 指向的插件目录读取 14 个 Skills。该适配已与 Cursor、ZCode 入口一并集成；真实 WorkBuddy 客户端安装及行为验收待完成，见“安装与回退 → WorkBuddy”。
 - 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
 
+宿主只有 URL 抓取而没有搜索工具时，插件会明确不能发现新来源，只核对已给链接的可读内容；安全守卫拒绝随包脚本时，不绕过限制，只提供可可靠复核的人工推导或保留待确认项，并明确脚本未执行、写入未完成。完整审计与真实客户端验收状态见宿主集成记录。
+
 ### 记忆控制（权限语义严格区分）
 
 - “本次不记忆” / “只读模式” → **禁止所有学习记录写入**（Obsidian、Notion 及其他笔记层全部只读）。
