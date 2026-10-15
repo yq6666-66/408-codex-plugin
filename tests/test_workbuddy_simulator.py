@@ -169,6 +169,30 @@ class WorkBuddySimulatorTests(unittest.TestCase):
             self.skipTest(f"symlink unavailable: {exc}")
         self.assert_blocked()
 
+    def test_skill_directory_symlink_outside_declared_skills_is_blocked(self) -> None:
+        outside = self.plugin / "references" / "extra-skill"
+        outside.mkdir(parents=True)
+        (outside / "SKILL.md").write_bytes(self.skill_md.read_bytes())
+        link = self.skills / "linked-skill"
+        try:
+            link.symlink_to(outside, target_is_directory=True)
+        except OSError as exc:
+            self.skipTest(f"symlink unavailable: {exc}")
+        self.assert_blocked()
+        self.assertEqual(simulate_workbuddy_load(self.repo)["skills"], [])
+
+    def test_skill_file_symlink_outside_declared_skills_is_blocked(self) -> None:
+        outside = self.plugin / "references" / "lesson.md"
+        outside.parent.mkdir(parents=True)
+        outside.write_bytes(self.skill_md.read_bytes())
+        self.skill_md.unlink()
+        try:
+            self.skill_md.symlink_to(outside)
+        except OSError as exc:
+            self.skipTest(f"symlink unavailable: {exc}")
+        self.assert_blocked()
+        self.assertEqual(simulate_workbuddy_load(self.repo)["skills"], [])
+
     def test_missing_descriptor_text_output_is_valid(self) -> None:
         self.marketplace.unlink()
         with contextlib.redirect_stdout(io.StringIO()) as output:

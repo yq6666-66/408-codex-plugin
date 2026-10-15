@@ -148,11 +148,11 @@ def simulate_workbuddy_load(repo: Path) -> dict[str, Any]:
     try:
         skill_dirs = []
         for path in sorted(skills_root.iterdir()):
-            if not path.resolve().is_relative_to(plugin):
-                raise ValueError(f"Skill directory escapes the plugin: {path.name}")
+            if not path.resolve().is_relative_to(skills_root):
+                raise ValueError(f"Skill directory escapes the declared skills directory: {path.name}")
             if path.is_dir() and (path / "SKILL.md").is_file():
-                if not (path / "SKILL.md").resolve().is_relative_to(plugin):
-                    raise ValueError(f"SKILL.md escapes the plugin: {path.name}")
+                if not (path / "SKILL.md").resolve().is_relative_to(skills_root):
+                    raise ValueError(f"SKILL.md escapes the declared skills directory: {path.name}")
                 skill_dirs.append(path)
         if not skill_dirs:
             raise ValueError("declared skills directory contains no Skill with SKILL.md")

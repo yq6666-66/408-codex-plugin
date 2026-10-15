@@ -1,6 +1,6 @@
 # v2.6.1 多宿主适配集成记录
 
-记录日期：2026-10-15。集成 [#30 Cursor](https://github.com/yq6666-66/408-codex-plugin/pull/30)、[#31 ZCode](https://github.com/yq6666-66/408-codex-plugin/pull/31)、[#32 WorkBuddy](https://github.com/yq6666-66/408-codex-plugin/pull/32)，包含 #31 携带的既有 v2.6.1 检查点修复。集成入口为 [PR #33](https://github.com/yq6666-66/408-codex-plugin/pull/33)。版本仍为开发候选 2.6.1，稳定版为 2.6.0；本次不创建发布标签或 Release。
+记录起始日期：2026-10-15，补充核查至 2026-10-16。集成 [#30 Cursor](https://github.com/yq6666-66/408-codex-plugin/pull/30)、[#31 ZCode](https://github.com/yq6666-66/408-codex-plugin/pull/31)、[#32 WorkBuddy](https://github.com/yq6666-66/408-codex-plugin/pull/32)，包含 #31 携带的既有 v2.6.1 检查点修复。集成入口为 [PR #33](https://github.com/yq6666-66/408-codex-plugin/pull/33)。版本仍为开发候选 2.6.1，稳定版为 2.6.0；本次不创建发布标签或 Release。
 
 ## 集成与补充修复
 
@@ -8,7 +8,7 @@
 - 精确发布允许列表包含 Codex、ZCode、WorkBuddy 三份原生清单，共 47 文件；Cursor 根目录导入入口保留在仓库根。
 - 保留三种宿主各自的 manifest/marketplace 检查，合并 README、QUALITY_GATES、release_payload 与 validate_repository 的重叠修改。
 - Cursor Skills-only 门禁补拒 commands/agents 等非 Skill 组件，新增 5 项正例与变异测试，先复现错误放行再修复。
-- WorkBuddy 静态诊断沿声明 source/skills 解析，畸形或缺失清单、无效路径、越界链接、空 Skill 树均形成 blocker。新增 13 项测试，包含不执行随包代码及 JSON/文本门禁输出，先复现失败再修复。
+- WorkBuddy 静态诊断沿声明 source/skills 解析，畸形或缺失清单、无效路径、越界链接、空 Skill 树均形成 blocker。新增 15 项测试，包含不执行随包代码、JSON/文本门禁输出，以及 Skill 目录或 SKILL.md 链接到插件内但位于声明 skills 树外的拒绝；先复现失败再修复。
 - 追加宿主能力边界：两份检索 Skill 明确只有 URL 抓取不代表具备搜索发现能力；已知正文不足以核验的当前事实保留缺口。共享路由明确守卫拒绝脚本时不绕过，区分人工推导、脚本核验与未保存。
 - 去除 records 测试中的两组完全相同的重复方法。所有唯一测试方法 AST 保持不变，records 实际可发现测试仍为 102；新增 3 项测试发现门禁，防止以后静默覆盖。SECURITY 文档更新版本、14 Skill、脚本架构及审计边界。
 
@@ -16,7 +16,7 @@
 
 第一阶段提交 `5f2e4a9` 的 Windows/Python 3.14 `scripts/check.py --verify-system-evidence`：340 项测试全部成功（488.058 秒，无跳过）、仓库六项检查及官方证据核对通过。该提交的 [GitHub run](https://github.com/yq6666-66/408-codex-plugin/actions/runs/38763473489) 的 validate、windows、reproducible 均通过。
 
-用户补充报告后追加了检索/守卫降级及重复方法修复，最终完整套件含 343 项测试；本地追加门禁 3/3、NormalizeTests 24/24 通过。归档时最终 head 的 CI 尚待运行，**最终 Windows、Ubuntu、Semgrep 与跨平台字节一致性以 PR #33 最新 head 的实际检查为准**，不沿用第一阶段结果冒称最终通过。
+用户补充报告后追加了检索/守卫降级及重复方法修复，原最终提交 c14942a 的 343 项测试已通过远端 Windows、Ubuntu 与字节一致性检查。审查会话又确证了两处声明 skills 边界漏检，已补 2 项负例并修复，15/15 诊断测试通过；最新完整套件含 345 项测试；本地追加门禁 3/3、NormalizeTests 24/24 通过。归档时最终 head 的 CI 尚待运行，**最终 Windows、Ubuntu、Semgrep 与跨平台字节一致性以 PR #33 最新 head 的实际检查为准**，不沿用第一阶段结果冒称最终通过。
 
 最终插件与安装证据：
 
