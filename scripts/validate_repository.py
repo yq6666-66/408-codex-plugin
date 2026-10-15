@@ -910,13 +910,16 @@ def check_cursor_marketplace(repo: Path, manifest: dict[str, Any]) -> None:
     entry = plugins[0]
     require(isinstance(entry, dict), "Cursor marketplace plugin entry must be an object")
     require(entry.get("name") == "kaoyan-408", "Cursor marketplace plugin name is invalid")
-    require(entry.get("source") == ".", "Cursor marketplace source must be the repository root")
-    require(entry.get("category") == "Education", "Cursor marketplace category must be Education")
-    require(entry.get("version") == version, "Cursor marketplace version must match plugin.json.version")
+    require(entry.get("source") == "./", "Cursor marketplace source must be the repository root")
+    require(
+        set(entry) <= {"name", "source", "description", "minClientVersions"},
+        "Cursor marketplace entry has fields the official schema rejects",
+    )
 
     require(isinstance(cursor_plugin, dict), "Cursor plugin manifest must be an object")
     require(cursor_plugin.get("name") == "kaoyan-408", "Cursor plugin name is invalid")
     require(cursor_plugin.get("version") == version, "Cursor plugin version must match plugin.json.version")
+    require(cursor_plugin.get("category") == "Education", "Cursor plugin category must be Education")
     for key in ("mcpServers", "hooks", "rules"):
         require(key not in cursor_plugin, f"Cursor manifest must not declare {key}")
     skills = cursor_plugin.get("skills")
@@ -931,7 +934,6 @@ def check_cursor_marketplace(repo: Path, manifest: dict[str, Any]) -> None:
     require(skill_names == EXPECTED_SKILLS, "Cursor skills directory must match the released Skill set")
     logo = "plugins/kaoyan-408/assets/kaoyan-408.svg"
     require(cursor_plugin.get("logo") == logo, "Cursor logo path is invalid")
-    require(entry.get("logo") == logo, "Cursor marketplace logo must match the plugin manifest")
     require((repo / logo).is_file(), "Cursor logo file does not exist")
 
 
