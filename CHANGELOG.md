@@ -23,6 +23,10 @@
 - 定向行为 runner 按候选 manifest 核对安装版本，允许复用既有场景验证后续补丁版本。
 - 新增检查点生命周期与冲突恢复的独立真实行为套件，既有样本、Agent 判分和当前候选的验证边界见 [v2.6.1 验证记录](eval/v2.6.1-acceptance/results.md)。
 
+### 文档
+
+Root README converts reader-facing unordered lists to ordered lists. Code blocks and tables are unchanged. Documentation only; no functional change.
+
 ## [2.6.0] - 2026-10-13
 
 ### 新增
