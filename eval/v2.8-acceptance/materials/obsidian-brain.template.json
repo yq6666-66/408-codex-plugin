@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.1",
+  "enabled": true,
+  "vaultPath": "__FIXTURE_VAULT_ABSOLUTE__",
+  "projectRoot": "20-项目/408考研",
+  "knowledgeRoot": "30-知识/408考研",
+  "pastPaperRoot": "40-真题/408考研",
+  "writeMode": "auto-structured",
+  "retrievalScope": "project-first"
+}

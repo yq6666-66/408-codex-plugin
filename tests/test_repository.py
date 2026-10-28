@@ -82,6 +82,7 @@ class RepositoryContractTests(unittest.TestCase):
                 "beginner-visual-answer-contract.md",
                 "capability-routing-contract.md",
                 "evidence-copyright-contract.md",
+                "knowledge-point-basis-contract.md",
                 "learning-layer-contract.md",
                 "notion-brain-contract.md",
                 "obsidian-brain-contract.md",
@@ -123,6 +124,9 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("仅对数学公式题适用", searcher)
         self.assertIn("题号、题干关键句、选项", searcher)
         self.assertIn("不涉及", searcher)
+        self.assertIn("用户题面只支持其实际内容，不证明来源", searcher)
+        self.assertIn("只有认定为已核验原卷时", searcher)
+        self.assertIn("用户本轮实际提供且可读的题面", searcher)
 
     def test_past_paper_search_and_teaching_continue_in_one_turn(self) -> None:
         searcher = skill_text("kaoyan-past-paper-searcher")
@@ -133,14 +137,17 @@ class RepositoryContractTests(unittest.TestCase):
             "主 Agent 在本轮",
             "把已核验的题面证据继续交给对应的数学、英语、408 或政治教练",
             "不得只附交接卡或要求用户再次提交题目",
-            "用户已在会话中提供题面时，不启动真题搜索",
+            "用户已在会话中提供题面且未要求核验出处时，不启动真题搜索",
+            "用户当前已提供足够题面则按 `[用户材料]` 继续处理并保留出处待核",
         ):
             self.assertIn(text, searcher)
         for text in (
             "真题搜索与讲解的同轮串联",
             "主 Agent 将已核验题面证据交给教练",
             "不要求用户复制、粘贴或重发题目",
-            "用户已在当前会话提供题面时，由对应学科教练直接讲解",
+            "用户已在当前会话提供题面且未要求核验来源时",
+            "若用户明确要求核验来源，先由搜索器核验",
+            "即使出处暂未核成，用户提供的题面足够求解时仍可按用户材料继续教学或复核",
             "`真题搜索 → 学科辅导`",
         ):
             self.assertIn(text, routing)

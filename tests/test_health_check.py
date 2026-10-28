@@ -28,7 +28,7 @@ class HealthCheckTests(unittest.TestCase):
             renamed = plugin / "skills" / "kaoyan-admissions-researcher"
             renamed.rename(renamed.with_name("unrelated-skill"))
             report = health_check.inspect_plugin(plugin, Path(temporary) / "missing.json")
-        self.assertEqual(report["skills"]["complete"], 13)
+        self.assertEqual(report["skills"]["complete"], health_check.EXPECTED_SKILL_COUNT - 1)
         self.assertEqual(report["status"], "problem")
         self.assertTrue(any("Skill set" in issue for issue in report["problems"]))
         self.assertTrue(any("frontmatter name must match" in issue for issue in report["problems"]))

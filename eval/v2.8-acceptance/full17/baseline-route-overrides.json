@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "status": "prepared-for-17-skills; not applied; no model run",
+  "sourceCatalog": "eval/v2.8-acceptance/cases.json",
+  "policy": "派生17树的评分视图，不改原20输入、历史评分或原catalog字节。只覆盖下列轮次的expectedPrimary，其他评分约束和自然输入保持。",
+  "overrides": [
+    {
+      "caseId": "G01-A",
+      "turnIndex": 0,
+      "expectedPrimary": "408-error-diagnosis",
+      "reason": "当前一题实际首错",
+      "previousExpectedPrimary": "kaoyan-408-tutor"
+    },
+    {
+      "caseId": "G06-A",
+      "turnIndex": 0,
+      "expectedPrimary": "408-concept-followup",
+      "reason": "局部概念而非数值复核",
+      "previousExpectedPrimary": "kaoyan-408-tutor"
+    },
+    {
+      "caseId": "G06-B",
+      "turnIndex": 0,
+      "expectedPrimary": "408-calculation-check",
+      "reason": "明确数值与字段复核",
+      "previousExpectedPrimary": "kaoyan-408-tutor"
+    },
+    {
+      "caseId": "G10-A",
+      "turnIndex": 0,
+      "expectedPrimary": "408-concept-followup",
+      "reason": "首轮为局部概念",
+      "previousExpectedPrimary": "kaoyan-408-tutor"
+    },
+    {
+      "caseId": "G10-A",
+      "turnIndex": 1,
+      "expectedPrimary": "408-concept-followup",
+      "reason": "同一概念连续补问保留当前流程",
+      "previousExpectedPrimary": "kaoyan-408-tutor"
+    },
+    {
+      "caseId": "G10-B",
+      "turnIndex": 0,
+      "expectedPrimary": "408-concept-followup",
+      "reason": "首轮为局部概念，后续数学/真题路由保持",
+      "previousExpectedPrimary": "kaoyan-408-tutor"
+    }
+  ],
+  "unchangedExamples": [
+    "G07-A完整原题讲解仍tutor",
+    "G08-A在既有提示教学模式下仍tutor",
+    "G08-B完整讲评仍tutor"
+  ],
+  "sourceCatalogExists": true,
+  "sourceCatalogSha256": "b5cdf370153bbee15fd6b1b0a0725b5b60305cc6e00ce3ce1e7317f826b59f48",
+  "sourceCatalogCanonicalSha256": "3387dfdb2fbcec62e1382eeecfa703f16a93cd26c4218f3d563903301e71d156"
+}

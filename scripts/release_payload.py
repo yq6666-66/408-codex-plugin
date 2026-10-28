@@ -17,6 +17,9 @@ from zipfile import ZipInfo
 PLUGIN_RELATIVE_PATH = PurePosixPath("plugins/kaoyan-408")
 
 EXPECTED_SKILLS = {
+    "408-error-diagnosis",
+    "408-concept-followup",
+    "408-calculation-check",
     "kaoyan-408-planner",
     "kaoyan-review-executor",
     "kaoyan-progress-diagnostician",
@@ -34,6 +37,12 @@ EXPECTED_SKILLS = {
 }
 
 EXPECTED_REFERENCES = {
+    "rule-cards.json",
+    "knowledge-point-basis.md",
+    "calculation-conventions.md",
+    "kp-408.json",
+    "kp-408.schema.json",
+    "knowledge-point-basis-contract.md",
     "admissions-research-contract.md",
     "capability-routing-contract.md",
     "evidence-copyright-contract.md",
@@ -54,10 +63,11 @@ EXPECTED_RUNTIME_SCRIPTS = {
     "study_simulator.py",
 }
 
-ALLOWED_PLUGIN_ROOTS = {".codex-plugin", ".zcode-plugin", ".codebuddy-plugin", "skills", "references", "assets", "scripts"}
+ALLOWED_PLUGIN_ROOTS = {".codex-plugin", ".zcode-plugin", ".codebuddy-plugin", ".claude-plugin", "skills", "references", "assets", "scripts"}
 CODEX_MANIFEST_RELATIVE = ".codex-plugin/plugin.json"
 ZCODE_MANIFEST_RELATIVE = ".zcode-plugin/plugin.json"
 CODEBUDDY_MANIFEST_RELATIVE = ".codebuddy-plugin/plugin.json"
+CLAUDE_MANIFEST_RELATIVE = ".claude-plugin/plugin.json"
 SEMVER_PATTERN = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$"
 PLACEHOLDER = "TO" + "DO"
 
@@ -93,6 +103,7 @@ def expected_release_files() -> frozenset[str]:
         CODEX_MANIFEST_RELATIVE,
         ZCODE_MANIFEST_RELATIVE,
         CODEBUDDY_MANIFEST_RELATIVE,
+        CLAUDE_MANIFEST_RELATIVE,
         "assets/kaoyan-408.svg",
         *(f"references/{name}" for name in EXPECTED_REFERENCES),
         *(f"scripts/{name}" for name in EXPECTED_RUNTIME_SCRIPTS),

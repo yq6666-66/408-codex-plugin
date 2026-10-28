@@ -1,0 +1,4 @@
+interface:
+  display_name: "408 错题归因"
+  short_description: "定位 408 单题作答的首处错误，区分证据和假设并给最小验证题"
+  default_prompt: "使用 $408-error-diagnosis 检查我这道 408 题的解题过程，定位第一处错误。"

@@ -89,6 +89,10 @@ def main() -> int:
         print(f"[FAIL] {exc}", file=sys.stderr)
         return 1
 
+    run([sys.executable, "scripts/sync_plugin_versions.py", "--check"], repo, env)
+    run([sys.executable, "tools/skills.py", "sync-plugin-resources", "--check"], repo, env)
+    run([sys.executable, "tools/skills.py", "sync-plugin-skills", "--check"], repo, env)
+    run([sys.executable, "tools/validate_knowledge.py"], repo, env)
     run([sys.executable, "scripts/validate_repository.py"], repo, env)
     run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py", "-v"], repo, env)
 

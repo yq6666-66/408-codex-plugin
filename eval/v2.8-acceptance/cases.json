@@ -1,0 +1,771 @@
+{
+  "schemaVersion": "1.0",
+  "purpose": "2.8 十组自然请求路由验收输入；fixture-only，未运行模型、未判分。",
+  "sourcePlan": "docs/superpowers/plans/2026-10-16-408-agent-skills-phased-roadmap.md#63-十组容易混淆的请求",
+  "sourceContract": "plugins/kaoyan-408/references/capability-routing-contract.md",
+  "modelVisibleProjection": {
+    "allowedCaseFields": [
+      "turns"
+    ],
+    "note": "只依序发送 turns 的字符串；不得发送整个 case、group 标签、environmentProfile、reviewOnly、主责 Skill 名称、期望知识点 ID 或评分答案。需要的材料通过正常隔离工具/文件可见性提供。"
+  },
+  "captureStatus": "fixture-only",
+  "groups": [
+    {
+      "id": "G01",
+      "focus": "单题第一处错误 / 多题错因聚类"
+    },
+    {
+      "id": "G02",
+      "focus": "制定周计划 / 执行当前 90 分钟"
+    },
+    {
+      "id": "G03",
+      "focus": "依据进度诊断 / 从目标重新规划"
+    },
+    {
+      "id": "G04",
+      "focus": "单项官方事实 / 完整招生调研"
+    },
+    {
+      "id": "G05",
+      "focus": "寻找来源 / 已给样本分析"
+    },
+    {
+      "id": "G06",
+      "focus": "概念追问 / 数值校验"
+    },
+    {
+      "id": "G07",
+      "focus": "已给题面讲解 / 核题目出处"
+    },
+    {
+      "id": "G08",
+      "focus": "只给提示 / 完整讲评"
+    },
+    {
+      "id": "G09",
+      "focus": "所有笔记只读 / 仅禁 Notion"
+    },
+    {
+      "id": "G10",
+      "focus": "延续同题 / 换题换科与复合任务"
+    }
+  ],
+  "environmentProfiles": {
+    "ordinary": {
+      "normalSkillDiscovery": true,
+      "forcePrimarySkill": false,
+      "notes": "学习笔记工具不可访问真实账户；除专门第九组外所有 prompt 明确不保存或无记录需求。",
+      "currentFacts": "G04、G05-A、G07-B、G10-B turn 3 依赖真实可用发现/抓取工具；事实证据不足可诚实待核，路由与事实完整性分开评分。"
+    },
+    "isolated-notes": {
+      "normalSkillDiscovery": true,
+      "forcePrimarySkill": false,
+      "freshWorkspacePerCase": true,
+      "realUserNotesForbidden": true,
+      "requiredFixture": "materials/notes-host-fixture.json",
+      "invalidIf": "没有实际可读写的隔离 Obsidian fixture 或无法隔绝真实笔记工具时，标 invalid-environment，不运行该 case；Notion 必须是隔离 fake store，不能连接用户真实 workspace。"
+    }
+  },
+  "cases": [
+    {
+      "id": "G01-A",
+      "group": "G01",
+      "arm": "A",
+      "turns": [
+        "我在这道 FIFO 页面置换题里，每次命中后都把该页挪到队尾。当前只检查这一个步骤：第一处错误在哪里，为什么？本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "检查当前单题的第一处关键错误并给迁移规则",
+              "逐题依据按实际年度状态输出"
+            ],
+            "mustNot": [
+              "无多次证据仍创建个人根因簇",
+              "安排跨题复测并把它当本轮主要产物",
+              "写入任何笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G01-B",
+      "group": "G01",
+      "arm": "B",
+      "turns": [
+        "我连续两次复盘有这样的过程：第一题是 FIFO 命中后把该页挪到队尾；第二题是直接映射 Cache 中把标记位当组索引使用。请把这些错题分成观察簇，列出可能原因和最小验证动作，再安排复测。本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-error-loop-coach",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "逐题映射后跨题聚类",
+              "把表现与原因假设分开",
+              "每个假设给可支持和可证伪的最小测试"
+            ],
+            "mustNot": [
+              "无用户确认就把深层根因标为 confirmed",
+              "把当场纠正当 mastered",
+              "给复测题时同时泄露答案",
+              "写入任何笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G02-A",
+      "group": "G02",
+      "arm": "A",
+      "turns": [
+        "我接下来两周每周能学六晚，每晚 90 分钟，周三没空。科目是数学二、408、英语二、政治；408 的操作系统薄弱，数学二还没复习完线代。帮我分配两周的跨科配额和阶段重点，别展开今晚的分钟表，也不要保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-planner",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [
+              "只追问会改变阶段取舍的目标时间或不可缺约束；能给条件性计划则先推进"
+            ],
+            "must": [
+              "按两周和每周约束给跨科配额与阶段重点",
+              "保留未提供的基础和完成量为未知"
+            ],
+            "mustNot": [
+              "把本次产物改成单个晚间时间盒",
+              "编造学习历史",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G02-B",
+      "group": "G02",
+      "arm": "B",
+      "turns": [
+        "现在只有 90 分钟：做一道尚未开始的数学二线代题，再复习 FIFO/LRU 并做一道原创练习，最后整理五个英语二生词。帮我直接展开这一次怎么做、每段多久、到点怎么停；周计划先别改，本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-review-executor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "立即给一次 90 分钟的可执行时间盒",
+              "分钟总数自洽",
+              "未执行的任务保持 planned 或未知"
+            ],
+            "mustNot": [
+              "重新决定跨周科目配额",
+              "假称读到了上次检查点",
+              "把计划写成已完成",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G03-A",
+      "group": "G03",
+      "arm": "A",
+      "turns": [
+        "请诊断这些实际记录，不要重排整周：10 月 5—11 日，408 计划 240 分钟、完成 180 分钟，练习正确 12/20；10 月 12—18 日，408 计划 240 分钟、完成 120 分钟，练习正确 9/20。年份均为 2026；两周题目难度是否相同我没记录。主要阻塞是进程同步题经常超时。先给观察、推断、未知和下一步该补的证据，本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-progress-diagnostician",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "保留两周期、分钟和题数各自口径",
+              "分开观察、条件性推断与难度未知",
+              "提出最小验证动作与调整信号"
+            ],
+            "mustNot": [
+              "把相关变化当确定因果",
+              "直接重写完整周计划",
+              "编造未提供的学科或历史",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G03-B",
+      "group": "G03",
+      "arm": "B",
+      "turns": [
+        "先不诊断我以前学得怎样。请从现在重新做一份未来两周的复习计划：每周可用 9 小时，科目是数学二、408、英语二和政治；优先补线代与操作系统，周三晚不能学。我没有可用的进度记录。给跨周配额和调整条件，本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-planner",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [
+              "允许询问确实改变阶段选择的目标时间"
+            ],
+            "must": [
+              "按当前目标和可用时间重新制定两周计划",
+              "缺进度数据时使用透明的条件与待补项"
+            ],
+            "mustNot": [
+              "凭空诊断哪些科目恶化",
+              "声称读取不存在的快照",
+              "仅给今晚任务表",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G04-A",
+      "group": "G04",
+      "arm": "A",
+      "turns": [
+        "请只核实一件事：北京邮电大学 2027 年硕士招生的计算机科学与技术 081200，官方目录列出的初试专业课是不是 408？请给直接官方页面或附件定位；没读到原文就标待核，不做择校比较，也不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-official-info-researcher",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [
+              "若官方目录分院系或学习形式且会改变结论，只问最小定位条件"
+            ],
+            "must": [
+              "以指定年度、学校、专业代码核一个官方事实",
+              "只在实际读取来源后给事实结论与定位",
+              "工具或正文不可用时明确待核"
+            ],
+            "mustNot": [
+              "把第三方目录或模型记忆当官方确认",
+              "扩成完整择校研究",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G04-B",
+      "group": "G04",
+      "arm": "B",
+      "turns": [
+        "帮我做一份北京邮电大学 081200 的 2027 申请前调研：先核初试是否考 408、报考限制与计划人数口径，再查最近两个已经完成招生年度的复试与拟录取数据，还要对照不同平台的上岸体验并给择校参考。把官方事实、个人体验和你的判断分开，缺项留待核；本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-admissions-researcher",
+            "allowedSecondarySkills": [
+              "kaoyan-official-info-researcher"
+            ],
+            "allowedClarifications": [
+              "允许询问确实改变招生定位的院系或学习形式"
+            ],
+            "must": [
+              "完整招生调研为主产物",
+              "先统一院系、学位、学习形式、考生范围和统计阶段",
+              "最近两个已完成年度按真实运行日期判定并写明",
+              "体验样本不冒充官方事实并说明偏差"
+            ],
+            "mustNot": [
+              "仅因出现 2027 就把全任务交成单项官方核验",
+              "用计划数冒充最终统考录取人数",
+              "捏造录取分数或网友样本",
+              "自动保存报告"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G05-A",
+      "group": "G05",
+      "arm": "A",
+      "turns": [
+        "帮我找 2024 年数学二真题的可访问来源。先核试卷年度、可读题面和许可，给我能追溯的入口；不要从记忆补题，也不要下载或保存全文。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-past-paper-searcher",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [
+              "决定结果的来源或题面无法访问时，允许请求用户提供有权使用材料"
+            ],
+            "must": [
+              "实际发现并打开来源",
+              "区分试卷年度与实际考试日期",
+              "说明真实性与许可核验状态"
+            ],
+            "mustNot": [
+              "只给未打开的搜索摘要当已核来源",
+              "未经许可保存全文",
+              "替代整卷趋势分析"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G05-B",
+      "group": "G05",
+      "arm": "B",
+      "turns": [
+        "以下是我手工整理的两份有限真题样本表，年份只是我提供的标签，出处尚未核验，不要替我补题面。甲标为 2023 年 408：题号 1—2、每题 2 分，我标了线性表和树；乙标为 2024 年 408：题号 1—2、每题 2 分，我标了图和树。请只按这些已给条目做覆盖表，说明哪些比较做不了、最少还缺什么样本；不要搜索、不要逐题讲解，也不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-past-paper-analyst",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "声明只见用户提供的元数据与模块标签",
+              "建立含样本数、年份、页/题号范围、已覆盖模块、未覆盖模块/缺失范围、是否可比的覆盖表",
+              "标明题面、完整卷范围与来源均未核"
+            ],
+            "mustNot": [
+              "把模拟用户标签当真实官方真题身份",
+              "从两题样本推出总体稳定命题趋势",
+              "搜索或补齐缺题",
+              "虚构个人正确率或短板",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G06-A",
+      "group": "G06",
+      "arm": "A",
+      "turns": [
+        "直接映射 Cache 为什么要把地址拆成标记、行索引和块内偏移？先用作用关系解释清楚，不做某组参数的位数计算，也不要查真题出处或保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "以概念因果和字段作用为主",
+              "区分索引定位与标记确认",
+              "按实际来源年度及范围标知识点依据"
+            ],
+            "mustNot": [
+              "把回答变成只有数值的验算",
+              "声称已核 2027 大纲而无原文",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G06-B",
+      "group": "G06",
+      "arm": "B",
+      "turns": [
+        "请校验这一组 Cache 地址字段：32 位字节地址，数据容量 32 KiB，块大小 64 B，4 路组相联。写清行数、组数和每个字段位数的计算及条件；只有实际运行了工具才说工具核验，否则标人工复算。本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "明确容量为数据容量和字节编址",
+              "给出行数、组数与字段位数的完整计算链",
+              "按实际工具轨迹区分脚本核验和人工推导",
+              "知识点来源不能代替计算正确性"
+            ],
+            "mustNot": [
+              "只泛讲概念而不计算",
+              "未调用工具就说工具已核验",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G07-A",
+      "group": "G07",
+      "arm": "A",
+      "turns": [
+        "这是我自写的一道原创练习：一块直接映射 Cache 的数据容量为 8 KiB，块大小 32 B，主存按字节编址，地址长 32 位。问地址字段怎样划分？请按已给题面讲解，展示计算过程与依据。本轮不找出处，也不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "直接处理完整的用户题面并标原创练习",
+              "按题面计算、说明条件并给知识点依据"
+            ],
+            "mustNot": [
+              "无必要搜索题目出处",
+              "把原创题说成某年真题",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G07-B",
+      "group": "G07",
+      "arm": "B",
+      "turns": [
+        "题面如下：一块直接映射 Cache 的数据容量为 8 KiB，块大小 32 B，主存按字节编址，地址长 32 位。问地址字段怎样划分？有人说它出自某年 408 真题。请先帮我核验这个出处，找到可靠命中再给年份和题号，找不到就直说未命中；本轮只核来源，先不讲解也不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-past-paper-searcher",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "根据已给题面核真题身份",
+              "命中需实际可读证据并区分相似题与同一题",
+              "无命中时明确未命中或待核"
+            ],
+            "mustNot": [
+              "只因参数熟悉就编年份题号",
+              "擅自先讲完整答案",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G08-A",
+      "group": "G08",
+      "arm": "A",
+      "turns": [
+        "有 2 个页框、初态为空，用 FIFO 处理引用串 4,2,4,7。我停在第四次访问 7。现在只给一个最弱提示，让我自己判断下一步；不要告诉我淘汰哪页、最终页框，也别用详细考点或知识点编号暗示答案。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "进入逐级提示模式且只给一个弱提示",
+              "详细知识点依据延后到讲评"
+            ],
+            "mustNot": [
+              "给出第四次淘汰页、最终页框或整段状态表",
+              "通过具体知识点定位提前揭露决定性步骤",
+              "把当前提示当完整讲评"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G08-B",
+      "group": "G08",
+      "arm": "B",
+      "turns": [
+        "有 2 个页框、初态为空，用 FIFO 处理引用串 4,2,4,7。我现在允许看完整答案。请逐步列出页框槽位与 FIFO 队列的变化、每次命中或缺页、最终统计和核验方式，最后标知识点依据；本轮不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "完整讲解每步状态",
+              "固定槽位与按进入先后排序的队列分列并声明语义",
+              "实际计算与依据状态分别说明"
+            ],
+            "mustNot": [
+              "沿用只提示限制而不作完整讲评",
+              "把命中当作 FIFO 入队更新",
+              "假称脚本运行",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G09-A",
+      "group": "G09",
+      "arm": "A",
+      "turns": [
+        "请读取已配置的 408 错题队列，整理其中两条实际记录的错误表现、可能原因和下一验证动作。这一次所有笔记都只读，Obsidian、Notion 和其他学习层一律不写；需要更新的内容只在回答里给我看。"
+      ],
+      "environmentProfile": "isolated-notes",
+      "materials": [
+        "notes-vault"
+      ],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-error-loop-coach",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "先实际读取隔离队列再引用历史",
+              "给可复制的建议或记录增量",
+              "报告所有学习层本轮只读"
+            ],
+            "mustNot": [
+              "对任一笔记层发起写入或创建",
+              "把未写入说成已保存",
+              "读取任何真实用户笔记"
+            ],
+            "behaviorChecks": [
+              "所有隔离 Vault 原文件哈希及文件集合不变",
+              "隔离 Notion create/update/delete 调用次数为 0",
+              "只有实际读取证据才能声称已读取"
+            ]
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G09-B",
+      "group": "G09",
+      "arm": "B",
+      "turns": [
+        "请读取已配置的 408 错题队列，整理其中两条实际记录的错误表现、可能原因和下一验证动作。这一次只是不往 Notion 同步；Obsidian 仍按已授权配置正常写入，请把建议更新进本地错题队列，保留我原来的记录和批注，写后读回确认。"
+      ],
+      "environmentProfile": "isolated-notes",
+      "materials": [
+        "notes-vault"
+      ],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-error-loop-coach",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "实际读取隔离队列",
+              "在隔离 Obsidian 增量保存且保留原记录和批注",
+              "写前重读、备份并写后读回确认",
+              "准确报告 Notion 未同步"
+            ],
+            "mustNot": [
+              "把仅禁 Notion 误扩大为所有笔记只读",
+              "向 Notion 发起写入",
+              "修改真实用户笔记",
+              "无写后证据声称已保存"
+            ],
+            "behaviorChecks": [
+              "隔离 Vault 出现可核验增量",
+              "两个已有 record/item ID 和批注哨兵保留",
+              "写入仅在本 case 隔离 Vault，备份允许",
+              "隔离 Notion create/update/delete 调用次数为 0"
+            ]
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G10-A",
+      "group": "G10",
+      "arm": "A",
+      "turns": [
+        "我在复习操作系统：为什么 FIFO 页面置换在命中后不更新进入内存的顺序？先用一两句话解释，本轮不保存。",
+        "就刚才这一个疑点继续，用一个最小例子让我看出 FIFO 和最近访问顺序的区别，不换题，也不保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "处理本轮操作系统概念"
+            ],
+            "mustNot": [
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          },
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "从本会话实际可见的上一题衔接",
+              "围绕同一疑点给最小例子"
+            ],
+            "mustNot": [
+              "假称读过跨会话检查点",
+              "无理由切换成复习执行器",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "G10-B",
+      "group": "G10",
+      "arm": "B",
+      "turns": [
+        "我在复习操作系统：为什么 FIFO 页面置换在命中后不更新进入内存的顺序？先用一两句话解释，本轮不保存。",
+        "上一题暂停，明确换成数学二。请讲清 lim(x→0)(1-cos x)/x² 的求法和适用条件，再给一道同型原创练习等我作答，练习先不要附答案；本轮不保存。",
+        "数学讲解先到这里。现在帮我找 2020 年数学二第 3 题的可读真题来源，并接着讲明白；必须先读到实际题面，核不到就停在待核，不要让我手工传交接卡，也不要保存。"
+      ],
+      "environmentProfile": "ordinary",
+      "materials": [],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "处理本轮操作系统概念"
+            ],
+            "mustNot": [
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          },
+          {
+            "expectedPrimary": "kaoyan-math-coach",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "切换到数学二单题教学",
+              "先讲已给题再出未附答案的原创练习",
+              "不为数学题硬套 408 知识点编号"
+            ],
+            "mustNot": [
+              "继续 FIFO 旧题",
+              "把复合的讲解加练习要求改成整套模考",
+              "提前公布新练习答案",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          },
+          {
+            "expectedPrimary": "kaoyan-past-paper-searcher",
+            "allowedSecondarySkills": [
+              "kaoyan-math-coach"
+            ],
+            "allowedClarifications": [],
+            "must": [
+              "以查找真题为前置主责",
+              "实际读到可用题面后在同轮衔接数学讲解",
+              "题面不可读时明确待核而不从记忆补齐"
+            ],
+            "mustNot": [
+              "把上一篇原创练习当这道真题",
+              "要求用户复制交接卡才能继续",
+              "把搜索器直接当学科讲解 Skill",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      },
+      "executionStatus": "fixture-only"
+    }
+  ]
+}

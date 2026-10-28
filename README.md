@@ -1,12 +1,24 @@
-# 408考研插件
+# kaoyan-408（完整功能主线）
+
+本项目以原有 14 个技能为基础，开发候选已增加 3 个专用入口，共 17 个技能；持续优化现有能力并按需要增加新技能。跨科学习规划、数学、英语、政治、408、招生与真题检索、错题复测、学习执行、进度诊断和持久学习记录均继续维护。原有 14 个技能是维护基础，不是技能数量上限；同名或功能重叠不构成移除功能的依据。
+
+2026-10-24 已按用户最新要求恢复完整插件主线。主插件仍为 `2.8.0-dev.3` 开发候选；先前的三场景源码、装配工具和验证记录保留为新增能力的独立候选，不能用三技能包替代完整插件包。当前实施方向见 [增量优化计划](docs/full-plugin-roadmap-20261024.md)。已有安装与笔记不变，尚未推送、合并或发布。
 
 `kaoyan-408` 是面向考研 408 方向的中文 **Skills-only** 学习插件，运行在 Codex 与 ChatGPT 中，并提供 Cursor、ZCode、WorkBuddy 安装适配，覆盖**数学一、数学二、英语一、英语二、408 与政治**。插件提供六科真题（2010 年起，不设固定结束年份）的合规检索与分析、三种教学模式的新手图文讲解、学习规划与执行、进度诊断、错题闭环、学习检查点、原创模考、官方招考信息核验，以及院校招生调研、历年比较与网友评价整理，并可按 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md) 条件式连接 14 个学习层应用（Obsidian / Notion / Udemy / Sider Scholar / Exa / GoodNotes / Wolfram / A-Z Dictionary / Quizlet / Ace Quiz Maker / Ace Knowledge Graph / AhaMotion / Vocabulary Trainer / Kahoot）。
 
-当前版本：`2.6.1`（开发中）；当前稳定版本：`2.6.0`。
+当前版本：`2.8.0-dev.3`（本地开发分支，未合并或发布）；当前稳定版本：`2.6.0`。
 
-v2.6.1 仍在开发中，Release 标签尚未创建；发布前继续使用 v2.6.0。发布后的固定版本命令将使用 `--ref v2.6.1` 与 `--branch v2.6.1`。
+本分支基于 v2.6.1 候选继续开发，v2.6.1 与本开发版本均未创建 Release 标签。`--ref v2.8.0-dev.3` 与 `--branch v2.8.0-dev.3` 仅表示固定版本参数格式，标签尚不存在，不能作为安装命令执行；普通安装继续使用稳定版 v2.6.0。
 
-本次 Cursor、ZCode、WorkBuddy 适配集成的工程检查与验收边界见 [宿主集成记录](eval/v2.6.1-acceptance/host-integration-results.md)。适配前 45 文件运行时的 48 点模型样本见 [原候选验证记录](eval/v2.6.1-acceptance/results.md)，不外推为三个新宿主的真实客户端验收。
+2.7 开发版新增 [408 知识点索引](plugins/kaoyan-408/references/kp-408.json)与 [依据契约](plugins/kaoyan-408/references/knowledge-point-basis-contract.md)：四科各 15 条，tutor 和错题闭环在 408 任务中逐题标注项目 ID、分类和年度大纲核验状态。**17 条已对照学校公开的 2025 年材料，43 条仍待核；2027 年归属全部待核。** 项目分类不代表官方大纲原文，转载材料不冒称出版社原版，归属已核也不证明解法正确。本版不填教材章节，未收录不编造，提示或独立作答时详细依据留到讲评。与另一仓库的同名技能及维护边界见 [说明](docs/skill-maintenance-boundaries.md)。
+
+当前开发版还为二分、Cache、FIFO/LRU、调度和网络时延的 8 张项目规则卡补充了实际读取的外部来源；每张卡只标为部分支持，并列出来源不能证明的项目约定。规则来源与年度大纲映射分别判断；具体范围见 [规则来源核对](eval/v2.8-acceptance/rule-source-review-20261026.md)。
+
+2.7 固定快照的 397 项跨系统工程检查和模型读取限制见 [开发记录](eval/v2.7-acceptance/development-results-dev2.md)。本分支独立准备 2.8：增加 Claude 原生清单、版本单源门禁、[平台验证表](docs/platform-support.md)和[十组路由输入](eval/v2.8-acceptance/README.md)。2.7/2.8 的模型行为出口条件仍保留，不能把 2.8 开发版本号理解为前一阶段行为已经验收。
+
+此前 2.8.0-dev.1 集成树（6a3bb47）完成了 [421 项跨系统工程检查及 Codex/Claude 原生隔离安装](eval/v2.8-acceptance/development-results.md)，该树还完成 [20 条知识点定向样本和另列 1 条随包工具样本](eval/v2.8-acceptance/directed-model-results.md)的逐项复核。定向文件加载与原生客户端会话、自动路由分开；十组自然请求和各客户端的新会话仍有未测项。
+
+此前 2.6.1 的 Cursor、ZCode、WorkBuddy 适配集成工程检查见 [宿主集成记录](eval/v2.6.1-acceptance/host-integration-results.md)，10 月 17 日补充的实际安装与调用情况见 [原生宿主报告复核](eval/v2.6.1-acceptance/native-host-review-20261017.md)。适配前 45 文件运行时的 48 点模型样本见 [原候选验证记录](eval/v2.6.1-acceptance/results.md)，不外推为三个新宿主的真实客户端验收。
 
 v2.6.0 于 2026-10-13 正式发布，基于 v2.5.2 未发布候选开发，新增招生调研与网友评价整理，并完善模考题目有效性、真题逐项讲解及运行工具。版本标签为 [`v2.6.0`](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)，发布合并提交为 `6b67845`。发布资产、工程门禁和行为验收边界见下方记录。v2.5.2 历史验收与已知问题见 [候选验收说明](eval/gpt6-acceptance/results-v2.5.2-candidate.md)。
 
@@ -14,7 +26,7 @@ v2.6.0 于 2026-10-13 正式发布，基于 v2.5.2 未发布候选开发，新�
 
 ## 功能作用与快速上手
 
-`kaoyan-408` 把考研学习中“查资料、学知识、做练习、安排复习、检查进度和择校调研”串成连续流程。安装后不用记 Skill 名称，也不需要写固定格式命令；在新对话里直接说目标、科目和限制即可。
+`kaoyan-408` 把考研学习中“查资料、学知识、做练习、安排复习、检查进度和择校调研”串成连续流程。安装并启用后，在新对话里描述目标、科目和限制。宿主是否自动选择技能需要实际确认；若未调用插件，可使用客户端提供的插件选择入口。ZCode 本轮普通提问未触发 Skill，建议先在界面选择 `@408考研插件`，再提出学习请求，具体状态见下方“在哪里使用”。
 
 | 你要解决的事 | 插件能帮你做什么 |
 | --- | --- |
@@ -162,7 +174,7 @@ python scripts/records.py checkpoint update checkpoint.json --changes changes.js
 
 `checkpoint update` 在内容确有变化时自动递增修订号，重复提交相同变更不会增加修订；输入文件保持原样，新记录输出到 stdout。检查点按完整状态合并；相同修订号的冲突需要核对，日期不能代替修订顺序。详见 [便携学习记录契约](plugins/kaoyan-408/references/portable-learning-records.md)。
 
-安装或连接异常时可运行只读健康检查。它核对版本、14 个 Skill、随包脚本和可选 Obsidian 配置状态，不输出 Vault 绝对路径，也不修改配置或学习记录：
+安装或连接异常时可运行只读健康检查。它核对版本、技能集合、随包脚本和可选 Obsidian 配置状态，不输出 Vault 绝对路径，也不修改配置或学习记录：
 
 ```powershell
 python scripts/health_check.py
@@ -177,9 +189,10 @@ python scripts/health_check.py --json
 
 1. **ChatGPT Desktop / Codex Desktop**：当前稳定版 v2.6.0 在新任务中加载 14 个 Skills；v2.5.1 历史版本包含 13 个 Skills。也可在桌面设置中添加 GitHub marketplace 安装（见“安装”）。
 2. **新 CLI / IDE**：安装完成后同样在新会话中生效。
-3. **ZCode**：仓库提供 ZCode marketplace 描述（`.claude-plugin/marketplace.json`）与 ZCode 原生清单（`plugins/kaoyan-408/.zcode-plugin/plugin.json`），两份清单指向现有 14 个 Skills；目前完成离线清单与路径校验，真实 ZCode 客户端安装及行为验收待完成。
-4. **WorkBuddy**：仓库同时提供 WorkBuddy 原生清单（`plugins/kaoyan-408/.codebuddy-plugin/plugin.json`）与根目录插件市场描述（`.codebuddy-plugin/marketplace.json`），WorkBuddy 从 `source` 指向的插件目录读取 14 个 Skills。该适配已与 Cursor、ZCode 入口一并集成；真实 WorkBuddy 客户端安装及行为验收待完成，见“安装与回退 → WorkBuddy”。
-5. 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
+3. **Cursor**：已有云端子会话使用 tutor 的报告，本机安装来源、版本及完整技能发现仍待确认。导入地址与首次失败记录见下方安装说明。
+4. **ZCode**：3.15.3.8237 已完成本地目录安装，安装缓存与固定候选一致。四个普通请求均未调用 Skill；另一个显式选择 `@408考研插件` 的会话成功调用 planner。显式 tutor 调用及其脚本链路仍待补测，不能保证普通请求自动触发。根 `.claude-plugin/marketplace.json` 在此用于 ZCode，尚不代表 Claude Code 支持。
+5. **WorkBuddy**：5.8.3.0 的内置 CLI 已安装到 WorkBuddy 客户端存储，插件为 enabled，安装缓存与固定候选一致。安装后请重载或重启客户端，再新建会话确认技能；新会话注册及四项使用测试仍待完成，见“安装与回退 → WorkBuddy”。
+6. 学习层取决于宿主是否提供对应工具；未连接时插件自动降级，不伪造结果。能力按需加载：所有学习层共用一份 [通用学习层契约](plugins/kaoyan-408/references/learning-layer-contract.md)（搜索、计算、词典、卡片、测验、图谱、媒体、笔记、课程、文件、定时任务），用户点名某品牌且工具实际可用时按需调用。
 
 宿主只有 URL 抓取而没有搜索工具时，插件会明确不能发现新来源，只核对已给链接的可读内容；安全守卫拒绝随包脚本时，不绕过限制，只提供可可靠复核的人工推导或保留待确认项，并明确脚本未执行、写入未完成。完整审计与真实客户端验收状态见宿主集成记录。
 
@@ -210,7 +223,7 @@ python scripts/health_check.py --json
 
 ---
 
-## 14 个 Skills
+## 17 个 Skills（开发候选）
 
 | Skill | 主责 | 示例触发 | 负向边界 |
 | --- | --- | --- | --- |
@@ -220,6 +233,9 @@ python scripts/health_check.py --json
 | `kaoyan-error-loop-coach` | 跨题错因聚类、复测与掌握证据 | “这套卷错题都是同一类” | 不替代单题第一处错误定位 |
 | `kaoyan-mock-exam-coach` | 冻结题面模考；交卷前零泄露 | “来套卷，交卷前别给答案” | 交卷前不讲题或泄露线索 |
 | `kaoyan-408-tutor` | 408 四科概念与单题；可调状态模拟器 | “讲这道 Cache 题” | 不做整卷趋势或搜索整套资料 |
+| `408-error-diagnosis` | 依据实际作答定位 408 单题首错 | “检查我这一步哪里错” | 不替代跨题错因闭环 |
+| `408-concept-followup` | 解释 408 局部概念、条件与反例 | “为什么命中不改变 FIFO 顺序” | 完整讲题仍由 tutor 主责 |
+| `408-calculation-check` | 复核 408 数值、单位与状态过程 | “核对这个 Cache 地址计算” | 未运行脚本不称脚本核验 |
 | `kaoyan-math-coach` | 数学一/二讲解、第一处错误与训练 | “帮我验算这个极限” | 先明确卷种，不做跨题闭环 |
 | `kaoyan-english-coach` | 英语一/二阅读、翻译、完形与写作批改 | “批改这篇英语二作文” | 区分卷种与评分口径 |
 | `kaoyan-politics-coach` | 政治理论、材料题、批改与背诵复测 | “这段材料对应什么原理”“现在先考我背诵” | 时政按试卷实际年度核验，不凭记忆断言当前时政 |
@@ -248,11 +264,21 @@ codex plugin add kaoyan-408@kaoyan-408
 git clone --branch v2.6.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
-ZCode 用户可在**插件市场 → 添加 → 添加插件市场**中填写 `yq6666-66/408-codex-plugin`，或添加本仓库的本地目录，再安装并启用 `kaoyan-408`。GitHub marketplace 跟随默认分支。当前 v2.6.1 尚未创建发布标签，固定候选时应检出集成提交，再将仓库根目录作为本地 marketplace 添加；正式发布后才使用上文预留的 v2.6.1 标签命令。ZCode 侧使用界面安装，不经过面向 Codex CLI 的 `scripts/install_local.py`。这些步骤依据适配清单整理，尚未做真实客户端安装验收。
+ZCode 3.15.3.8237 本轮实测入口为 **设置 → Plugin Management → Discover → `+` → Local directory**，选择固定检出的仓库根目录，再安装并启用 `kaoyan-408`。当前 v2.6.1 尚未创建发布标签，可以在新的目录固定本轮候选：
 
-Cursor 使用同一套 Skill。在 Customize 里选择 From GitHub Repository，导入 `yq6666-66/408-codex-plugin`。仓库根的 `.cursor-plugin/marketplace.json` 把 `kaoyan-408` 指到现有 `plugins/kaoyan-408/skills`，不复制 Skill。Cursor 的入口文件保留在仓库根，ZCode 与 WorkBuddy 的原生清单随插件包分发。Cursor 客户端实际导入仍待验证。
+```powershell
+git clone --no-checkout https://github.com/yq6666-66/408-codex-plugin.git 408-v261-acceptance
+git -C 408-v261-acceptance checkout --detach c1d632a2059ff1bce26eb5643fa5c95d12b92edc
+git -C 408-v261-acceptance rev-parse HEAD
+```
 
-跨平台安装器（统一参数名 `--validate-only`）：
+本地 marketplace 应选择 `408-v261-acceptance` 仓库根目录，保留完整目录以供后续市场读取。ZCode 侧使用自己的安装入口；`scripts/install_local.py install` 面向 Codex CLI。安装后新建会话，在界面选择 `@408考研插件` 再提问；本轮仅确认此方式调用 planner 成功，其他技能按 [补测步骤](eval/v2.6.1-acceptance/native-host-followup.md) 分别验证。直接使用 GitHub 默认分支不能固定候选提交。
+
+Cursor 使用同一套 Skill。在 Customize 的仓库/市场导入入口中填写 `github.com/yq6666-66/408-codex-plugin`。本轮用户报告：仅填写 `yq6666-66/408-codex-plugin` 返回 `[invalid_argument] Error`，补上 `github.com/` 后反馈已安装；本机界面的版本、来源和提交仍待确认，此地址结果不外推到所有 Cursor 版本。仓库根的 `.cursor-plugin/marketplace.json` 把 `kaoyan-408` 指到现有 `plugins/kaoyan-408/skills`。Cursor 的仓库入口在插件 ZIP 外，须使用完整仓库导入；导入后请核对来源并用本机新会话测试，云端子会话结果不能替代本机验证。
+
+Claude Code 开发适配使用插件内 `.claude-plugin/plugin.json`，与 ZCode 共用仓库根 marketplace 的交集字段。两条重复中文的 i18n 扩展已移除，基础中文名称与描述保留；ZCode 的新市场 UI 导入仍待复测。Claude Code 2.1.167 的清单/路径 strict 与全新隔离 profile 的原生安装均通过，enabled、固定提交和 51 文件缓存已回读；无需登录即可验证安装，但新会话 Skill 发现和真实对话仍未测。完成登录后，可用会话级 `claude --plugin-dir "<本地固定候选的 plugins/kaoyan-408 绝对路径>"` 验证，随后检查 Skill 注册、引用读取和实际调用。这里不提供未发布标签的远端安装命令，也不把安装通过称作完整支持。
+
+Codex 安装器与离线校验（参数名 `--validate-only`；运行于 Windows/Linux 不代表它能替其他宿主安装）：
 
 ```powershell
 python scripts/install_local.py install --validate-only   # 只做离线结构校验
@@ -261,7 +287,7 @@ python scripts/install_local.py install                   # 校验后经官方 C
 
 退出码：`0` 成功；`1` 校验、命令或安装失败；`2` 当前宿主不支持插件命令。只有实际成功才输出 `Installed kaoyan-408`。
 
-消费者固定版本验证（与时间无关：发布 31 天、一年后哈希仍正确的版本均可安装）：
+消费者固定版本验证（与时间无关：发布 31 天、一年后哈希仍正确的版本均可安装）。下列稳定版命令应在检出 v2.6.0 的仓库运行，使用对应版本的允许列表；本地 2.8 开发分支包含 51 个插件文件，不能拿它的校验脚本把旧 45/47 文件包当成本版包验证：
 
 ```powershell
 python scripts/install_local.py verify-release --zip kaoyan-408-2.6.0.zip --sha256 02c1494e47833b103f2060df207c0244e9c744ed0cef04878300ee9616b3eac5 --version 2.6.0
@@ -279,14 +305,18 @@ python scripts/install_local.py verify-tree --dir <隔离安装插件目录> --v
 | `plugins/kaoyan-408/.codebuddy-plugin/plugin.json` | WorkBuddy 原生清单；`version`、`description`、`author`、`license`、`keywords` 等字段与 `.codex-plugin/plugin.json` 保持一致，`skills` 指向插件目录内的 `./skills` |
 | `.codebuddy-plugin/marketplace.json` | 仓库根插件市场描述；`source` 为 `./plugins/kaoyan-408`，`version`、`category`、`author` 与插件清单保持一致 |
 
-添加市场并安装（WorkBuddy 从上面的市场描述解析插件目录，再读取插件目录内的原生清单）：
+市场信息如下。GitHub 地址用于发现仓库；本轮成功证据来自 WorkBuddy 内置 CLI 添加固定提交的本地 directory marketplace，尚未验证 UI 点击安装路径：
 
 ```text
 插件市场地址：https://github.com/yq6666-66/408-codex-plugin
 市场内插件：kaoyan-408
 ```
 
-WorkBuddy 复用相同的 Skills、契约和随包脚本；工具可用性、权限与实际执行效果仍取决于宿主。必须按完整插件目录安装，不要逐个复制 Skill，否则共享引用会缺失。真实客户端安装与三种教学模式尚未验收；Obsidian 配置仍使用现有 `~/.codex/kaoyan-408/` 命名空间。仓库自带两条离线检查入口：
+使用客户端内置 CLI 时，先确认它操作的是 WorkBuddy 配置目录。本轮成功安装将 `CODEBUDDY_CONFIG_DIR` 明确指向当前用户的 `.workbuddy`（Windows 下为 `%USERPROFILE%\.workbuddy`）；遗漏该设置的一次尝试写入了 `.codebuddy`，不计为 WorkBuddy 安装。以 WorkBuddy 存储中的插件记录、来源提交和 enabled 状态为准，不仅看命令返回成功；不要直接照搬测试报告中的清环境或缓存清理命令。
+
+安装并启用后，重载或重启 WorkBuddy，再新建会话进行 [技能发现与使用补测](eval/v2.6.1-acceptance/native-host-followup.md)。安装发生在会话启动后时，旧会话的技能表不能验证新安装状态。无头 CLI 提示 `Authentication required` 只能说明该入口缺少可用登录态，此时改由已登录桌面端新会话测试，不能当作插件行为失败。
+
+WorkBuddy 复用相同的 Skills、契约和随包脚本；工具可用性、权限与实际执行效果仍取决于宿主。必须按完整插件目录安装，不要逐个复制 Skill，否则共享引用会缺失。本轮安装副本 14 个 Skill 和 4 个脚本完整，三种教学模式及新会话调用尚未验收；Obsidian 配置仍使用现有 `~/.codex/kaoyan-408/` 命名空间。仓库自带两条离线检查入口：
 
 ```powershell
 python scripts/validate_repository.py            # 含 WorkBuddy 清单与市场描述的契约校验
@@ -350,3 +380,20 @@ Notion 首次写入需确认绑定“408考研”主页（标记 `kaoyan-408-bra
 参见 [PRIVACY.md](PRIVACY.md)、[TERMS.md](TERMS.md)、[SECURITY.md](SECURITY.md) 和 [THIRD_PARTY_CONTENT.md](THIRD_PARTY_CONTENT.md)。
 
 源码与支持：[GitHub 仓库](https://github.com/yq6666-66/408-codex-plugin) · [Issues](https://github.com/yq6666-66/408-codex-plugin/issues)
+
+
+## 新增场景与独立分发候选
+
+已实现的 `408-error-diagnosis`、`408-concept-followup`、`408-calculation-check` 继续保留，分别用于错题归因、概念追问和计算题校验。它们已按 canonical 源装配进完整插件，也可通过 `skillset.json` 单独导出，独立候选版本为 `3.0.0-dev.5`。三个新入口的原生客户端自动发现和自然路由仍需真实验收。
+
+可在隔离项目中按需试用：
+
+```text
+python -B tools/skills.py export --platform all --output <不存在的新目录>
+python -B tools/skills.py install --platform codex --scope project --project <项目绝对路径> --skill 408-calculation-check
+python -B tools/skills.py verify --platform codex --scope project --project <项目绝对路径> --skill 408-calculation-check
+```
+
+平台参数可选 `claude`、`codex`、`cursor`。装配后的技能包含自己的资源；不要把原始 `src/skills` 直接复制安装。完整插件版本仍以 `plugins/kaoyan-408/.codex-plugin/plugin.json` 为源，独立三场景版本以 `skillset.json` 为源，两者不能混用。新增入口接入主插件前需明确与 tutor、错题闭环的分工并验证路由；保留已有功能和记录兼容性。
+
+独立三包的准备与复验见 [说明](docs/v3-release.md)。其原生发现与自动路由尚未验收，工程通过不能替代真实行为；它们不取代上述完整插件的安装和发布方式。

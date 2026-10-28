@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-18",
+  "kind": "read-only-local-cursor-cli-inventory",
+  "desktopVersion": "3.25.6",
+  "desktopCommit": "f0df777c412b670d09e3eaf214967d779e67c080",
+  "arch": "x64",
+  "scope": [
+    "Windows PATH and reported common executable locations",
+    "WSL Ubuntu default user PATH and reported common executable locations"
+  ],
+  "standaloneAgentCli": "not-found-in-checked-locations",
+  "candidateInstallation": "not-run",
+  "pluginDiscovery": "not-run",
+  "modelRequests": 0,
+  "uiInteraction": false,
+  "installationOrDownload": false,
+  "configurationOrGuardChange": false,
+  "credentialReadOrCopy": false,
+  "artifacts": {
+    "REPORT.md": "ec114a46e51111842260a4fc52270c2df90e87dd68dfffd6584d0cb1ff725ea3",
+    "WSL-SUPPLEMENT.md": "f4aca24d523d9cc9fe2844ae7aa5f3fbe32a3d0c24dd443bad9047ead800765c"
+  },
+  "limits": [
+    "Not a full disk inventory or proof that the product lacks an Agent CLI.",
+    "Desktop extension installation is not evidence of Agent Plugin installation.",
+    "The older Cursor 2.6.1 user report has no client version binding; this inventory must not supply it retroactively.",
+    "No claim of complete profile isolation or tested native plugin behavior."
+  ]
+}

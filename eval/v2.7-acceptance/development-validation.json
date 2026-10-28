@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-17",
+  "version": "2.7.0-dev.1",
+  "testedSourceCommit": "5f8eb691f380f9a5361bc8ab22c04bc06da1ea0b",
+  "checks": {
+    "windows": {
+      "tests": 373,
+      "durationSeconds": 553.743,
+      "skipped": 0,
+      "log": "dist/v270-check-20261017-210114/windows-check.log",
+      "logSha256": "45b91dd6049ada32fe90ddd0c1c74931eeec9188f133a02a5fbbd557b07d0a1f"
+    },
+    "linux": {
+      "tests": 373,
+      "durationSeconds": 58.931,
+      "skipped": 1,
+      "log": "dist/v270-check-20261017-210114/linux-native-check.log",
+      "logSha256": "c441154f7b2e64eec4ea2aec5cd7940bb38997b8c521d65ded83dc17d3c86a2b"
+    }
+  },
+  "linuxEnvironment": "local WSL Ubuntu native temporary clone, not GitHub Actions",
+  "semgrep": {
+    "version": "1.162.0",
+    "rules": 8,
+    "targets": 130,
+    "findings": 0
+  },
+  "officialValidators": {
+    "mode": "pinned-official-script",
+    "skillsPassed": 14,
+    "skillsTotal": 14
+  },
+  "releaseFileCount": 50,
+  "zipSha256": "c0c23b1bd94915f93123afc30c7d39ef7e3e2b46a68e80bba82211949a55a00f",
+  "pluginTreeSha256": "b24cfee145bb5448ba056eff0ee48993ae46f5fa55a81ae490d7c55ecceeb7e6",
+  "knowledgePoints": {
+    "total": 60,
+    "verifiedAnnualMappings": 0,
+    "pendingAnnualMappings": 60
+  },
+  "modelAcceptance": {
+    "preparedCases": 17,
+    "actualRuns": 0,
+    "status": "fixture-only"
+  },
+  "invalidEnvironmentAttempts": [
+    {
+      "log": "dist/v270-check-20261017-210114/linux-check.log",
+      "reason": "temporary interpreter unavailable; no plugin tests ran"
+    },
+    {
+      "log": "dist/v270-check-20261017-210114/linux-check-retry.log",
+      "reason": "native Linux git cannot read Windows worktree gitdir; validation did not proceed"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-19",
+  "userInstruction": "跳过新客户端验收材料，Codex CLI 文件读取",
+  "skippedPrerequisites": [
+    {
+      "id": "native-client-acceptance-materials",
+      "status": "skipped-by-user",
+      "evidenceOfPassing": false
+    },
+    {
+      "id": "codex-cli-file-reading",
+      "status": "skipped-by-user",
+      "evidenceOfPassing": false
+    }
+  ],
+  "effect": "Proceed with the three-scene candidate implementation and available engineering/model checks; unavailable native-client/CLI results remain unverified.",
+  "unchangedBoundaries": [
+    "No tag, Release, push or merge without existing required approval.",
+    "No removal/archive of the existing 14 plugin entrypoints or user installations/notes.",
+    "Older behavioral evidence is not rebound to the new artifacts."
+  ],
+  "implementationBase": "3c0b29271d43a7c7856c8d498bc45ed34505c426",
+  "simulatorSeed": {
+    "source": "plugins/kaoyan-408/scripts/study_simulator.py",
+    "candidateCanonicalSource": "src/shared/calculation/study_simulator.py",
+    "sha256": "e6591ef19b0c7cf081e4c131bd3e23a794178c74d99bc088b50e030cfba7f9cb",
+    "legacyCopyPolicy": "Retained unchanged as the 2.x compatibility snapshot; 3.x exports consume only the new canonical path."
+  }
+}

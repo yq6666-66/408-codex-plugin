@@ -1,0 +1,278 @@
+{
+  "schemaVersion": "1.0",
+  "purpose": "定向知识点依据验收输入，不评自动路由；只把prompt发送给被测模型，reviewOnly留在评分侧。",
+  "cases": [
+    {
+      "id": "DS-01",
+      "subject": "数据结构",
+      "scene": "概念追问",
+      "prompt": "为什么算法时间复杂度比较要说明输入规模和基本操作？",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "DS-ALG-001"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "DS-02",
+      "subject": "数据结构",
+      "scene": "错题归因",
+      "prompt": "我把哈希冲突等同于两个关键字相等了，导致查找时直接判命中。请核对第一处错误。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "DS-SEARCH-003"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "DS-03",
+      "subject": "数据结构",
+      "scene": "计算题校验",
+      "prompt": "权值2、3、5、7构建哈夫曼树，如何复核带权路径长度？",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "DS-TREE-002"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "CO-01",
+      "subject": "计算机组成原理",
+      "scene": "计算题校验",
+      "prompt": "32位字节地址、直接映射Cache，数据容量4KiB、块大小16B。核对地址字段，并标明条件。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CO-CACHE-001"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "CO-02",
+      "subject": "计算机组成原理",
+      "scene": "计算题校验",
+      "prompt": "程序执行100条指令、平均CPI为2、主频1GHz，核对CPU执行时间和单位。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CO-PERF-001"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "CO-03",
+      "subject": "计算机组成原理",
+      "scene": "错题归因",
+      "prompt": "我认为补码加法只要最高位产生进位就必然溢出，请检查这个判断。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CO-DATA-001",
+          "CO-ALU-001"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "OS-01",
+      "subject": "操作系统",
+      "scene": "计算题校验",
+      "prompt": "3个页框初态为空，用FIFO校验引用串1,2,3,4,1,2,5,1,2,3,4,5，给出每步状态和依据。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "OS-MEM-001"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "OS-02",
+      "subject": "操作系统",
+      "scene": "概念追问",
+      "prompt": "LRU命中后为什么要更新最近访问顺序？",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "OS-MEM-002"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "OS-03",
+      "subject": "操作系统",
+      "scene": "计算题校验",
+      "prompt": "P1在0时到达、运行3，P2在1时到达、运行2；RR时间片2。先声明边界顺序，再核对完成与周转时间。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "OS-SCHED-001",
+          "OS-SCHED-002"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "CN-01",
+      "subject": "计算机网络",
+      "scene": "计算题校验",
+      "prompt": "192.0.2.0/24等分成4个子网，核对子网前缀及每个子网的范围。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CN-NET-001"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "CN-02",
+      "subject": "计算机网络",
+      "scene": "错题归因",
+      "prompt": "我把发送时延算成距离除以传播速率，请指出混淆在哪里。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CN-PERF-001"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "CN-03",
+      "subject": "计算机网络",
+      "scene": "概念追问",
+      "prompt": "TCP慢开始与拥塞避免的窗口变化有什么区别？",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CN-TCP-002"
+        ],
+        "basisStatus": "disclose-source-year-and-scope; 2027 remains unverified",
+        "mustNotInventChapter": true
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "BOUNDARY-01",
+      "subject": null,
+      "scene": "边界",
+      "prompt": "循环队列里的FIFO和页面置换的FIFO有什么区别？",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "DS-QUEUE-001",
+          "OS-MEM-001"
+        ],
+        "criterion": "用题面区分含义，不只按同名匹配"
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "BOUNDARY-02",
+      "subject": null,
+      "scene": "边界",
+      "prompt": "32位字节地址、直接映射Cache，数据容量4KiB、块大小16B。我卡在地址字段拆分；先只给我一个提示，不给字段位数答案和详细考点编号，依据留到我作答后再补。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [],
+        "criterion": "完整题面下只给一步提示；不输出字段位数答案或详细知识点ID；详细依据延后"
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "BOUNDARY-03",
+      "subject": null,
+      "scene": "边界",
+      "prompt": "求lim(x趋于0) sin(x)/x，只解释数学依据。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [],
+        "criterion": "非408任务不套索引"
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "BOUNDARY-04",
+      "subject": null,
+      "scene": "边界",
+      "prompt": "讲解椭圆曲线签名的一个数值例子，并给对应408知识点编号。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [],
+        "criterion": "索引未收录，不编ID"
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "BOUNDARY-05",
+      "subject": null,
+      "scene": "边界",
+      "prompt": "请给FIFO这道题在2027年408大纲中的准确位置，没核到原文就直说。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "OS-MEM-001"
+        ],
+        "criterion": "不能把项目路径或旧年来源当2027大纲"
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "BOUNDARY-06",
+      "subject": "计算机组成原理",
+      "scene": "旧年依据边界",
+      "prompt": "直接映射Cache的地址字段划分，在2027年408大纲中的准确位置是什么？请区分你实际核到的年份和材料来源，没读到2027原文就直说。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CO-CACHE-001"
+        ],
+        "criterion": "保留2025学校公开材料的上位主题映射；字段细节为项目展开；2027仍待核，不把旧年verified升级为2027"
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "LOOP-01",
+      "subject": "408",
+      "scene": "多题错因整理",
+      "targetSkill": "kaoyan-error-loop-coach",
+      "prompt": "这是我两次复盘的实际记录：第一次，FIFO命中后我把该页移到队尾；第二次，直接映射Cache里我把标记位当成组索引使用。请逐题标知识点依据，区分观察和原因假设，给下一验证动作。本次不保存笔记。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "OS-MEM-001",
+          "CO-CACHE-001"
+        ],
+        "criterion": "逐题依据；2025转载来源与2027待核分开；不把标签当作已确认根因"
+      },
+      "executionStatus": "fixture-only"
+    },
+    {
+      "id": "LOOP-02",
+      "subject": null,
+      "scene": "混合学科错因整理",
+      "targetSkill": "kaoyan-error-loop-coach",
+      "prompt": "我有两条错题记录：数学里把sin(x)/x在x趋于0时直接代成0/0并说结果不存在；网络题把发送时延写成距离除以传播速率。请分别整理错误表现和知识点依据，不要保存记录。",
+      "reviewOnly": {
+        "acceptableKnowledgeIds": [
+          "CN-PERF-001"
+        ],
+        "criterion": "只给网络题套408索引，数学题不编408编号；观察和假设分开"
+      },
+      "executionStatus": "fixture-only"
+    }
+  ]
+}

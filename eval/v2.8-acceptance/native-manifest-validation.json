@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-18",
+  "type": "native-manifest-and-path-validation-only",
+  "sourceCommit": "6a3bb47d973aaa9c545b65e55262c9f6e9e629a8",
+  "version": "2.8.0-dev.1",
+  "cliVersion": "2.1.167",
+  "inputSha256": {
+    ".claude-plugin/marketplace.json": "72f789cfb387690c5bbec585f3ab1408629d6c633f960bc080564df06de93942",
+    "plugins/kaoyan-408/.claude-plugin/plugin.json": "ee1bb31da61a0a779858a20014444a7d929c5d4491ee6341d2ddcd1c0aad308d",
+    "plugins/kaoyan-408/.codex-plugin/plugin.json": "355d1522372b2cdac5df5a244e5a021931b31d9462a2e1b3cd024f77d36ee544"
+  },
+  "inputsUnchanged": true,
+  "pluginTreeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959",
+  "checks": [
+    {
+      "command": [
+        "claude.cmd",
+        "--version"
+      ],
+      "startedAt": "2026-10-18T07:40:08.883266+00:00",
+      "exitCode": 0,
+      "stdout": "dist/v280-dev1-check-20261018/bound-version.stdout.txt",
+      "stdoutSha256": "a20e21a0726e00d21e624430993ef9feb8120e6835f7148dd7a6d66d3efe25b2",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "warningObserved": false
+    },
+    {
+      "command": [
+        "claude.cmd",
+        "plugin",
+        "validate",
+        ".claude-plugin/marketplace.json",
+        "--strict"
+      ],
+      "startedAt": "2026-10-18T07:40:09.221030+00:00",
+      "exitCode": 0,
+      "stdout": "dist/v280-dev1-check-20261018/bound-marketplace.stdout.txt",
+      "stdoutSha256": "68e128d954e99cba7e23dc313970ce8bdddb9733f73e4377200d979ca35ceaa0",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "warningObserved": false
+    },
+    {
+      "command": [
+        "claude.cmd",
+        "plugin",
+        "validate",
+        "plugins/kaoyan-408",
+        "--strict"
+      ],
+      "startedAt": "2026-10-18T07:40:10.194789+00:00",
+      "exitCode": 0,
+      "stdout": "dist/v280-dev1-check-20261018/bound-plugin.stdout.txt",
+      "stdoutSha256": "30e47b6a2337e6ff76c697979aae1adeb1b4c8e7b5dcc2ca110bce541cd33801",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "warningObserved": false
+    }
+  ],
+  "installation": "not-tested",
+  "sessionDiscovery": "not-tested",
+  "conversation": "not-tested",
+  "scope": "Current CLI validates descriptors and declared paths; does not prove 14 Skill bodies loaded or behavioral correctness."
+}

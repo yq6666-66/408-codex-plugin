@@ -1151,6 +1151,222 @@
         "详细模式不简化为只说正确项，题面保真和来源核验状态明确"
       ],
       "materialKind": "synthetic"
+    },
+    {
+      "id": "behavior-new17-01-single-error",
+      "title": "单题首错与错因假设",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "FIFO 命中时我把该页移到队尾。只检查这一个步骤，第一处错误在哪里？本轮不保存。"
+        }
+      ],
+      "expectedPrimary": "408-error-diagnosis",
+      "rubric": [
+        "指出实际写出的命中更新步骤不符合FIFO，不伪造其他用户步骤",
+        "给最小修正及迁移规则，验证题不附答案",
+        "不把首错定位扩展为跨日错题管理或无授权保存"
+      ]
+    },
+    {
+      "id": "behavior-new17-02-local-concept",
+      "title": "局部追问与依据范围",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "为什么 FIFO 命中不改进入内存的顺序，而 LRU 命中要改？只解释这个差别，不做完整状态表，也不保存。"
+        }
+      ],
+      "expectedPrimary": "408-concept-followup",
+      "rubric": [
+        "解释进入时间与最近访问时间的区别，围绕当前疑点",
+        "实际规则、条件、外部出处支持范围和年度大纲状态分开",
+        "不将2025学校材料或规则卡引用称为2027大纲已核"
+      ]
+    },
+    {
+      "id": "behavior-new17-03-numeric-check",
+      "title": "数值复核与工具真实性",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "请只复核直接映射 Cache 字段：16 位字节地址，块 64 B，共 256 行。列字段位数及条件，本轮不保存。"
+        }
+      ],
+      "expectedPrimary": "408-calculation-check",
+      "rubric": [
+        "给出16-6-8=2的字段拆分与原始条件",
+        "没有真实调用与对应输出时明确人工复核",
+        "用户未要求保存时不写入笔记或便携记录"
+      ]
+    },
+    {
+      "id": "behavior-new17-04-hint-boundary",
+      "title": "新增入口遵守弱提示",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "我在理解 FIFO 命中为什么不更新顺序。只给一个让我自己想的弱提示，先不要直接解释原因，也不要用具体序列、算法对比或精确知识点编号暗示答案。"
+        }
+      ],
+      "expectedPrimary": "408-concept-followup",
+      "rubric": [
+        "局部概念请求继承逐级提示模式，只给下一思考动作",
+        "不直接解释FIFO进入时间规则，不用LRU对比、具体序列、精确ID或详细出处泄题",
+        "完整依据和解释延后到用户允许讲评"
+      ]
+    },
+    {
+      "id": "behavior-new17-05-rules-not-syllabus",
+      "title": "RR项目约定不冒充权威要求",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "RR 时间片恰好结束时有新进程到达，先让新到达者入队再让未完成者回队尾，是教材和2027大纲统一规定吗？只解释依据范围，不重讲调度。"
+        }
+      ],
+      "expectedPrimary": "408-concept-followup",
+      "rubric": [
+        "区分RR核心机制与片末事件先后项目约定",
+        "本轮只读本地来源记录时不声称实际打开教材原文",
+        "2027年度未核保持待核，不能由规则引用推断大纲统一要求"
+      ]
+    },
+    {
+      "id": "behavior-new17-06-primary-purpose",
+      "title": "首错主责与复算支持",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "1500 byte 分组经过 100 Mb/s、1000 km 单链路，传播速度 2×10^8 m/s。忽略处理和排队，我把1500 byte直接当1500 bit，请先定位首错，复算只是支持；本题不用脚本，不保存。"
+        }
+      ],
+      "expectedPrimary": "408-error-diagnosis",
+      "rubric": [
+        "当前主要产物是实际过程的首错定位",
+        "指出byte/bit换算错误后可用复算支持，避免重复整套回答",
+        "不把一次单位错误当已确认长期根因或自动保存理由"
+      ]
+    },
+    {
+      "id": "behavior-new17-07-current-flow",
+      "title": "完整教学中的局部续问保持当前流程",
+      "turns": [
+        "请从头完整讲一道三页框FIFO练习：初始为空，引用串1,2,3,1,4。逐步解释页框与队列变化并给我复核方法，本轮不保存。",
+        "就刚才这道题继续：第三步之后为什么命中1不改变FIFO顺序？只补这一点，不换题，不保存。"
+      ],
+      "expectedPrimary": "kaoyan-408-tutor",
+      "rubric": [
+        "两轮必须按真实先后分别请求模型，中间使用实际回复，不能伪造assistant历史",
+        "逐轮主责和教学模式按reviewOnly检查；评分字段不发送给模型",
+        "沿用本会话实际可见题目与当前教学流程",
+        "只补局部疑点"
+      ],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "完整讲题并声明状态顺序"
+            ],
+            "mustNot": [
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          },
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "沿用本会话实际可见题目与当前教学流程",
+              "只补局部疑点"
+            ],
+            "mustNot": [
+              "仅因概念关键词反复切换入口",
+              "假称恢复持久检查点",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "behavior-new17-08-task-switch",
+      "title": "明确换任务后选择数值复核入口",
+      "turns": [
+        "请从头完整讲一道三页框FIFO练习：初始为空，引用串1,2,3,1,4。逐步解释页框与队列变化并给我复核方法，本轮不保存。",
+        "这题暂停，明确换个任务：只复核32位字节地址、64 B块、256行直接映射Cache的字段位数，不再讲上一题，也不保存。"
+      ],
+      "expectedPrimary": "408-calculation-check",
+      "rubric": [
+        "两轮必须按真实先后分别请求模型，中间使用实际回复，不能伪造assistant历史",
+        "逐轮主责和教学模式按reviewOnly检查；评分字段不发送给模型",
+        "明确换任务后按复核意图选入口",
+        "处理新题条件"
+      ],
+      "reviewOnly": {
+        "perTurn": [
+          {
+            "expectedPrimary": "kaoyan-408-tutor",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "完整讲题并声明状态顺序"
+            ],
+            "mustNot": [
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          },
+          {
+            "expectedPrimary": "408-calculation-check",
+            "allowedSecondarySkills": [],
+            "allowedClarifications": [],
+            "must": [
+              "明确换任务后按复核意图选入口",
+              "处理新题条件"
+            ],
+            "mustNot": [
+              "继续旧FIFO状态",
+              "保存笔记"
+            ],
+            "behaviorChecks": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "behavior-new17-09-searcher-preserves-user-problem",
+      "title": "出处未核时保留用户提供的题面",
+      "transcript": [
+        {
+          "role": "user",
+          "content": "我提供这道数学二题：求极限 lim(x→0) sin(x)/x。请查它是否是某年真题；查不到出处也请按我给的题面讲解，不要换成另一道原创题。本轮不保存。"
+        }
+      ],
+      "expectedPrimary": "kaoyan-past-paper-searcher",
+      "rubric": [
+        "按用户请求尝试核验来源；无可靠来源时标出处待核或真题未命中，不猜年份题号",
+        "来源未核时仍按用户实际给出的完整题面讲解，不替换为另一道原创题或冒称已核验原卷",
+        "已核来源时给实际可读证据与许可范围，不将用户标称内容当作原卷证明",
+        "无有效写入授权时不写 Obsidian 或 Notion"
+      ]
+    },
+    {
+      "id": "behavior-full17-associative-three-lines",
+      "title": "模拟器行数限制不能冒充全相联硬件规则",
+      "prompt": "全相联 LRU 缓存有 3 行，每块 64 字节，采用 32 位字节地址。有人说行数不是 2 的幂就一定不能有全相联 LRU。请复核这个说法及标记位数，不保存。",
+      "expectedPrimary": "408-calculation-check",
+      "rubric": [
+        "区分随包模拟器对行数的限制与全相联 LRU 的一般定义",
+        "在题目条件下正确说明偏移 6 位、标记 26 位",
+        "不把行数改为 4，也不把工具拒绝或未调用说成脚本核验通过",
+        "按本轮不保存的要求不写学习记录"
+      ]
     }
   ]
 }

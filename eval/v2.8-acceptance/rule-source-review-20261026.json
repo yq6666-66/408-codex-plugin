@@ -1,0 +1,243 @@
+{
+  "checkedAt": "2026-10-26",
+  "status": "eight core rules partially supported by read primary materials",
+  "scope": "Rule support only; no new annual syllabus mapping, native-client or model acceptance",
+  "ruleCards": [
+    {
+      "id": "rule-binary-closed",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-binary-closed",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Algorithms, 4th Edition: BinarySearch.java",
+          "publisher": "Robert Sedgewick and Kevin Wayne",
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BinarySearch.java",
+          "locator": "BinarySearch.indexOf(int[] a, int key) 与其有序数组前置条件",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "有序数组采用闭区间比较和 mid±1 更新，找到时返回一个相等位置。"
+          ],
+          "limitations": [
+            "这里只引用作者实现作为算法依据，没有复制代码；不是首个或末个相等位置算法。",
+            "规则卡中的等价中点表达仍须按具体语言防溢出；来源为可变 master 链接，定位对应本次阅读日期。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-cache-direct",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-cache-direct",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "university-course",
+          "title": "CS 3410 — Caches",
+          "publisher": "Cornell University, CS 3410 Fall 2024",
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2024fa/notes/caches.html",
+          "locator": "Direct-Mapped Cache / Accessing the Cache / Larger Blocks",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "直接映射按索引选择唯一行，地址分为标记、索引和块内偏移。"
+          ],
+          "limitations": [
+            "通用位宽公式由该结构推导；空初态和不计写策略是本项目模拟器的建模限制。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-cache-associative-lru",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-cache-associative-lru",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "university-course",
+          "title": "CS 3410 — Caches",
+          "publisher": "Cornell University, CS 3410 Fall 2024",
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2024fa/notes/caches.html",
+          "locator": "Fully Associative Cache / Replacement Policies",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "全相联没有索引字段；LRU 按块的最近访问历史决定淘汰。"
+          ],
+          "limitations": [
+            "精确 LRU、空初态和不计脏位/写回代价是本项目选定模型，不代表所有 Cache 实现。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-fifo",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-fifo",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Beyond Physical Memory: Policies",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+          "locator": "§22.3 FIFO；Figure 22.2；PDF 第 4–5 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "页面按进入顺序淘汰，命中不会把旧页面改为新进入页面。"
+          ],
+          "limitations": [
+            "来源中的队列显示顺序不等于固定页框槽位；非空初态与槽位放置仍按题目或本项目约定。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-lru",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-lru",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Beyond Physical Memory: Policies",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+          "locator": "§22.5 Using History: LRU；Figure 22.5；PDF 第 7–8 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "LRU 淘汰最近最久未访问页；示例中命中改变最近访问顺序。"
+          ],
+          "limitations": [
+            "不支持把时钟/近似 LRU 当作精确 LRU；非空初态输入顺序和固定槽位仍是题目或项目约定。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-fcfs",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-fcfs",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Scheduling: Introduction",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "locator": "§7.1 Workload Assumptions、§7.2 Scheduling Metrics、§7.3 FIFO；PDF 第 2–3 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "FCFS/FIFO 按先来先服务执行；周转时间由完成时间减到达时间计算。"
+          ],
+          "limitations": [
+            "同到达按名字排序是项目约定；等待=周转−执行只在本卡无 I/O 等假设下推导，未作为来源逐字公式。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-rr",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-rr",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Scheduling: Introduction",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "locator": "§7.7 Round Robin 与 Figure 7.7；PDF 第 7–8 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "RR 以时间片轮流运行就绪任务，时间片长度与上下文切换成本相关。"
+          ],
+          "limitations": [
+            "同到达名字排序、片末到达先入队和无切换成本是本项目约定，来源不决定这些事件先后细节。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-network-delay",
+      "sourceIdentity": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-network-delay",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Computer Networking: A Top-Down Approach — Computing end-end delay",
+          "publisher": "J. F. Kurose and K. W. Ross, UMass Amherst author materials",
+          "url": "https://gaia.cs.umass.edu/kurose_ross/interactive/end-end-delay.php",
+          "locator": "Computing end-end delay (transmission and propagation delay) / Solution 的逐链路公式",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "传输时延用分组 bit 数除传输速率，传播时延用距离除传播速度。"
+          ],
+          "limitations": [
+            "页面算例不能证明任意多跳、流水或排队模型；KiB 换算和题目另定的单位仍需另行说明。"
+          ]
+        }
+      ]
+    }
+  ],
+  "syllabusMappingUnchanged": {
+    "knowledgePoints": 60,
+    "verified2025": 17,
+    "pending": 43,
+    "verified2027": 0
+  },
+  "accessFailures": [
+    {
+      "url": "https://algs4.cs.princeton.edu/11model/BinarySearch.java.html",
+      "result": "403; not used as read evidence"
+    },
+    {
+      "url": "https://www.cs.princeton.edu/courses/archive/fall24/cos126/static/lectures/42Algorithms.pdf",
+      "result": "unavailable; not used as read evidence"
+    },
+    {
+      "url": "https://www.cs.cornell.edu/courses/cs2112/2021fa/lectures/lecture.html?id=loopinv",
+      "result": "only loading shell visible; not used as rule evidence"
+    }
+  ],
+  "engineeringValidation": {
+    "canonicalKnowledgeGate": "passed",
+    "unittestCommand": "python -B -m unittest discover -s tests -p test_v300_knowledge.py -q",
+    "tests": 19,
+    "failures": 0,
+    "scope": "local canonical knowledge tests; not native-client or model behavior acceptance"
+  }
+}

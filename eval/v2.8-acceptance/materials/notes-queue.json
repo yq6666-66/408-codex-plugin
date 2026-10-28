@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.2",
+  "recordType": "ReviewQueue",
+  "recordId": "kr-1111111111111111",
+  "updatedAt": "2026-10-16",
+  "generatedAt": "2026-10-16",
+  "items": [
+    {
+      "subject": "408",
+      "topic": "FIFO 页面置换",
+      "errorCause": "命中后移动进入队列；尚不能确定深层原因",
+      "errorCauseStatus": "hypothesis",
+      "nextRetestDate": null,
+      "retestOffsetDays": 3,
+      "retestAnchorDate": "2026-10-16",
+      "itemId": "kr-1111111111111112",
+      "status": "pending",
+      "masteryEvidence": [],
+      "retestEvidence": []
+    },
+    {
+      "subject": "408",
+      "topic": "Cache 地址映射",
+      "errorCause": "把标记位当组索引；尚不能确定深层原因",
+      "errorCauseStatus": "hypothesis",
+      "nextRetestDate": null,
+      "retestOffsetDays": 3,
+      "retestAnchorDate": "2026-10-16",
+      "itemId": "kr-1111111111111113",
+      "status": "pending",
+      "masteryEvidence": [],
+      "retestEvidence": []
+    }
+  ]
+}

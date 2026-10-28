@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "408 project rule cards with explicit provenance limits",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "cards"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "cards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "pointIds", "name", "rule", "conditions", "source"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^rule-[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "pointIds": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^(DS|CO|OS|CN)-[A-Z]+-[0-9]{3}$"}
+          },
+          "name": {"type": "string", "minLength": 1, "pattern": "\\S"},
+          "rule": {"type": "string", "minLength": 1, "pattern": "\\S"},
+          "conditions": {
+            "type": "array", "minItems": 1,
+            "items": {"type": "string", "minLength": 1, "pattern": "\\S"}
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "title", "locator", "verification"],
+            "properties": {
+              "kind": {"const": "project-summary"},
+              "title": {"const": "408 项目原创规则归纳"},
+              "locator": {"type": "string", "pattern": "^rule-cards\\.json#rule-[a-z0-9-]+$"},
+              "verification": {"enum": ["project-reviewed-external-pending", "project-reviewed-external-partial"]}
+            }
+          },
+          "externalReferences": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"$ref": "#/$defs/externalReference"}
+          }
+        },
+        "allOf": [{
+          "if": {"properties": {"source": {"properties": {"verification": {"const": "project-reviewed-external-partial"}}}}},
+          "then": {"required": ["externalReferences"], "properties": {"externalReferences": {"minItems": 1}}},
+          "else": {"properties": {"externalReferences": {"maxItems": 0}}}
+        }]
+      }
+    }
+  },
+  "$defs": {
+    "nonblank": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "claims": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+    "externalReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "title", "publisher", "url", "locator", "checkedAt", "verification", "supports", "limitations"],
+      "properties": {
+        "kind": {"enum": ["textbook-author", "university-course", "standards-body", "original-publication"]},
+        "title": {"$ref": "#/$defs/nonblank"},
+        "publisher": {"$ref": "#/$defs/nonblank"},
+        "url": {"type": "string", "format": "uri", "pattern": "^https://[^\\s]+$"},
+        "locator": {"$ref": "#/$defs/nonblank"},
+        "checkedAt": {"type": "string", "format": "date"},
+        "verification": {"const": "verified"},
+        "supports": {"$ref": "#/$defs/claims"},
+        "limitations": {"$ref": "#/$defs/claims"}
+      }
+    }
+  }
+}

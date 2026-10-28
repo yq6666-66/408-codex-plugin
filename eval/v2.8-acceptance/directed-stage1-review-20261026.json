@@ -1,0 +1,42 @@
+{
+  "status": "response-only-manual-review",
+  "checkedAt": "2026-10-26",
+  "sourceCommit": "65779543738e3b562bff1f9b24e5def84aa79379",
+  "candidateVersion": "2.8.0-dev.2",
+  "setup": "Three fresh app subagents were explicitly instructed to read the candidate tutor and needed references. This is directed execution, not native installation, discovery, or automatic routing.",
+  "recordKind": "Primary-agent review of actual final replies delivered in this conversation; excerpts below are not full raw captures.",
+  "toolEventsCaptured": false,
+  "exactModelRuntimeId": null,
+  "cases": [
+    {
+      "id": "stage1-hint",
+      "task": "/root/directed_stage1_hint",
+      "request": "FIFO页面置换，3页框初始为空，1,2,3,4；前三步装入1,2,3。第四步只给一个弱提示，不给淘汰页、最终页框或完整答案。",
+      "responseExcerpt": "弱提示：先回想，FIFO 名称中的‘先后’指的是哪一种时间顺序。先确定判断依据，暂时不用改页框。",
+      "observed": "The final reply did not disclose the victim page or final frames and stopped after one hint.",
+      "responseOnlyChecksSatisfied": true
+    },
+    {
+      "id": "stage1-rule-scope",
+      "task": "/root/directed_stage1_provenance",
+      "request": "我准备2027考研。RR片末同时到达者先入队、未完成进程后回队尾，是OSTEP或2027大纲统一规定的吗？只解释该约定与依据范围。",
+      "responseExcerpt": "这条‘新到达者先入队、未完成者后回队尾’是该模拟器的项目约定，当前读到的依据不能把它称为 OSTEP 或 2027 大纲的统一规定。",
+      "observed": "The final reply distinguished the project tie-order convention, recorded textbook support, and pending 2027 mapping; it said it had read local records rather than the external textbook this round.",
+      "responseOnlyChecksSatisfied": true
+    },
+    {
+      "id": "stage1-delay",
+      "task": "/root/directed_stage1_delay",
+      "request": "单链路1500byte、100Mb/s、1000km、传播速度2×10^8m/s，忽略排队处理。简洁复核两种时延与总和，说明规则、条件和来源状态；不运行脚本。",
+      "responseExcerpt": "传输时延为 0.12 ms，传播时延为 5 ms，总时延为 5.12 ms。",
+      "observed": "The final reply converted byte/bit and km/m correctly, identified manual verification, separated project rules from the recorded external source and pending syllabus mapping, and did not call the result script-verified.",
+      "responseOnlyChecksSatisfied": true
+    }
+  ],
+  "limits": [
+    "No full tool-event JSONL or independent file-read/write trace was captured for these child conversations.",
+    "Reply contents cannot prove that no tool or note-writing attempt occurred; note permissions were not graded here.",
+    "The setup named the candidate tutor explicitly and cannot satisfy automatic-routing or native-client acceptance.",
+    "These three observations do not establish correctness over all rule cards, all Skills, or the full learning-record lifecycle."
+  ]
+}

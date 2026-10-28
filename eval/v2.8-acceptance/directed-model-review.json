@@ -1,0 +1,732 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-10-18",
+  "method": "Codex app sub-agent, explicitly requested Skill file read; fixed original learning requests",
+  "binding": {
+    "sourceCommit": "6a3bb47d973aaa9c545b65e55262c9f6e9e629a8",
+    "pluginVersion": "2.8.0-dev.1",
+    "pluginTreeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959",
+    "pluginFileCount": 51,
+    "inputCatalog": "eval/v2.7-acceptance/cases.json",
+    "inputCatalogSha256": "58624e54545901f1ca8ea65c56764208fa47f0ad13736d43f92aafbd2a586aef"
+  },
+  "reviewers": [
+    {
+      "type": "primary-agent",
+      "name": "/root"
+    },
+    {
+      "type": "independent-agent",
+      "name": "/root/grade_directed20"
+    }
+  ],
+  "maintainerHumanSignoff": false,
+  "summary": {
+    "cases": 20,
+    "validCaptures": 20,
+    "reviewedCases": 20,
+    "pass": 20,
+    "partial": 0,
+    "fail": 0,
+    "model": "gpt-6.1-sol",
+    "reasoningEffortCounts": {
+      "xhigh": 10,
+      "high": 10
+    }
+  },
+  "capturePolicy": {
+    "approvalPolicy": "never",
+    "sandboxPolicy": "inherited app sub-agent danger-full-access",
+    "guardOrPermissionSettingsChanged": false,
+    "scope": "Fixed candidate workspace only; before/after workspace hashes and public tool events checked",
+    "publishedRawData": "Only artifact digests and grades; no hidden reasoning collected/exported"
+  },
+  "earlierQuotaFailures": {
+    "caseIds": [
+      "OS-02",
+      "OS-03",
+      "CN-01"
+    ],
+    "phase": "initial attempts before resuming",
+    "reason": "usage limit",
+    "reportedRetryTime": "2026-10-18 20:10 Asia/Shanghai",
+    "availabilityRecheckedAt": "2026-10-18T12:54:05Z",
+    "resumption": "same task and workspace after the reported reset time; first failed attempts not counted as answers"
+  },
+  "captureAdapter": {
+    "scriptFile": "collect_app_runs.py",
+    "privateDirectoryName": "408-v280-directed-batch-_6r7k99w",
+    "sha256": "00750acf270878065f90bffb9e5bed8d388e71ccfc714848f8ea1f6d8166de23",
+    "changes": "Decode structured exec output containers and preserve actual JSON/relative-path/line-ending read evidence. These parser fixes did not change model answers.",
+    "earlierParserIndexSha256": "823c6d07defb047fee1dc05c15a58bc8d7aa4f4d6dca6f01b39a3a8474ccf643"
+  },
+  "independentReviewArtifacts": {
+    "grader-review.json": "55866096d70a1feef269090881c18fa916d8f8173dee5d1e459032c71d6014ee",
+    "grader-review.md": "31e4842c5405400b7472b23c567f168739744cfdb316a1a0af3f92985d3c62d4",
+    "independent-calculation-checks.json": "efb352890d3be740e9302e9f63071b02687236bc4750baf0e5a3102052e7e359"
+  },
+  "cases": [
+    {
+      "caseId": "DS-01",
+      "threadId": "01a14df9-6042-7851-88d3-3b9098d942a4",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_cecd0b09a99543d8bcb8661b4385a712"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "3665005d1ca3ba943396abfe7fc2965b1c3ef8bdf6b3919f89506efbdb18ede2",
+        "answer.md": "797312e65af16a9450da1292470c83cf147bc4b8d553c9a1127a71deb6b5c173",
+        "tool-evidence.json": "bb94982f2f7ab7f75caeb8b1326b43f5bdc3a83c4daf62d776b76f6c2d89454a",
+        "public-messages.json": "6d883b80b703092b2b3292f1370be5af02142f2b903b4192c283b5e821f406b8",
+        "workspace-before.json": "de627154160ed2dd24ddd10ec4f79913df75c893f9f55448bf14e0033db8d94f"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "说明输入规模定义、基本操作及代价模型，以最大值 n−1 次比较和整数数值/位数区别复核；来源写明 2025 学校公开材料、芜湖学院、PDF p.1 考查目标/2，未宣称当前年度原文或脚本核验。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "DS-02",
+      "threadId": "01a14dfc-41e6-7452-9a87-9f922bef812f",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_20b6798548594ff99cc4c86112dc3e59"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "917ba78566286ba126e0d5a91a64f3f692efe023002b248eca82a7cc222132cf",
+        "answer.md": "50f3a951906589f5949b83ad9d38959c1cf80fd118fc7f8750b21193a96eadb3",
+        "tool-evidence.json": "44f4302837a127f7dd31cef5e1a3bb864d4a184830472a62414b06fe389b4260",
+        "public-messages.json": "4bf8b1cfaab849c5d24c667394ebc5e16d7a3cc033e12261003074d504491514",
+        "workspace-before.json": "51f55ef8d1dcfbd308b9b3254cc3b629a4cd6002bb8f5189b522227a82db930d"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "第一处错误定位为由散列地址相同推出关键字相等；10 mod 7=17 mod 7 的反例正确，保留关键字比较及冲突处理条件；年度待核。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "DS-03",
+      "threadId": "01a14dfc-5be7-70d1-acd0-99119c714b69",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_eba84f7247934bed8cbf6403f0a0d60d"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "401cb33719685d4e1688c01cd0e04735bdbf0a642d0a566aa5de7c3867cdc656",
+        "answer.md": "bd79f7d7881317018a7108b42991e06ab8320b5bd5b9ebe69ced5f6e74a0075a",
+        "tool-evidence.json": "6e7fa0a897b0882292a39dea7c3d7f095b35dd59da1577c9a3c7712a3dd745ee",
+        "public-messages.json": "6f2c5f0c02d3f5b626eda1a5ac580fbc937246b9fb3c5b6da63684a956bacce7",
+        "workspace-before.json": "67f729ed7d5dcc6c4af50cd410d56ae6c0d2268a631cf403ac66adbd59643b23"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "合并 5、10、17，WPL=32；叶子路径边数法与合并权值法一致；2025 学校来源及 p.2 四/(四)1 明确，说明本轮读索引、人工推导。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "CO-01",
+      "threadId": "01a14dfc-73c5-7960-88bd-a254d830928c",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_a23b53f589ae4c6593c8ae601af88e70"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "edfc607eb7a92b3098590cdb8408dad0207db743dc6a1b32912aa3e2ebaeedc4",
+        "answer.md": "9dfe223593fe32bdafa2aa55107f983c7ecd4a4254ce57c6d9c5cf2bfa34a0e6",
+        "tool-evidence.json": "c5a04bc7255aa4aa536a477d533617f2bc4f59be54668c14dca6b7d9455541fe",
+        "public-messages.json": "1f77eaa9588692bd3ea57ad94f5a7249e011c6f9a56b2ff80a2fd1b7aa7cca75",
+        "workspace-before.json": "259fd8e9075aacaddf28bb655f923683c9e1a1416c715971bdb8c5e5dd3c4e50"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "字段 20/8/4 和位段 [31:12]/[11:4]/[3:0] 正确；说明字节编址、数据容量、地址宽度及常规映射条件；2025 为上位主题，字段细节为项目展开，未重读 PDF、其他年度待核。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "CO-02",
+      "threadId": "01a14dfd-a2eb-7d40-96d6-cd94bb1fc8f0",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_a35453076767464596f51805870b4f7b"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "20a9f2eb5b776e77edc152ee3f7f17facee2dd54dabfe20045b5b4de592d0925",
+        "answer.md": "8d4e8403411681399ed35ec370e9fc46b5d3b657353ddf6279bedfbb6294510a",
+        "tool-evidence.json": "fb3c3d051c3e71c03f279bcd1387283fb32ad6eb309dcd0671cc1b5fdbfc0783",
+        "public-messages.json": "d9ff1b51c118b38cf9bf63ce8c1f785a816062bcea8252fb9aee8d580145550b",
+        "workspace-before.json": "3d5287aa5028425c26cd823ef3f87cbc60f689a512a895b1d6090e93a04eb95a"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "100×2/10^9=2×10^-7s=200ns=0.2μs 正确；公式量纲及周期复核清楚；2025 芜湖学院学校材料 p.3 一/(二)，其他年度待核。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "CO-03",
+      "threadId": "01a14dfd-bb58-7840-9d9f-ccf4735fe56d",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_a2a7223479754eb09e85ed3f8498046f"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "d69ec4c593fe30a6bd887324638dbe08619cc24f780a8dd76c1a215a522bb87b",
+        "answer.md": "7eae0eeef322feb41b8235c5671cc17703b45922684b1faeb8ccb270a164a46d",
+        "tool-evidence.json": "6147e52b487999c0e4630884721ddd6cf520983102251de91f28e9dd4301d648",
+        "public-messages.json": "7a44f2aeb328cb9483c88c1d8442ce4d123bd5b9ed17c0664a91ac2183c01a2c",
+        "workspace-before.json": "778cfd30c3c743e517b611c34eff8cbac7489422d64fc00b823e55c61b7425b2"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "选择更直接的整数溢出条目有效，无需机械附上 CO-DATA-001；-1+1 有进位不溢出、7+1 无向外进位而溢出均正确；n 位范围及进位异或有条件，年度待核。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "OS-01",
+      "threadId": "01a14dfd-d2ef-7d42-9692-31d25ecbbc04",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_e01292d04b084b9ba0877053fe881e51"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "a0bcabbf24d629e466667d62818846636082a0c2007810fb2610f47592f972dd",
+        "answer.md": "f15d4d0a653fd70a71155e52aa384cbd3b1d08f7788e8fe5870f08b58bb4f120",
+        "tool-evidence.json": "c36a1343b3eb35bd836930a4a9fb95a9fae4f4d297ba8bdff8da4a44ccef096b",
+        "public-messages.json": "0da2a301f3c5ff272f15076f229fc8e3817761295b29194c33171b41e55fd5d8",
+        "workspace-before.json": "4f70f4a65e8bf68208f07b5f9804623c87e4aaab128b918472f12f1f9d22f3cf"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "12 步 FIFO 状态、固定槽位与装入队列明确区分；命中不更新顺序，9 缺页/3 命中、末态 [5,3,4] 正确；年度待核，明确人工推演。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "OS-02",
+      "threadId": "01a14dff-20c7-7d22-a13f-75964199f0f7",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_a0a186f1aa1b405294df199d7340a88c"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "a269143aad8534545b8a38b79ceeca90e0e5bb0a2418d0b5cf31c3fd6025e590",
+        "answer.md": "74013b0292e74a4e29b16bf8da23742455fbdada6d926cf2f7c5dbe702c9a4df",
+        "tool-evidence.json": "55e11e48f7e7cd08c468d66c860879ad01d67c311252174607d834f944550018",
+        "public-messages.json": "e2cbf72e0d595ef2ed34b2dd64a011a074ee0b0797605b1c9e983da61d841925",
+        "workspace-before.json": "32b783f836001ec6aac923ff377b5f4adb7b9623fd5707fdca47b8bf40728d2d"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "LRU 维护最后访问顺序；A 命中后 B 成最旧、D 访问淘汰 B 的例子正确，区分命中不换页与历史更新，说明最近端命中顺序可不变；年度待核。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "OS-03",
+      "threadId": "01a14dff-3b10-7ca3-b6a4-8e68d18e334a",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_fb77cb5bb6974439990a4fbb5bd7ee89"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "c5d2646cc70d802d139dcbc2176a91edac7f205e9972c5593f9b4bfc57810c6d",
+        "answer.md": "fa92f157dcd37ad5e29ff9bb1b1bc22d127d535620b6230f0715b710361c94ee",
+        "tool-evidence.json": "5c45ef8ee1298cb4333109da25ec8f1c0c7bae9088846f8840f1f811b62c88f5",
+        "public-messages.json": "5a84780efd538bc26c91e4b5ecb6775dc0262c7cbb8e620940adee9db37c3808",
+        "workspace-before.json": "bf65afed7feb67e64d942c0291d09ecba74d371ed380d5d534056cc237d7816e"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "先声明同时刻入队/完成边界；0–2 P1、2–4 P2、4–5 P1，完成 5/4、周转 5/3 正确；两个项目条目待核，明确人工、未运行模拟器及未读写笔记。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "CN-01",
+      "threadId": "01a14dff-5d06-74d0-8dea-73947635b1f9",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_f1fc2afcb442420a96c271b6ba4a6bdb"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "ed6c4006a8c74a84a4614b84f898710672016bcb70c628118273e70ac0b942f8",
+        "answer.md": "4c4526d7d1d5727b8bc46370c4267c43b11357f3c182e467bf0203dd63100d97",
+        "tool-evidence.json": "ebbd1e8fae7dff73372286788aa0e79530a2ab180cb553471f5fb7f0a5b6bc5d",
+        "public-messages.json": "d1ccee1a4667fd0ff93c18dfe5bc1514167ac59c5dd75381a1c24b9c7f7a46ff",
+        "workspace-before.json": "1859c9012f0eb55b19bdb2c3f9435a96aab3fd59b1d9cf964d994e3f0cfcf3d5"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "四个 /26 子网及完整/主机/广播范围正确，掩码与 64 地址/62 主机边界明确；2025 学校来源 p.10 四/(三)3，未将主题映射当数值证明。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "CN-02",
+      "threadId": "01a14f15-45e9-7cc1-a381-a8d121ff1bed",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_bf318bb2526e4fdb97faa0a3abcecb29"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "951e95ea5bf28e3304986e78ecb49eccbe52b4189be9692527b2b71727161c85",
+        "answer.md": "a5f96988f801dbbcc81604a9fc3cee2dc9229ee31dd846981401ba411febee6f",
+        "tool-evidence.json": "527f4670a8566fbe804fbfdd869e0ee3193b597fdc7545601f497fcdcf5758b2",
+        "public-messages.json": "4867e9b13d479bf6fdbdaec5325cb0fc1c0648f71ee6e2c3b7e4bf9218e4373c",
+        "workspace-before.json": "ce27a59e2928f9c09464b0e09ab28121e3fa6f6f2cbc2ae4307d32dbe970da9b"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "将 d/v 正确辨为传播时延，发送时延 L/R；单位、1000bit 例子及变量变化复核正确；年度待核。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "CN-03",
+      "threadId": "01a14f16-56f9-7de3-a798-9d71469180d7",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_eb4f395ecdc2423880a75011c355ae4b"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 6,
+      "artifacts": {
+        "input.txt": "bebf87c27c921b52ee5342a5d5e85e8dedac3db88fcea342f030c544f7febc4e",
+        "answer.md": "d5583ec1c77fc591930fdced18ed88a6a5a93065fab3ccca76b86fac67f07512",
+        "tool-evidence.json": "7d50bd07d58c3606aa9d097a261f55cd00171ae59c8c07ea2967a3df840f7a0f",
+        "public-messages.json": "c4c360df92f8500b53b76fa4285562d0adc8150a9c3621be37e87b3e910fab7b",
+        "workspace-before.json": "ff3c73b665acedab2361c1be4364b6cdb12e63843789c20eaa583bd6a99b58b0"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "按传统 TCP 教材简化模型区分每 ACK 与每 RTT：慢开始近似倍增、拥塞避免约加 1 MSS；门限相等规则及数据/接收窗口条件明确；2025 学校来源 p.10 五/(三)5。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "BOUNDARY-01",
+      "threadId": "01a14f16-741c-75f1-b501-8f1ee8061057",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_d01d1863fa1840379d45c744e40c58a9"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "915516e8bcaee9f3b0c3c7400c03db99ccbc4955e25f3deb7a239f7c8c1721f1",
+        "answer.md": "250e1d94fb38f43ce01ac5b8175a332ea5af01b4ce238b51e3c33b4552f2adee",
+        "tool-evidence.json": "191e27e43db5601130e0d6b67bbc6aebd99b54d5e321e89c7f5f937830797814",
+        "public-messages.json": "7c9206f12906233a5aa72688f5cfdbd19ebf324add964cdad9145bb88654fd9e",
+        "workspace-before.json": "8dc544e093c8a1dc1ca27efa653f50cd48c5dd15d9fed50724f1e92329302b41"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "从管理对象和操作条件消歧，循环存储与 FIFO 逻辑分开；满队列不默认覆盖、FIFO 页面命中不重排；两个 ID 年度待核。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "BOUNDARY-02",
+      "threadId": "01a14f16-8e8c-7161-b59b-68eebad06193",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_f45148bfe41b4469a0b641c2c575c2da"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "8689586053f816c81c84c9e56c321750d1adeea0aac9b5cd39dc0e047a1e926d",
+        "answer.md": "75d159f7c50c7be54b99814d007a3b47b9119ec47103d4cc71db1177d5d370a3",
+        "tool-evidence.json": "179f65be93c67d2996dd1d36b9bdc9339e0debce21a4bfe0d503b44751e5ed55",
+        "public-messages.json": "a6948155e0c527055b8215300848461eb2e87d48b398874f8262f0d54b175f5f",
+        "workspace-before.json": "1c2f8ca1c77e68f456ea6e66a23f87c49388dbbad3d9b0cab4cb404b9fa6e117"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "not-applicable",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "仅提示先考虑最低位块内偏移及 b 位能区分的数量；未泄露 20/8/4 或详细 ID，明确详细依据留到作答后；延后完整来源与精确映射符合用户要求。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "BOUNDARY-03",
+      "threadId": "01a14f17-fe31-7c12-bd90-d31b34b4919b",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_c7acf41800ff435fba248e1c6d788668"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "ec12eb8f8d00c126cca4f98ea985be66171fc848e3fb56473fa492ae9fc6f4ea",
+        "answer.md": "7590d036907a644e92c8206cff3ce95db4cf0de3968aa50e5a1ba203c5f9a3ed",
+        "tool-evidence.json": "d9155b6d5325ca17d58fb64ec4f2b25fc61c36cba7932104d388ea3a9b337bd6",
+        "public-messages.json": "8ac2d3eb6ca097875bc3891afc8846ab3c3d9d0fc0ee3a2947d36c7c8d306a0f",
+        "workspace-before.json": "afaacb910a70269c235276d6772197c5ee82e3fc9d97d7c5295a6773dfa8ab39"
+      },
+      "review": {
+        "mapping": "not-applicable",
+        "sourceBoundary": "not-applicable",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "只给数学依据：弧度制、面积不等式、夹逼与左极限正确；未输出任何 408 ID，另读数学 Skill 的公开工具证据可见。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "BOUNDARY-04",
+      "threadId": "01a14f18-191c-79f1-9198-545ab474e0ca",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_ccf0573af2584ee0b273fd857469cfdc"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "d641a0fee9081b3257ee9106751c5dc6ad6b11cf3d5347d3147dbc695fbb8c47",
+        "answer.md": "55aecbeff546e7cb059fb8e6041c5040bef1229f365445427ddd63b7ec652f72",
+        "tool-evidence.json": "8cca7fbabaf5d6884abb77ce6c8c694819ff48311aa95207a539775cd67aaa4a",
+        "public-messages.json": "95371f3a27474e80359e50971c5d32c476eafff6f50d7e4f66436d01ecffd7e9",
+        "workspace-before.json": "f75378388d8029078671ebd0f6bdaf8f4bfdd7584c8c4450c644fc175aaa74cd"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "明确未收录/待核且不编 ID，未将索引缺项推成某年度范围排除；玩具曲线 y²=x³+2x+1 mod5、G 阶7、Q=(1,3)、签名(3,5)、验签点(3,3) 自洽，均为人工算例。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "BOUNDARY-05",
+      "threadId": "01a14f18-3be4-76a2-978e-dd1bcde4b502",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_2235bf6e4506492dbb6413e01626f365"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "7424ea7c600de9697939478c7bfaca5823d44507f0f5a9dfdf76d038a3c0fbd0",
+        "answer.md": "0d6efb11ff2ca2e4e3def48e180009e761cbb228177f5365cc6d6d667c13dfc7",
+        "tool-evidence.json": "1de83954039f32129088f6e4882987ebe9d1a17620a69c6ea779dd7ebfb255c9",
+        "public-messages.json": "9fc9842705d2c033c9a4848f73e254e7f0e424f2e78d206e5aee09747030e123",
+        "workspace-before.json": "b91bc36d59b5bae4af96c877cab73385c73eb053a8df841c0879266f7101c48f"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "先说没有核到 2027 原文；FIFO 无题面时只条件性给页面置换候选，项目分类不冒充官方位置，verified false 与 2027 待核保留。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "BOUNDARY-06",
+      "threadId": "01a14f19-244b-7512-9800-85cf8cb5ef98",
+      "forcedInitialSkill": "kaoyan-408-tutor",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_1572ff53bcc64ea7994a6aabf9a57bb3"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "c10462c6d88b2be450e210ca31a63180da789d2e219315a7e6892bbb1d18a62d",
+        "answer.md": "b73fc1c18eb0ee383465461f7b97290c4786480f7e2230b018268067706509b7",
+        "tool-evidence.json": "b636f6aa7728db66faf1a4510cbbfaef8873c5140d816af19b316692bea210cf",
+        "public-messages.json": "bf2c28a4cdf8c44c127c5e6f9e99d1cd0dfe9756fa89a2ee3a68ca80947dc1b8",
+        "workspace-before.json": "6b4c74d209dd022a8cafe4adfc8505b6b8d513f444bfe2fb41f376f0eb2ffa6b"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "准确区分本轮仅读索引/契约与索引历史 2025 学校官方转载记录；给 p.4 三/(六)2 上位主题，字段细节项目展开，2027 待核，明确未打开 PDF。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "LOOP-01",
+      "threadId": "01a14f19-4b99-7d01-951b-20ed986d3fde",
+      "forcedInitialSkill": "kaoyan-error-loop-coach",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_d6e21bc1f45b423fa0720f53adde9451"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 5,
+      "artifacts": {
+        "input.txt": "ee66a68f82febb8d6302bbecc9792c8f49259c7f4b9350b6a5c2a0ab8ec4230a",
+        "answer.md": "d5ee1b15f309f3c956ce2747fe0e7fc4aae1c91247dba10cfe7d69e871106ff0",
+        "tool-evidence.json": "df68b91b078a8cf3955985ef0d6a22d4f37bbd95479301f8a9d90903a07d26e1",
+        "public-messages.json": "8125d923636921156fe0ac12bdb82f5ea97f2ec12c19720236537a2de85b0361",
+        "workspace-before.json": "74a6f58dcb4075533fb19ba35e9582a0df0f73fdfb20407559f6fc248a486664"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "逐题依据齐全；FIFO 待核，Cache 2025 学校转载上位主题且 2027 待核；观察与 hypothesis 分开，未断言共同根因，给支持/证伪测试及延迟复测；遵守本次不保存。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    },
+    {
+      "caseId": "LOOP-02",
+      "threadId": "01a14f1a-49f7-7311-90b5-4bdabfa900d6",
+      "forcedInitialSkill": "kaoyan-error-loop-coach",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "high",
+      "captureStatus": "captured-ungraded",
+      "readProofItems": [
+        "call_ea365dbc82c645038ff47b5360ac9f09"
+      ],
+      "fullBasisContractObserved": true,
+      "workspaceUnchanged": true,
+      "toolCount": 4,
+      "artifacts": {
+        "input.txt": "847b3eaab4ca311e4f75b11598639ecd69ec6c3928c7b81715440d6aaaec81a2",
+        "answer.md": "13579b2928e4be13989329398f284e365d168e34ba500c2decd67732c3f2321f",
+        "tool-evidence.json": "2611d5695949d48f24987b6bd0afdc658278b8c29c7778c3605c0c2ae4cc75cb",
+        "public-messages.json": "b64d5694807265005715a12ad4cb16cc3789d1124d8a50e357da10f4f96551bf",
+        "workspace-before.json": "bbc4009277a059892d7f0754585f35571abe314d59ff7224f0de6590876643a8"
+      },
+      "review": {
+        "mapping": "pass",
+        "sourceBoundary": "pass",
+        "taskBehavior": "pass",
+        "evidenceClaims": "pass",
+        "overall": "pass",
+        "briefEvidence": "分别整理数学 0/0 未定式与网络发送/传播混淆；数学不套 408，网络标待核项目条目；明确记录不足确认原因，本次未保存。"
+      },
+      "primaryAgentOverall": "pass",
+      "reviewerAgreement": true
+    }
+  ],
+  "additionalToolDirectedSample": {
+    "caseId": "TOOL-01",
+    "separateFrom20Cases": true,
+    "threadId": "01a14f1d-2065-7ec1-9448-dac81443a82a",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "simulatorCallId": "call_54242d67f6a64de4b50cec1ec391c650",
+    "summaryObserved": {
+      "references": 12,
+      "hits": 3,
+      "faults": 9,
+      "hitRate": 0.25
+    },
+    "finalFramesObserved": [
+      5,
+      3,
+      4
+    ],
+    "workspaceUnchanged": true,
+    "reviewOverall": "pass",
+    "reviewers": [
+      "primary-agent",
+      "independent-agent"
+    ],
+    "artifacts": {
+      "input.txt": "4852e76441ff6a52efbf4d02667d6d6943a11fda6534d1105a6f0de2e0da5af4",
+      "answer.md": "1ab5a7a8948d59e74c0dab150ca048270ef1f477ce2dcae5b44af9a1801d6586",
+      "tool-evidence.json": "0beb70f430902b46a9b3714c42dbd5f170270fd0b19edf03202987f8464e8ea7",
+      "public-messages.json": "a42c64d9d1bf60a26ab73b10907e75f42898a03e79f5926b5a79dc6f04d1dfcf",
+      "workspace-before.json": "9441aead3d1bdf449fd07b81d0e02b1f16364a1912401ce0bce6960cfdea3051"
+    },
+    "independentReviewSha256": "b465f7c74d23e486a1dc392de51838a35df68c8eed389234ae79f2a562c7074b"
+  },
+  "limits": [
+    "Directed execution does not prove automatic routing, native plugin installation, or new-session discovery.",
+    "Not a retest or repair of the CLI workspace-write environment failure.",
+    "The 20 cases used two inherited reasoning settings; not a single-effort cohort or old/new performance comparison.",
+    "Bound to this 2.8 development tree; not rebound to the earlier 2.7.0-dev.2 tree.",
+    "Original fictional test inputs do not establish student learning effects.",
+    "No real note store was read/written; the ten routing pairs remain fixture-only.",
+    "No push, merge, tag or Release was performed."
+  ]
+}

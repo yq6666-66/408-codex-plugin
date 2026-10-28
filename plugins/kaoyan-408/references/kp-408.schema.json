@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "408 knowledge point syllabus mapping index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "selectionBasis",
+    "knowledgePoints"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "selectionBasis": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "knowledgePoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "subject",
+          "name",
+          "topicPath",
+          "aliases",
+          "syllabusPath",
+          "basisYear",
+          "verified",
+          "source",
+          "checkedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(DS|CO|OS|CN)-[A-Z]+-[0-9]{3}$"
+          },
+          "subject": {
+            "enum": [
+              "数据结构",
+              "计算机组成原理",
+              "操作系统",
+              "计算机网络"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "topicPath": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          },
+          "aliases": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          },
+          "syllabusPath": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            ]
+          },
+          "basisYear": {
+            "type": "string",
+            "pattern": "^(待核|[12][0-9]{3})$"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "publisher",
+              "reference",
+              "locator",
+              "kind",
+              "mappingScope",
+              "sha256"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "publisher": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "reference": {
+                "type": "string",
+                "pattern": "^(https://|material:)\\S+"
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "kind": {
+                "enum": [
+                  "exam-authority",
+                  "official-repost",
+                  "user-provided-primary"
+                ]
+              },
+              "mappingScope": {
+                "enum": [
+                  "topic",
+                  "upper-topic"
+                ]
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "checkedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "verified": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "basisYear": {
+                  "type": "string",
+                  "pattern": "^[12][0-9]{3}$"
+                },
+                "syllabusPath": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                },
+                "source": {
+                  "type": "object"
+                },
+                "checkedAt": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "basisYear": {
+                  "const": "待核"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "verified": {
+                  "const": false
+                },
+                "syllabusPath": {
+                  "type": "null"
+                },
+                "source": {
+                  "type": "null"
+                },
+                "checkedAt": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

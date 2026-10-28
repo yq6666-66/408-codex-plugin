@@ -1,0 +1,4 @@
+interface:
+  display_name: "408 计算题校验"
+  short_description: "复核 408 数值、单位与状态计算，区分脚本核验、人工复核和条件不足"
+  default_prompt: "使用 $408-calculation-check 复核这道 408 题的计算条件、单位和结果。"
