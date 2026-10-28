@@ -6,19 +6,19 @@
 
 已发布的预发布版为 [v2.8.0-dev.3](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)，既有稳定版为 [v2.6.0](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)。安装前选择所需版本；仓库默认分支可能继续变化。
 
-正式版发布后可在同一命令中将 `v2.8.0-dev.3` 替换为 `v2.8.0`；是否已发布以 [Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准。正式版候选 ZIP 的 SHA-256 为 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`，发布后应与附件及校验文件核对。
+正式版是否已发布以 [Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准。正式版候选 ZIP 的 SHA-256 为 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`，发布后应与附件及校验文件核对。
 
-在支持插件命令的 Codex CLI 运行：
+确认正式 Release 已发布后，在支持插件命令的 Codex CLI 运行：
 
 ```powershell
-codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.8.0-dev.3
+codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.8.0
 codex plugin add kaoyan-408@kaoyan-408
 ```
 
-已存在同名市场时先检查它的来源及当前宿主的命令提示，避免覆盖其他来源。要准备固定本地仓库，在终端执行：
+若正式标签尚未发布或需要预发布版，可将上述标签替换为 `v2.8.0-dev.3`。已存在同名市场时先检查它的来源及当前宿主的命令提示，避免覆盖其他来源。正式标签发布后，要准备固定本地仓库，在终端执行：
 
 ```powershell
-git clone --branch v2.8.0-dev.3 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
+git clone --branch v2.8.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
 ## 其他宿主
@@ -32,10 +32,10 @@ git clone --branch v2.8.0-dev.3 --depth 1 https://github.com/yq6666-66/408-codex
 
 ## 校验与回退
 
-在检出 `v2.8.0-dev.3` 的仓库根目录，使用实际下载的 ZIP 路径：
+正式版发布后，在检出 `v2.8.0` 的仓库根目录，使用实际下载的 ZIP 路径：
 
 ```powershell
-python scripts/install_local.py verify-release --zip <下载的ZIP路径> --version 2.8.0-dev.3 --sha256 b4af664a1660f1c0c4e4aa11cfe327a685cc171ea7a068d0a780493b056cae04
+python scripts/install_local.py verify-release --zip <下载的ZIP路径> --version 2.8.0 --sha256 bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407
 ```
 
 回退前备份学习记录，通过宿主正常入口移除当前插件与其市场，再使用所需稳定版标签重新安装。记录格式兼容范围以目标版本的契约为准；不要假设旧版能完整处理新版字段。Obsidian 和 Notion 的授权与写入规则见[便携记录契约](../plugins/kaoyan-408/references/portable-learning-records.md)和各自的 brain 契约。
