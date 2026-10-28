@@ -25,3 +25,17 @@ PR #33 的说明是集成证据，不替代代码与测试逐项复核。历史�
 - 以可靠性分支和主线共同祖先为起点，其 27 个分支提交的标题均出现在 #26 的 squash 合并提交 `2d37c1a` 正文中。结合八组测试 AST 比较，这证明这些提交被列入合并记录，并不能单独证明后续版本没有回退；教学、记录、工具证据仍需依实际契约和用例核查。
 - 对 #31 的 `test_zcode_marketplace.py`、`test_records.py`、`test_v260_runner.py` 和 #32 的 `test_workbuddy_marketplace.py` 逐方法比较 AST：分别为 8/8、102/102、20/20 和 13/13 正文一致；主线另有新增测试。结合当前清单/脚本和已通过的适配测试，这是所列测试覆盖范围内未丢失断言的证据；不等于客户端真实行为已经验收，也不覆盖没有测试的所有改动。
 - 三宿主清单按 JSON 字段比较：Cursor 市场与旧分支一致，插件清单仅版本不同；WorkBuddy 市场及插件清单仅版本不同；ZCode 插件清单仅版本不同。共享 `.claude-plugin/marketplace.json` 的差异为版本以及移除 `displayName_i18n`、`description_i18n`，平台表记录这是 Claude/ZCode 共用交集字段的调整；新 ZCode 市场 UI 对这一变更未复测。清单结构比较不等于客户端验收。
+- [逐文件清单](branch-file-inventory-20261028.json)记录各分支固定 blob、主线 blob 和后续集成提交 blob。可靠性分支在 #26 的集成结果中 20 个文件与分支末端逐字节一致，24 个已修改；ZCode 在 #33 中为 16 个一致、8 个修改；Cursor 为 1 个一致、3 个修改；WorkBuddy 为 1 个一致、7 个修改。这些计数区分集成时的进一步变化与当前差异，不替代各项语义判断。
+
+## 三宿主规则的后续实现核对
+
+- Cursor：当前 `check_cursor_marketplace` 保留市场名称、来源、插件名称、版本、教育分类和 skills 路径检查，原禁止的 `mcpServers`、`hooks`、`rules` 仍被拒绝，并增加 `commands`、`agents`、`apps`、`userConfig` 拒绝项；对应 `tests/test_cursor_marketplace.py` 通过 5 项。清单市场 JSON 与旧分支完全一致，插件清单仅版本变动。结论：原清单和静态规则已覆盖，新增严格限制；本机新会话发现仍未验证。
+- ZCode：当前 `check_zcode_manifest`、`check_zcode_marketplace` 检查原生清单和市场与插件元数据的一致性及 Skills-only 禁止项；旧分支 8 个 ZCode 测试、102 个记录测试和 20 个 runner 测试的函数 AST 均逐一相同。清单版本已派生；共享市场为 Claude 兼容删除两条 i18n 扩展，不能由此推断新 ZCode UI 展示通过。结论：脚本、记录和静态适配由后续实现覆盖，UI 边界保留未验收。
+- WorkBuddy：当前原生清单和市场的共享字段仅版本变化；原 13 个清单测试的函数 AST 均相同。`simulate_workbuddy_host.py` 仍报告 WB-001 至 WB-007，但现为离线静态诊断，不再宣称实际执行裁剪安装；路径解析增加目录内约束与软链接防逃逸。15 个诊断测试通过。结论：主线保留清单和原发现条目，裁剪安装模拟的表述由更准确的静态检查替代；不推断真实宿主行为通过。
+
+## 可靠性重点行为核对
+
+- 教学与交卷边界：`beginner-visual-answer-contract.md` 要求可读选项逐项核对、仅有实际工具成功调用才能宣称工具核验；`kaoyan-mock-exam-coach/SKILL.md` 要求开卷前核题、冻结题面、交卷前不泄题及交卷后对无效题作废。对照旧分支对应契约，这些行为由主线扩展实现覆盖；属于规则和静态回归证据，不代表新模型行为已验收。
+- 真题来源与公式：`kaoyan-past-paper-searcher/SKILL.md` 保留原页或可读正文对公式字段的核验、禁止用摘要或答案倒推；新增对用户题面与待核来源的区分，不能称为已核验原卷。旧公式测试断言保留并扩充。结论：主线实现覆盖原意并补充来源边界。
+- 检查点恢复：`tests/test_records.py` 明确覆盖同日递增修订、按新快照恢复以及同修订冲突保留；ZCode 旧分支对应 102 个 records 测试和 20 个 runner 测试 AST 均与主线一致。结论：所列记录及 Windows 路径断言已覆盖，不推断真实笔记写入已验证。
+- 工具证据：`tests/test_gpt6_capture.py` 保留网络搜索结果作为证据，并增加输出不能覆盖输入、素材和附件的检查；`tests/test_gpt6_acceptance.py` 保留非零退出码拒绝并要求显式成功状态。结论：旧捕获和成功状态约束由更严格实现覆盖；不把历史样本扩展到当前版本。
