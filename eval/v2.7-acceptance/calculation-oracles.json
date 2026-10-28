@@ -1,0 +1,368 @@
+{
+  "kind": "tool-generated-ground-truth-not-model-acceptance",
+  "scriptSha256": "e6591ef19b0c7cf081e4c131bd3e23a794178c74d99bc088b50e030cfba7f9cb",
+  "cases": [
+    {
+      "caseId": "OS-01",
+      "arguments": [
+        "fifo",
+        "--frames",
+        "3",
+        "--references",
+        "1,2,3,4,1,2,5,1,2,3,4,5"
+      ],
+      "exitCode": 0,
+      "output": {
+        "algorithm": "fifo",
+        "params": {
+          "frames": 3,
+          "initial": [],
+          "references": [
+            1,
+            2,
+            3,
+            4,
+            1,
+            2,
+            5,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "steps": [
+          {
+            "step": 1,
+            "event": "fault",
+            "reference": 1,
+            "frames": [
+              1,
+              null,
+              null
+            ],
+            "evicted": null,
+            "stateChange": "page 1 loaded into empty frame 0"
+          },
+          {
+            "step": 2,
+            "event": "fault",
+            "reference": 2,
+            "frames": [
+              1,
+              2,
+              null
+            ],
+            "evicted": null,
+            "stateChange": "page 2 loaded into empty frame 1"
+          },
+          {
+            "step": 3,
+            "event": "fault",
+            "reference": 3,
+            "frames": [
+              1,
+              2,
+              3
+            ],
+            "evicted": null,
+            "stateChange": "page 3 loaded into empty frame 2"
+          },
+          {
+            "step": 4,
+            "event": "fault",
+            "reference": 4,
+            "frames": [
+              4,
+              2,
+              3
+            ],
+            "evicted": 1,
+            "stateChange": "page 4 replaces page 1 in frame 0"
+          },
+          {
+            "step": 5,
+            "event": "fault",
+            "reference": 1,
+            "frames": [
+              4,
+              1,
+              3
+            ],
+            "evicted": 2,
+            "stateChange": "page 1 replaces page 2 in frame 1"
+          },
+          {
+            "step": 6,
+            "event": "fault",
+            "reference": 2,
+            "frames": [
+              4,
+              1,
+              2
+            ],
+            "evicted": 3,
+            "stateChange": "page 2 replaces page 3 in frame 2"
+          },
+          {
+            "step": 7,
+            "event": "fault",
+            "reference": 5,
+            "frames": [
+              5,
+              1,
+              2
+            ],
+            "evicted": 4,
+            "stateChange": "page 5 replaces page 4 in frame 0"
+          },
+          {
+            "step": 8,
+            "event": "hit",
+            "reference": 1,
+            "frames": [
+              5,
+              1,
+              2
+            ],
+            "evicted": null,
+            "stateChange": "page 1 hit; frames unchanged"
+          },
+          {
+            "step": 9,
+            "event": "hit",
+            "reference": 2,
+            "frames": [
+              5,
+              1,
+              2
+            ],
+            "evicted": null,
+            "stateChange": "page 2 hit; frames unchanged"
+          },
+          {
+            "step": 10,
+            "event": "fault",
+            "reference": 3,
+            "frames": [
+              5,
+              3,
+              2
+            ],
+            "evicted": 1,
+            "stateChange": "page 3 replaces page 1 in frame 1"
+          },
+          {
+            "step": 11,
+            "event": "fault",
+            "reference": 4,
+            "frames": [
+              5,
+              3,
+              4
+            ],
+            "evicted": 2,
+            "stateChange": "page 4 replaces page 2 in frame 2"
+          },
+          {
+            "step": 12,
+            "event": "hit",
+            "reference": 5,
+            "frames": [
+              5,
+              3,
+              4
+            ],
+            "evicted": null,
+            "stateChange": "page 5 hit; frames unchanged"
+          }
+        ],
+        "summary": {
+          "references": 12,
+          "hits": 3,
+          "faults": 9,
+          "hitRate": 0.25
+        }
+      }
+    },
+    {
+      "caseId": "CO-01",
+      "arguments": [
+        "cache",
+        "--addr-bits",
+        "32",
+        "--block-size",
+        "16",
+        "--cache-lines",
+        "256",
+        "--mapping",
+        "direct",
+        "--addresses",
+        "0"
+      ],
+      "exitCode": 0,
+      "output": {
+        "algorithm": "cache",
+        "params": {
+          "addrBits": 32,
+          "blockSize": 16,
+          "cacheLines": 256,
+          "mapping": "direct",
+          "replacementPolicy": null,
+          "offsetBits": 4,
+          "indexBits": 8,
+          "tagBits": 20,
+          "maxAddress": 4294967295
+        },
+        "steps": [
+          {
+            "step": 1,
+            "event": "miss",
+            "address": 0,
+            "binary": "00000000000000000000000000000000",
+            "split": {
+              "tag": "00000000000000000000",
+              "index": "00000000",
+              "offset": "0000"
+            },
+            "tag": 0,
+            "index": 0,
+            "offset": 0,
+            "blockNumber": 0,
+            "stateChange": "block 0 loaded into line 0",
+            "evictedBlock": null,
+            "residentBlock": 0
+          }
+        ],
+        "summary": {
+          "accesses": 1,
+          "hits": 0,
+          "misses": 1,
+          "hitRate": 0.0
+        }
+      }
+    },
+    {
+      "caseId": "OS-03",
+      "arguments": [
+        "rr",
+        "--processes",
+        "P1:0:3,P2:1:2",
+        "--quantum",
+        "2"
+      ],
+      "exitCode": 0,
+      "output": {
+        "algorithm": "rr",
+        "params": {
+          "processes": [
+            {
+              "name": "P1",
+              "arrival": 0,
+              "burst": 3
+            },
+            {
+              "name": "P2",
+              "arrival": 1,
+              "burst": 2
+            }
+          ],
+          "quantum": 2
+        },
+        "steps": [
+          {
+            "step": 1,
+            "event": "arrival",
+            "process": "P1",
+            "timeStart": 0,
+            "timeEnd": 0,
+            "stateChange": "P1 arrives at 0, queue=['P1']"
+          },
+          {
+            "step": 2,
+            "event": "run",
+            "process": "P1",
+            "timeStart": 0,
+            "timeEnd": 1,
+            "stateChange": "P1 runs 0->1",
+            "queueAfter": []
+          },
+          {
+            "step": 3,
+            "event": "arrival",
+            "process": "P2",
+            "timeStart": 1,
+            "timeEnd": 1,
+            "stateChange": "P2 arrives at 1, queue=['P2']"
+          },
+          {
+            "step": 4,
+            "event": "run",
+            "process": "P1",
+            "timeStart": 1,
+            "timeEnd": 2,
+            "stateChange": "P1 runs 1->2, preempted with 1 left",
+            "queueAfter": [
+              "P2"
+            ]
+          },
+          {
+            "step": 5,
+            "event": "requeue",
+            "process": "P1",
+            "timeStart": 2,
+            "timeEnd": 2,
+            "queueAfter": [
+              "P2",
+              "P1"
+            ],
+            "stateChange": "P1 is re-enqueued at 2, queue=['P2', 'P1']"
+          },
+          {
+            "step": 6,
+            "event": "run",
+            "process": "P2",
+            "timeStart": 2,
+            "timeEnd": 4,
+            "stateChange": "P2 runs 2->4 and completes",
+            "queueAfter": [
+              "P1"
+            ]
+          },
+          {
+            "step": 7,
+            "event": "run",
+            "process": "P1",
+            "timeStart": 4,
+            "timeEnd": 5,
+            "stateChange": "P1 runs 4->5 and completes",
+            "queueAfter": []
+          }
+        ],
+        "summary": {
+          "processes": [
+            {
+              "name": "P1",
+              "arrival": 0,
+              "burst": 3,
+              "completion": 5,
+              "turnaround": 5,
+              "waiting": 2
+            },
+            {
+              "name": "P2",
+              "arrival": 1,
+              "burst": 2,
+              "completion": 4,
+              "turnaround": 3,
+              "waiting": 1
+            }
+          ],
+          "averageWaiting": 1.5,
+          "averageTurnaround": 4.0
+        }
+      }
+    }
+  ]
+}

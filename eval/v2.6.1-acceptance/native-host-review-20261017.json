@@ -1,0 +1,550 @@
+{
+  "kind": "publication-derived-view; not the original acceptance evidence",
+  "derivedFrom": {
+    "repositoryPath": "eval/v2.6.1-acceptance/native-host-review-20261017.json",
+    "sha256": "f5f57560030e687472428aa7f274d116a736e918dfd19353dbce5ca0223ed8e8"
+  },
+  "redactions": [
+    {
+      "jsonPointer": "/sourceFiles/0/path",
+      "replacement": "[LOCAL_EVIDENCE_000]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/1/path",
+      "replacement": "[LOCAL_EVIDENCE_001]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/2/path",
+      "replacement": "[LOCAL_EVIDENCE_002]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/3/path",
+      "replacement": "[LOCAL_EVIDENCE_003]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/4/path",
+      "replacement": "[LOCAL_EVIDENCE_004]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/5/path",
+      "replacement": "[LOCAL_EVIDENCE_005]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/6/path",
+      "replacement": "[LOCAL_EVIDENCE_006]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/7/path",
+      "replacement": "[LOCAL_EVIDENCE_007]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/8/path",
+      "replacement": "[LOCAL_EVIDENCE_008]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/9/path",
+      "replacement": "[LOCAL_EVIDENCE_009]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/10/path",
+      "replacement": "[LOCAL_EVIDENCE_010]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/11/path",
+      "replacement": "[LOCAL_EVIDENCE_011]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/12/path",
+      "replacement": "[LOCAL_EVIDENCE_012]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/13/path",
+      "replacement": "[LOCAL_EVIDENCE_013]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/14/path",
+      "replacement": "[LOCAL_EVIDENCE_014]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/15/path",
+      "replacement": "[LOCAL_EVIDENCE_015]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/16/path",
+      "replacement": "[LOCAL_EVIDENCE_016]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/17/path",
+      "replacement": "[LOCAL_EVIDENCE_017]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/18/path",
+      "replacement": "[LOCAL_EVIDENCE_018]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/19/path",
+      "replacement": "[LOCAL_EVIDENCE_019]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/20/path",
+      "replacement": "[LOCAL_EVIDENCE_020]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/21/path",
+      "replacement": "[LOCAL_EVIDENCE_021]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/22/path",
+      "replacement": "[LOCAL_EVIDENCE_022]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/23/path",
+      "replacement": "[LOCAL_EVIDENCE_023]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/24/path",
+      "replacement": "[LOCAL_EVIDENCE_024]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/25/path",
+      "replacement": "[LOCAL_EVIDENCE_025]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/26/path",
+      "replacement": "[LOCAL_EVIDENCE_026]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/27/path",
+      "replacement": "[LOCAL_EVIDENCE_027]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/28/path",
+      "replacement": "[LOCAL_EVIDENCE_028]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/29/path",
+      "replacement": "[LOCAL_EVIDENCE_029]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/30/path",
+      "replacement": "[LOCAL_EVIDENCE_030]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/31/path",
+      "replacement": "[LOCAL_EVIDENCE_031]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/32/path",
+      "replacement": "[LOCAL_EVIDENCE_032]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/33/path",
+      "replacement": "[LOCAL_EVIDENCE_033]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/34/path",
+      "replacement": "[LOCAL_EVIDENCE_034]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/35/path",
+      "replacement": "[LOCAL_EVIDENCE_035]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/36/path",
+      "replacement": "[LOCAL_EVIDENCE_036]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/37/path",
+      "replacement": "[LOCAL_EVIDENCE_037]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/38/path",
+      "replacement": "[LOCAL_EVIDENCE_038]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/39/path",
+      "replacement": "[LOCAL_EVIDENCE_039]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/40/path",
+      "replacement": "[LOCAL_EVIDENCE_040]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/41/path",
+      "replacement": "[LOCAL_EVIDENCE_041]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/42/path",
+      "replacement": "[LOCAL_EVIDENCE_042]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/43/path",
+      "replacement": "[LOCAL_EVIDENCE_043]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/44/path",
+      "replacement": "[LOCAL_EVIDENCE_044]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "jsonPointer": "/sourceFiles/45/path",
+      "replacement": "[LOCAL_EVIDENCE_045]",
+      "reason": "absolute local evidence path withheld from publication preview"
+    },
+    {
+      "reason": "session identifiers withheld from publication preview",
+      "count": 5
+    }
+  ],
+  "record": {
+    "reviewDate": "2026-10-17",
+    "sourceCommit": "c1d632a2059ff1bce26eb5643fa5c95d12b92edc",
+    "version": "2.6.1",
+    "pluginTreeSha256": "17e514cb484449485eb846fc55d93220a9ec1a8f9d14ab62934a577b2b2dbcea",
+    "reviewType": "local-evidence-review-not-new-client-run",
+    "hosts": {
+      "cursor": {
+        "installation": "reported-not-locally-verified",
+        "behavior": "reported-cloud-subsession-samples",
+        "rawEvidenceAvailable": false
+      },
+      "zcode": {
+        "installedTreeVerification": "passed-47-files-version-and-tree-digest",
+        "ordinaryRequestSkillSelections": 0,
+        "ordinaryRequests": 4,
+        "explicitPlannerSkillCall": "observed",
+        "skillDrivenSimulator": "not-observed",
+        "sessions": [
+          {
+            "sessionId": "sess_[SESSION-01]",
+            "mode": "ordinary-request",
+            "toolCalls": {},
+            "skillCalls": 0,
+            "readCalls": 0
+          },
+          {
+            "sessionId": "sess_[SESSION-02]",
+            "mode": "explicit-plugin-planner-control",
+            "toolCalls": {
+              "Bash": 1,
+              "Skill": 1
+            },
+            "skillCalls": 1,
+            "readCalls": 0
+          },
+          {
+            "sessionId": "sess_[SESSION-03]",
+            "mode": "ordinary-request",
+            "toolCalls": {},
+            "skillCalls": 0,
+            "readCalls": 0
+          },
+          {
+            "sessionId": "sess_[SESSION-04]",
+            "mode": "ordinary-request",
+            "toolCalls": {
+              "Bash": 1
+            },
+            "skillCalls": 0,
+            "readCalls": 0
+          },
+          {
+            "sessionId": "sess_[SESSION-05]",
+            "mode": "ordinary-request",
+            "toolCalls": {},
+            "skillCalls": 0,
+            "readCalls": 0
+          }
+        ]
+      },
+      "workbuddy": {
+        "installation": "bundled-cli-client-storage-verified",
+        "installedTreeVerification": "passed-47-files-version-and-tree-digest",
+        "newSessionSkillRegistration": "not-verified",
+        "behaviorCasesExecuted": 0
+      }
+    },
+    "sourceFiles": [
+      {
+        "path": "[LOCAL_EVIDENCE_000]",
+        "bytes": 14989,
+        "sha256": "175b9cb14418d6e9f068381aa64bab30a69585438d014fd9b4120fc84c19f705"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_001]",
+        "bytes": 4154,
+        "sha256": "095018d25766dfbf51c086eac1589701a6ff58b1cd3f4e100ff286a8b78ac6e3"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_002]",
+        "bytes": 79,
+        "sha256": "80a45fae320800dac24084776e60598abcd61e59effdfa24c9b776c46808c1a6"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_003]",
+        "bytes": 12,
+        "sha256": "468d6859daaad06e416104e11ba1f751fbb03802daa9abaf3aaa7ee59a1cc734"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_004]",
+        "bytes": 457,
+        "sha256": "adab5745e2a51b89be923336bf6cb1ef8b91c6ac899587d6a1bcdc330347e7d4"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_005]",
+        "bytes": 447,
+        "sha256": "06d1cda09127cba6223fa91dc819f91917c03424d78a2e9d060e8efc3daf7725"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_006]",
+        "bytes": 911,
+        "sha256": "b19b6324cdc3dc0d8f008a135dc71167d2cd93c91edf1ba9bb65df99325c076a"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_007]",
+        "bytes": 503,
+        "sha256": "2bf59602b2427dddee21be4ebb1e4a337433aae250ea2056a407dd1a678aa6fb"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_008]",
+        "bytes": 100,
+        "sha256": "6a662d436c6a62991302adb8becea8864eead2073ab0a45bc18cae5c9f7b39d1"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_009]",
+        "bytes": 1694,
+        "sha256": "62c931688cc7d1745e5187ddc89cab78f5b7385e702e3ad3a4df2900c3e79a55"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_010]",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_011]",
+        "bytes": 2517,
+        "sha256": "8887077f06f206e91578961096bb4919eb04e1da6d0b5ac11e8ea68692e75f63"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_012]",
+        "bytes": 1850,
+        "sha256": "3fb5577711003372a6c36d104aff7920f76dd7a857bf32744addafb060dede39"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_013]",
+        "bytes": 1416,
+        "sha256": "0b0c94512b4e0d55ec104477fae81b7bfa1326b1a317eea2eba5257efa374918"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_014]",
+        "bytes": 3048,
+        "sha256": "5925bc5fb8a75221e02a6cc01028a17f5466566d9f5ef51d1e8c2af911d96994"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_015]",
+        "bytes": 512,
+        "sha256": "989a03fa17700ba7e8e422f8fdb81f82733423019abd6c0e8ddbbd9f3bf34bf8"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_016]",
+        "bytes": 93984,
+        "sha256": "9b3ce7500af93faf3dab42c3a031b8ce6ce6b260940e9ea9fecf78318a02a408"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_017]",
+        "bytes": 168,
+        "sha256": "02f77ad3215854abe7f353a80208a4d457c019b916fd76b097bc260f85eedb61"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_018]",
+        "bytes": 3277,
+        "sha256": "83a2406a125fe78bc46daf88a5201e97979ac42bd0c8877ca0c564815be38ef8"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_019]",
+        "bytes": 13,
+        "sha256": "38dc6b0a1b6278c5bfc35c263702431181a2da322cfceb50b9e714150053a0dd"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_020]",
+        "bytes": 5599,
+        "sha256": "dea67dacdec5e5f26e259cd3ccb61fa8edb39c8a5c89aab1aa451dcf9ffbc367"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_021]",
+        "bytes": 123261,
+        "sha256": "bc7355e6d4282728fc46fa03fd9eebbf35fbcf7c925ab08ee69fca300811ac49"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_022]",
+        "bytes": 1349,
+        "sha256": "e70c98729f7aecd0b74e7df66efa1fbea667eea42869972306355c9549eb3f7c"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_023]",
+        "bytes": 10957,
+        "sha256": "c737bb5bc0530c33644419234a9ee7f00b4bab460b1dffd9893878a378eaf60f"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_024]",
+        "bytes": 900,
+        "sha256": "904198c07bd9f29e217ef08b91ba83b3256ce5cfc73d5638f7b167aaa8b9039c"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_025]",
+        "bytes": 95916,
+        "sha256": "8c40329d2654ea189c7625a51b0d2b50d8653ea6b7dabb7fd62ec3f75d71a6be"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_026]",
+        "bytes": 233,
+        "sha256": "5cea838dee80e31efeeea8bd12c11283c81675ad74d300983c89a03cd5d94040"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_027]",
+        "bytes": 13,
+        "sha256": "38dc6b0a1b6278c5bfc35c263702431181a2da322cfceb50b9e714150053a0dd"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_028]",
+        "bytes": 1200,
+        "sha256": "5f349a8cb699e6391b1ecc8970548da28d0bf9e6e47d1dae9cda522fc1a945dd"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_029]",
+        "bytes": 97493,
+        "sha256": "3551f3f4e60030c17cc914ce39f3d3522684edb4f4bcb47e9300c18c70ddc8cb"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_030]",
+        "bytes": 194,
+        "sha256": "c5878914beddec12d37f850f38fc02da1d6c8c64b11808e55bb8fad6353c9c5e"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_031]",
+        "bytes": 1075,
+        "sha256": "f8625931dc020f3557157032d2f6a53d331b9e340204f0bb52f6f893c890777b"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_032]",
+        "bytes": 1925,
+        "sha256": "d87e53fdfa7131082e88cc2e0e13e93d88a36398ccdd2723908c703e2d0e35e5"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_033]",
+        "bytes": 95989,
+        "sha256": "23c07b77b211fb983d1d68d0831b7361b947a60122665a193c6180dc37df3d91"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_034]",
+        "bytes": 79,
+        "sha256": "3f0af739216695089ff3b622faaf1e6f83391dd86633936b1cfdb5cfa16ffdf6"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_035]",
+        "bytes": 13,
+        "sha256": "38dc6b0a1b6278c5bfc35c263702431181a2da322cfceb50b9e714150053a0dd"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_036]",
+        "bytes": 2900,
+        "sha256": "c1df00e9723b1122c2ecac2c847c9ef1394548aec856e8ed999d0d104397f036"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_037]",
+        "bytes": 28481,
+        "sha256": "fef96bbcafd725941f8ca6dce2245f2d11ab79c147bf5327f08fb17a87e36a6b"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_038]",
+        "bytes": 4114,
+        "sha256": "c84b752dcc619ec705fa37dc396775b1343d88e5b467228b0e4843fb7454f5dd"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_039]",
+        "bytes": 28103,
+        "sha256": "85b72a754b3f276fe4bfdaba1693934fc5637a1964e0f317623d1664d5baa79e"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_040]",
+        "bytes": 3655,
+        "sha256": "9d97b175a15ee5f8e675cf5f7af856bd92a8456df73e56422835acf57d6dfe85"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_041]",
+        "bytes": 3048,
+        "sha256": "5925bc5fb8a75221e02a6cc01028a17f5466566d9f5ef51d1e8c2af911d96994"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_042]",
+        "bytes": 381,
+        "sha256": "8e10b0a3d8b5c3a692997b1859636748b95e252bcc04de27ef0b9f90db8c20a3"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_043]",
+        "bytes": 5077,
+        "sha256": "a3c4044b593ed6914b52018c0c57575e7cbc4a4a4a2ecf0419aef1917c230ec7"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_044]",
+        "bytes": 18572,
+        "sha256": "fbb4dfba8c106d5d7d883c0f312fdc5326309158fb18853b9e2512a648161f95"
+      },
+      {
+        "path": "[LOCAL_EVIDENCE_045]",
+        "bytes": 248606,
+        "sha256": "1eab21f9bb3f7b9ffac65dab1fba1f1c28515e0cc3577f7b65c83e44a807d7de"
+      }
+    ]
+  },
+  "limitations": [
+    "This is a proposed public view only; the original file and frozen snapshot have not changed.",
+    "Changing a path changes this JSON representation; do not reuse the original file hash for this view.",
+    "Other source-file hashes and behavior statuses are preserved as reported, not newly verified.",
+    "Preparing this view does not remove the original from development Git history or authorize publication."
+  ]
+}

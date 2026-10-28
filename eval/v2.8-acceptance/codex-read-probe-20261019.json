@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-19",
+  "kind": "existing-default-cli-profile-read-only-environment-probe",
+  "status": "invalid-environment",
+  "cliVersion": "0.163.0-alpha.10.2",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "high",
+  "cliBinarySha256": "f6dbf48cb70f62649c645f26c87dc9bf84cc36986202dfad8e12fb5b8ca70312",
+  "startedAt": "2026-10-19T11:10:09.151571+00:00",
+  "finishedAt": "2026-10-19T11:10:46.980513+00:00",
+  "threadId": "01a153da-c976-7f30-a4ae-288ef53ba517",
+  "conditions": {
+    "sandbox": "read-only",
+    "approvalPolicy": "never",
+    "ephemeral": true,
+    "appsEnabled": false,
+    "explicitCodeHomeOverride": false,
+    "windowsSandboxOverride": false,
+    "pluginCandidateBound": false,
+    "credentialCopy": false,
+    "explicitConfigurationChange": false,
+    "profileIsolation": "existing default profile; not isolated"
+  },
+  "observations": {
+    "processExitCode": 0,
+    "modelTurn": "completed",
+    "fileReadSuccess": false,
+    "fileFixtureUnchanged": true,
+    "relativeRead": {
+      "tool": "PowerShell Get-Content",
+      "exitCode": 1,
+      "result": "path-not-found"
+    },
+    "absoluteRead": {
+      "tool": "PowerShell Get-Content",
+      "exitCode": 1,
+      "result": "access-denied and path-not-found"
+    },
+    "modelFinal": "环境失败：读取当前工作区 probe.txt 被拒绝访问（Access to the path is denied）。已停止，未尝试绕过。",
+    "runtimeSandboxSelection": "unelevated",
+    "runtimeObservationTimesLocal": [
+      "2026-10-19 19:10:09.758",
+      "2026-10-19 19:10:09.793"
+    ],
+    "runtimeObservationTimezone": "Asia/Shanghai"
+  },
+  "previousDefaultProfileAttempt": {
+    "date": "2026-10-18",
+    "processExitCode": 1,
+    "failure": "usage-limit before any file-read tool",
+    "eventLogSha256": "e3d4354745808c11bfa2008b68d9fd7143433a18fc2ab0314b539c64cbaebc19",
+    "notFileReadEvidence": true
+  },
+  "artifacts": {
+    "input.txt": "138467e57573e6ff1ce51426e878362ce2fe7312f678c3051a5cd110cc571c92",
+    "result.json": "d68be4eb5004bbdc27eaafc71526f65060f1d1e192e2ed87932f07a50f912518",
+    "events.jsonl": "17a7c755836e75471aa1cda44a61becc1905b6ed619748f3a9259307319d042b",
+    "stderr.txt": "13a753ab86fa4853af8d01e0f95f21979198603ebc87e3892468d617d973ec2d",
+    "answer.txt": "c77c0fb58cb589c27bfc5f63148fea249f54738e86c62ab44173d1d0bba25e4a"
+  },
+  "limits": [
+    "No candidate plugin was installed or bound in this probe.",
+    "This default-profile probe does not establish the effective settings or root cause of another isolated acceptance profile.",
+    "A completed model turn and process exit zero do not establish successful file access.",
+    "No sandbox, guard, interpreter, credential or configuration workaround was used.",
+    "No original model reasoning is published.",
+    "Normal CLI startup loaded existing integrations and may maintain runtime/cache state; no system-wide write audit or unchanged-user-profile claim is made.",
+    "Sandbox selection is an observed runtime value, not proof that sandbox initialization or file ACL grants were correct."
+  ]
+}

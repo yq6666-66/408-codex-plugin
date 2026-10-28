@@ -806,6 +806,141 @@
         "完整调研由招生调研员主责",
         "出现当期年份不抢占主要产物"
       ]
+    },
+    {
+      "id": "new-error-P1",
+      "skillUnderTest": "408-error-diagnosis",
+      "kind": "positive",
+      "prompt": "FIFO 命中时我把该页移到队尾。只检查这一个步骤，第一处错误在哪里？本轮不保存。",
+      "expectedPrimary": "408-error-diagnosis",
+      "expectedBehavior": [
+        "定位当前实际步骤，不编造更深层个人根因",
+        "规则和年度依据分开，未要求保存时不写笔记"
+      ]
+    },
+    {
+      "id": "new-error-L1",
+      "skillUnderTest": "408-error-diagnosis",
+      "kind": "colloquial",
+      "prompt": "我算直接映射 Cache 时先从地址里取标记当行号了，这一步哪儿先错？别展开整章，也别存笔记。",
+      "expectedPrimary": "408-error-diagnosis",
+      "expectedBehavior": [
+        "只定位当前一题的首个关键错误",
+        "区分用户实际表达、纠正动作与原因假设"
+      ]
+    },
+    {
+      "id": "new-error-C1",
+      "skillUnderTest": "408-error-diagnosis",
+      "kind": "conflict",
+      "prompt": "我连着两周的多道题都出现审题与单位错误。请按我给的记录聚类，安排延迟复测，不要先讲某一道题。",
+      "expectedPrimary": "kaoyan-error-loop-coach",
+      "expectedBehavior": [
+        "跨题聚类与延迟复测归原错题闭环",
+        "不能凭观察簇把根因直接确认为事实"
+      ],
+      "expectedNotPrimary": "408-error-diagnosis"
+    },
+    {
+      "id": "new-error-M1",
+      "skillUnderTest": "408-error-diagnosis",
+      "kind": "compound",
+      "prompt": "我把 FIFO 命中当成重新入队。请先定位这一处错误，再顺便复核后续状态；主任务还是找第一处错，本轮不保存。",
+      "expectedPrimary": "408-error-diagnosis",
+      "expectedBehavior": [
+        "按用户主要目的保留一个主责入口",
+        "后续计算是纠错支持，不重复完整回答或擅建错题队列"
+      ]
+    },
+    {
+      "id": "new-concept-P1",
+      "skillUnderTest": "408-concept-followup",
+      "kind": "positive",
+      "prompt": "为什么 FIFO 命中不改进入内存的顺序，而 LRU 命中要改？只解释这个差别，不做完整状态表，也不保存。",
+      "expectedPrimary": "408-concept-followup",
+      "expectedBehavior": [
+        "解释两种顺序的物理含义与适用条件",
+        "不泛讲整章，不因规则出处已核升级年度大纲"
+      ]
+    },
+    {
+      "id": "new-concept-L1",
+      "skillUnderTest": "408-concept-followup",
+      "kind": "colloquial",
+      "prompt": "全相联 Cache 怎么就不用行索引了？我卡在这一点，给一个小例子就行。",
+      "expectedPrimary": "408-concept-followup",
+      "expectedBehavior": [
+        "围绕局部概念解释，不转为一组位数验算",
+        "来源支持范围与项目约定分别说明"
+      ]
+    },
+    {
+      "id": "new-concept-C1",
+      "skillUnderTest": "408-concept-followup",
+      "kind": "conflict",
+      "prompt": "请从题面开始完整讲一道三页框 FIFO 题，逐步列页框和队列、分析每一步并核对所有选项。",
+      "expectedPrimary": "kaoyan-408-tutor",
+      "expectedBehavior": [
+        "完整单题教学仍由原 tutor 主责",
+        "专用概念入口不抢占完整讲题"
+      ],
+      "expectedNotPrimary": "408-concept-followup"
+    },
+    {
+      "id": "new-concept-M1",
+      "skillUnderTest": "408-concept-followup",
+      "kind": "compound",
+      "prompt": "我只想理解传输时延和传播时延为什么不同。先给弱提示让我想，不列公式、数值结果或精确知识点编号。",
+      "expectedPrimary": "408-concept-followup",
+      "expectedBehavior": [
+        "局部概念追问继承逐级提示边界",
+        "不能用公式或详细依据泄露用户要求保留的方法"
+      ]
+    },
+    {
+      "id": "new-calc-P1",
+      "skillUnderTest": "408-calculation-check",
+      "kind": "positive",
+      "prompt": "请只复核直接映射 Cache 字段：16 位字节地址，块 64 B，共 256 行。列字段位数及条件，本轮不保存。",
+      "expectedPrimary": "408-calculation-check",
+      "expectedBehavior": [
+        "按字节编址与数据条件复核，结果为标记2位、索引8位、偏移6位",
+        "实际脚本返回才称工具核验，否则标人工复核"
+      ]
+    },
+    {
+      "id": "new-calc-L1",
+      "skillUnderTest": "408-calculation-check",
+      "kind": "colloquial",
+      "prompt": "帮我验一下：3 个页框、初态空、FIFO，引用串 1,2,3,4,1,2,5,1,2,3,4,5。核对缺页和命中统计，不用从头教概念。",
+      "expectedPrimary": "408-calculation-check",
+      "expectedBehavior": [
+        "当前主要产物为状态和统计复核",
+        "槽位与进入顺序分开，结果9次缺页3次命中"
+      ]
+    },
+    {
+      "id": "new-calc-C1",
+      "skillUnderTest": "408-calculation-check",
+      "kind": "conflict",
+      "prompt": "这是我的单题过程：我把 FIFO 命中后的页移到队尾，再算后续状态。请找第一处错误，验算只作为辅助。",
+      "expectedPrimary": "408-error-diagnosis",
+      "expectedBehavior": [
+        "首错定位是主目的，计算入口不抢占主责",
+        "引用用户实际步骤，不反推长期能力缺陷"
+      ],
+      "expectedNotPrimary": "408-calculation-check"
+    },
+    {
+      "id": "new-calc-M1",
+      "skillUnderTest": "408-calculation-check",
+      "kind": "compound",
+      "prompt": "1500 byte 分组经过 100 Mb/s、1000 km 单链路，传播速度 2×10^8 m/s。忽略处理和排队，只复核各时延并说明依据；本题不用脚本，不保存。",
+      "expectedPrimary": "408-calculation-check",
+      "expectedBehavior": [
+        "传输0.12ms、传播5ms、总5.12ms，写清单位与总时延端点",
+        "明确人工复核，来源部分支持不代表全部模型或年度大纲已核"
+      ]
     }
   ]
 }

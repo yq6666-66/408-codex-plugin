@@ -1,0 +1,88 @@
+{
+  "status": "engineering-fixtures-passed",
+  "checkedAt": "2026-10-26",
+  "baselineCommit": "436a0d1d1e41391eff4f1f4325b3a70f320b2bc7",
+  "sourceBinding": "uncommitted working-tree bytes listed below, not an entire committed plugin tree",
+  "pythonVersion": "3.14.0",
+  "scope": "real records CLI with temporary Markdown notes and local fake Notion MCP stdio service; no native-client or model permission acceptance",
+  "files": {
+    "plugins/kaoyan-408/references/portable-learning-records.md": "a6842d7c68d5243961e835dc290e4a50147d7c2311aea1c1a0c0c85937a7663f",
+    "plugins/kaoyan-408/references/obsidian-brain-contract.md": "97029e4db6418e9e67b9933019438dc2b5e19c637c8e896cf85f9b585afa3077",
+    "plugins/kaoyan-408/references/notion-brain-contract.md": "cffbcb193e5b271514eac480c16a924ac607eb9cf3f0b0467bf1bd101bcecf14",
+    "plugins/kaoyan-408/skills/kaoyan-408-planner/SKILL.md": "f1889812e42204f182c910118474c6e598fe6b74ef5190af5eda68e7e2d5ec72",
+    "plugins/kaoyan-408/skills/kaoyan-review-executor/SKILL.md": "83543b0cd7dfe4d80483252509c92e49b0119ea685de352aa5bc81f2b5f51358",
+    "plugins/kaoyan-408/skills/kaoyan-progress-diagnostician/SKILL.md": "0348c447234e66b3fb16ffe0131666f774326dc3838e968353d1678cc13dd6f5",
+    "tests/test_learning_cycle.py": "47345bf7f0cd627d354d469fdf5df0425344051189fd661ef7931cdcc30e807f"
+  },
+  "tests": [
+    {
+      "name": "cycle",
+      "command": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_learning_cycle.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "tests": 7,
+      "stderrSha256": "5e411d93800a7f91dccbafa1043d07c1c6de144340b5d26b1fdf75425ecb6612"
+    },
+    {
+      "name": "records",
+      "command": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_records.py",
+        "-q"
+      ],
+      "exitCode": 0,
+      "tests": 102,
+      "stderrSha256": "66f67c911e30441be36a10849724e3dad8a33f36e78a61ffe9d0ded548a6ea3f"
+    },
+    {
+      "name": "notion-fixture",
+      "command": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_v280_notes_fixture.py",
+        "-q"
+      ],
+      "exitCode": 0,
+      "tests": 12,
+      "stderrSha256": "ef1f72d4325fe448137cbdab6298bd327467d75c95f1ce138753bc47b0afa7fc"
+    }
+  ],
+  "evidenceDirectory": "dist/incremental-20261025/learning-cycle-20261026",
+  "fixtures": {
+    "anchorDate": "2026-10-25",
+    "retestDate": "2026-10-28",
+    "realUserDataAccessed": false,
+    "realExternalNotionConnected": false,
+    "recordsSchemaChanged": false,
+    "recordsRuntimeChanged": false
+  },
+  "unverified": [
+    "model routing and permission decisions",
+    "native Obsidian/Notion client session",
+    "real user notes write and readback",
+    "model cross-session recovery"
+  ]
+}

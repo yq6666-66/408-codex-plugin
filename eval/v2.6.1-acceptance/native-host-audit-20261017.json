@@ -1,0 +1,110 @@
+{
+  "reviewDate": "2026-10-17",
+  "mode": "audit-existing-traces",
+  "newClientRuns": 0,
+  "sessions": [
+    {
+      "sessionId": "sess_[SESSION-01]",
+      "audit": {
+        "schemaVersion": "1.0",
+        "traceFormat": "zcode-parts-jsonl",
+        "traceSha256": "9b3ce7500af93faf3dab42c3a031b8ce6ce6b260940e9ea9fecf78318a02a408",
+        "mode": "ordinary",
+        "records": 7,
+        "toolCalls": {},
+        "pluginSkillInvocations": 0,
+        "pluginSkills": {},
+        "pluginSkillStatuses": {},
+        "unresolvedSkillInvocations": 0,
+        "traceCompleteness": "not_verified",
+        "behaviorGrade": "not_assessed",
+        "scope": "Recorded calls only; completed is a tool status, not proof of behavior correctness."
+      }
+    },
+    {
+      "sessionId": "sess_[SESSION-02]",
+      "audit": {
+        "schemaVersion": "1.0",
+        "traceFormat": "zcode-parts-jsonl",
+        "traceSha256": "bc7355e6d4282728fc46fa03fd9eebbf35fbcf7c925ab08ee69fca300811ac49",
+        "mode": "explicit",
+        "records": 23,
+        "toolCalls": {
+          "Bash": 1,
+          "Skill": 1
+        },
+        "pluginSkillInvocations": 1,
+        "pluginSkills": {
+          "kaoyan-408-planner": 1
+        },
+        "pluginSkillStatuses": {
+          "completed": 1
+        },
+        "unresolvedSkillInvocations": 0,
+        "traceCompleteness": "not_verified",
+        "behaviorGrade": "not_assessed",
+        "scope": "Recorded calls only; completed is a tool status, not proof of behavior correctness."
+      }
+    },
+    {
+      "sessionId": "sess_[SESSION-03]",
+      "audit": {
+        "schemaVersion": "1.0",
+        "traceFormat": "zcode-parts-jsonl",
+        "traceSha256": "8c40329d2654ea189c7625a51b0d2b50d8653ea6b7dabb7fd62ec3f75d71a6be",
+        "mode": "ordinary",
+        "records": 7,
+        "toolCalls": {},
+        "pluginSkillInvocations": 0,
+        "pluginSkills": {},
+        "pluginSkillStatuses": {},
+        "unresolvedSkillInvocations": 0,
+        "traceCompleteness": "not_verified",
+        "behaviorGrade": "not_assessed",
+        "scope": "Recorded calls only; completed is a tool status, not proof of behavior correctness."
+      }
+    },
+    {
+      "sessionId": "sess_[SESSION-04]",
+      "audit": {
+        "schemaVersion": "1.0",
+        "traceFormat": "zcode-parts-jsonl",
+        "traceSha256": "3551f3f4e60030c17cc914ce39f3d3522684edb4f4bcb47e9300c18c70ddc8cb",
+        "mode": "ordinary",
+        "records": 12,
+        "toolCalls": {
+          "Bash": 1
+        },
+        "pluginSkillInvocations": 0,
+        "pluginSkills": {},
+        "pluginSkillStatuses": {},
+        "unresolvedSkillInvocations": 0,
+        "traceCompleteness": "not_verified",
+        "behaviorGrade": "not_assessed",
+        "scope": "Recorded calls only; completed is a tool status, not proof of behavior correctness."
+      }
+    },
+    {
+      "sessionId": "sess_[SESSION-05]",
+      "audit": {
+        "schemaVersion": "1.0",
+        "traceFormat": "zcode-parts-jsonl",
+        "traceSha256": "23c07b77b211fb983d1d68d0831b7361b947a60122665a193c6180dc37df3d91",
+        "mode": "ordinary",
+        "records": 7,
+        "toolCalls": {},
+        "pluginSkillInvocations": 0,
+        "pluginSkills": {},
+        "pluginSkillStatuses": {},
+        "unresolvedSkillInvocations": 0,
+        "traceCompleteness": "not_verified",
+        "behaviorGrade": "not_assessed",
+        "scope": "Recorded calls only; completed is a tool status, not proof of behavior correctness."
+      }
+    }
+  ],
+  "_publicationView": {
+    "kind": "derived; session identifiers redacted",
+    "originalSha256": "ac1bf9eba958c84d93a82bcbe8eed62209565f18d57649a91e1dc10a8ce0b76a"
+  }
+}

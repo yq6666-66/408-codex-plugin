@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-18",
+  "version": "2.7.0-dev.2",
+  "testedSourceCommit": "706454d8030db2d7694a6553bc243705fc281f28",
+  "checks": {
+    "windows": {
+      "tests": 397,
+      "durationSeconds": 522.396,
+      "skipped": 0,
+      "exitCode": 0,
+      "sourceCommit": "706454d8030db2d7694a6553bc243705fc281f28",
+      "log": "dist/v270-dev2-check-20261018/windows-check.log",
+      "logSha256": "d2fffc6a39d904917bf6ddfbb24cbe006e541daf0b749a31f3c76ad64bf2713f"
+    },
+    "linux": {
+      "tests": 397,
+      "durationSeconds": 55.502,
+      "skipped": 1,
+      "exitCode": 0,
+      "sourceCommit": "706454d8030db2d7694a6553bc243705fc281f28",
+      "log": "dist/v270-dev2-check-20261018/linux-check.log",
+      "logSha256": "c15bbf04e8137079d05cb68ca24ae3023f595645344931a8ae782cbee40289c0"
+    }
+  },
+  "linuxEnvironment": "local WSL Ubuntu native temporary clone; not GitHub Actions",
+  "semgrep": {
+    "version": "1.162.0",
+    "rules": 8,
+    "targets": 135,
+    "findings": 0
+  },
+  "officialValidators": {
+    "mode": "pinned-official-script",
+    "skillsPassed": 14,
+    "skillsTotal": 14,
+    "treeSha256": "ebafd42bc653e3f49365bf1fb5e061cc188037c49146dafd8b4a03deb1d9cac3"
+  },
+  "releaseFileCount": 50,
+  "zipBytes": 350177,
+  "zipSha256": "b261b166cf31a2dcce931308258903f6258039270b1b52a47aa1804bd772e05b",
+  "pluginTreeSha256": "ebafd42bc653e3f49365bf1fb5e061cc188037c49146dafd8b4a03deb1d9cac3",
+  "reproducible": true,
+  "verifyRelease": true,
+  "verifyTree": true,
+  "isolatedHealth": {
+    "status": "ok",
+    "skills": 14,
+    "scripts": 4,
+    "obsidian": "not-configured"
+  },
+  "knowledgePoints": {
+    "total": 60,
+    "verified2025SchoolMappings": 17,
+    "pendingMappings": 43,
+    "verified2027Mappings": 0
+  },
+  "modelAcceptance": {
+    "preparedCases": 20,
+    "validCapturedSamples": 0,
+    "gradedSamples": 0,
+    "preflightStatus": "invalid-environment",
+    "evidence": "model-preflight-20261018.json"
+  },
+  "publication": {
+    "pushed": false,
+    "merged": false,
+    "tagged": false,
+    "released": false
+  },
+  "buildInvocationCorrection": "Unsupported --output-dir in initial wrapper; native --output command succeeded without changing source or rerunning already passing tests."
+}

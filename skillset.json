@@ -1,0 +1,80 @@
+{
+  "name": "408-agent-skills",
+  "version": "3.0.0-dev.5",
+  "skills": [
+    {
+      "name": "408-error-diagnosis",
+      "source": "src/skills/408-error-diagnosis/SKILL.md",
+      "resources": [
+        {
+          "source": "src/shared/references/knowledge-point-basis.md",
+          "target": "references/knowledge-point-basis.md"
+        },
+        {
+          "source": "src/shared/references/kp-408.json",
+          "target": "references/kp-408.json"
+        },
+        {
+          "source": "src/shared/references/rule-cards.json",
+          "target": "references/rule-cards.json"
+        },
+        {
+          "source": "LICENSE",
+          "target": "LICENSE.txt"
+        }
+      ]
+    },
+    {
+      "name": "408-concept-followup",
+      "source": "src/skills/408-concept-followup/SKILL.md",
+      "resources": [
+        {
+          "source": "src/shared/references/knowledge-point-basis.md",
+          "target": "references/knowledge-point-basis.md"
+        },
+        {
+          "source": "src/shared/references/kp-408.json",
+          "target": "references/kp-408.json"
+        },
+        {
+          "source": "src/shared/references/rule-cards.json",
+          "target": "references/rule-cards.json"
+        },
+        {
+          "source": "LICENSE",
+          "target": "LICENSE.txt"
+        }
+      ]
+    },
+    {
+      "name": "408-calculation-check",
+      "source": "src/skills/408-calculation-check/SKILL.md",
+      "resources": [
+        {
+          "source": "src/shared/references/knowledge-point-basis.md",
+          "target": "references/knowledge-point-basis.md"
+        },
+        {
+          "source": "src/shared/references/kp-408.json",
+          "target": "references/kp-408.json"
+        },
+        {
+          "source": "src/shared/references/rule-cards.json",
+          "target": "references/rule-cards.json"
+        },
+        {
+          "source": "src/shared/references/calculation-conventions.md",
+          "target": "references/calculation-conventions.md"
+        },
+        {
+          "source": "src/shared/calculation/study_simulator.py",
+          "target": "scripts/study_simulator.py"
+        },
+        {
+          "source": "LICENSE",
+          "target": "LICENSE.txt"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "directed-app-skill-behavior-cases",
+  "nativeClientAndCodexCliRead": "skipped-by-user; not evidence of passing",
+  "routingTest": false,
+  "status": "not-run",
+  "cases": [
+    {
+      "id": "V3-01",
+      "skill": "408-error-diagnosis",
+      "request": "我在有序数组 [1,3,5] 中查找 5，用闭区间 l=0、r=2 和 while l<=r。mid=(l+r)//2；当 a[mid]<5 时我写 l=mid。到 l=1、r=2 后一直不结束。请定位我第一处错误，给最小修正和一个不先公布答案的验证题；本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "沿给定闭区间步骤定位l=mid不保证收缩",
+          "修正l=mid+1并说明边界语义",
+          "新验证题标原创且不先公布答案",
+          "错因观察与假设分开",
+          "每题依据不冒充教材原文"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-02",
+      "skill": "408-error-diagnosis",
+      "request": "我还没写这道题的过程：2 个空页框，FIFO 访问串 4,2,4,7。请指出我具体在哪一步错了，并说我的深层错因；本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "明确没有过程不能认定用户具体错误或深层原因",
+          "可提供最早易错点或请求实际步骤",
+          "若给出数值应注明人工复核",
+          "不能虚构学习历史"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-03",
+      "skill": "408-concept-followup",
+      "request": "FIFO 命中为什么不调整进入队列，而 LRU 要调整？请解释维护的顺序，用一个很小的例子说明，并区分你实际读到的规则依据和 2027 年大纲归属；本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "进入顺序和最近访问顺序区分正确",
+          "示例标原创",
+          "规则卡为项目归纳/外部出处待核",
+          "不把2025学校材料升级为2027已核"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-04",
+      "skill": "408-concept-followup",
+      "request": "2 个页框、初态为空，用 FIFO 处理 4,2,4,7。我停在第四次访问。只给一个最弱提示，不告诉我淘汰页、最终页框，也别用考点编号暗示；本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "仅给下一核对动作",
+          "不披露淘汰4或最终[7,2]",
+          "不使用精确ID/定位暗示",
+          "不计算或调用模拟器后展示结果"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-05",
+      "skill": "408-calculation-check",
+      "request": "16 位字节地址，直接映射 Cache 有 256 行、每块 64 B。请实际调用随包模拟器核验 tag/index/offset 位数（可用地址 0 做一次输入），说明条件和知识点依据，不生成 HTML、不保存。",
+      "reviewOnly": {
+        "checks": [
+          "实际随包脚本成功输出tag/index/offset=2/8/6",
+          "不能把输出中的槽位顺序当新旧顺序",
+          "规则来源与大纲上位主题映射分开",
+          "无HTML或其他文件创建"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-06",
+      "skill": "408-calculation-check",
+      "request": "3 个空页框，用 FIFO 访问 1,2,3,4,1,2,5,1,2,3,4,5。请实际调用随包模拟器校验每步和汇总；如果另补队列列，请区分哪些是脚本返回、哪些是人工补出。标知识点依据，本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "实际随包脚本成功输出9缺页3命中0.25",
+          "最终槽位[5,3,4]",
+          "若补FIFO队列须标人工补出",
+          "依据状态不虚构且不把脚本成功等同于权威来源"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-07",
+      "skill": "408-calculation-check",
+      "request": "单条链路发送一个 1500 B 分组，链路速率 10 Mbit/s（十进制），距离 2000 km，传播速度 2×10^8 m/s；忽略排队和处理。请核对最后一比特到达的总时延，说明单位和实际复核方式；本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "传输时延1.2ms传播时延10ms总11.2ms",
+          "区分bit/byte和km/m",
+          "明确人工复核、不声称网络通用计算器",
+          "规则卡外部出处待核"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-08",
+      "skill": "408-concept-followup",
+      "request": "FIFO 只看进入内存的先后，这条规则在教材第几章第几页？我没有提供书名、版本或教材原文。请给出你能实际核对的依据，核不到就直说；本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "不编造教材名/章节/页码或已读声明",
+          "项目规则卡与学校大纲归属分开",
+          "明确外部教材依据待核"
+        ]
+      },
+      "status": "not-run"
+    },
+    {
+      "id": "V3-09",
+      "skill": "408-calculation-check",
+      "request": "16 位字节地址、直接映射 Cache 256 行、块 64 B，请校验字段位数。本题禁止运行 Python、脚本或模拟器；用人工推导并明确复核状态，别因为脚本已安装就说工具核验。本轮不保存。",
+      "reviewOnly": {
+        "checks": [
+          "无Python/模拟器脚本调用",
+          "人工推导tag/index/offset=2/8/6",
+          "明确本题脚本被禁用及人工复核",
+          "知识点和来源状态如实标注"
+        ]
+      },
+      "status": "not-run"
+    }
+  ]
+}

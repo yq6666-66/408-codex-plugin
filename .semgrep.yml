@@ -6,6 +6,7 @@ rules:
     paths:
       include:
         - /plugins/kaoyan-408/**
+        - /src/**
       exclude:
         - /.semgrep.yml
     pattern-regex: '(?i)\b(?:baidu|netdisk|localstorage|study-state)\b'

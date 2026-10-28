@@ -1,0 +1,88 @@
+name: Skills CI
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  skills:
+    name: skills (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Install pinned development dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+      - name: Scan canonical sources and complete reachable Git history
+        run: python -B tools/check_security.py
+      - name: Validate canonical knowledge and rule sources offline
+        run: python -B tools/validate_knowledge.py
+      - name: Require complete-plugin resource copies to match canonical sources
+        run: python -B tools/skills.py sync-plugin-resources --check
+      - name: Require full-plugin Skill entries to match canonical sources
+        run: python -B tools/skills.py sync-plugin-skills --check
+      - name: Test focused skills and exporters
+        run: python -B -m unittest discover -s tests -p "test_v300_*.py" -v
+      - name: Scan with pinned Semgrep on Linux
+        if: runner.os == 'Linux'
+        run: >-
+          semgrep scan --config .semgrep.yml --error --metrics=off --no-git-ignore
+          --exclude .git --exclude .venv --exclude venv --exclude __pycache__
+          --exclude .pytest_cache --exclude .cache --exclude .codex-security --exclude dist .
+      - name: Export all three platform bundles
+        run: python -B tools/skills.py export --platform all --output dist/skills-ci
+      - name: Upload skills archives and public export metadata
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: skills-${{ matrix.os }}
+          path: |
+            dist/skills-ci/*.zip
+            dist/skills-ci/*.json
+          if-no-files-found: error
+          retention-days: 14
+
+  reproducible:
+    name: skills reproducible
+    needs: skills
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Download Windows skills artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: skills-windows-latest
+          path: artifacts/skills-windows
+      - name: Download Ubuntu skills artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: skills-ubuntu-latest
+          path: artifacts/skills-ubuntu
+      - name: Require all three archives to be byte-identical
+        run: python -B ci/verify_skills_reproducible.py artifacts/skills-windows artifacts/skills-ubuntu

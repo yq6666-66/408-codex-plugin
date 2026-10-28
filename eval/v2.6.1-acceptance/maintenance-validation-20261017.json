@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-17",
+  "scope": "local-host-maintenance-delivery",
+  "tests": {
+    "command": "python -B scripts/check.py --verify-system-evidence",
+    "exitCode": 0,
+    "count": 359,
+    "durationSeconds": 374.038,
+    "result": "OK"
+  },
+  "environment": {
+    "platform": "Windows",
+    "python": "3.14.0"
+  },
+  "officialValidatorEvidence": "matches-current-plugin-tree",
+  "semgrep": "skipped-on-Windows-new-commit-Linux-CI-not-run",
+  "pluginTreeSha256": "17e514cb484449485eb846fc55d93220a9ec1a8f9d14ab62934a577b2b2dbcea",
+  "traceAuditRegressionTests": 14,
+  "nativeClientRunsAdded": 0,
+  "previousReleaseCandidateCommit": "c1d632a2059ff1bce26eb5643fa5c95d12b92edc",
+  "testLog": {
+    "path": "dist/host-maintenance-20261017-204014/check.log",
+    "sha256": "e1b6904472b20f1faa500a87a7cada1a8965257489ebd0fc968a64f170968db9"
+  },
+  "sourceSha256": {
+    "scripts/audit_host_trace.py": "829193551b1f89ba791c5c9ff684338d37100d2ae8dcec5266cb545f75fea170",
+    "tests/test_audit_host_trace.py": "af76c819217aba79ffbc84eaf36ff043efc73e4f1951c34211995f892220dcda"
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "408 概念追问"
+  short_description: "回答 408 局部概念追问，说明条件、边界与反例并保留提示答案"
+  default_prompt: "使用 $408-concept-followup 解释我当前的 408 概念疑点，只展开所问部分。"

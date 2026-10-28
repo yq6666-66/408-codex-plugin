@@ -1,0 +1,93 @@
+{
+  "status": "static-data-review-only",
+  "modelRuns": 0,
+  "behaviorGradesAssigned": 0,
+  "groupCount": 10,
+  "caseCount": 20,
+  "naturalTurnCount": 23,
+  "uniqueNaturalTurnCount": 22,
+  "duplicateCaseIdCount": 0,
+  "exactDuplicateFullCaseInputCount": 0,
+  "intentionalRepeatedTurns": [
+    {
+      "occurrences": [
+        "G10-A:turn-1",
+        "G10-B:turn-1"
+      ],
+      "reason": "G10 两臂有意共享第一轮，分别考察后续衔接与切换。"
+    }
+  ],
+  "primarySkillCoverage": {
+    "kaoyan-408-planner": 2,
+    "kaoyan-408-tutor": 9,
+    "kaoyan-admissions-researcher": 1,
+    "kaoyan-error-loop-coach": 3,
+    "kaoyan-math-coach": 1,
+    "kaoyan-official-info-researcher": 1,
+    "kaoyan-past-paper-analyst": 1,
+    "kaoyan-past-paper-searcher": 3,
+    "kaoyan-progress-diagnostician": 1,
+    "kaoyan-review-executor": 1
+  },
+  "distinctPrimarySkills": 10,
+  "allowedSecondarySkills": [
+    "kaoyan-math-coach",
+    "kaoyan-official-info-researcher"
+  ],
+  "skillsNotCoveredAsPrimary": [
+    "kaoyan-english-coach",
+    "kaoyan-material-study-assistant",
+    "kaoyan-mock-exam-coach",
+    "kaoyan-politics-coach"
+  ],
+  "allNaturalInputsExcludeSkillAndKnowledgeIds": true,
+  "allPerTurnReviewCountsMatch": true,
+  "allCasesInputProjectionValidated": true,
+  "allMaterialsResolvedWithinFixtureRoot": true,
+  "projectionTests": {
+    "command": "python -B -m unittest test_export_inputs -v",
+    "run": true,
+    "tests": 8,
+    "passed": 8,
+    "skipped": 0,
+    "modelCalled": false
+  },
+  "recordFixtureValidation": {
+    "command": "python -B plugins/kaoyan-408/scripts/records.py validate --strict < notes-queue.json",
+    "exitCode": 0,
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  },
+  "semanticOverlapReviewed": [
+    "G05-A 无题面找试卷 vs G07-B 有题面核身份，故意保留相同搜索入口",
+    "G06-A/B 同一主责对比概念/计算产物",
+    "G08-A/B 同一主责对比提示/完整答案",
+    "G09-A/B 同一主责与同一虚构记录，仅改变写入权限",
+    "G10 共用首轮，然后连续同题或明确换科；后者再测搜索到讲解的复合串联"
+  ],
+  "sourceRevision": "706454d8030db2d7694a6553bc243705fc281f28",
+  "sourceHashes": {
+    "docs/superpowers/plans/2026-10-16-408-agent-skills-phased-roadmap.md": "f7d65ced549ad5bbaf4af1611338014822f35d616f51f2cb4e3f51127a99e7cc",
+    "plugins/kaoyan-408/references/capability-routing-contract.md": "e80a4ab00a351f43ce8954f0beea46248808b41951e40b01b3e87e510db3bdcd"
+  },
+  "integrationNotes": [
+    "External static review of source 706454d; assets integrated into the separate local v2.8 development branch. Not a model verdict.",
+    "cases 的 reviewOnly 与宿主准备 metadata 必须留在评分侧",
+    "正常发现/安装、Skill 主责证据和行为结果均未运行",
+    "导出器只提供输入投影，不是路由器或自动评分框架",
+    "覆盖为 10/14 个主责入口，不能声称所有入口已验收"
+  ],
+  "ciTestAdapter": {
+    "source": "integration-check/tests/test_v280_inputs.py",
+    "target": "tests/test_v280_inputs.py",
+    "sourceModuleTarget": "eval/v2.8-acceptance/export_inputs.py",
+    "moduleLoading": "importlib.util.spec_from_file_location",
+    "command": "python -B -m unittest discover -s tests -p test_v280_inputs.py -v",
+    "runInExternalExpectedRepoLayout": true,
+    "tests": 8,
+    "passed": 8,
+    "skipped": 0,
+    "modelCalled": false
+  }
+}

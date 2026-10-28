@@ -19,6 +19,9 @@ EXPECTED_RUNTIME_HELPERS = {
     "study_simulator.py",
 }
 EXPECTED_SKILLS = {
+    "408-error-diagnosis",
+    "408-concept-followup",
+    "408-calculation-check",
     "kaoyan-408-planner",
     "kaoyan-review-executor",
     "kaoyan-progress-diagnostician",

@@ -1,0 +1,1394 @@
+{
+  "schemaVersion": "1.0",
+  "selectionBasis": "首批编辑优先级；四科各15条，不代表历年命题频率统计。topicPath为项目分类，年度大纲归属须另核。",
+  "knowledgePoints": [
+    {
+      "id": "DS-ALG-001",
+      "subject": "数据结构",
+      "name": "算法时间与空间复杂度",
+      "topicPath": [
+        "算法基础",
+        "复杂度"
+      ],
+      "aliases": [
+        "渐进复杂度",
+        "时间复杂度",
+        "空间复杂度"
+      ],
+      "syllabusPath": [
+        "数据结构",
+        "考查目标",
+        "2"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.1; 考查目标 / 2",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "DS-LIST-001",
+      "subject": "数据结构",
+      "name": "顺序表与链表",
+      "topicPath": [
+        "线性表",
+        "存储与操作"
+      ],
+      "aliases": [
+        "线性表",
+        "链表插入删除",
+        "顺序表"
+      ],
+      "syllabusPath": [
+        "数据结构",
+        "二",
+        "（二）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.1; 二 / （二）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "DS-STACK-001",
+      "subject": "数据结构",
+      "name": "栈与递归",
+      "topicPath": [
+        "栈",
+        "递归与表达式"
+      ],
+      "aliases": [
+        "递归栈",
+        "表达式求值",
+        "出栈序列"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-QUEUE-001",
+      "subject": "数据结构",
+      "name": "队列与循环队列",
+      "topicPath": [
+        "队列",
+        "循环队列"
+      ],
+      "aliases": [
+        "队列判空判满",
+        "循环队列"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-ARRAY-001",
+      "subject": "数据结构",
+      "name": "数组地址与矩阵压缩存储",
+      "topicPath": [
+        "数组",
+        "地址计算与压缩存储"
+      ],
+      "aliases": [
+        "行优先",
+        "列优先",
+        "对称矩阵",
+        "三角矩阵"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-TREE-001",
+      "subject": "数据结构",
+      "name": "二叉树性质与遍历",
+      "topicPath": [
+        "树",
+        "二叉树"
+      ],
+      "aliases": [
+        "先序",
+        "中序",
+        "后序",
+        "层序"
+      ],
+      "syllabusPath": [
+        "数据结构",
+        "四",
+        "（二）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.1; 四 / （二）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "DS-TREE-002",
+      "subject": "数据结构",
+      "name": "哈夫曼树与编码",
+      "topicPath": [
+        "树",
+        "哈夫曼树"
+      ],
+      "aliases": [
+        "带权路径长度",
+        "WPL",
+        "前缀编码"
+      ],
+      "syllabusPath": [
+        "数据结构",
+        "四",
+        "（四）1"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.2; 四 / （四）1",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "DS-SEARCH-001",
+      "subject": "数据结构",
+      "name": "二叉搜索树与平衡二叉树",
+      "topicPath": [
+        "查找",
+        "搜索树"
+      ],
+      "aliases": [
+        "BST",
+        "AVL",
+        "平衡因子"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-SEARCH-002",
+      "subject": "数据结构",
+      "name": "B 树与 B+ 树",
+      "topicPath": [
+        "查找",
+        "多路查找树"
+      ],
+      "aliases": [
+        "B树",
+        "B+树",
+        "阶数与关键字"
+      ],
+      "syllabusPath": [
+        "数据结构",
+        "六",
+        "（六）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.2; 六 / （六）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "DS-GRAPH-001",
+      "subject": "数据结构",
+      "name": "图的表示与遍历",
+      "topicPath": [
+        "图",
+        "存储与遍历"
+      ],
+      "aliases": [
+        "邻接矩阵",
+        "邻接表",
+        "BFS",
+        "DFS"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-GRAPH-002",
+      "subject": "数据结构",
+      "name": "最小生成树",
+      "topicPath": [
+        "图",
+        "最小生成树"
+      ],
+      "aliases": [
+        "Prim",
+        "Kruskal",
+        "最小生成树"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-GRAPH-003",
+      "subject": "数据结构",
+      "name": "最短路径",
+      "topicPath": [
+        "图",
+        "最短路径"
+      ],
+      "aliases": [
+        "Dijkstra",
+        "Floyd",
+        "单源最短路"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-GRAPH-004",
+      "subject": "数据结构",
+      "name": "拓扑排序与关键路径",
+      "topicPath": [
+        "图",
+        "有向无环图"
+      ],
+      "aliases": [
+        "AOV",
+        "AOE",
+        "关键路径",
+        "拓扑排序"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-SEARCH-003",
+      "subject": "数据结构",
+      "name": "顺序、折半与散列查找",
+      "topicPath": [
+        "查找",
+        "查找性能"
+      ],
+      "aliases": [
+        "二分查找",
+        "折半查找",
+        "哈希冲突",
+        "散列查找",
+        "ASL"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "DS-SORT-001",
+      "subject": "数据结构",
+      "name": "排序过程与性能比较",
+      "topicPath": [
+        "排序",
+        "内部与外部排序"
+      ],
+      "aliases": [
+        "稳定性",
+        "快速排序",
+        "堆排序",
+        "归并排序",
+        "外部排序"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-PERF-001",
+      "subject": "计算机组成原理",
+      "name": "CPU 性能指标与执行时间",
+      "topicPath": [
+        "计算机系统",
+        "性能指标"
+      ],
+      "aliases": [
+        "CPI",
+        "时钟周期",
+        "主频",
+        "CPU执行时间"
+      ],
+      "syllabusPath": [
+        "计算机组成原理",
+        "一",
+        "（二）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.3; 一 / （二）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CO-DATA-001",
+      "subject": "计算机组成原理",
+      "name": "定点数与补码表示",
+      "topicPath": [
+        "数据表示",
+        "定点数"
+      ],
+      "aliases": [
+        "补码",
+        "原码",
+        "反码",
+        "符号扩展"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-DATA-002",
+      "subject": "计算机组成原理",
+      "name": "浮点数表示",
+      "topicPath": [
+        "数据表示",
+        "浮点数"
+      ],
+      "aliases": [
+        "IEEE 754",
+        "阶码",
+        "尾数",
+        "规格化"
+      ],
+      "syllabusPath": [
+        "计算机组成原理",
+        "二",
+        "（四）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.3; 二 / （四）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CO-ALU-001",
+      "subject": "计算机组成原理",
+      "name": "整数运算与溢出判断",
+      "topicPath": [
+        "运算方法",
+        "整数运算"
+      ],
+      "aliases": [
+        "加减法溢出",
+        "进位标志",
+        "乘除运算"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-MEM-001",
+      "subject": "计算机组成原理",
+      "name": "主存组织与存储器扩展",
+      "topicPath": [
+        "存储系统",
+        "主存储器"
+      ],
+      "aliases": [
+        "字节编址",
+        "存储芯片",
+        "位扩展",
+        "字扩展"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-CACHE-001",
+      "subject": "计算机组成原理",
+      "name": "Cache 地址映射与字段划分",
+      "topicPath": [
+        "存储系统",
+        "Cache映射"
+      ],
+      "aliases": [
+        "直接映射",
+        "组相联",
+        "全相联",
+        "标记位",
+        "组索引"
+      ],
+      "syllabusPath": [
+        "计算机组成原理",
+        "三",
+        "（六）2"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.4; 三 / （六）2",
+        "kind": "official-repost",
+        "mappingScope": "upper-topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CO-CACHE-002",
+      "subject": "计算机组成原理",
+      "name": "Cache 性能与写策略",
+      "topicPath": [
+        "存储系统",
+        "Cache性能"
+      ],
+      "aliases": [
+        "命中率",
+        "缺失代价",
+        "平均访存时间",
+        "写直达",
+        "写回"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-ISA-001",
+      "subject": "计算机组成原理",
+      "name": "指令格式与寻址方式",
+      "topicPath": [
+        "指令系统",
+        "格式与寻址"
+      ],
+      "aliases": [
+        "有效地址",
+        "指令字长",
+        "寻址方式"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-CPU-001",
+      "subject": "计算机组成原理",
+      "name": "指令周期与数据通路",
+      "topicPath": [
+        "中央处理器",
+        "执行过程"
+      ],
+      "aliases": [
+        "取指",
+        "执行周期",
+        "数据通路",
+        "寄存器传送"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-CPU-002",
+      "subject": "计算机组成原理",
+      "name": "控制器与微程序",
+      "topicPath": [
+        "中央处理器",
+        "控制器"
+      ],
+      "aliases": [
+        "硬布线控制",
+        "微指令",
+        "微程序控制"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-PIPE-001",
+      "subject": "计算机组成原理",
+      "name": "流水线性能与冒险",
+      "topicPath": [
+        "中央处理器",
+        "指令流水线"
+      ],
+      "aliases": [
+        "流水线加速比",
+        "数据冒险",
+        "控制冒险",
+        "结构冒险"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-BUS-001",
+      "subject": "计算机组成原理",
+      "name": "总线与仲裁",
+      "topicPath": [
+        "总线",
+        "传输与仲裁"
+      ],
+      "aliases": [
+        "总线带宽",
+        "总线周期",
+        "总线仲裁"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-IO-001",
+      "subject": "计算机组成原理",
+      "name": "中断机制与处理过程",
+      "topicPath": [
+        "输入输出",
+        "中断"
+      ],
+      "aliases": [
+        "中断响应",
+        "中断屏蔽",
+        "中断优先级"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-IO-002",
+      "subject": "计算机组成原理",
+      "name": "DMA 数据传送",
+      "topicPath": [
+        "输入输出",
+        "DMA"
+      ],
+      "aliases": [
+        "DMA",
+        "周期窃取",
+        "块传送"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CO-IO-003",
+      "subject": "计算机组成原理",
+      "name": "程序查询与中断方式的开销",
+      "topicPath": [
+        "输入输出",
+        "传送方式比较"
+      ],
+      "aliases": [
+        "程序查询",
+        "轮询开销",
+        "中断开销"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-BASIC-001",
+      "subject": "操作系统",
+      "name": "内核、系统调用与中断异常",
+      "topicPath": [
+        "操作系统基础",
+        "运行机制"
+      ],
+      "aliases": [
+        "用户态",
+        "内核态",
+        "系统调用",
+        "异常"
+      ],
+      "syllabusPath": [
+        "操作系统",
+        "一",
+        "（三）1–3"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.5; 一 / （三）1–3",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "OS-PROC-001",
+      "subject": "操作系统",
+      "name": "进程、线程与 PCB",
+      "topicPath": [
+        "进程管理",
+        "进程与线程"
+      ],
+      "aliases": [
+        "PCB",
+        "线程资源",
+        "进程资源"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-PROC-002",
+      "subject": "操作系统",
+      "name": "进程状态与上下文切换",
+      "topicPath": [
+        "进程管理",
+        "状态转换"
+      ],
+      "aliases": [
+        "就绪",
+        "阻塞",
+        "进程切换"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-SYNC-001",
+      "subject": "操作系统",
+      "name": "同步、互斥与信号量",
+      "topicPath": [
+        "进程管理",
+        "同步互斥"
+      ],
+      "aliases": [
+        "P操作",
+        "V操作",
+        "临界区",
+        "信号量"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-SYNC-002",
+      "subject": "操作系统",
+      "name": "经典同步问题",
+      "topicPath": [
+        "进程管理",
+        "同步问题建模"
+      ],
+      "aliases": [
+        "生产者消费者",
+        "读者写者",
+        "哲学家进餐"
+      ],
+      "syllabusPath": [
+        "操作系统",
+        "二",
+        "（三）6"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.6; 二 / （三）6",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "OS-DEAD-001",
+      "subject": "操作系统",
+      "name": "死锁与安全状态",
+      "topicPath": [
+        "进程管理",
+        "死锁"
+      ],
+      "aliases": [
+        "银行家算法",
+        "死锁预防",
+        "死锁避免",
+        "死锁检测"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-SCHED-001",
+      "subject": "操作系统",
+      "name": "处理机调度算法",
+      "topicPath": [
+        "处理机调度",
+        "调度算法"
+      ],
+      "aliases": [
+        "FCFS",
+        "RR",
+        "SJF",
+        "优先级调度"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-SCHED-002",
+      "subject": "操作系统",
+      "name": "周转、等待与响应时间",
+      "topicPath": [
+        "处理机调度",
+        "调度指标"
+      ],
+      "aliases": [
+        "周转时间",
+        "带权周转时间",
+        "等待时间",
+        "响应时间"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-MEM-001",
+      "subject": "操作系统",
+      "name": "FIFO 页面置换",
+      "topicPath": [
+        "内存管理",
+        "页面置换",
+        "FIFO"
+      ],
+      "aliases": [
+        "先进先出页面置换",
+        "FIFO",
+        "Belady异常"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-MEM-002",
+      "subject": "操作系统",
+      "name": "LRU 页面置换",
+      "topicPath": [
+        "内存管理",
+        "页面置换",
+        "LRU"
+      ],
+      "aliases": [
+        "最近最少使用",
+        "LRU",
+        "访问历史"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-MEM-003",
+      "subject": "操作系统",
+      "name": "分页、分段与地址变换",
+      "topicPath": [
+        "内存管理",
+        "地址变换"
+      ],
+      "aliases": [
+        "页号",
+        "页内偏移",
+        "页表",
+        "段表",
+        "TLB"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-MEM-004",
+      "subject": "操作系统",
+      "name": "虚拟内存与缺页处理",
+      "topicPath": [
+        "内存管理",
+        "虚拟内存"
+      ],
+      "aliases": [
+        "缺页中断",
+        "请求分页",
+        "有效访问时间"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-MEM-005",
+      "subject": "操作系统",
+      "name": "工作集、局部性与抖动",
+      "topicPath": [
+        "内存管理",
+        "性能与分配"
+      ],
+      "aliases": [
+        "工作集",
+        "局部性",
+        "抖动",
+        "驻留集"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "OS-FILE-001",
+      "subject": "操作系统",
+      "name": "文件目录、分配与索引节点",
+      "topicPath": [
+        "文件管理",
+        "文件组织"
+      ],
+      "aliases": [
+        "inode",
+        "文件目录",
+        "文件分配",
+        "硬链接"
+      ],
+      "syllabusPath": [
+        "操作系统",
+        "四",
+        "（一）2、6；（二）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.7; 四 / （一）2、6；（二）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "OS-DISK-001",
+      "subject": "操作系统",
+      "name": "磁盘调度与访问时间",
+      "topicPath": [
+        "输入输出管理",
+        "磁盘"
+      ],
+      "aliases": [
+        "磁盘寻道",
+        "SCAN",
+        "C-SCAN",
+        "SSTF"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-ARCH-001",
+      "subject": "计算机网络",
+      "name": "网络分层与封装",
+      "topicPath": [
+        "网络体系结构",
+        "协议分层"
+      ],
+      "aliases": [
+        "OSI",
+        "TCP/IP",
+        "封装",
+        "协议数据单元"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-PERF-001",
+      "subject": "计算机网络",
+      "name": "网络时延与吞吐量",
+      "topicPath": [
+        "网络性能",
+        "时延与速率"
+      ],
+      "aliases": [
+        "发送时延",
+        "传播时延",
+        "吞吐量",
+        "带宽时延积"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-PHY-001",
+      "subject": "计算机网络",
+      "name": "信道容量与编码调制",
+      "topicPath": [
+        "物理层",
+        "信道与编码"
+      ],
+      "aliases": [
+        "奈奎斯特",
+        "香农",
+        "波特率",
+        "比特率"
+      ],
+      "syllabusPath": [
+        "计算机网络",
+        "二",
+        "（一）1–3"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.8; 二 / （一）1–3",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CN-LINK-001",
+      "subject": "计算机网络",
+      "name": "成帧与差错检测",
+      "topicPath": [
+        "数据链路层",
+        "帧与差错检测"
+      ],
+      "aliases": [
+        "比特填充",
+        "字节填充",
+        "CRC"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-ARQ-001",
+      "subject": "计算机网络",
+      "name": "滑动窗口与可靠传输",
+      "topicPath": [
+        "数据链路层",
+        "流量与差错控制"
+      ],
+      "aliases": [
+        "停止等待",
+        "GBN",
+        "SR",
+        "窗口大小"
+      ],
+      "syllabusPath": [
+        "计算机网络",
+        "三",
+        "（四）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.9; 三 / （四）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CN-MAC-001",
+      "subject": "计算机网络",
+      "name": "共享介质访问控制",
+      "topicPath": [
+        "数据链路层",
+        "介质访问控制"
+      ],
+      "aliases": [
+        "ALOHA",
+        "CSMA/CD",
+        "二进制指数退避"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-LAN-001",
+      "subject": "计算机网络",
+      "name": "以太网、交换与 VLAN",
+      "topicPath": [
+        "数据链路层",
+        "局域网"
+      ],
+      "aliases": [
+        "交换机转发",
+        "以太网",
+        "VLAN",
+        "生成树"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-NET-001",
+      "subject": "计算机网络",
+      "name": "IPv4 地址与 CIDR 子网划分",
+      "topicPath": [
+        "网络层",
+        "IP地址"
+      ],
+      "aliases": [
+        "子网掩码",
+        "CIDR",
+        "最长前缀匹配",
+        "子网划分"
+      ],
+      "syllabusPath": [
+        "计算机网络",
+        "四",
+        "（三）3"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.10; 四 / （三）3",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CN-NET-002",
+      "subject": "计算机网络",
+      "name": "IP 转发、分片与 ICMP",
+      "topicPath": [
+        "网络层",
+        "数据报处理"
+      ],
+      "aliases": [
+        "IP分片",
+        "MTU",
+        "TTL",
+        "ICMP"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-NET-003",
+      "subject": "计算机网络",
+      "name": "ARP、DHCP 与 NAT",
+      "topicPath": [
+        "网络层",
+        "地址相关协议"
+      ],
+      "aliases": [
+        "ARP",
+        "DHCP",
+        "NAT",
+        "地址解析"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-ROUTE-001",
+      "subject": "计算机网络",
+      "name": "路由算法与路由协议",
+      "topicPath": [
+        "网络层",
+        "路由"
+      ],
+      "aliases": [
+        "距离向量",
+        "链路状态",
+        "RIP",
+        "OSPF",
+        "BGP"
+      ],
+      "syllabusPath": [
+        "计算机网络",
+        "四",
+        "（二）；（五）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.9: 四 / （二）；p.10: 四 / （五）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CN-TRANS-001",
+      "subject": "计算机网络",
+      "name": "UDP、TCP 首部与序号",
+      "topicPath": [
+        "传输层",
+        "传输协议"
+      ],
+      "aliases": [
+        "TCP首部",
+        "UDP首部",
+        "序号",
+        "确认号"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-TCP-001",
+      "subject": "计算机网络",
+      "name": "TCP 连接与可靠传输",
+      "topicPath": [
+        "传输层",
+        "TCP连接与窗口"
+      ],
+      "aliases": [
+        "三次握手",
+        "四次挥手",
+        "重传",
+        "接收窗口"
+      ],
+      "syllabusPath": null,
+      "basisYear": "待核",
+      "verified": false,
+      "source": null,
+      "checkedAt": null
+    },
+    {
+      "id": "CN-TCP-002",
+      "subject": "计算机网络",
+      "name": "TCP 拥塞控制",
+      "topicPath": [
+        "传输层",
+        "拥塞控制"
+      ],
+      "aliases": [
+        "慢开始",
+        "拥塞避免",
+        "快重传",
+        "快恢复",
+        "拥塞窗口"
+      ],
+      "syllabusPath": [
+        "计算机网络",
+        "五",
+        "（三）5"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.10; 五 / （三）5",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    },
+    {
+      "id": "CN-APP-001",
+      "subject": "计算机网络",
+      "name": "DNS、HTTP 与常见应用协议",
+      "topicPath": [
+        "应用层",
+        "应用协议"
+      ],
+      "aliases": [
+        "DNS",
+        "HTTP",
+        "SMTP",
+        "FTP"
+      ],
+      "syllabusPath": [
+        "计算机网络",
+        "六",
+        "（二）–（五）"
+      ],
+      "basisYear": "2025",
+      "verified": true,
+      "source": {
+        "title": "2025年408大纲（学校公开材料）",
+        "publisher": "芜湖学院计算科学学院",
+        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
+        "locator": "PDF p.11; 六 / （二）–（五）",
+        "kind": "official-repost",
+        "mappingScope": "topic",
+        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+      },
+      "checkedAt": "2026-10-17"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-19",
+  "kind": "g09-isolated-notes-fixture-engineering-validation",
+  "baseCommit": "8b92f4c3f18ccfa9112c169867766349be636e08",
+  "sourceSha256": {
+    "eval/v2.8-acceptance/notes_fixture_server.py": "b1762d6956ffeb0c19b86355ab60608a6d0c8e95d3c91a2b7ea42d5de57852d4",
+    "tests/test_v280_notes_fixture.py": "6a31290776a6b20464e3e235578a71bbff5dbdb2347a8e7a0485ef6065b3c705"
+  },
+  "runtimePluginChanged": false,
+  "runtimePluginTreeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959",
+  "checks": {
+    "windowsAffectedTests": {
+      "command": "python -B -m unittest discover -s tests -p test_v280_*.py -v",
+      "tests": 21,
+      "newFixtureTests": 12,
+      "existingInputTests": 9,
+      "durationSeconds": 3.801,
+      "exitCode": 0,
+      "skipped": 0,
+      "pythonVersion": "3.14.0",
+      "stderrSha256": "8daf8d44625fde42235a7d73907299ef82bc0da8879995111e2840c6f69287c4"
+    },
+    "linuxAffectedTests": {
+      "command": "python3 -B -m unittest discover -s tests -p test_v280_*.py -v",
+      "environment": "local WSL Ubuntu; portable base snapshot plus explicit changed-file overlay; not GitHub Actions",
+      "tests": 21,
+      "durationSeconds": 1.957,
+      "exitCode": 0,
+      "skipped": 0,
+      "stderrSha256": "c945960168cca7d53544a8d38af82f20f9c9ac16d79d10c2b21b284d9a94ba2d"
+    },
+    "semgrep": {
+      "version": "1.162.0",
+      "rules": 8,
+      "scannedFiles": 167,
+      "findings": 0,
+      "exitCode": 0,
+      "errors": [],
+      "stdoutSha256": "66204664c2403551d6dce82f4f2f00c40938dda1cc4888a3ca39d35a889571ad"
+    }
+  },
+  "sdkSmoke": {
+    "date": "2026-10-19",
+    "kind": "official-python-mcp-sdk-stdio-interoperability-smoke",
+    "mcpSdkVersion": "1.23.3",
+    "pythonVersion": "3.14.0",
+    "serverSha256": "b1762d6956ffeb0c19b86355ab60608a6d0c8e95d3c91a2b7ea42d5de57852d4",
+    "seedSha256": "aced195aa0217acd815bde8755fcf45d4ea5d9a570dc7a26b4e7e90611f8c48f",
+    "seedUnchanged": true,
+    "negotiatedProtocol": "2025-11-25",
+    "discoveredTools": [
+      "notion_search",
+      "notion_fetch",
+      "notion_list_children",
+      "notion_create_page",
+      "notion_update_page"
+    ],
+    "successfulWrites": 2,
+    "failedWriteCalls": 2,
+    "snapshots": 3,
+    "auditEvents": 38,
+    "modelRequests": 0,
+    "realNotionAccess": false,
+    "status": "passed",
+    "transcriptSha256": "aec22b2e62f2a2d42034ae22d22a61654fff77cc0c841e7dee3c9f9b43c46a81",
+    "auditSha256": "82bedf0cfdcbb8abe1f7a560cc0c810498691b68f203421eaa078d1e85359b50",
+    "stderrEmpty": true
+  },
+  "modelAcceptance": {
+    "G09-A": "not-run",
+    "G09-B": "not-run",
+    "automaticRouting": "not-run",
+    "nativeClientProfileIsolation": "not-verified"
+  },
+  "limitations": [
+    "Affected tests are separate from the earlier 421-test baseline; no claim of a fresh full-suite run.",
+    "The fixture does not connect real Notion and is not a production Notion adapter.",
+    "Fixture write/readback checks do not prove model permission compliance.",
+    "G09 still requires a genuinely isolated host, normal Skill discovery, usable file tools and a separate Obsidian Vault for each arm."
+  ],
+  "independentCodeReview": {
+    "reviewerType": "agent",
+    "initialFindings": 1,
+    "resolvedFindings": 1,
+    "remainingFindings": 0,
+    "fix": "Audit safely ASCII-escapes incoming JSON; strict UTF-8 tool-string validation rejects isolated surrogates after logging the attempt.",
+    "regression": "Real stdio create and update surrogate inputs return errors, preserve attempted/result audit and unchanged state, then fetch/ping/EOF remain usable.",
+    "humanMaintainerSignoff": false
+  },
+  "preliminaryValidation": {
+    "superseded": true,
+    "reason": "Independent review identified a surrogate-string auditing gap in the initial server revision. Source was corrected and affected Windows/Linux tests plus SDK and scan were rerun for the final source hashes above.",
+    "oldArtifactsRetainedPrivately": true
+  }
+}

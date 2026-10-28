@@ -1,0 +1,124 @@
+name: Prepare or publish Skills release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Existing tag matching skillset.json (skills-v3.x.x)"
+        required: true
+        type: string
+      publish:
+        description: "Publish only after reviewing this exact commit and candidate assets"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skills-release-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/skills-ci.yml
+
+  prepare:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag }}
+    steps:
+      - name: Checkout exact workflow commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Download Windows archives
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: skills-windows-latest
+          path: artifacts/skills-windows
+      - name: Download Ubuntu archives
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: skills-ubuntu-latest
+          path: artifacts/skills-ubuntu
+      - name: Rebuild from committed inputs and prepare exact release assets
+        run: >-
+          python -I -B ci/skills_release.py prepare
+          --windows artifacts/skills-windows --ubuntu artifacts/skills-ubuntu
+          --output dist/skills-release --tag "$RELEASE_TAG" --commit "$GITHUB_SHA"
+      - name: Upload reviewable release candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: skills-release-candidate
+          path: dist/skills-release/*
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    if: ${{ inputs.publish && github.ref == 'refs/heads/main' }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag }}
+    steps:
+      - name: Checkout exact workflow commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Download prepared candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: skills-release-candidate
+          path: dist/skills-release
+      - name: Verify exact files again before publication
+        run: >-
+          python -I -B ci/skills_release.py verify --directory dist/skills-release
+          --tag "$RELEASE_TAG" --commit "$GITHUB_SHA"
+      - name: Require current protected main and an existing matching tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch origin main --no-tags
+          test "$GITHUB_SHA" = "$(git rev-parse refs/remotes/origin/main)"
+          test "$GITHUB_SHA" = "$(git rev-parse --verify "refs/tags/${RELEASE_TAG}^{commit}")"
+          protected_main="$(gh api "repos/$GITHUB_REPOSITORY/branches/main" --jq '.protected')"
+          test "$protected_main" = true
+      - name: Publish the verified assets without creating or replacing a tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(python -c 'import json; print(json.load(open("dist/skills-release/release.json"))["version"])')"
+          prerelease="$(python -c 'import json; print(str(json.load(open("dist/skills-release/release.json"))["prerelease"]).lower())')"
+          args=(
+            "$RELEASE_TAG"
+            dist/skills-release/*.zip
+            dist/skills-release/release.json
+            dist/skills-release/SHA256SUMS.txt
+            dist/skills-release/RELEASE_NOTES.md
+            --verify-tag --latest=false
+            --title "408-agent-skills $version"
+            --notes-file dist/skills-release/RELEASE_NOTES.md
+          )
+          if [[ "$prerelease" == true ]]; then
+            args+=(--prerelease)
+          fi
+          gh release create "${args[@]}"

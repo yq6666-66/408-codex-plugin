@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import io
 import json
 import re
@@ -21,6 +22,7 @@ from yaml.nodes import MappingNode
 from release_payload import (
     ALLOWED_PLUGIN_ROOTS,
     CODEBUDDY_MANIFEST_RELATIVE,
+    CLAUDE_MANIFEST_RELATIVE,
     ALLOWED_RELEASE_FILES,
     EXPECTED_REFERENCES,
     EXPECTED_SKILLS,
@@ -39,6 +41,22 @@ from release_payload import (
 SEMVER = re.compile(SEMVER_PATTERN)
 FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw", "index", "user"}
 HISTORY_FORBIDDEN_PATH_PARTS = {"app", "android", "corpus", "raw"}
+CLAUDE_MANIFEST_PART = PurePosixPath(CLAUDE_MANIFEST_RELATIVE)
+CLAUDE_MIRRORED_MANIFEST_FIELDS = (
+    "version", "description", "author", "homepage", "repository", "license", "keywords", "skills",
+)
+CLAUDE_FORBIDDEN_MANIFEST_KEYS = (
+    "interface", "apps", "mcpServers", "lspServers", "hooks", "commands", "agents",
+    "userConfig", "outputStyles", "experimental", "channels", "dependencies",
+    "workflows", "monitors", "settings",
+)
+# The shared marketplace must remain valid in both native hosts. Native Claude
+# validation rejects unknown keys under --strict, including ZCode i18n extensions.
+SHARED_MARKETPLACE_FIELDS = {"name", "description", "owner", "plugins"}
+SHARED_MARKETPLACE_ENTRY_FIELDS = {
+    "name", "source", "version", "description", "displayName", "category", "homepage", "author",
+}
+SHARED_AUTHOR_FIELDS = {"name", "url", "email"}
 ZCODE_MANIFEST_PART = PurePosixPath(ZCODE_MANIFEST_RELATIVE)
 ZCODE_MARKETPLACE_PART = PurePosixPath(".claude-plugin/marketplace.json")
 ZCODE_MARKETPLACE_NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
@@ -393,6 +411,74 @@ def check_codebuddy_marketplace(repo: Path) -> None:
     )
 
 
+def check_claude_manifest(plugin: Path, codex_manifest: dict[str, Any]) -> None:
+    """Keep Claude's native Skills-only adapter identical to the shared metadata."""
+    manifest = load_json(plugin / Path(*CLAUDE_MANIFEST_PART.parts))
+    require(isinstance(manifest, dict), "Claude manifest must be an object")
+    require(
+        manifest.get("name") == plugin.name == codex_manifest.get("name"),
+        "Claude manifest name must match the plugin directory and the Codex manifest",
+    )
+    for key in CLAUDE_FORBIDDEN_MANIFEST_KEYS:
+        require(key not in manifest, f"Skills-only Claude manifest must not contain {key}")
+    require(
+        set(manifest) == {"name", *CLAUDE_MIRRORED_MANIFEST_FIELDS},
+        "Claude manifest must contain exactly the shared metadata and skills fields",
+    )
+    for field in CLAUDE_MIRRORED_MANIFEST_FIELDS:
+        require(
+            manifest[field] == codex_manifest.get(field),
+            f"Claude manifest field must stay identical to the Codex manifest: {field}",
+        )
+    require(manifest["skills"] == "./skills/", "Claude manifest skills path must be ./skills/")
+    require((plugin / "skills").is_dir(), "Claude manifest skills directory does not exist")
+
+
+def check_claude_marketplace(repo: Path) -> None:
+    """Check the Claude/ZCode marketplace intersection without executable fields."""
+    marketplace = load_json(repo / Path(*ZCODE_MARKETPLACE_PART.parts))
+    require(isinstance(marketplace, dict), "Claude marketplace must be an object")
+    require(
+        set(marketplace) == SHARED_MARKETPLACE_FIELDS,
+        "shared marketplace must contain exactly the Claude/ZCode intersection fields",
+    )
+    require(marketplace.get("name") == "kaoyan-408", "Claude marketplace name is invalid")
+    description = marketplace.get("description")
+    require(isinstance(description, str) and description.strip(), "Claude marketplace description is required")
+    owner = marketplace.get("owner")
+    require(
+        isinstance(owner, dict) and set(owner) <= SHARED_AUTHOR_FIELDS
+        and isinstance(owner.get("name"), str) and owner["name"].strip(),
+        "Claude marketplace owner must contain shared author fields and a name",
+    )
+    plugins = marketplace.get("plugins")
+    require(isinstance(plugins, list) and len(plugins) == 1, "Claude marketplace must contain exactly one plugin")
+    entry = plugins[0]
+    require(isinstance(entry, dict), "Claude marketplace entry must be an object")
+    require(
+        set(entry) == SHARED_MARKETPLACE_ENTRY_FIELDS,
+        "shared marketplace entry must contain exactly the Claude/ZCode intersection fields",
+    )
+    require(entry.get("name") == "kaoyan-408", "Claude marketplace plugin name is invalid")
+    require(entry.get("source") == "./plugins/kaoyan-408", "Claude marketplace source must be the relative plugin path")
+    manifest = load_json(repo / Path(*PLUGIN_RELATIVE_PATH.parts) / Path(*CLAUDE_MANIFEST_PART.parts))
+    require(isinstance(manifest, dict), "Claude manifest must be an object")
+    for field in ("version", "author", "homepage"):
+        require(entry[field] == manifest.get(field), f"Claude marketplace {field} must match the plugin manifest")
+    for field in ("description", "displayName"):
+        require(isinstance(entry[field], str) and entry[field].strip(), f"Claude marketplace {field} is required")
+    author = entry["author"]
+    require(
+        isinstance(author, dict) and set(author) <= SHARED_AUTHOR_FIELDS,
+        "Claude marketplace author must contain only shared author fields",
+    )
+    category = entry["category"]
+    require(
+        isinstance(category, str) and category in ZCODE_MARKETPLACE_CATEGORIES,
+        "shared marketplace category is invalid",
+    )
+
+
 def check_zcode_manifest(plugin: Path, codex_manifest: dict[str, Any]) -> None:
     """Validate the ZCode-native manifest mirrors the Codex manifest exactly."""
     manifest = load_json(plugin / Path(*ZCODE_MANIFEST_PART.parts))
@@ -621,6 +707,24 @@ def check_obsidian_brain_contract(plugin: Path) -> None:
             private_marker not in combined,
             f"public plugin contains a private local path marker: {private_marker}",
         )
+
+
+def check_knowledge_points(plugin: Path) -> None:
+    schema = load_json(plugin / "references" / "kp-408.schema.json")
+    data = load_json(plugin / "references" / "kp-408.json")
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError as exc:
+        raise ValidationError(f"invalid knowledge-point schema: {exc.message}") from exc
+    errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(data))
+    require(not errors, f"invalid knowledge-point index: {errors[0].message if errors else ''}")
+    points = data["knowledgePoints"]
+    ids = [point["id"] for point in points]
+    require(len(ids) == len(set(ids)), "knowledge-point IDs must be unique")
+    prefixes = {"数据结构": "DS", "计算机组成原理": "CO", "操作系统": "OS", "计算机网络": "CN"}
+    require({point["subject"] for point in points} == set(prefixes), "knowledge-point index must cover four 408 subjects")
+    for point in points:
+        require(point["id"].startswith(prefixes[point["subject"]] + "-"), "knowledge-point subject and ID prefix mismatch")
 
 
 def check_portable_schema(plugin: Path) -> None:
@@ -1109,6 +1213,7 @@ def check_repository_docs(repo: Path) -> None:
     require(entry.get("policy", {}).get("installation") == "AVAILABLE", "marketplace installation policy is invalid")
     require(entry.get("policy", {}).get("authentication") == "ON_INSTALL", "marketplace authentication policy is invalid")
     check_zcode_marketplace(repo)
+    check_claude_marketplace(repo)
     check_codebuddy_marketplace(repo)
 
     check_cursor_marketplace(repo, manifest)
@@ -1177,6 +1282,24 @@ def _run_git(repo: Path, arguments: list[str], *, input_bytes: bytes | None = No
     return result
 
 
+def _check_frozen_snapshot_history(payload: bytes, path: str) -> None:
+    """Reuse the canonical member-aware scanner without exempting the archive."""
+    helper = Path(__file__).resolve().parents[1] / "tools" / "check_security.py"
+    spec = importlib.util.spec_from_file_location("_kaoyan408_snapshot_security", helper)
+    require(spec is not None and spec.loader is not None, "legacy snapshot scanner is unavailable")
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        raise ValidationError("legacy snapshot scanner could not be loaded") from None
+    try:
+        found: set[str] = set()
+        module._snapshot_findings(payload, path.encode("utf-8"), found)
+        module._raise_findings("legacy snapshot", found)
+    except module.SecurityError:
+        raise ValidationError("Git history contains an unsafe legacy snapshot") from None
+
+
 def check_git_history(repo: Path) -> None:
     objects_output = _run_git(repo, ["rev-list", "--objects", "--all"]).stdout.decode("utf-8", "strict")
     object_paths: dict[str, str] = {}
@@ -1206,6 +1329,9 @@ def check_git_history(repo: Path) -> None:
         payload = stream.read(size)
         require(len(payload) == size and stream.read(1) == b"\n", f"truncated git object: {requested_id}")
         path = object_paths.get(requested_id, "")
+        if object_type == b"blob" and path.startswith("legacy/") and path.endswith(".zip"):
+            _check_frozen_snapshot_history(payload, path)
+            continue
         if object_type in {b"blob", b"commit", b"tag"}:
             for pattern in HISTORY_SECRET_PATTERNS:
                 require(pattern.search(payload) is None, f"Git history contains a likely secret in {path or requested_id}")
@@ -1226,6 +1352,7 @@ def validate_repo(
     check_repository_docs(repo)
     manifest = check_manifest(plugin)
     check_zcode_manifest(plugin, manifest)
+    check_claude_manifest(plugin, manifest)
     check_codebuddy_manifest(plugin, manifest)
     check_release_tree(plugin)
     check_obsidian_brain_contract(plugin)
@@ -1233,6 +1360,8 @@ def validate_repo(
     check_beginner_answer_contract(plugin)
     check_portable_schema(plugin)
     check_past_paper_schema(plugin)
+    check_knowledge_points(plugin)
+    check_shared_plugin_resources(repo)
 
     skill_root = plugin / "skills"
     skill_dirs = {path.name: path for path in skill_root.iterdir() if path.is_dir()}
@@ -1252,6 +1381,21 @@ def validate_repo(
         "routing and behavior scenario coverage checks",
         "Git-history, secret, and removed-system scans",
     ]
+
+
+def check_shared_plugin_resources(repo: Path) -> None:
+    helper = repo / "tools/skills.py"
+    spec = importlib.util.spec_from_file_location("_kaoyan408_shared_resource_assembler", helper)
+    require(spec is not None and spec.loader is not None, "shared resource assembler is unavailable")
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+        result = module.sync_plugin_resources(repo, check=True)
+        entries = module.sync_plugin_skills(repo, check=True)
+    except (OSError, ValueError) as exc:
+        raise ValidationError("shared canonical resources could not be checked") from exc
+    require(result["valid"], "shared canonical resource drift: " + ", ".join(result["drift"]))
+    require(entries["valid"], "canonical plugin Skill drift: " + ", ".join(entries["drift"]))
 
 
 def main() -> int:

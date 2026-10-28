@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-18",
+  "version": "2.8.0-dev.1",
+  "testedSourceCommit": "6a3bb47d973aaa9c545b65e55262c9f6e9e629a8",
+  "checks": {
+    "windows": {
+      "tests": 421,
+      "durationSeconds": 552.796,
+      "skipped": 0,
+      "exitCode": 0,
+      "sourceCommit": "6a3bb47d973aaa9c545b65e55262c9f6e9e629a8",
+      "log": "dist/v280-dev1-check-20261018/windows-check.log",
+      "logSha256": "ce86f07acf89bf01b2caf0c345f2337b116f0469ca3c773baa5dcd85a17cc19f"
+    },
+    "linux": {
+      "tests": 421,
+      "durationSeconds": 56.923,
+      "skipped": 1,
+      "exitCode": 0,
+      "sourceCommit": "6a3bb47d973aaa9c545b65e55262c9f6e9e629a8",
+      "log": "dist/v280-dev1-check-20261018/linux-check.log",
+      "logSha256": "cb6944472c4da0abdbb1771d57b0ef03765a9f354f783e5156aded4247ad18fc"
+    }
+  },
+  "linuxEnvironment": "local WSL Ubuntu native temporary clone; not GitHub Actions",
+  "semgrep": {
+    "version": "1.162.0",
+    "rules": 8,
+    "targets": 154,
+    "findings": 0
+  },
+  "officialValidators": {
+    "mode": "pinned-official-script",
+    "skillsPassed": 14,
+    "skillsTotal": 14,
+    "treeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959"
+  },
+  "nativeClaudeValidation": {
+    "cliVersion": "2.1.167",
+    "marketplaceStrict": true,
+    "pluginStrict": true,
+    "warningCount": 0,
+    "evidence": "native-manifest-validation.json",
+    "installation": "passed-isolated-native-install",
+    "sessionDiscovery": "not-tested",
+    "conversation": "not-tested",
+    "installationEvidence": "claude-native-install-validation.json"
+  },
+  "releaseFileCount": 51,
+  "zipBytes": 351052,
+  "zipSha256": "c50f277acc41e00be3687844956c6793ca4d8d2b2c87155e609a8c515d76808a",
+  "pluginTreeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959",
+  "reproducible": true,
+  "verifyRelease": true,
+  "verifyTree": true,
+  "isolatedHealth": {
+    "obsidian": {
+      "configStatus": "absent",
+      "enabled": null,
+      "vaultStatus": "not-configured"
+    },
+    "plugin": "kaoyan-408",
+    "problems": [],
+    "python": "3.14.0",
+    "runtimeHelpers": {
+      "available": 4,
+      "expected": 4,
+      "missing": []
+    },
+    "skills": {
+      "complete": 14,
+      "expected": 14
+    },
+    "status": "ok",
+    "version": "2.8.0-dev.1"
+  },
+  "healthConfig": "explicit absent fixture; not a claim about the user profile",
+  "routingFixtures": {
+    "groups": 10,
+    "cases": 20,
+    "turns": 23,
+    "validModelCaptures": 0,
+    "status": "fixture-only"
+  },
+  "publication": {
+    "pushed": false,
+    "merged": false,
+    "tagged": false,
+    "released": false
+  },
+  "v261ReleaseDecision": "User explicitly chose to retain the fixed candidate and continue behavior acceptance.",
+  "codexNativeInstallation": {
+    "cliVersion": "0.163.0-alpha.10.2",
+    "installed": true,
+    "enabled": true,
+    "cacheFileCount": 51,
+    "treeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959",
+    "evidence": "codex-native-install-validation.json",
+    "skillSessionDiscovery": "not-tested",
+    "modelBehavior": "not-tested"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0",
+  "status": "passed-installation-registration-cache-only",
+  "date": "2026-10-18T13:16:39.784749+00:00",
+  "sourceCommit": "6a3bb47d973aaa9c545b65e55262c9f6e9e629a8",
+  "pluginVersion": "2.8.0-dev.1",
+  "pluginTreeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959",
+  "cliVersion": "0.163.0-alpha.10.2",
+  "cliSha256": "f6dbf48cb70f62649c645f26c87dc9bf84cc36986202dfad8e12fb5b8ca70312",
+  "commands": [
+    [
+      "codex.exe",
+      "plugin",
+      "marketplace",
+      "add",
+      "<fixed local repository>",
+      "--json"
+    ],
+    [
+      "codex.exe",
+      "plugin",
+      "add",
+      "kaoyan-408@kaoyan-408",
+      "--json"
+    ],
+    [
+      "codex.exe",
+      "plugin",
+      "list",
+      "--json"
+    ]
+  ],
+  "installed": true,
+  "enabled": true,
+  "cacheFileCount": 51,
+  "sourceAndCacheConsumerVerify": "passed",
+  "profile": {
+    "kind": "new isolated CODEX_HOME",
+    "initialFileCount": 0,
+    "finalFileCount": 52,
+    "nonCacheFiles": [
+      "config.toml"
+    ],
+    "privateDirectoryName": "kaoyan408-native-v280-4d07170989314cccb2c5e91fce14b475"
+  },
+  "boundaries": {
+    "modelRequests": 0,
+    "loginAttempts": 0,
+    "credentialsReadOrCopied": false,
+    "guardPermissionSandboxHooksChanges": false,
+    "systemwideWriteAudit": "not-performed",
+    "skillSessionDiscovery": "not-tested",
+    "modelBehavior": "not-tested"
+  },
+  "preparationFailure": "plugin install --help exit 2: actual CLI subcommand is plugin add; first output retained",
+  "evidenceSha256": {
+    "native-install-summary.json": "7288ea5839efc0b77dec1014486a9a2215bac847daa8eb93eb7753afa2da056c",
+    "native-install-report.md": "ff5e7e9680cb516745e067fef1f22462c0607f1dd93ebaee655a25d0584c6ed0",
+    "evidence/commands.jsonl": "a35cdcd9a57bc704bc1ca94b4f435b7cb067431d6dff0417e317ad316c3aabfd",
+    "evidence/plugin-list.stdout.txt": "dfa84bbb3446d1c231207552d605c3062a65fa7d4c36da8e7573f71552e37496",
+    "evidence/cache-consumer-verify.stdout.txt": "c7c4e669871172bd8ede4bf4123f1494d8bdc1619c299a367993bfb4ffc4f7bb",
+    "artifact-sha256.json": "0bbfbeb858c06a7cc6b1fdc5ac53c561b4b61907418488488b9b8cff7ea9b571"
+  }
+}

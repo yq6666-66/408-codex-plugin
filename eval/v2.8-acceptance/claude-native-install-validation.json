@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "status": "passed-native-isolated-install-registration-cache-only",
+  "date": "2026-10-18T13:22:55.109600+00:00",
+  "cliVersion": "2.1.167",
+  "sourceCommit": "6a3bb47d973aaa9c545b65e55262c9f6e9e629a8",
+  "pluginVersion": "2.8.0-dev.1",
+  "scope": "user",
+  "enabled": true,
+  "cacheFileCount": 51,
+  "pluginTreeSha256": "f7d13515ad4e6246f9140206880dd21defe4d90bf8f3346730362249dcabb959",
+  "consumerVerifierExitCode": 0,
+  "allFilesMatchFixedSource": true,
+  "allReferencedInstallPathsUnderNewTemp": true,
+  "workDirectoryRemainsEmpty": true,
+  "privateDirectoryName": "kaoyan-claude-native-5f7e209f51504b2aad3653253e892f37",
+  "commands": [
+    [
+      "claude",
+      "plugin",
+      "marketplace",
+      "add",
+      "<fixed local repository>"
+    ],
+    [
+      "claude",
+      "plugin",
+      "install",
+      "kaoyan-408@kaoyan-408",
+      "--scope",
+      "user"
+    ],
+    [
+      "claude",
+      "plugin",
+      "list",
+      "--json"
+    ]
+  ],
+  "isolation": "Supported CLAUDE_CONFIG_DIR and task-owned child-process profile paths; this installed version code was inspected before installation",
+  "boundaries": {
+    "authenticationCommandsRun": false,
+    "loginPerformed": false,
+    "modelRequestPerformed": false,
+    "newSessionSkillDiscoveryVerified": false,
+    "dialogueBehaviorVerified": false,
+    "stableUserSettingsOrPluginsChanged": false,
+    "guardSandboxHooksPermissionsChanged": false,
+    "systemWriteAuditPerformed": false
+  },
+  "evidenceSha256": {
+    "REPORT.md": "9a5ae47db42e2d85be97471ce3cd959e0c52d090228826672183ddf6ef4c03ea",
+    "evidence/result.json": "518508dcb8b7fdb47aa0ca320746c9bf6beaa42faa630422852200bd9b73eddb",
+    "evidence/commands.json": "510a239f780978d4d59a6dbc890344a5172823786f458e53943e129069aee34c",
+    "evidence/plugin-list.stdout.txt": "a285e7012e20457ea837c86be520cb6c096166ac702fccffcff8e3d4509377fc",
+    "evidence/cache-consumer-verify.stdout.txt": "c7c4e669871172bd8ede4bf4123f1494d8bdc1619c299a367993bfb4ffc4f7bb",
+    "evidence/installed-plugin-file-hashes.json": "edb89317870dbfec79c86f6c7ceb2e8ca0c03c2a4654bd5fbdc0b8bd4374db0e",
+    "evidence/installed-cli-isolation-code.json": "edcb2db604c29f80470b9c74e08fa4f0fbf033f4367655884b361c8cee684331",
+    "evidence/evidence-sha256.json": "de3c2ab6bacee152fa2acbb35a6c4df5307a2b75c3863762e9a6026d533f1bdf"
+  }
+}

@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "1.0",
+  "cards": [
+    {
+      "id": "rule-binary-closed",
+      "pointIds": [
+        "DS-SEARCH-003"
+      ],
+      "name": "有序表闭区间二分查找",
+      "rule": "维持候选区间 [left,right]；while left<=right，mid=floor((left+right)/2)。相等则找到，否则目标更大令 left=mid+1，更小令 right=mid-1；每次未找到迭代必须缩小区间。",
+      "conditions": [
+        "数组按非递减顺序排列，比较目标与中间值，返回任意相等位置即可",
+        "使用闭区间循环语义；求首个/末个相等位置或半开区间时不能照搬这一整套更新规则",
+        "mid 的实现应防止机器整数相加溢出；Python 整数本身不受固定字长溢出限制"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-binary-closed",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Algorithms, 4th Edition: BinarySearch.java",
+          "publisher": "Robert Sedgewick and Kevin Wayne",
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BinarySearch.java",
+          "locator": "BinarySearch.indexOf(int[] a, int key) 与其有序数组前置条件",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "有序数组采用闭区间比较和 mid±1 更新，找到时返回一个相等位置。"
+          ],
+          "limitations": [
+            "这里只引用作者实现作为算法依据，没有复制代码；不是首个或末个相等位置算法。",
+            "规则卡中的等价中点表达仍须按具体语言防溢出；来源为可变 master 链接，定位对应本次阅读日期。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-cache-direct",
+      "pointIds": [
+        "CO-CACHE-001"
+      ],
+      "name": "Cache 直接映射字段与定位",
+      "rule": "offsetBits=log2(blockBytes)，indexBits=log2(lines)，tagBits=addressBits-offsetBits-indexBits；block=floor(address/blockBytes)，index=block mod lines，tag=floor(block/lines)。",
+      "conditions": [
+        "按字节编址，blockBytes 与 lines 均为正的 2 的幂，tagBits 不为负",
+        "地址在 addressBits 可表示的非负范围内",
+        "随包模拟器初始 Cache 为空，只有直接映射行，不含写策略或时间代价模型"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-cache-direct",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "university-course",
+          "title": "CS 3410 — Caches",
+          "publisher": "Cornell University, CS 3410 Fall 2024",
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2024fa/notes/caches.html",
+          "locator": "Direct-Mapped Cache / Accessing the Cache / Larger Blocks",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "直接映射按索引选择唯一行，地址分为标记、索引和块内偏移。"
+          ],
+          "limitations": [
+            "通用位宽公式由该结构推导；空初态和不计写策略是本项目模拟器的建模限制。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-cache-associative-lru",
+      "pointIds": [
+        "CO-CACHE-001"
+      ],
+      "name": "Cache 全相联 LRU",
+      "rule": "全相联无索引字段，tagBits=addressBits-log2(blockBytes)；命中把块更新为最近使用，未命中且已满时淘汰最久未使用块。",
+      "conditions": [
+        "本模拟器按字节编址，块大小与行数均需为正的 2 的幂，标记位数非负；行数限制不属于全相联 LRU 的普遍要求",
+        "替换策略明确为 LRU，容量为给定行数；随包模拟器初态为空",
+        "不是 FIFO 全相联、组相联，也不模拟读写代价与脏位"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-cache-associative-lru",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "university-course",
+          "title": "CS 3410 — Caches",
+          "publisher": "Cornell University, CS 3410 Fall 2024",
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2024fa/notes/caches.html",
+          "locator": "Fully Associative Cache / Replacement Policies",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "全相联没有索引字段；LRU 按块的最近访问历史决定淘汰。"
+          ],
+          "limitations": [
+            "精确 LRU、空初态和不计脏位/写回代价是本项目选定模型，不代表所有 Cache 实现。",
+            "该模拟器要求缓存行数为 2 的幂；全相联 LRU 的一般规则不依赖这一限制。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-fifo",
+      "pointIds": [
+        "OS-MEM-001"
+      ],
+      "name": "FIFO 页面置换",
+      "rule": "驻留页命中时进入顺序不变；缺页先用空槽，满时淘汰最早进入内存且尚驻留的页，新页成为最新进入者。",
+      "conditions": [
+        "题意是页面置换而非泛指 FIFO 队列；页框数、引用串和初态明确",
+        "非空初始列表按最早到最新进入排列，同时对应从槽位 0 开始放置",
+        "固定页框槽位不代表页的新旧顺序；空槽装入计缺页但无淘汰"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-fifo",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Beyond Physical Memory: Policies",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+          "locator": "§22.3 FIFO；Figure 22.2；PDF 第 4–5 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "页面按进入顺序淘汰，命中不会把旧页面改为新进入页面。"
+          ],
+          "limitations": [
+            "来源中的队列显示顺序不等于固定页框槽位；非空初态与槽位放置仍按题目或本项目约定。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-lru",
+      "pointIds": [
+        "OS-MEM-002"
+      ],
+      "name": "LRU 页面置换",
+      "rule": "命中或装入都使该页成为最近访问页；缺页且无空槽时淘汰最近一次访问最早的驻留页。",
+      "conditions": [
+        "题意采用精确 LRU，不是时钟或近似 LRU；页框数、引用串和初态明确",
+        "非空初始列表按最久未用到最近使用排列，同时对应从槽位 0 开始放置",
+        "槽位与最近访问顺序分开；空槽装入计缺页但无淘汰"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-lru",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Beyond Physical Memory: Policies",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+          "locator": "§22.5 Using History: LRU；Figure 22.5；PDF 第 7–8 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "LRU 淘汰最近最久未访问页；示例中命中改变最近访问顺序。"
+          ],
+          "limitations": [
+            "不支持把时钟/近似 LRU 当作精确 LRU；非空初态输入顺序和固定槽位仍是题目或项目约定。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-fcfs",
+      "pointIds": [
+        "OS-SCHED-001",
+        "OS-SCHED-002"
+      ],
+      "name": "FCFS 非抢占调度",
+      "rule": "按到达顺序依次运行到完成；周转=完成-到达，等待=周转-执行；空队列时空闲到下一次到达。",
+      "conditions": [
+        "单 CPU、无 I/O 阻塞、无切换成本，到达和执行时间采用相同单位",
+        "随包模拟器到达时间为非负整数，执行时间为正整数，同到达按名字字符串排序",
+        "只适用于非抢占 FCFS；等待时间不等同于所有算法的首次响应时间"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-fcfs",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Scheduling: Introduction",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "locator": "§7.1 Workload Assumptions、§7.2 Scheduling Metrics、§7.3 FIFO；PDF 第 2–3 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "FCFS/FIFO 按先来先服务执行；周转时间由完成时间减到达时间计算。"
+          ],
+          "limitations": [
+            "同到达按名字排序是项目约定；等待=周转−执行只在本卡无 I/O 等假设下推导，未作为来源逐字公式。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-rr",
+      "pointIds": [
+        "OS-SCHED-001",
+        "OS-SCHED-002"
+      ],
+      "name": "RR 时间片边界与队列",
+      "rule": "每次队首最多运行一个时间片；片内到达者依序入队但不立即抢占，片末未完成者回队尾。完成后周转=完成-到达，等待=周转-执行。",
+      "conditions": [
+        "单 CPU、无 I/O 阻塞和切换成本，时间单位一致，时间片为正整数",
+        "随包模拟器同到达按名字字符串排序；恰好片末到达者先入队，再重排被抢占者",
+        "输出在到达事件处分段不意味着新进程立即抢占；题目若约定相反片末顺序须另算"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-rr",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Operating Systems: Three Easy Pieces — Scheduling: Introduction",
+          "publisher": "Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "locator": "§7.7 Round Robin 与 Figure 7.7；PDF 第 7–8 页",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "RR 以时间片轮流运行就绪任务，时间片长度与上下文切换成本相关。"
+          ],
+          "limitations": [
+            "同到达名字排序、片末到达先入队和无切换成本是本项目约定，来源不决定这些事件先后细节。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-network-delay",
+      "pointIds": [
+        "CN-PERF-001"
+      ],
+      "name": "传输与传播时延及单位",
+      "rule": "传输时延=L/R，L 是要发出的 bit 数、R 是 bit/s；传播时延=d/v，d 与 v 的距离单位一致。总时延只按题目明确的处理、排队和逐跳传输模型组合。",
+      "conditions": [
+        "1 byte=8 bit；Mb/s 默认十进制 10^6 bit/s，KiB 为 2^10 byte；题目另有约定则遵从题目",
+        "L/R 是把分组推上链路的时间，d/v 是信号在链路传播的时间，不能混用",
+        "多跳是否存储转发、分组流水、首包还是末包到达必须明确；随包脚本不支持网络计算"
+      ],
+      "source": {
+        "kind": "project-summary",
+        "title": "408 项目原创规则归纳",
+        "locator": "rule-cards.json#rule-network-delay",
+        "verification": "project-reviewed-external-partial"
+      },
+      "externalReferences": [
+        {
+          "kind": "textbook-author",
+          "title": "Computer Networking: A Top-Down Approach — Computing end-end delay",
+          "publisher": "J. F. Kurose and K. W. Ross, UMass Amherst author materials",
+          "url": "https://gaia.cs.umass.edu/kurose_ross/interactive/end-end-delay.php",
+          "locator": "Computing end-end delay (transmission and propagation delay) / Solution 的逐链路公式",
+          "checkedAt": "2026-10-26",
+          "verification": "verified",
+          "supports": [
+            "传输时延用分组 bit 数除传输速率，传播时延用距离除传播速度。"
+          ],
+          "limitations": [
+            "页面算例不能证明任意多跳、流水或排队模型；KiB 换算和题目另定的单位仍需另行说明。"
+          ]
+        }
+      ]
+    }
+  ]
+}
