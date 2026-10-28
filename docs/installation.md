@@ -26,7 +26,7 @@ git clone --branch v2.8.0-dev.3 --depth 1 https://github.com/yq6666-66/408-codex
 - **Claude Code**：仓库根包含市场清单，插件目录 `plugins/kaoyan-408` 包含原生清单。可在已克隆仓库的根目录，用 `claude --plugin-dir "<此仓库的 plugins/kaoyan-408 绝对路径>"` 启动会话级插件；将占位符替换为实际绝对路径。历史版本曾在隔离配置中安装；当前版本的会话发现和对话尚未验收。
 - **Cursor**：使用 Customize 的仓库导入入口，历史报告使用 `github.com/yq6666-66/408-codex-plugin`；该报告未绑定本机版本。固定版本需先检出对应标签并按客户端支持的本地入口安装。
 - **ZCode**：历史实测入口为设置 → Plugin Management → Discover → `+` → Local directory，选择固定检出的仓库根目录。旧版普通请求未触发技能，显式选择插件曾调用 planner；当前版本需自行确认。
-- **WorkBuddy**：仓库根与插件内均有原生清单。历史 CLI 安装使用 WorkBuddy 配置目录，新会话技能注册和使用未验证；按客户端提供的市场入口安装并检查来源、版本与启用状态。
+- **WorkBuddy**：仓库根与插件内均有原生清单。市场仓库地址为 `https://github.com/yq6666-66/408-codex-plugin`，插件名为 `kaoyan-408`；历史实测使用客户端内置 CLI 将固定提交的本地目录添加为市场并安装，配置目录指向 WorkBuddy 而非 CodeBuddy。UI 导入、新会话技能注册和使用未验证；按客户端实际提供的市场入口安装并检查来源、版本与启用状态。
 
 安装后重新加载并新建对话；若宿主没有自动选择技能，使用它提供的插件选择入口。不要把旧版安装结果或基础模型答对题目当成当前插件行为验收。
 
