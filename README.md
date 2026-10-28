@@ -2,29 +2,31 @@
 
 面向考研的中文学习插件，覆盖数学一/二、英语一/二、408 和政治，支持规划、讲题、真题与招生检索、错题复测及学习记录。完整插件保留原有 14 个技能，并增加 3 个 408 专用入口，共 17 个技能。
 
-当前版本：`2.8.0`，正式版准备中；已发布的预发布版为 [v2.8.0-dev.3](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)，既有稳定版为 [v2.6.0](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
+当前版本：`2.8.0`。正式版是否可下载以 [v2.8.0 Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准；[v2.8.0-dev.3 预发布版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)和 [v2.6.0 稳定版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)仍可使用。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
 
-正式标签发布后可将以下命令中的版本改为 `--ref v2.8.0` 或 `--branch v2.8.0`；在标签尚未发布时请继续使用已存在的预发布标签。
+正式标签发布后可使用 `--ref v2.8.0` 或 `--branch v2.8.0`；在标签尚未发布时请继续使用已存在的预发布标签。
+
+正式版候选 ZIP 为 60 个文件，SHA-256 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`；发布后请与 Release 的校验文件核对。
 
 ## 快速安装
 
-在支持插件命令的 Codex CLI 中执行：
+确认正式 Release 已发布后，在支持插件命令的 Codex CLI 中执行：
 
 ```powershell
-codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.8.0-dev.3
+codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.8.0
 codex plugin add kaoyan-408@kaoyan-408
 ```
 
-也可在终端中克隆固定标签，然后用宿主的本地插件安装入口选择仓库：
+正式标签发布后，也可在终端中克隆固定标签，然后用宿主的本地插件安装入口选择仓库：
 
 ```powershell
-git clone --branch v2.8.0-dev.3 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
+git clone --branch v2.8.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
-[下载 ZIP 和校验文件](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)。在上述克隆仓库的根目录运行，ZIP 路径按实际下载位置填写：
+正式发布后从 [Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)下载 ZIP 和校验文件。在上述克隆仓库的根目录运行，ZIP 路径按实际下载位置填写：
 
 ```powershell
-python scripts/install_local.py verify-release --zip <下载的ZIP路径> --version 2.8.0-dev.3 --sha256 b4af664a1660f1c0c4e4aa11cfe327a685cc171ea7a068d0a780493b056cae04
+python scripts/install_local.py verify-release --zip <下载的ZIP路径> --version 2.8.0 --sha256 bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407
 ```
 
 安装后新建对话，试着说：“我考数学二和 408，帮我安排本周计划。”也可以要求“先给一条提示，不要泄露答案”。宿主是否自动选择技能需实际确认；若未调用，可使用客户端的插件选择入口。

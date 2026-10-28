@@ -4,7 +4,9 @@
 
 ## 固定版本
 
-当前已发布的预发布版为 [v2.8.0-dev.3](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)，稳定版为 [v2.6.0](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)。安装前选择所需版本；仓库默认分支可能继续变化。
+已发布的预发布版为 [v2.8.0-dev.3](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)，既有稳定版为 [v2.6.0](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)。安装前选择所需版本；仓库默认分支可能继续变化。
+
+正式版发布后可在同一命令中将 `v2.8.0-dev.3` 替换为 `v2.8.0`；是否已发布以 [Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准。正式版候选 ZIP 的 SHA-256 为 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`，发布后应与附件及校验文件核对。
 
 在支持插件命令的 Codex CLI 运行：
 
