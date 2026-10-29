@@ -1,0 +1,870 @@
+{
+  "baseline": "e248f405b1424a77dfa9f84bd709b1122c96826e",
+  "scope": "file identity inventory; nonidentical files require semantic review",
+  "branches": [
+    {
+      "name": "codex/offline-gate-transition",
+      "head": "f379549dc7d54d9061356df5975963c04eef3dfc",
+      "mergeBase": "8ebc5d66439e99e1c0739ca8db8c6832d5e25e91",
+      "files": [
+        {
+          "path": ".github/workflows/authenticated-forward-evidence.yml",
+          "branchBlob": "9afbbc7dc6f3e01f1d85041053acb44bff5d9edf",
+          "mainBlob": null,
+          "status": "absent-on-main",
+          "decision": "历史方案未采用",
+          "evidence": "PR #13 explicitly closed; old gate targets kaoyan-22408 and old trust model; see branch-consolidation notes"
+        },
+        {
+          "path": "ci/trusted_offline_gate.py",
+          "branchBlob": "57d7c182e9ab2f44abeba17b8c32d8fc28a81b06",
+          "mainBlob": null,
+          "status": "absent-on-main",
+          "decision": "历史方案未采用",
+          "evidence": "PR #13 explicitly closed; old gate targets kaoyan-22408 and old trust model; see branch-consolidation notes"
+        },
+        {
+          "path": "tests/test_ci_release.py",
+          "branchBlob": "9769f0f467d20ca797997d2fec8c31b0f184c8ed",
+          "mainBlob": "b62a50fd6644bef2939e222cd0c42e91d883c1f3",
+          "status": "requires-semantic-review",
+          "decision": "历史方案未采用",
+          "evidence": "PR #13 explicitly closed; old gate targets kaoyan-22408 and old trust model; see branch-consolidation notes"
+        }
+      ],
+      "integrationDecision": "PR #13 explicitly closed; old trusted offline transition not adopted"
+    },
+    {
+      "name": "codex/reliability-hardening",
+      "head": "e31922383dfb3b24f33f77f04ffef1b0c28f97b6",
+      "mergeBase": "1dcf09f8281e4428ae522f018ac923280a16952b",
+      "files": [
+        {
+          "path": "CHANGELOG.md",
+          "branchBlob": "df1348d7ca5a435a582ca488e96a5f88b8077733",
+          "mainBlob": "ecfb656b684d39b0b27c354a53fe15da8b746813",
+          "status": "requires-semantic-review",
+          "integrationBlob": "debc6c9e1f944b5f5d0206dd3928f373ca3fce98",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "QUALITY_GATES.md",
+          "branchBlob": "e3af27c4de6dae4cedc33088a8185033393041b0",
+          "mainBlob": "978f173ce84b5fa973100d983d6423ab45267606",
+          "status": "requires-semantic-review",
+          "integrationBlob": "fc1273a3ad2abeeb46bb156a3344f443787d055b",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "README.md",
+          "branchBlob": "1f53dadd8b2bca013dc6ae034634341932969629",
+          "mainBlob": "f3c82e6bf258d907694418140e242956e3104a5d",
+          "status": "requires-semantic-review",
+          "integrationBlob": "5805b824c8029bf7c8c6a7760bb2efc213a2268f",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "eval/gpt6-acceptance/README.md",
+          "branchBlob": "2d3ae7ab5233a2bd04abba838230c4e9f282e248",
+          "mainBlob": "0c0c58264caeea2cb0367fd88d5c032e286464d5",
+          "status": "requires-semantic-review",
+          "integrationBlob": "2d3ae7ab5233a2bd04abba838230c4e9f282e248",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "historical candidate scope clarified; historical evidence remains bound to original tree"
+        },
+        {
+          "path": "eval/gpt6-acceptance/cases.json",
+          "branchBlob": "5eb7c5e8a43fd36a8debd5a118d301496009a83d",
+          "mainBlob": "5eb7c5e8a43fd36a8debd5a118d301496009a83d",
+          "status": "identical",
+          "integrationBlob": "5eb7c5e8a43fd36a8debd5a118d301496009a83d",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/gpt6-acceptance/materials/README.md",
+          "branchBlob": "9c5f147b5721b17ef43b566454b860fcf90a3edb",
+          "mainBlob": "9c5f147b5721b17ef43b566454b860fcf90a3edb",
+          "status": "identical",
+          "integrationBlob": "9c5f147b5721b17ef43b566454b860fcf90a3edb",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/gpt6-acceptance/record-template.json",
+          "branchBlob": "7115db324e541bea4efc126b1645c8008308c53a",
+          "mainBlob": "7115db324e541bea4efc126b1645c8008308c53a",
+          "status": "identical",
+          "integrationBlob": "7115db324e541bea4efc126b1645c8008308c53a",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/gpt6-acceptance/results-v2.5.2-candidate.md",
+          "branchBlob": "aa00d77b94417924648d7ba881220186fc0d17fe",
+          "mainBlob": "aa00d77b94417924648d7ba881220186fc0d17fe",
+          "status": "identical",
+          "integrationBlob": "aa00d77b94417924648d7ba881220186fc0d17fe",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "plugins/kaoyan-408/.codex-plugin/plugin.json",
+          "branchBlob": "94d840dade120e7e29ab52f4dabd67ee4dffeae5",
+          "mainBlob": "2c7a222bfeed57ece371accdbc10eea081874b36",
+          "status": "requires-semantic-review",
+          "integrationBlob": "068a6886f11135931b57b0926b2ef2295b779fd8",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "shared plugin manifest retained; version and metadata expanded for current release; validated against host mirrors"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/beginner-visual-answer-contract.md",
+          "branchBlob": "78b7b161dac8f0596c89ca846a45bb8a102a397f",
+          "mainBlob": "8b02fa7a6a2f1609b256b94509a4729fe3d8511c",
+          "status": "requires-semantic-review",
+          "integrationBlob": "8b02fa7a6a2f1609b256b94509a4729fe3d8511c",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/capability-routing-contract.md",
+          "branchBlob": "d5eb52cae8c5018a370fab10cfb552039ae7d035",
+          "mainBlob": "7a94fc38289aa8039cd04a2c1519a5fdc8145d09",
+          "status": "requires-semantic-review",
+          "integrationBlob": "63ac024beb9cfdf0d828d3d7a2540b0231605d1c",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "single primary routing preserved and extended with explicit skill selection, exam boundaries and script refusal fallback"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/obsidian-brain-contract.md",
+          "branchBlob": "7676ad6cbb07a7d0343efc15750c158fb18f051f",
+          "mainBlob": "3c568315391d4680b3932d35ce9f96a8afc4ae33",
+          "status": "requires-semantic-review",
+          "integrationBlob": "37159ce87524a49727c6445fdb3c6b03fe1221e2",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/past-paper-source-contract.md",
+          "branchBlob": "a84e4d2845de5cf893d953e16ca13f4a34f1ec0b",
+          "mainBlob": "9e131d27afeb85108a59076ae1dae9676107ed13",
+          "status": "requires-semantic-review",
+          "integrationBlob": "9e131d27afeb85108a59076ae1dae9676107ed13",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "source/body evidence and formula integrity retained and generalized by subject; see branch audit teaching and provenance section"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/portable-learning-records.md",
+          "branchBlob": "79ac7ee6eb94b8a4be8c96da7317793e36d22bfc",
+          "mainBlob": "ff62a149e14c11d3cb7751709d941486aa5f84e9",
+          "status": "requires-semantic-review",
+          "integrationBlob": "79ac7ee6eb94b8a4be8c96da7317793e36d22bfc",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/portable-learning-records.schema.json",
+          "branchBlob": "c4ea8780fd070563c00cf9e63d972d97dea1b084",
+          "mainBlob": "3db64809cea44d49e996332b062d37b454424c5e",
+          "status": "requires-semantic-review",
+          "integrationBlob": "c4ea8780fd070563c00cf9e63d972d97dea1b084",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "schema diff adds optional positive checkpointRevision; old fields preserved; legacy format compatibility covered in records tests"
+        },
+        {
+          "path": "plugins/kaoyan-408/scripts/configure_obsidian_brain.py",
+          "branchBlob": "4b08f1d3f71b00697124036489f4483740ddfaba",
+          "mainBlob": "9c4c90812105a0204cdc1528966a2d87168a53c6",
+          "status": "requires-semantic-review",
+          "integrationBlob": "9c4c90812105a0204cdc1528966a2d87168a53c6",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/scripts/health_check.py",
+          "branchBlob": "1f94d31663fa7c9de6f714c5f1a9d0b5e6aec7db",
+          "mainBlob": "216234c6d45c5e3b6ce1c8837b0eca4a110a391b",
+          "status": "requires-semantic-review",
+          "integrationBlob": "9fd8c1ccb312d689ca2afad2a113d745bd740e16",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/scripts/records.py",
+          "branchBlob": "d28ce592ea6bce20fc53359e25b73555b6d68e56",
+          "mainBlob": "53e0c61dedfb4952190d5bca01868e1af539ac0a",
+          "status": "requires-semantic-review",
+          "integrationBlob": "2d123ccb4cdddbf2ee9ca37540ee069399353809",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/scripts/study_simulator.py",
+          "branchBlob": "4f2a4ed3ccc803ae408db59474c4b2aa1c00c529",
+          "mainBlob": "7526f973545d742d5e40a3c77db953db787a36bc",
+          "status": "requires-semantic-review",
+          "integrationBlob": "7526f973545d742d5e40a3c77db953db787a36bc",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-408-planner/SKILL.md",
+          "branchBlob": "805e907bde6913c679656ecc212d0b6da1648205",
+          "mainBlob": "25e53a4cdb2732eb17a979b16f8d4e0355482e2e",
+          "status": "requires-semantic-review",
+          "integrationBlob": "805e907bde6913c679656ecc212d0b6da1648205",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-408-tutor/SKILL.md",
+          "branchBlob": "1d817abc5b6ec7f0f8be7aeeef3a6ec27ca4eca7",
+          "mainBlob": "ec8fe47d4e161879fbf46237012a697086547682",
+          "status": "requires-semantic-review",
+          "integrationBlob": "1d817abc5b6ec7f0f8be7aeeef3a6ec27ca4eca7",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-english-coach/SKILL.md",
+          "branchBlob": "1daed080f6ad8ed98bb8c36b8bb345477a4a57b7",
+          "mainBlob": "2e8a89ccd5b091dd455bcaff8a07df09d25bd433",
+          "status": "requires-semantic-review",
+          "integrationBlob": "1daed080f6ad8ed98bb8c36b8bb345477a4a57b7",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-error-loop-coach/SKILL.md",
+          "branchBlob": "fbbc63e0fb8aac4f8eabeaa2a65fe25b4994c3f2",
+          "mainBlob": "faea45567d113b133f1bc3fb8148d02c880f161f",
+          "status": "requires-semantic-review",
+          "integrationBlob": "fbbc63e0fb8aac4f8eabeaa2a65fe25b4994c3f2",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-math-coach/SKILL.md",
+          "branchBlob": "4ceef0f6d07d4b1b1dc00eedcd723854564619c3",
+          "mainBlob": "201d638862fc09a962e0275aa2a7f948370da1e5",
+          "status": "requires-semantic-review",
+          "integrationBlob": "4ceef0f6d07d4b1b1dc00eedcd723854564619c3",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-mock-exam-coach/SKILL.md",
+          "branchBlob": "6eee713c0462090217e60566cc99f9cb5b142aee",
+          "mainBlob": "070f89bcb68354353dfa8df233e0b1402ae08071",
+          "status": "requires-semantic-review",
+          "integrationBlob": "070f89bcb68354353dfa8df233e0b1402ae08071",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-official-info-researcher/SKILL.md",
+          "branchBlob": "2cfdcebb0e512557eee1bd175afb70f5c1bcda9b",
+          "mainBlob": "81f4f5d40b67aee28e832af171486252580869a8",
+          "status": "requires-semantic-review",
+          "integrationBlob": "8165a9daaeda00d3184a02036de99a96dfb174d7",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-past-paper-searcher/SKILL.md",
+          "branchBlob": "3570c7768cdf22d4c9bb1b1ebf0c4a2bbd1fce65",
+          "mainBlob": "179bf2ff7c9157f2865d8fe9ba04c46c106a7f72",
+          "status": "requires-semantic-review",
+          "integrationBlob": "d4de40d189caa92a78fabdbfff642f63309463d7",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-politics-coach/SKILL.md",
+          "branchBlob": "cdf090c7fa25bf17a56c566f2846972b99b58203",
+          "mainBlob": "cdf090c7fa25bf17a56c566f2846972b99b58203",
+          "status": "identical",
+          "integrationBlob": "cdf090c7fa25bf17a56c566f2846972b99b58203",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-progress-diagnostician/SKILL.md",
+          "branchBlob": "52a1bffc6c14a1fb9d251961e11ac6e50644711c",
+          "mainBlob": "ca09a0ae098d497fad59c1fba98d043e3258a7ee",
+          "status": "requires-semantic-review",
+          "integrationBlob": "52a1bffc6c14a1fb9d251961e11ac6e50644711c",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-review-executor/SKILL.md",
+          "branchBlob": "54e751d777b678bee3924e71bc6815c2cda66131",
+          "mainBlob": "90a9a3255046a6b23203ec34ba5f813eae589eac",
+          "status": "requires-semantic-review",
+          "integrationBlob": "54e751d777b678bee3924e71bc6815c2cda66131",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "scripts/configure_obsidian_brain.py",
+          "branchBlob": "4201b14488af1044adcbd259a9acf17e8396eb81",
+          "mainBlob": "4201b14488af1044adcbd259a9acf17e8396eb81",
+          "status": "identical",
+          "integrationBlob": "4201b14488af1044adcbd259a9acf17e8396eb81",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "scripts/gpt6_acceptance.py",
+          "branchBlob": "f68797767d1e36310a898f98a777585cd425882f",
+          "mainBlob": "8ca9fd665308e7487154b5950e36dca4c9c8c574",
+          "status": "requires-semantic-review",
+          "integrationBlob": "8ca9fd665308e7487154b5950e36dca4c9c8c574",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "scripts/gpt6_capture.py",
+          "branchBlob": "2c62c5ced6b2822a13c749a5c5cfe544860b090e",
+          "mainBlob": "65c8bdc055ca817356e643ca768f66dc84ae01a9",
+          "status": "requires-semantic-review",
+          "integrationBlob": "65c8bdc055ca817356e643ca768f66dc84ae01a9",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "scripts/health_check.py",
+          "branchBlob": "f33c260439518590d02cd6321092604a3928af00",
+          "mainBlob": "f33c260439518590d02cd6321092604a3928af00",
+          "status": "identical",
+          "integrationBlob": "f33c260439518590d02cd6321092604a3928af00",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "scripts/records.py",
+          "branchBlob": "75012065fcb4c1a0cafef9c2fa441480daf07051",
+          "mainBlob": "75012065fcb4c1a0cafef9c2fa441480daf07051",
+          "status": "identical",
+          "integrationBlob": "75012065fcb4c1a0cafef9c2fa441480daf07051",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "scripts/release_payload.py",
+          "branchBlob": "d0561c776adee15705e9a02236c89a07061b11b0",
+          "mainBlob": "2faf191c7957f9f7b51ee8de61a3f5a19354a601",
+          "status": "requires-semantic-review",
+          "integrationBlob": "f7f1c2acf4f7ddfa6515b75a0b7a4e55d1fb0eb2",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "old release allowlist replaced by exact current 17-skill and host manifests allowlist; legacy release assets remain immutable"
+        },
+        {
+          "path": "scripts/study_simulator.py",
+          "branchBlob": "6baad4a7bdafe05de62099c66649786aee44a22d",
+          "mainBlob": "6baad4a7bdafe05de62099c66649786aee44a22d",
+          "status": "identical",
+          "integrationBlob": "6baad4a7bdafe05de62099c66649786aee44a22d",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "tests/system-validator-evidence.json",
+          "branchBlob": "3b726c953b509e059df936e1b77ab0f0b07f07d1",
+          "mainBlob": "02cfe9f9275b1e02ba886c6fc68a24888296f005",
+          "status": "requires-semantic-review",
+          "integrationBlob": "29366fb8bcdc1b25cb94ea2589e7e21420c45696",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "official validator evidence binds current 2.8.0 tree, not historical trees"
+        },
+        {
+          "path": "tests/test_gpt6_acceptance.py",
+          "branchBlob": "8a3f0a48427088538a3535fd84d2b50cd8b6a2ab",
+          "mainBlob": "0ea4c5accbd737ab9d93c8dfb10d53df0393c14c",
+          "status": "requires-semantic-review",
+          "integrationBlob": "0ea4c5accbd737ab9d93c8dfb10d53df0393c14c",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "tests/test_gpt6_capture.py",
+          "branchBlob": "b5b671bb699af7163d93bd6a19dce77a1b62bd19",
+          "mainBlob": "03b57cc5059673382a5225c4422f5b5d499e2792",
+          "status": "requires-semantic-review",
+          "integrationBlob": "03b57cc5059673382a5225c4422f5b5d499e2792",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "tests/test_health_check.py",
+          "branchBlob": "3b0c4fb6d239a74b7d6076cfeb66251a2e72e77a",
+          "mainBlob": "17c086f005e526c79eec3a28d5136561cb88b3c0",
+          "status": "requires-semantic-review",
+          "integrationBlob": "126be3821d492142bbca70de6627c4a8a356b1f0",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "tests/test_install_local.py",
+          "branchBlob": "080f77a336893da79afe0ebc0518130b4b9bd61c",
+          "mainBlob": "080f77a336893da79afe0ebc0518130b4b9bd61c",
+          "status": "identical",
+          "integrationBlob": "080f77a336893da79afe0ebc0518130b4b9bd61c",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "tests/test_records.py",
+          "branchBlob": "bd5e9adf0f7c4082edcf7e5416a182d44a4c1f19",
+          "mainBlob": "5fde7ed9b5f10fda2c15bf8db0b22f63b5febd43",
+          "status": "requires-semantic-review",
+          "integrationBlob": "2c0e8f9d6f7403437b3c8aeb4eff92d10762fa37",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        },
+        {
+          "path": "tests/test_repository.py",
+          "branchBlob": "6cc875d7e6985bc7ac973a4e7c299caca2b4468f",
+          "mainBlob": "a0d2fdf0db6ce1dda11cc2910ac2e0ee197b4d10",
+          "status": "requires-semantic-review",
+          "integrationBlob": "572fbd26c47e017e42db2bab2f129b4ab4be8e9d",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "specific teaching, record, simulator, config, or evidence comparison in branch-consolidation report; original host behavior remains unverified"
+        }
+      ],
+      "integrationCommit": "2d37c1a3e08ee8c1db1888d9c4f33833e1357a8a"
+    },
+    {
+      "name": "codex/zcode-adaptation",
+      "head": "f13c5811f529cbf36d274a32050f6bcf4b7ebd2c",
+      "mergeBase": "7c44b9586502c896610cd086e2d27c8266551af0",
+      "files": [
+        {
+          "path": ".claude-plugin/marketplace.json",
+          "branchBlob": "a2b441c15020e2b2b2e22d4be73749f4ac4279ae",
+          "mainBlob": "325df261ebdc88d35a7bd224046f046cab874e76",
+          "status": "requires-semantic-review",
+          "integrationBlob": "a2b441c15020e2b2b2e22d4be73749f4ac4279ae",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "JSON field comparisons in branch-consolidation host section; version changed; ZCode i18n caveat"
+        },
+        {
+          "path": "CHANGELOG.md",
+          "branchBlob": "6d7de01833b9812259dca5d266261dbee3ec4071",
+          "mainBlob": "ecfb656b684d39b0b27c354a53fe15da8b746813",
+          "status": "requires-semantic-review",
+          "integrationBlob": "c52c2166f021c5c17b590945e692a49b898c8012",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "QUALITY_GATES.md",
+          "branchBlob": "5aed7b066f52e4c60d1581b1e66b0280d85735c1",
+          "mainBlob": "978f173ce84b5fa973100d983d6423ab45267606",
+          "status": "requires-semantic-review",
+          "integrationBlob": "524b3119075dcb764fff0fcf5e84067bf99f80f8",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "README.md",
+          "branchBlob": "87639a199787623e1264b8819453b367187c2c30",
+          "mainBlob": "f3c82e6bf258d907694418140e242956e3104a5d",
+          "status": "requires-semantic-review",
+          "integrationBlob": "fe6435bdd118a1ea185f646b71924db3e246cefd",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "eval/v2.6-acceptance/README.md",
+          "branchBlob": "cb705b97db8bade559954dc8559de4fdd2352505",
+          "mainBlob": "cb705b97db8bade559954dc8559de4fdd2352505",
+          "status": "identical",
+          "integrationBlob": "cb705b97db8bade559954dc8559de4fdd2352505",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/v2.6-acceptance/run_cases.py",
+          "branchBlob": "64dbeaabe8d1f270614a048bf9bafc819b40be83",
+          "mainBlob": "64dbeaabe8d1f270614a048bf9bafc819b40be83",
+          "status": "identical",
+          "integrationBlob": "64dbeaabe8d1f270614a048bf9bafc819b40be83",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/v2.6.1-acceptance/README.md",
+          "branchBlob": "d96b5abd0e74a3667403703e8f8dd73cc95b133e",
+          "mainBlob": "d96b5abd0e74a3667403703e8f8dd73cc95b133e",
+          "status": "identical",
+          "integrationBlob": "d96b5abd0e74a3667403703e8f8dd73cc95b133e",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/v2.6.1-acceptance/agent-grades.json",
+          "branchBlob": "917c695243f98d8f06c330697eb2d35e66d949c8",
+          "mainBlob": "917c695243f98d8f06c330697eb2d35e66d949c8",
+          "status": "identical",
+          "integrationBlob": "917c695243f98d8f06c330697eb2d35e66d949c8",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/v2.6.1-acceptance/cases.json",
+          "branchBlob": "0f2e00845167eedbb869b596983a04b470639322",
+          "mainBlob": "0f2e00845167eedbb869b596983a04b470639322",
+          "status": "identical",
+          "integrationBlob": "0f2e00845167eedbb869b596983a04b470639322",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/v2.6.1-acceptance/materials/synthetic-checkpoints.json",
+          "branchBlob": "3cc8ca663e6c4cfbf62985b6e94aba2da13e3527",
+          "mainBlob": "3cc8ca663e6c4cfbf62985b6e94aba2da13e3527",
+          "status": "identical",
+          "integrationBlob": "3cc8ca663e6c4cfbf62985b6e94aba2da13e3527",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "eval/v2.6.1-acceptance/results.md",
+          "branchBlob": "63cc77477eb893d3aeeaa6e7a3594071b9ff6c09",
+          "mainBlob": "60350c32f5ac24632ea6326fe56b66eefea3c1ac",
+          "status": "requires-semantic-review",
+          "integrationBlob": "60350c32f5ac24632ea6326fe56b66eefea3c1ac",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "historical candidate scope clarified; historical evidence remains bound to original tree"
+        },
+        {
+          "path": "eval/v2.6.1-acceptance/validator-provenance.md",
+          "branchBlob": "640798f8856dd10309ca023ec4f35d2d9f13729d",
+          "mainBlob": "640798f8856dd10309ca023ec4f35d2d9f13729d",
+          "status": "identical",
+          "integrationBlob": "640798f8856dd10309ca023ec4f35d2d9f13729d",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "plugins/kaoyan-408/.codex-plugin/plugin.json",
+          "branchBlob": "93ab25985c25da9840fed475942d17c252185447",
+          "mainBlob": "2c7a222bfeed57ece371accdbc10eea081874b36",
+          "status": "requires-semantic-review",
+          "integrationBlob": "93ab25985c25da9840fed475942d17c252185447",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "shared plugin manifest retained; version and metadata expanded for current release; validated against host mirrors"
+        },
+        {
+          "path": "plugins/kaoyan-408/.zcode-plugin/plugin.json",
+          "branchBlob": "30085789632d0d3fc572f45e525f98a7e7fbea23",
+          "mainBlob": "559e9c0cd2e6b38c9aa325adf66d856611834e32",
+          "status": "requires-semantic-review",
+          "integrationBlob": "30085789632d0d3fc572f45e525f98a7e7fbea23",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "JSON field comparisons in branch-consolidation host section; version changed; ZCode i18n caveat"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/portable-learning-records.md",
+          "branchBlob": "c2bbd38a9407ca0bda83c74fb5564cce1a06a88c",
+          "mainBlob": "ff62a149e14c11d3cb7751709d941486aa5f84e9",
+          "status": "requires-semantic-review",
+          "integrationBlob": "c2bbd38a9407ca0bda83c74fb5564cce1a06a88c",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "record revision and conflict semantics plus 102 identical test method ASTs documented in branch-consolidation report"
+        },
+        {
+          "path": "plugins/kaoyan-408/references/portable-learning-records.schema.json",
+          "branchBlob": "3db64809cea44d49e996332b062d37b454424c5e",
+          "mainBlob": "3db64809cea44d49e996332b062d37b454424c5e",
+          "status": "identical",
+          "integrationBlob": "3db64809cea44d49e996332b062d37b454424c5e",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "plugins/kaoyan-408/scripts/records.py",
+          "branchBlob": "53e0c61dedfb4952190d5bca01868e1af539ac0a",
+          "mainBlob": "53e0c61dedfb4952190d5bca01868e1af539ac0a",
+          "status": "identical",
+          "integrationBlob": "53e0c61dedfb4952190d5bca01868e1af539ac0a",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "plugins/kaoyan-408/skills/kaoyan-review-executor/SKILL.md",
+          "branchBlob": "8c802c8f67b914169eb7473b34712906e69702f7",
+          "mainBlob": "90a9a3255046a6b23203ec34ba5f813eae589eac",
+          "status": "requires-semantic-review",
+          "integrationBlob": "8c802c8f67b914169eb7473b34712906e69702f7",
+          "integrationComparison": "identical",
+          "decision": "由新实现替代",
+          "evidence": "record revision and conflict semantics plus 102 identical test method ASTs documented in branch-consolidation report"
+        },
+        {
+          "path": "scripts/release_payload.py",
+          "branchBlob": "fedb406817105ed08b9c4a3695afabbf9a340179",
+          "mainBlob": "2faf191c7957f9f7b51ee8de61a3f5a19354a601",
+          "status": "requires-semantic-review",
+          "integrationBlob": "4e3059112c121dd568ccf7e9fafcc9dc4c5720fc",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "old release allowlist replaced by exact current 17-skill and host manifests allowlist; legacy release assets remain immutable"
+        },
+        {
+          "path": "scripts/validate_repository.py",
+          "branchBlob": "89e64dc2c803c7c1930593bdadee57a5a6fafe9c",
+          "mainBlob": "e5ad173d65d920555d9ac1c3a907e21979b6b159",
+          "status": "requires-semantic-review",
+          "integrationBlob": "d24c483bc7d5aa42202ca231b0c9ce615f9fc345",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "old host validators retained and extended with stricter skills-only, manifest and path checks; host test evidence in audit report"
+        },
+        {
+          "path": "tests/system-validator-evidence.json",
+          "branchBlob": "728c9528125f39128e7d6abb59ec4530cd8b0dce",
+          "mainBlob": "02cfe9f9275b1e02ba886c6fc68a24888296f005",
+          "status": "requires-semantic-review",
+          "integrationBlob": "c49a6158cfa9c24cbe3d26560da02ac3724cf743",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "official validator evidence binds current 2.8.0 tree, not historical trees"
+        },
+        {
+          "path": "tests/test_records.py",
+          "branchBlob": "2add2845ac13b87c8bff4001f9cfe916d3eef287",
+          "mainBlob": "5fde7ed9b5f10fda2c15bf8db0b22f63b5febd43",
+          "status": "requires-semantic-review",
+          "integrationBlob": "5fde7ed9b5f10fda2c15bf8db0b22f63b5febd43",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "record revision and conflict semantics plus 102 identical test method ASTs documented in branch-consolidation report"
+        },
+        {
+          "path": "tests/test_v260_runner.py",
+          "branchBlob": "2da22a379962bf75f5707172de2f848d96a3e36d",
+          "mainBlob": "2da22a379962bf75f5707172de2f848d96a3e36d",
+          "status": "identical",
+          "integrationBlob": "2da22a379962bf75f5707172de2f848d96a3e36d",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": "tests/test_zcode_marketplace.py",
+          "branchBlob": "1ea4db1503d49711761a8e7f5e987669d73f96a6",
+          "mainBlob": "1ea4db1503d49711761a8e7f5e987669d73f96a6",
+          "status": "identical",
+          "integrationBlob": "1ea4db1503d49711761a8e7f5e987669d73f96a6",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        }
+      ],
+      "integrationCommit": "c1d632a2059ff1bce26eb5643fa5c95d12b92edc"
+    },
+    {
+      "name": "cursor/cursor-plugin-adapter-f8da",
+      "head": "fc7bb1c571babf7ea4e5388c6e137e371b8972b6",
+      "mergeBase": "7c44b9586502c896610cd086e2d27c8266551af0",
+      "files": [
+        {
+          "path": ".cursor-plugin/marketplace.json",
+          "branchBlob": "ee4f4685a691e0fe4b8e147ec4a366822c71772f",
+          "mainBlob": "ee4f4685a691e0fe4b8e147ec4a366822c71772f",
+          "status": "identical",
+          "integrationBlob": "ee4f4685a691e0fe4b8e147ec4a366822c71772f",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        },
+        {
+          "path": ".cursor-plugin/plugin.json",
+          "branchBlob": "5e2c58952f3ce4737447962532c6f8ad5c94004a",
+          "mainBlob": "3785b916a3012b6237b4248981948a1c9a6b2dd1",
+          "status": "requires-semantic-review",
+          "integrationBlob": "e32cfcec9af7ba76fa6413631e5b0bfe8b7d7561",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "JSON field comparisons in branch-consolidation host section; version changed; ZCode i18n caveat"
+        },
+        {
+          "path": "README.md",
+          "branchBlob": "30cf8a4cb21642b1e783d4192d9bb2ebdd4a9e67",
+          "mainBlob": "f3c82e6bf258d907694418140e242956e3104a5d",
+          "status": "requires-semantic-review",
+          "integrationBlob": "fe6435bdd118a1ea185f646b71924db3e246cefd",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "scripts/validate_repository.py",
+          "branchBlob": "e6f4a5c46b13828b8714ffe1b02763a953ba1045",
+          "mainBlob": "e5ad173d65d920555d9ac1c3a907e21979b6b159",
+          "status": "requires-semantic-review",
+          "integrationBlob": "d24c483bc7d5aa42202ca231b0c9ce615f9fc345",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "check_cursor_marketplace preserves original checks and strengthens skills-only restrictions; see host rules section"
+        }
+      ],
+      "integrationCommit": "c1d632a2059ff1bce26eb5643fa5c95d12b92edc"
+    },
+    {
+      "name": "workbuddy/workbuddy-plugin-adapter",
+      "head": "723ffdf46a3b872e4e171d12996761fe039a8d4f",
+      "mergeBase": "7c44b9586502c896610cd086e2d27c8266551af0",
+      "files": [
+        {
+          "path": ".codebuddy-plugin/marketplace.json",
+          "branchBlob": "b738f0cf4b310327d505d8afd1f35deadc448034",
+          "mainBlob": "b7bc5c3458c4007503d2fc4075601b36c397548b",
+          "status": "requires-semantic-review",
+          "integrationBlob": "36b6ff09bd16d2b723821c1287c7f44f1118fc9d",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "JSON field comparisons in branch-consolidation host section; version changed; ZCode i18n caveat"
+        },
+        {
+          "path": "QUALITY_GATES.md",
+          "branchBlob": "db6af681b6a8467c155e0ff1cfcd599d6a541e83",
+          "mainBlob": "978f173ce84b5fa973100d983d6423ab45267606",
+          "status": "requires-semantic-review",
+          "integrationBlob": "524b3119075dcb764fff0fcf5e84067bf99f80f8",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "README.md",
+          "branchBlob": "e7035b7b0aa86ff5fb055256abf28785f373e076",
+          "mainBlob": "f3c82e6bf258d907694418140e242956e3104a5d",
+          "status": "requires-semantic-review",
+          "integrationBlob": "fe6435bdd118a1ea185f646b71924db3e246cefd",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "current documentation and archived prior README preserve version-specific context"
+        },
+        {
+          "path": "plugins/kaoyan-408/.codebuddy-plugin/plugin.json",
+          "branchBlob": "7de1161b955e2016dbbe77556c8c05cc123ba208",
+          "mainBlob": "94227783e0891adface9c441ba231e294cfbd2de",
+          "status": "requires-semantic-review",
+          "integrationBlob": "6d5d3c25c44a4952a2f8e2567ac65b47764ece3d",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "JSON field comparisons in branch-consolidation host section; version changed; ZCode i18n caveat"
+        },
+        {
+          "path": "scripts/release_payload.py",
+          "branchBlob": "931929ed0ce1256e7e95abd015fdc4223bcd475b",
+          "mainBlob": "2faf191c7957f9f7b51ee8de61a3f5a19354a601",
+          "status": "requires-semantic-review",
+          "integrationBlob": "4e3059112c121dd568ccf7e9fafcc9dc4c5720fc",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "old release allowlist replaced by exact current 17-skill and host manifests allowlist; legacy release assets remain immutable"
+        },
+        {
+          "path": "scripts/simulate_workbuddy_host.py",
+          "branchBlob": "d30a8fca7077e3e01dd6099b11dc1d23b266718c",
+          "mainBlob": "c1795ab24b17bdac4a1f113cb52247658ff02dbe",
+          "status": "requires-semantic-review",
+          "integrationBlob": "c1795ab24b17bdac4a1f113cb52247658ff02dbe",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "WB-001 through WB-007 remain; static diagnosis with stronger path checks replaces claimed clipped-install simulation"
+        },
+        {
+          "path": "scripts/validate_repository.py",
+          "branchBlob": "3d21ff005f608531c817fcaa5fb976a1f871dc2c",
+          "mainBlob": "e5ad173d65d920555d9ac1c3a907e21979b6b159",
+          "status": "requires-semantic-review",
+          "integrationBlob": "d24c483bc7d5aa42202ca231b0c9ce615f9fc345",
+          "integrationComparison": "changed",
+          "decision": "由新实现替代",
+          "evidence": "old host validators retained and extended with stricter skills-only, manifest and path checks; host test evidence in audit report"
+        },
+        {
+          "path": "tests/test_workbuddy_marketplace.py",
+          "branchBlob": "8d3eb766de002146bf9023ed8ddcb4254b5205a2",
+          "mainBlob": "8d3eb766de002146bf9023ed8ddcb4254b5205a2",
+          "status": "identical",
+          "integrationBlob": "8d3eb766de002146bf9023ed8ddcb4254b5205a2",
+          "integrationComparison": "identical",
+          "decision": "已覆盖",
+          "evidence": "branchBlob equals mainBlob"
+        }
+      ],
+      "integrationCommit": "c1d632a2059ff1bce26eb5643fa5c95d12b92edc"
+    }
+  ]
+}

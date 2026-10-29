@@ -175,6 +175,8 @@ jobs:
           )
           if [[ "${{ steps.meta.outputs.tag }}" == *-* ]]; then
             args+=(--prerelease --notes "开发候选：真实模型自动路由、真实笔记写入及已跳过的客户端验收材料仍未验证；工程测试不替代行为验收。")
+          elif [[ "${{ steps.meta.outputs.tag }}" == "v2.8.0" ]]; then
+            args+=(--notes "$(cat docs/release-2.8.0.md)")
           fi
           if [[ "$RELEASE_EVENT" == "workflow_dispatch" ]]; then
             args+=(--target "$GITHUB_SHA")
