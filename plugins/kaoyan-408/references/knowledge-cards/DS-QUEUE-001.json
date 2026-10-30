@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-QUEUE-001",
+  "subject": "数据结构",
+  "learningGoal": "判定循环队列的满空和长度",
+  "prerequisites": [
+    "先进先出",
+    "数组下标与模运算"
+  ],
+  "concept": "队列先入先出；循环数组以模运算回绕，空满判定取决于选用的表示方法。 除预留一个空槽外，也可使用元素计数或额外标志区分满空；不同实现的可用容量和满空条件不相同。链队列常维护队头和队尾指针。",
+  "conditions": [
+    "数组长度为 m，front 指首元素，rear 指下一插入位置；预留一个空槽。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "front 等于 rear 必定表示满",
+      "correction": "在预留空槽的约定下 front=rear 表示空；满需满足 (rear+1) mod m=front。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】数组长度 5，front=3、rear=1，现有多少元素？",
+    "solution": "按约定长度为 (rear-front+5) mod 5=3，位置为 3、4、0。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】同一约定下 front=2、rear=1 时，队列是否满？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
+    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+  }
+}

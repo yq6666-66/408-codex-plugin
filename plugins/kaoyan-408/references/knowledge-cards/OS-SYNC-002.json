@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "OS-SYNC-002",
+  "subject": "操作系统",
+  "learningGoal": "分析有界缓冲区生产者消费者的同步顺序",
+  "prerequisites": [
+    "P/V 与有界队列"
+  ],
+  "concept": "有界缓冲区既要互斥访问，也要分别记录空槽和已占槽；生产者等待空槽后进入临界区放入数据，离开后通知消费者；消费者对称地等待数据并释放空槽。",
+  "conditions": [
+    "单生产者/消费者或多生产者/消费者均须按给定实现检查原子性和顺序；不在持有互斥锁时等待对方才能产生的资源。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "生产者可以先拿互斥锁再一直等待空槽",
+      "correction": "缓冲区满时持锁等待空槽会阻碍消费者进入取出，可能造成死锁。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】容量为3且初态空的缓冲区，空槽 empty、已占 full、互斥 mutex 三个信号量初值如何设置？",
+    "solution": "empty=3、full=0、mutex=1；empty计空槽，full计产品，mutex保护缓冲区。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】生产者成功放入一个产品后，应通知哪个计数信号量？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；本卡具体内容的外部来源支持待逐项核验。",
+    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+  }
+}

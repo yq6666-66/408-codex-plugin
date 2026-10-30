@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.0",
-  "selectionBasis": "首批编辑优先级；四科各15条，不代表历年命题频率统计。topicPath为项目分类，年度大纲归属须另核。",
+  "schemaVersion": "1.1",
+  "selectionBasis": "首批编辑优先级；四科各15条，不代表命题频率。topicPath为项目分类；2027年归属仅按实际读取的第三方整理正文逐项对照。",
   "knowledgePoints": [
     {
       "id": "DS-ALG-001",
@@ -18,20 +18,24 @@
       "syllabusPath": [
         "数据结构",
         "考查目标",
-        "2"
+        "时间复杂度与空间复杂度"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.1; 考查目标 / 2",
-        "kind": "official-repost",
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 考查目标 / 时间复杂度与空间复杂度",
+        "kind": "third-party-outline",
         "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/DS-ALG-001.json"
     },
     {
       "id": "DS-LIST-001",
@@ -48,21 +52,25 @@
       ],
       "syllabusPath": [
         "数据结构",
-        "二",
-        "（二）"
+        "二、线性表",
+        "线性表的实现"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.1; 二 / （二）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 二、线性表 / 线性表的实现",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“线性表的实现”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-LIST-001.json"
     },
     {
       "id": "DS-STACK-001",
@@ -77,11 +85,27 @@
         "表达式求值",
         "出栈序列"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "三、栈、队列和数组",
+        "栈和队列的基本概念"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 三、栈、队列和数组 / 栈和队列的基本概念",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“栈和队列的基本概念”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-STACK-001.json"
     },
     {
       "id": "DS-QUEUE-001",
@@ -95,11 +119,27 @@
         "队列判空判满",
         "循环队列"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "三、栈、队列和数组",
+        "栈和队列的顺序存储结构"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 三、栈、队列和数组 / 栈和队列的顺序存储结构",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“栈和队列的顺序存储结构”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-QUEUE-001.json"
     },
     {
       "id": "DS-ARRAY-001",
@@ -115,11 +155,27 @@
         "对称矩阵",
         "三角矩阵"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "三、栈、队列和数组",
+        "特殊矩阵的压缩存储"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 三、栈、队列和数组 / 特殊矩阵的压缩存储",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“特殊矩阵的压缩存储”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-ARRAY-001.json"
     },
     {
       "id": "DS-TREE-001",
@@ -137,21 +193,25 @@
       ],
       "syllabusPath": [
         "数据结构",
-        "四",
-        "（二）"
+        "四、树与二叉树",
+        "二叉树的遍历"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.1; 四 / （二）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 四、树与二叉树 / 二叉树的遍历",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“二叉树的遍历”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-TREE-001.json"
     },
     {
       "id": "DS-TREE-002",
@@ -168,21 +228,25 @@
       ],
       "syllabusPath": [
         "数据结构",
-        "四",
-        "（四）1"
+        "四、树与二叉树",
+        "哈夫曼（Huffman）树和哈夫曼编码"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.2; 四 / （四）1",
-        "kind": "official-repost",
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 四、树与二叉树 / 哈夫曼（Huffman）树和哈夫曼编码",
+        "kind": "third-party-outline",
         "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/DS-TREE-002.json"
     },
     {
       "id": "DS-SEARCH-001",
@@ -197,11 +261,27 @@
         "AVL",
         "平衡因子"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "六、查找",
+        "树形查找"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 六、查找 / 树形查找",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“树形查找”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-SEARCH-001.json"
     },
     {
       "id": "DS-SEARCH-002",
@@ -218,21 +298,25 @@
       ],
       "syllabusPath": [
         "数据结构",
-        "六",
-        "（六）"
+        "六、查找",
+        "B 树及其基本操作"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.2; 六 / （六）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 六、查找 / B 树及其基本操作",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“B 树及其基本操作”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-SEARCH-002.json"
     },
     {
       "id": "DS-GRAPH-001",
@@ -248,11 +332,27 @@
         "BFS",
         "DFS"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "五、图",
+        "图的存储及基本操作"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 五、图 / 图的存储及基本操作",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“图的存储及基本操作”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-GRAPH-001.json"
     },
     {
       "id": "DS-GRAPH-002",
@@ -267,11 +367,27 @@
         "Kruskal",
         "最小生成树"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "五、图",
+        "最小（代价）生成树"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 五、图 / 最小（代价）生成树",
+        "kind": "third-party-outline",
+        "mappingScope": "topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/DS-GRAPH-002.json"
     },
     {
       "id": "DS-GRAPH-003",
@@ -286,11 +402,27 @@
         "Floyd",
         "单源最短路"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "五、图",
+        "最短路径"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 五、图 / 最短路径",
+        "kind": "third-party-outline",
+        "mappingScope": "topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/DS-GRAPH-003.json"
     },
     {
       "id": "DS-GRAPH-004",
@@ -306,11 +438,27 @@
         "关键路径",
         "拓扑排序"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "五、图",
+        "拓扑排序"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 五、图 / 拓扑排序",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“拓扑排序”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-GRAPH-004.json"
     },
     {
       "id": "DS-SEARCH-003",
@@ -327,11 +475,27 @@
         "散列查找",
         "ASL"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "六、查找",
+        "查找算法的分析及应用"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 六、查找 / 查找算法的分析及应用",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“查找算法的分析及应用”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-SEARCH-003.json"
     },
     {
       "id": "DS-SORT-001",
@@ -348,11 +512,27 @@
         "归并排序",
         "外部排序"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "数据结构",
+        "七、排序",
+        "排序算法的分析与应用"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "数据结构 / 七、排序 / 排序算法的分析与应用",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“排序算法的分析与应用”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/DS-SORT-001.json"
     },
     {
       "id": "CO-PERF-001",
@@ -370,21 +550,25 @@
       ],
       "syllabusPath": [
         "计算机组成原理",
-        "一",
-        "（二）"
+        "一、计算机系统概述",
+        "计算机性能指标"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.3; 一 / （二）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 一、计算机系统概述 / 计算机性能指标",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“计算机性能指标”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-PERF-001.json"
     },
     {
       "id": "CO-DATA-001",
@@ -400,11 +584,27 @@
         "反码",
         "符号扩展"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "二、数据的表示和运算",
+        "数制与编码"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 二、数据的表示和运算 / 数制与编码",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“数制与编码”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-DATA-001.json"
     },
     {
       "id": "CO-DATA-002",
@@ -422,21 +622,25 @@
       ],
       "syllabusPath": [
         "计算机组成原理",
-        "二",
-        "（四）"
+        "二、数据的表示和运算",
+        "浮点数的表示和运算"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.3; 二 / （四）",
-        "kind": "official-repost",
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 二、数据的表示和运算 / 浮点数的表示和运算",
+        "kind": "third-party-outline",
         "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/CO-DATA-002.json"
     },
     {
       "id": "CO-ALU-001",
@@ -451,11 +655,27 @@
         "进位标志",
         "乘除运算"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "二、数据的表示和运算",
+        "运算方法和运算电路"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 二、数据的表示和运算 / 运算方法和运算电路",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“运算方法和运算电路”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-ALU-001.json"
     },
     {
       "id": "CO-MEM-001",
@@ -471,11 +691,27 @@
         "位扩展",
         "字扩展"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "三、存储器层次结构",
+        "主存储器"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 三、存储器层次结构 / 主存储器",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“主存储器”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-MEM-001.json"
     },
     {
       "id": "CO-CACHE-001",
@@ -494,21 +730,25 @@
       ],
       "syllabusPath": [
         "计算机组成原理",
-        "三",
-        "（六）2"
+        "三、存储器层次结构",
+        "Cache 和主存之间的映射方式"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.4; 三 / （六）2",
-        "kind": "official-repost",
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 三、存储器层次结构 / Cache 和主存之间的映射方式",
+        "kind": "third-party-outline",
         "mappingScope": "upper-topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“Cache 和主存之间的映射方式”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-CACHE-001.json"
     },
     {
       "id": "CO-CACHE-002",
@@ -525,11 +765,27 @@
         "写直达",
         "写回"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "三、存储器层次结构",
+        "Cache 写策略"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 三、存储器层次结构 / Cache 写策略",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“Cache 写策略”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-CACHE-002.json"
     },
     {
       "id": "CO-ISA-001",
@@ -544,11 +800,27 @@
         "指令字长",
         "寻址方式"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "四、指令系统",
+        "寻址方式"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 四、指令系统 / 寻址方式",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“寻址方式”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-ISA-001.json"
     },
     {
       "id": "CO-CPU-001",
@@ -564,11 +836,27 @@
         "数据通路",
         "寄存器传送"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "五、中央处理器（CPU）",
+        "指令执行过程"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 五、中央处理器（CPU） / 指令执行过程",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“指令执行过程”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-CPU-001.json"
     },
     {
       "id": "CO-CPU-002",
@@ -583,11 +871,27 @@
         "微指令",
         "微程序控制"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "五、中央处理器（CPU）",
+        "控制器的功能和工作原理"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 五、中央处理器（CPU） / 控制器的功能和工作原理",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“控制器的功能和工作原理”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-CPU-002.json"
     },
     {
       "id": "CO-PIPE-001",
@@ -603,11 +907,27 @@
         "控制冒险",
         "结构冒险"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "五、中央处理器（CPU）",
+        "指令流水线"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 五、中央处理器（CPU） / 指令流水线",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“指令流水线”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-PIPE-001.json"
     },
     {
       "id": "CO-BUS-001",
@@ -622,11 +942,27 @@
         "总线周期",
         "总线仲裁"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "六、总线和输入/输出系统",
+        "总线"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 六、总线和输入/输出系统 / 总线",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“总线”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-BUS-001.json"
     },
     {
       "id": "CO-IO-001",
@@ -641,11 +977,27 @@
         "中断屏蔽",
         "中断优先级"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "五、中央处理器（CPU）",
+        "异常和中断机制"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 五、中央处理器（CPU） / 异常和中断机制",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“异常和中断机制”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-IO-001.json"
     },
     {
       "id": "CO-IO-002",
@@ -660,11 +1012,27 @@
         "周期窃取",
         "块传送"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "六、总线和输入/输出系统",
+        "DMA 方式"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 六、总线和输入/输出系统 / DMA 方式",
+        "kind": "third-party-outline",
+        "mappingScope": "topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/CO-IO-002.json"
     },
     {
       "id": "CO-IO-003",
@@ -679,11 +1047,27 @@
         "轮询开销",
         "中断开销"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机组成原理",
+        "六、总线和输入/输出系统",
+        "I/O 方式"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机组成原理 / 六、总线和输入/输出系统 / I/O 方式",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“I/O 方式”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CO-IO-003.json"
     },
     {
       "id": "OS-BASIC-001",
@@ -701,21 +1085,25 @@
       ],
       "syllabusPath": [
         "操作系统",
-        "一",
-        "（三）1–3"
+        "一、操作系统基础",
+        "程序运行环境"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.5; 一 / （三）1–3",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 一、操作系统基础 / 程序运行环境",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“程序运行环境”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-BASIC-001.json"
     },
     {
       "id": "OS-PROC-001",
@@ -730,11 +1118,27 @@
         "线程资源",
         "进程资源"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "二、进程管理",
+        "进程与线程的基本概念"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 二、进程管理 / 进程与线程的基本概念",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“进程与线程的基本概念”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-PROC-001.json"
     },
     {
       "id": "OS-PROC-002",
@@ -749,11 +1153,27 @@
         "阻塞",
         "进程切换"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "二、进程管理",
+        "进程/线程的状态与转换"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 二、进程管理 / 进程/线程的状态与转换",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“进程/线程的状态与转换”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-PROC-002.json"
     },
     {
       "id": "OS-SYNC-001",
@@ -769,11 +1189,27 @@
         "临界区",
         "信号量"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "二、进程管理",
+        "同步与互斥"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 二、进程管理 / 同步与互斥",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“同步与互斥”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-SYNC-001.json"
     },
     {
       "id": "OS-SYNC-002",
@@ -790,21 +1226,25 @@
       ],
       "syllabusPath": [
         "操作系统",
-        "二",
-        "（三）6"
+        "二、进程管理",
+        "经典同步问题"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.6; 二 / （三）6",
-        "kind": "official-repost",
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 二、进程管理 / 经典同步问题",
+        "kind": "third-party-outline",
         "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/OS-SYNC-002.json"
     },
     {
       "id": "OS-DEAD-001",
@@ -820,11 +1260,27 @@
         "死锁避免",
         "死锁检测"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "二、进程管理",
+        "死锁"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 二、进程管理 / 死锁",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“死锁”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-DEAD-001.json"
     },
     {
       "id": "OS-SCHED-001",
@@ -840,11 +1296,27 @@
         "SJF",
         "优先级调度"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "二、进程管理",
+        "CPU 调度算法"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 二、进程管理 / CPU 调度算法",
+        "kind": "third-party-outline",
+        "mappingScope": "topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/OS-SCHED-001.json"
     },
     {
       "id": "OS-SCHED-002",
@@ -860,11 +1332,27 @@
         "等待时间",
         "响应时间"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "二、进程管理",
+        "调度的目标"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 二、进程管理 / 调度的目标",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“调度的目标”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-SCHED-002.json"
     },
     {
       "id": "OS-MEM-001",
@@ -880,11 +1368,27 @@
         "FIFO",
         "Belady异常"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "三、内存管理",
+        "页面置换算法"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 三、内存管理 / 页面置换算法",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“页面置换算法”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-MEM-001.json"
     },
     {
       "id": "OS-MEM-002",
@@ -900,11 +1404,27 @@
         "LRU",
         "访问历史"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "三、内存管理",
+        "页面置换算法"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 三、内存管理 / 页面置换算法",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“页面置换算法”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-MEM-002.json"
     },
     {
       "id": "OS-MEM-003",
@@ -921,11 +1441,27 @@
         "段表",
         "TLB"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "三、内存管理",
+        "页式管理"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 三、内存管理 / 页式管理",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“页式管理”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-MEM-003.json"
     },
     {
       "id": "OS-MEM-004",
@@ -940,11 +1476,27 @@
         "请求分页",
         "有效访问时间"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "三、内存管理",
+        "请求页式管理"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 三、内存管理 / 请求页式管理",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“请求页式管理”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-MEM-004.json"
     },
     {
       "id": "OS-MEM-005",
@@ -960,11 +1512,27 @@
         "抖动",
         "驻留集"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "三、内存管理",
+        "虚拟存储器性能的影响因素及改进方法"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 三、内存管理 / 虚拟存储器性能的影响因素及改进方法",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“虚拟存储器性能的影响因素及改进方法”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-MEM-005.json"
     },
     {
       "id": "OS-FILE-001",
@@ -982,21 +1550,25 @@
       ],
       "syllabusPath": [
         "操作系统",
-        "四",
-        "（一）2、6；（二）"
+        "四、文件管理",
+        "文件元数据和索引节点"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.7; 四 / （一）2、6；（二）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 四、文件管理 / 文件元数据和索引节点",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“文件元数据和索引节点”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-FILE-001.json"
     },
     {
       "id": "OS-DISK-001",
@@ -1012,11 +1584,27 @@
         "C-SCAN",
         "SSTF"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "操作系统",
+        "五、输入/输出（I/O）管理",
+        "磁盘调度方法"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "操作系统 / 五、输入/输出（I/O）管理 / 磁盘调度方法",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“磁盘调度方法”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/OS-DISK-001.json"
     },
     {
       "id": "CN-ARCH-001",
@@ -1032,11 +1620,27 @@
         "封装",
         "协议数据单元"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "一、计算机网络概述",
+        "计算机网络体系结构"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 一、计算机网络概述 / 计算机网络体系结构",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“计算机网络体系结构”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-ARCH-001.json"
     },
     {
       "id": "CN-PERF-001",
@@ -1052,11 +1656,27 @@
         "吞吐量",
         "带宽时延积"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "一、计算机网络概述",
+        "计算机网络的主要性能指标"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 一、计算机网络概述 / 计算机网络的主要性能指标",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“计算机网络的主要性能指标”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-PERF-001.json"
     },
     {
       "id": "CN-PHY-001",
@@ -1074,21 +1694,25 @@
       ],
       "syllabusPath": [
         "计算机网络",
-        "二",
-        "（一）1–3"
+        "二、物理层",
+        "通信基础"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.8; 二 / （一）1–3",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 二、物理层 / 通信基础",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“通信基础”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-PHY-001.json"
     },
     {
       "id": "CN-LINK-001",
@@ -1103,11 +1727,27 @@
         "字节填充",
         "CRC"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "三、数据链路层",
+        "组帧"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 三、数据链路层 / 组帧",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“组帧”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-LINK-001.json"
     },
     {
       "id": "CN-ARQ-001",
@@ -1125,21 +1765,25 @@
       ],
       "syllabusPath": [
         "计算机网络",
-        "三",
-        "（四）"
+        "三、数据链路层",
+        "流量控制与可靠传输机制"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.9; 三 / （四）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 三、数据链路层 / 流量控制与可靠传输机制",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“流量控制与可靠传输机制”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-ARQ-001.json"
     },
     {
       "id": "CN-MAC-001",
@@ -1154,11 +1798,27 @@
         "CSMA/CD",
         "二进制指数退避"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "三、数据链路层",
+        "随机访问"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 三、数据链路层 / 随机访问",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“随机访问”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-MAC-001.json"
     },
     {
       "id": "CN-LAN-001",
@@ -1174,11 +1834,27 @@
         "VLAN",
         "生成树"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "三、数据链路层",
+        "以太网与 IEEE 802.3"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 三、数据链路层 / 以太网与 IEEE 802.3",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“以太网与 IEEE 802.3”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-LAN-001.json"
     },
     {
       "id": "CN-NET-001",
@@ -1196,21 +1872,25 @@
       ],
       "syllabusPath": [
         "计算机网络",
-        "四",
-        "（三）3"
+        "四、网络层",
+        "子网划分"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.10; 四 / （三）3",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 四、网络层 / 子网划分",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“子网划分”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-NET-001.json"
     },
     {
       "id": "CN-NET-002",
@@ -1226,11 +1906,27 @@
         "TTL",
         "ICMP"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "四、网络层",
+        "IPv4 分组"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 四、网络层 / IPv4 分组",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“IPv4 分组”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-NET-002.json"
     },
     {
       "id": "CN-NET-003",
@@ -1246,11 +1942,27 @@
         "NAT",
         "地址解析"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "四、网络层",
+        "ARP 协议"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 四、网络层 / ARP 协议",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“ARP 协议”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-NET-003.json"
     },
     {
       "id": "CN-ROUTE-001",
@@ -1269,21 +1981,25 @@
       ],
       "syllabusPath": [
         "计算机网络",
-        "四",
-        "（二）；（五）"
+        "四、网络层",
+        "路由算法"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.9: 四 / （二）；p.10: 四 / （五）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 四、网络层 / 路由算法",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“路由算法”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-ROUTE-001.json"
     },
     {
       "id": "CN-TRANS-001",
@@ -1299,11 +2015,27 @@
         "序号",
         "确认号"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "五、传输层",
+        "传输层提供的服务"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 五、传输层 / 传输层提供的服务",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“传输层提供的服务”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-TRANS-001.json"
     },
     {
       "id": "CN-TCP-001",
@@ -1319,11 +2051,27 @@
         "重传",
         "接收窗口"
       ],
-      "syllabusPath": null,
-      "basisYear": "待核",
-      "verified": false,
-      "source": null,
-      "checkedAt": null
+      "syllabusPath": [
+        "计算机网络",
+        "五、传输层",
+        "TCP 可靠传输"
+      ],
+      "basisYear": "2027",
+      "verified": true,
+      "source": {
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 五、传输层 / TCP 可靠传输",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
+      },
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“TCP 可靠传输”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-TCP-001.json"
     },
     {
       "id": "CN-TCP-002",
@@ -1342,21 +2090,25 @@
       ],
       "syllabusPath": [
         "计算机网络",
-        "五",
-        "（三）5"
+        "五、传输层",
+        "TCP 拥塞控制"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.10; 五 / （三）5",
-        "kind": "official-repost",
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 五、传输层 / TCP 拥塞控制",
+        "kind": "third-party-outline",
         "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "direct",
+      "mappingNote": "正文直接列出该主题；具体规则仍需独立核对。",
+      "knowledgeCard": "knowledge-cards/CN-TCP-002.json"
     },
     {
       "id": "CN-APP-001",
@@ -1374,21 +2126,25 @@
       ],
       "syllabusPath": [
         "计算机网络",
-        "六",
-        "（二）–（五）"
+        "六、应用层",
+        "应用层"
       ],
-      "basisYear": "2025",
+      "basisYear": "2027",
       "verified": true,
       "source": {
-        "title": "2025年408大纲（学校公开材料）",
-        "publisher": "芜湖学院计算科学学院",
-        "reference": "https://www.uwh.edu.cn/uploads/article/20250609/660428d58334252302af691bf99e064e.pdf",
-        "locator": "PDF p.11; 六 / （二）–（五）",
-        "kind": "official-repost",
-        "mappingScope": "topic",
-        "sha256": "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5"
+        "title": "2027 408 考研大纲（第三方整理正文）",
+        "publisher": "计算机考研杂货铺",
+        "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
+        "locator": "计算机网络 / 六、应用层 / 应用层",
+        "kind": "third-party-outline",
+        "mappingScope": "upper-topic",
+        "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
+        "sha256Scope": "normalized-article-text-v1"
       },
-      "checkedAt": "2026-10-17"
+      "checkedAt": "2026-10-30",
+      "mappingStatus": "upper-topic",
+      "mappingNote": "正文可定位“应用层”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "knowledgeCard": "knowledge-cards/CN-APP-001.json"
     }
   ]
 }

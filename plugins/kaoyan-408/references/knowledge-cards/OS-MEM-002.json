@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0",
+  "id": "OS-MEM-002",
+  "subject": "操作系统",
+  "learningGoal": "用 LRU 更新最近访问次序",
+  "prerequisites": [
+    "页框、访问与命中"
+  ],
+  "concept": "LRU 在需要置换时选择最近最久未被访问的驻留页；命中或装入会更新最近访问次序。是否发生缺页先看当前页是否驻留，队列次序须明确方向。",
+  "conditions": [
+    "例题初态为空、2页框；队列从最久未使用到最近使用。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "LRU命中时队列永远不变",
+      "correction": "命中会刷新最近访问位置；若本来就是最近使用，排列可以不变。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】2页框初态空，LRU访问1、2、1、3，第4次淘汰谁？",
+    "solution": "装入1、2后次序[1,2]；命中1变为[2,1]；访问3缺页淘汰2。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】从最久到最近为[4,7]，命中4后的队列是什么？"
+  },
+  "ruleCardIds": [
+    "rule-lru"
+  ],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；关联规则卡的外部支持范围见对应卡片。",
+    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CN-APP-001",
+  "subject": "计算机网络",
+  "learningGoal": "区分 DNS 解析与 HTTP 应用协议",
+  "prerequisites": [
+    "域名、客户端服务器和应用层消息"
+  ],
+  "concept": "DNS将域名查询映射到记录并可利用缓存；HTTP定义客户端与服务器之间的请求和响应语义。HTTP协议无状态指请求语义不依赖服务器保存会话状态，但应用可以使用Cookie等机制维护状态。",
+  "conditions": [
+    "例题假定本地无缓存，用户配置的递归解析器可用且权限允许；不讨论DNSSEC和特殊记录。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "HTTP无状态意味着服务端绝不能保存任何用户状态",
+      "correction": "无状态是协议请求语义的性质；应用可另用Cookie或服务端会话维护关联。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】应用通过Cookie维持登录状态，是否直接证明HTTP协议不再是无状态协议？",
+    "solution": "不能。会话机制是应用层额外状态管理，与HTTP请求语义的无状态性质不矛盾。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】浏览器请求域名时，DNS的常见作用是什么？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；本卡具体内容的外部来源支持待逐项核验。",
+    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+  }
+}

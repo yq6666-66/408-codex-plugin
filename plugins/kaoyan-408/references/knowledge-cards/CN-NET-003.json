@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CN-NET-003",
+  "subject": "计算机网络",
+  "learningGoal": "区分 ARP、DHCP 和 NAT 的作用",
+  "prerequisites": [
+    "IPv4地址、链路层地址与路由表"
+  ],
+  "concept": "ARP在本地链路解析下一跳 IPv4 地址对应的链路层地址；DHCP提供配置参数；NAT根据设备规则转换地址和可能的端口。它们解决不同问题，也有各自的适用范围。",
+  "conditions": [
+    "例题同一以太网、静态路由无代理或隧道，目标IP位于另一子网。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "访问远程子网时 ARP 一定查询远程目标的 MAC",
+      "correction": "以太网主机通常先对路由选出的本地下一跳地址进行 ARP。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】主机A要访问另一子网目标，路由表指定本地网关192.168.1.1；发送前若缺少邻居表项，查询哪个IPv4地址的MAC？",
+    "solution": "查询下一跳网关192.168.1.1的链路层地址，IP目的地址仍为远程目标。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】自动获取主机IP和默认网关参数的常用协议是什么？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；本卡具体内容的外部来源支持待逐项核验。",
+    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+  }
+}

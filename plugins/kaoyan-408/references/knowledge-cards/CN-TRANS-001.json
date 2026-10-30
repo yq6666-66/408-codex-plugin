@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CN-TRANS-001",
+  "subject": "计算机网络",
+  "learningGoal": "区分 UDP 与 TCP 的首部和序号含义",
+  "prerequisites": [
+    "端口、字节流与报文段"
+  ],
+  "concept": "UDP提供数据报服务，其基本首部为8字节；TCP提供面向连接的字节流服务，序号标识字节序列位置。TCP的SYN和FIN各占一个序号，纯ACK不因该标志本身占用数据序号。",
+  "conditions": [
+    "例题仅UDP基本首部，不考虑IP首部、选项、分片或链路层开销；有效载荷100 B。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "UDP报文总长度只等于应用数据长度",
+      "correction": "UDP长度包含8字节UDP首部与UDP数据。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】UDP数据为100 B，UDP长度字段应为多少？",
+    "solution": "8 B首部加100 B数据，UDP长度为108 B；IP总长另计。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】UDP数据20 B时，UDP长度字段是多少？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；本卡具体内容的外部来源支持待逐项核验。",
+    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+  }
+}
