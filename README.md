@@ -77,9 +77,9 @@ python scripts/install_local.py verify-release --zip <下载的ZIP路径> --vers
 
 [各宿主安装与恢复指南](docs/installation.md)提供固定版本、本地仓库入口和回退说明。
 
-- [便携学习记录与检查点](plugins/kaoyan-408/references/portable-learning-records.md) · [Obsidian 配置](plugins/kaoyan-408/references/obsidian-brain-contract.md) · [Notion 契约](plugins/kaoyan-408/references/notion-brain-contract.md)
-- [独立三技能导出](docs/v3-release.md) · [技能维护边界](docs/skill-maintenance-boundaries.md) · [变更记录](CHANGELOG.md)
-- [2.6.1 宿主验证](eval/v2.6.1-acceptance/native-host-review-20261017.md) · [2.8 验收资料](eval/v2.8-acceptance/README.md) · [2.6.0 发布与验收](eval/v2.6-acceptance/results-v2.6.0-candidate.md) · [历史 README 归档](docs/readme-history-20261028.md)
-- 需要稳定版时，先通过宿主正常入口移除当前插件，再使用 `codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.6.0` 和 `codex plugin add kaoyan-408@kaoyan-408`。旧版对较新记录的处理取决于对应版本契约；回退前先备份记录。
+ [便携学习记录与检查点](plugins/kaoyan-408/references/portable-learning-records.md) · [Obsidian 配置](plugins/kaoyan-408/references/obsidian-brain-contract.md) · [Notion 契约](plugins/kaoyan-408/references/notion-brain-contract.md)
+ [独立三技能导出](docs/v3-release.md) · [技能维护边界](docs/skill-maintenance-boundaries.md) · [变更记录](CHANGELOG.md)
+ [2.6.1 宿主验证](eval/v2.6.1-acceptance/native-host-review-20261017.md) · [2.8 验收资料](eval/v2.8-acceptance/README.md) · [2.6.0 发布与验收](eval/v2.6-acceptance/results-v2.6.0-candidate.md) · [历史 README 归档](docs/readme-history-20261028.md)
+ 需要稳定版时，先通过宿主正常入口移除当前插件，再使用 `codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.6.0` 和 `codex plugin add kaoyan-408@kaoyan-408`。旧版对较新记录的处理取决于对应版本契约；回退前先备份记录。
 
 项目没有后台题库或账号服务。[隐私](PRIVACY.md) · [使用条款](TERMS.md) · [安全](SECURITY.md) · [内容版权](THIRD_PARTY_CONTENT.md)
