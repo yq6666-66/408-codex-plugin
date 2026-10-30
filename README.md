@@ -2,9 +2,9 @@
 
 面向考研的中文学习插件，覆盖数学一/二、英语一/二、408 和政治，支持规划、讲题、真题与招生检索、错题复测及学习记录。完整插件保留原有 14 个技能，并增加 3 个 408 专用入口，共 17 个技能。
 
-当前版本：`2.8.0`。正式版是否可下载以 [v2.8.0 Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准；[v2.8.0-dev.3 预发布版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)和 [v2.6.0 稳定版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)仍可使用。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
+当前版本：`2.8.1-dev.1`（本地源码候选，未发布）。默认安装仍使用已发布的 `v2.8.0`。正式版是否可下载以 [v2.8.0 Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准；[v2.8.0-dev.3 预发布版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)和 [v2.6.0 稳定版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)仍可使用。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
 
-正式标签发布后可使用 `--ref v2.8.0` 或 `--branch v2.8.0`；在标签尚未发布时请继续使用已存在的预发布标签。
+固定已发布版本可使用 `--ref v2.8.0` 或 `--branch v2.8.0`。本地候选尚无对应标签；`--ref v2.8.1-dev.1` 与 `--branch v2.8.1-dev.1` 仅表示未来正式创建该标签后才能使用的引用，当前不可作为安装命令。
 
 正式版候选 ZIP 为 60 个文件，SHA-256 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`；发布后请与 Release 的校验文件核对。
 
