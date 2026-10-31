@@ -12,7 +12,9 @@ ID_PATTERN = re.compile(r"^(DS|CO|OS|CN)-[A-Z]+-[0-9]{3}$")
 ROOT = Path(__file__).resolve().parent.parent / "references"
 
 
-def project(mode: str, point_id: str | None, root: Path = ROOT) -> dict:
+def project(mode: str, point_id: str | None, root: Path = ROOT, section: str = "all") -> dict:
+    if section not in {"core", "all"}:
+        raise ValueError("section must be core or all")
     if mode in {"hint", "independent", "exam"}:
         if point_id is not None:
             raise ValueError("protected modes must not receive a knowledge point ID")
@@ -40,6 +42,9 @@ def project(mode: str, point_id: str | None, root: Path = ROOT) -> dict:
         raise ValueError("knowledge card must defer annual mapping to index")
     point = matches[0]
     card["syllabusMapping"] = {k: point.get(k) for k in ("basisYear", "verified", "syllabusPath", "source", "checkedAt", "mappingStatus", "mappingNote")}
+    if section == "core":
+        fields = ("schemaVersion", "id", "subject", "learningGoal", "prerequisites", "concept", "conditions", "misconceptions", "ruleCardIds", "evidence", "syllabusMapping")
+        return {key: card[key] for key in fields if key in card}
     return card
 
 
@@ -47,9 +52,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", required=True, choices=("explain", "hint", "independent", "exam"))
     parser.add_argument("--id")
+    parser.add_argument("--section", choices=("core", "all"), default="all")
     args = parser.parse_args()
     try:
-        print(json.dumps(project(args.mode, args.id), ensure_ascii=False, indent=2))
+        print(json.dumps(project(args.mode, args.id, section=args.section), ensure_ascii=False, indent=2))
     except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1

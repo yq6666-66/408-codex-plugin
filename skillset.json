@@ -1,6 +1,6 @@
 {
   "name": "408-agent-skills",
-  "version": "3.0.0-dev.5",
+  "version": "3.0.0-dev.6",
   "skills": [
     {
       "name": "408-error-diagnosis",
@@ -21,6 +21,250 @@
         {
           "source": "LICENSE",
           "target": "LICENSE.txt"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-APP-001.json",
+          "target": "references/knowledge-cards/CN-APP-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ARCH-001.json",
+          "target": "references/knowledge-cards/CN-ARCH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ARQ-001.json",
+          "target": "references/knowledge-cards/CN-ARQ-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-LAN-001.json",
+          "target": "references/knowledge-cards/CN-LAN-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-LINK-001.json",
+          "target": "references/knowledge-cards/CN-LINK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-MAC-001.json",
+          "target": "references/knowledge-cards/CN-MAC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-001.json",
+          "target": "references/knowledge-cards/CN-NET-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-002.json",
+          "target": "references/knowledge-cards/CN-NET-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-003.json",
+          "target": "references/knowledge-cards/CN-NET-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-PERF-001.json",
+          "target": "references/knowledge-cards/CN-PERF-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-PHY-001.json",
+          "target": "references/knowledge-cards/CN-PHY-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ROUTE-001.json",
+          "target": "references/knowledge-cards/CN-ROUTE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TCP-001.json",
+          "target": "references/knowledge-cards/CN-TCP-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TCP-002.json",
+          "target": "references/knowledge-cards/CN-TCP-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TRANS-001.json",
+          "target": "references/knowledge-cards/CN-TRANS-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-ALU-001.json",
+          "target": "references/knowledge-cards/CO-ALU-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-BUS-001.json",
+          "target": "references/knowledge-cards/CO-BUS-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CACHE-001.json",
+          "target": "references/knowledge-cards/CO-CACHE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CACHE-002.json",
+          "target": "references/knowledge-cards/CO-CACHE-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CPU-001.json",
+          "target": "references/knowledge-cards/CO-CPU-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CPU-002.json",
+          "target": "references/knowledge-cards/CO-CPU-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-DATA-001.json",
+          "target": "references/knowledge-cards/CO-DATA-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-DATA-002.json",
+          "target": "references/knowledge-cards/CO-DATA-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-001.json",
+          "target": "references/knowledge-cards/CO-IO-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-002.json",
+          "target": "references/knowledge-cards/CO-IO-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-003.json",
+          "target": "references/knowledge-cards/CO-IO-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-ISA-001.json",
+          "target": "references/knowledge-cards/CO-ISA-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-MEM-001.json",
+          "target": "references/knowledge-cards/CO-MEM-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-PERF-001.json",
+          "target": "references/knowledge-cards/CO-PERF-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-PIPE-001.json",
+          "target": "references/knowledge-cards/CO-PIPE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-ALG-001.json",
+          "target": "references/knowledge-cards/DS-ALG-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-ARRAY-001.json",
+          "target": "references/knowledge-cards/DS-ARRAY-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-001.json",
+          "target": "references/knowledge-cards/DS-GRAPH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-002.json",
+          "target": "references/knowledge-cards/DS-GRAPH-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-003.json",
+          "target": "references/knowledge-cards/DS-GRAPH-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-004.json",
+          "target": "references/knowledge-cards/DS-GRAPH-004.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-LIST-001.json",
+          "target": "references/knowledge-cards/DS-LIST-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-QUEUE-001.json",
+          "target": "references/knowledge-cards/DS-QUEUE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-001.json",
+          "target": "references/knowledge-cards/DS-SEARCH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-002.json",
+          "target": "references/knowledge-cards/DS-SEARCH-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-003.json",
+          "target": "references/knowledge-cards/DS-SEARCH-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SORT-001.json",
+          "target": "references/knowledge-cards/DS-SORT-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-STACK-001.json",
+          "target": "references/knowledge-cards/DS-STACK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-TREE-001.json",
+          "target": "references/knowledge-cards/DS-TREE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-TREE-002.json",
+          "target": "references/knowledge-cards/DS-TREE-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-BASIC-001.json",
+          "target": "references/knowledge-cards/OS-BASIC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-DEAD-001.json",
+          "target": "references/knowledge-cards/OS-DEAD-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-DISK-001.json",
+          "target": "references/knowledge-cards/OS-DISK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-FILE-001.json",
+          "target": "references/knowledge-cards/OS-FILE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-001.json",
+          "target": "references/knowledge-cards/OS-MEM-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-002.json",
+          "target": "references/knowledge-cards/OS-MEM-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-003.json",
+          "target": "references/knowledge-cards/OS-MEM-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-004.json",
+          "target": "references/knowledge-cards/OS-MEM-004.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-005.json",
+          "target": "references/knowledge-cards/OS-MEM-005.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-PROC-001.json",
+          "target": "references/knowledge-cards/OS-PROC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-PROC-002.json",
+          "target": "references/knowledge-cards/OS-PROC-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SCHED-001.json",
+          "target": "references/knowledge-cards/OS-SCHED-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SCHED-002.json",
+          "target": "references/knowledge-cards/OS-SCHED-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SYNC-001.json",
+          "target": "references/knowledge-cards/OS-SYNC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SYNC-002.json",
+          "target": "references/knowledge-cards/OS-SYNC-002.json"
+        },
+        {
+          "source": "src/shared/calculation/knowledge_cards.py",
+          "target": "scripts/knowledge_cards.py"
         }
       ]
     },
@@ -43,6 +287,250 @@
         {
           "source": "LICENSE",
           "target": "LICENSE.txt"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-APP-001.json",
+          "target": "references/knowledge-cards/CN-APP-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ARCH-001.json",
+          "target": "references/knowledge-cards/CN-ARCH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ARQ-001.json",
+          "target": "references/knowledge-cards/CN-ARQ-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-LAN-001.json",
+          "target": "references/knowledge-cards/CN-LAN-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-LINK-001.json",
+          "target": "references/knowledge-cards/CN-LINK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-MAC-001.json",
+          "target": "references/knowledge-cards/CN-MAC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-001.json",
+          "target": "references/knowledge-cards/CN-NET-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-002.json",
+          "target": "references/knowledge-cards/CN-NET-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-003.json",
+          "target": "references/knowledge-cards/CN-NET-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-PERF-001.json",
+          "target": "references/knowledge-cards/CN-PERF-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-PHY-001.json",
+          "target": "references/knowledge-cards/CN-PHY-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ROUTE-001.json",
+          "target": "references/knowledge-cards/CN-ROUTE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TCP-001.json",
+          "target": "references/knowledge-cards/CN-TCP-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TCP-002.json",
+          "target": "references/knowledge-cards/CN-TCP-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TRANS-001.json",
+          "target": "references/knowledge-cards/CN-TRANS-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-ALU-001.json",
+          "target": "references/knowledge-cards/CO-ALU-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-BUS-001.json",
+          "target": "references/knowledge-cards/CO-BUS-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CACHE-001.json",
+          "target": "references/knowledge-cards/CO-CACHE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CACHE-002.json",
+          "target": "references/knowledge-cards/CO-CACHE-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CPU-001.json",
+          "target": "references/knowledge-cards/CO-CPU-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CPU-002.json",
+          "target": "references/knowledge-cards/CO-CPU-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-DATA-001.json",
+          "target": "references/knowledge-cards/CO-DATA-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-DATA-002.json",
+          "target": "references/knowledge-cards/CO-DATA-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-001.json",
+          "target": "references/knowledge-cards/CO-IO-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-002.json",
+          "target": "references/knowledge-cards/CO-IO-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-003.json",
+          "target": "references/knowledge-cards/CO-IO-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-ISA-001.json",
+          "target": "references/knowledge-cards/CO-ISA-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-MEM-001.json",
+          "target": "references/knowledge-cards/CO-MEM-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-PERF-001.json",
+          "target": "references/knowledge-cards/CO-PERF-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-PIPE-001.json",
+          "target": "references/knowledge-cards/CO-PIPE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-ALG-001.json",
+          "target": "references/knowledge-cards/DS-ALG-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-ARRAY-001.json",
+          "target": "references/knowledge-cards/DS-ARRAY-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-001.json",
+          "target": "references/knowledge-cards/DS-GRAPH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-002.json",
+          "target": "references/knowledge-cards/DS-GRAPH-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-003.json",
+          "target": "references/knowledge-cards/DS-GRAPH-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-004.json",
+          "target": "references/knowledge-cards/DS-GRAPH-004.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-LIST-001.json",
+          "target": "references/knowledge-cards/DS-LIST-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-QUEUE-001.json",
+          "target": "references/knowledge-cards/DS-QUEUE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-001.json",
+          "target": "references/knowledge-cards/DS-SEARCH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-002.json",
+          "target": "references/knowledge-cards/DS-SEARCH-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-003.json",
+          "target": "references/knowledge-cards/DS-SEARCH-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SORT-001.json",
+          "target": "references/knowledge-cards/DS-SORT-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-STACK-001.json",
+          "target": "references/knowledge-cards/DS-STACK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-TREE-001.json",
+          "target": "references/knowledge-cards/DS-TREE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-TREE-002.json",
+          "target": "references/knowledge-cards/DS-TREE-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-BASIC-001.json",
+          "target": "references/knowledge-cards/OS-BASIC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-DEAD-001.json",
+          "target": "references/knowledge-cards/OS-DEAD-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-DISK-001.json",
+          "target": "references/knowledge-cards/OS-DISK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-FILE-001.json",
+          "target": "references/knowledge-cards/OS-FILE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-001.json",
+          "target": "references/knowledge-cards/OS-MEM-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-002.json",
+          "target": "references/knowledge-cards/OS-MEM-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-003.json",
+          "target": "references/knowledge-cards/OS-MEM-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-004.json",
+          "target": "references/knowledge-cards/OS-MEM-004.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-005.json",
+          "target": "references/knowledge-cards/OS-MEM-005.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-PROC-001.json",
+          "target": "references/knowledge-cards/OS-PROC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-PROC-002.json",
+          "target": "references/knowledge-cards/OS-PROC-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SCHED-001.json",
+          "target": "references/knowledge-cards/OS-SCHED-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SCHED-002.json",
+          "target": "references/knowledge-cards/OS-SCHED-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SYNC-001.json",
+          "target": "references/knowledge-cards/OS-SYNC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SYNC-002.json",
+          "target": "references/knowledge-cards/OS-SYNC-002.json"
+        },
+        {
+          "source": "src/shared/calculation/knowledge_cards.py",
+          "target": "scripts/knowledge_cards.py"
         }
       ]
     },
@@ -73,6 +561,250 @@
         {
           "source": "LICENSE",
           "target": "LICENSE.txt"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-APP-001.json",
+          "target": "references/knowledge-cards/CN-APP-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ARCH-001.json",
+          "target": "references/knowledge-cards/CN-ARCH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ARQ-001.json",
+          "target": "references/knowledge-cards/CN-ARQ-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-LAN-001.json",
+          "target": "references/knowledge-cards/CN-LAN-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-LINK-001.json",
+          "target": "references/knowledge-cards/CN-LINK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-MAC-001.json",
+          "target": "references/knowledge-cards/CN-MAC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-001.json",
+          "target": "references/knowledge-cards/CN-NET-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-002.json",
+          "target": "references/knowledge-cards/CN-NET-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-NET-003.json",
+          "target": "references/knowledge-cards/CN-NET-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-PERF-001.json",
+          "target": "references/knowledge-cards/CN-PERF-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-PHY-001.json",
+          "target": "references/knowledge-cards/CN-PHY-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-ROUTE-001.json",
+          "target": "references/knowledge-cards/CN-ROUTE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TCP-001.json",
+          "target": "references/knowledge-cards/CN-TCP-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TCP-002.json",
+          "target": "references/knowledge-cards/CN-TCP-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CN-TRANS-001.json",
+          "target": "references/knowledge-cards/CN-TRANS-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-ALU-001.json",
+          "target": "references/knowledge-cards/CO-ALU-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-BUS-001.json",
+          "target": "references/knowledge-cards/CO-BUS-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CACHE-001.json",
+          "target": "references/knowledge-cards/CO-CACHE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CACHE-002.json",
+          "target": "references/knowledge-cards/CO-CACHE-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CPU-001.json",
+          "target": "references/knowledge-cards/CO-CPU-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-CPU-002.json",
+          "target": "references/knowledge-cards/CO-CPU-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-DATA-001.json",
+          "target": "references/knowledge-cards/CO-DATA-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-DATA-002.json",
+          "target": "references/knowledge-cards/CO-DATA-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-001.json",
+          "target": "references/knowledge-cards/CO-IO-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-002.json",
+          "target": "references/knowledge-cards/CO-IO-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-IO-003.json",
+          "target": "references/knowledge-cards/CO-IO-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-ISA-001.json",
+          "target": "references/knowledge-cards/CO-ISA-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-MEM-001.json",
+          "target": "references/knowledge-cards/CO-MEM-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-PERF-001.json",
+          "target": "references/knowledge-cards/CO-PERF-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/CO-PIPE-001.json",
+          "target": "references/knowledge-cards/CO-PIPE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-ALG-001.json",
+          "target": "references/knowledge-cards/DS-ALG-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-ARRAY-001.json",
+          "target": "references/knowledge-cards/DS-ARRAY-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-001.json",
+          "target": "references/knowledge-cards/DS-GRAPH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-002.json",
+          "target": "references/knowledge-cards/DS-GRAPH-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-003.json",
+          "target": "references/knowledge-cards/DS-GRAPH-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-GRAPH-004.json",
+          "target": "references/knowledge-cards/DS-GRAPH-004.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-LIST-001.json",
+          "target": "references/knowledge-cards/DS-LIST-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-QUEUE-001.json",
+          "target": "references/knowledge-cards/DS-QUEUE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-001.json",
+          "target": "references/knowledge-cards/DS-SEARCH-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-002.json",
+          "target": "references/knowledge-cards/DS-SEARCH-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SEARCH-003.json",
+          "target": "references/knowledge-cards/DS-SEARCH-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-SORT-001.json",
+          "target": "references/knowledge-cards/DS-SORT-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-STACK-001.json",
+          "target": "references/knowledge-cards/DS-STACK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-TREE-001.json",
+          "target": "references/knowledge-cards/DS-TREE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/DS-TREE-002.json",
+          "target": "references/knowledge-cards/DS-TREE-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-BASIC-001.json",
+          "target": "references/knowledge-cards/OS-BASIC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-DEAD-001.json",
+          "target": "references/knowledge-cards/OS-DEAD-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-DISK-001.json",
+          "target": "references/knowledge-cards/OS-DISK-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-FILE-001.json",
+          "target": "references/knowledge-cards/OS-FILE-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-001.json",
+          "target": "references/knowledge-cards/OS-MEM-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-002.json",
+          "target": "references/knowledge-cards/OS-MEM-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-003.json",
+          "target": "references/knowledge-cards/OS-MEM-003.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-004.json",
+          "target": "references/knowledge-cards/OS-MEM-004.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-MEM-005.json",
+          "target": "references/knowledge-cards/OS-MEM-005.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-PROC-001.json",
+          "target": "references/knowledge-cards/OS-PROC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-PROC-002.json",
+          "target": "references/knowledge-cards/OS-PROC-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SCHED-001.json",
+          "target": "references/knowledge-cards/OS-SCHED-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SCHED-002.json",
+          "target": "references/knowledge-cards/OS-SCHED-002.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SYNC-001.json",
+          "target": "references/knowledge-cards/OS-SYNC-001.json"
+        },
+        {
+          "source": "src/shared/references/knowledge-cards/OS-SYNC-002.json",
+          "target": "references/knowledge-cards/OS-SYNC-002.json"
+        },
+        {
+          "source": "src/shared/calculation/knowledge_cards.py",
+          "target": "scripts/knowledge_cards.py"
         }
       ]
     }

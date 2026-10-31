@@ -1,0 +1,30 @@
+{
+  "backup": "dist/final-four-prompts-20261031-022559-273966",
+  "cards": [
+    {
+      "id": "CO-MEM-001",
+      "beforeSha256": "f518844765801b8b8e847dd27461d24d38da778bf52f89edff9e876c990832e9",
+      "afterSha256": "9c9a76af5bcb1d912b16821b9065b1056a7844e6fba99be4465d35669747b1ce"
+    },
+    {
+      "id": "DS-SEARCH-002",
+      "beforeSha256": "82d098f998af46311447de896af4f314d689ee5f8dbc98ce68ef43f0b2f5d35f",
+      "afterSha256": "542b79b0c6c36160dfea5cbe56883d709f0c11a5d227de39e8e179e60f8ad3f3"
+    },
+    {
+      "id": "OS-SCHED-001",
+      "beforeSha256": "0ddcf2211c2f8c250c2e88ee29480eaf3a2aced9f65358449e063a4556ca656b",
+      "afterSha256": "fd696aa8a167cb317310bef277a2097f94a5fe5ef2044c5ffa4016bb3f13455c"
+    },
+    {
+      "id": "OS-BASIC-001",
+      "beforeSha256": "aa3029250824ad6082f587e2a19b788a82cd9a180312f4b6415db49e49c86d88",
+      "afterSha256": "ba6bf66bc71d67ee9c0b74001819c446f74f3b67eaa163a5656a6cd84c3435b6"
+    },
+    {
+      "id": "OS-DEAD-001",
+      "beforeSha256": "4150ec2fef71a8858221a28f1ef67b8243046540decf7678d40451b95ee898e1",
+      "afterSha256": "38bfe45ccf73c61cef23fe44e2f57116a754456d723bd1ce17aef040e6ca8b2a"
+    }
+  ]
+}

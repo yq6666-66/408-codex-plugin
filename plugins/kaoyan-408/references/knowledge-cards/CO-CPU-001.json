@@ -22,12 +22,12 @@
     "solution": "按给定长度顺序推进，下一条地址为101；具体机器 PC 更新时点须按其数据通路约定。"
   },
   "selfCheck": {
-    "question": "【原创自测】若该指令长度为2地址单位，顺序下一条地址？"
+    "question": "【原创自测】PC为100，按地址单位编址，当前顺序指令长度为2个地址单位，不发生分支；下一条地址是多少？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
-    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Cornell CPU Architecture（https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/arch.html；定位：The 5 Classic CPU Stages；Architecture Styles；核验日期：2026-10-31）：支持典型五阶段指令处理背景；限制：冒险和 PC 更新须按具体数据通路。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
   }
 }

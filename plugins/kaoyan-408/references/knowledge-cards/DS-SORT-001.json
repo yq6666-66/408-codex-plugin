@@ -22,12 +22,12 @@
     "solution": "数值1排前；两个数值2按原有 A、C 顺序排列，结果 [(1,B),(2,A),(2,C)]。"
   },
   "selfCheck": {
-    "question": "【原创自测】若结果为 [(1,B),(2,C),(2,A)]，是否保持稳定？"
+    "question": "【原创自测】按数值升序排序原序列 [(2,A),(1,B),(2,C)]，若结果为 [(1,B),(2,C),(2,A)]，是否保持稳定？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
-    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton Merge（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Merge.java；定位：merge 与辅助数组；核验日期：2026-10-31）：支持相等元素左段先取的稳定归并；限制：不证明其他排序全部复杂度及稳定性。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
   }
 }

@@ -2,11 +2,11 @@
 
 面向考研的中文学习插件，覆盖数学一/二、英语一/二、408 和政治，支持规划、讲题、真题与招生检索、错题复测及学习记录。完整插件保留原有 14 个技能，并增加 3 个 408 专用入口，共 17 个技能。
 
-当前版本：`2.8.1-dev.2`（本地源码候选，未发布）。默认安装仍使用已发布的 `v2.8.0`。正式版是否可下载以 [v2.8.0 Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准；[v2.8.0-dev.3 预发布版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)和 [v2.6.0 稳定版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)仍可使用。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
+当前版本：`2.9.0-dev.1`（本地源码候选，未发布）。默认安装仍使用已发布的 `v2.8.0`。正式版是否可下载以 [v2.8.0 Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)为准；[v2.8.0-dev.3 预发布版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0-dev.3)和 [v2.6.0 稳定版](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.6.0)仍可使用。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
 
-固定已发布版本可使用 `--ref v2.8.0` 或 `--branch v2.8.0`。本地候选尚无对应标签；`--ref v2.8.1-dev.2` 与 `--branch v2.8.1-dev.2` 仅表示未来正式创建该标签后才能使用的引用，当前不可作为安装命令。
+固定已发布版本可使用 `--ref v2.8.0` 或 `--branch v2.8.0`。本地候选尚无对应标签；`--ref v2.9.0-dev.1` 与 `--branch v2.9.0-dev.1` 仅表示未来正式创建该标签后才能使用的引用，当前不可作为安装命令。
 
-正式版候选 ZIP 为 60 个文件，SHA-256 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`；发布后请与 Release 的校验文件核对。
+已发布 v2.8.0 ZIP 为 60 个文件，SHA-256 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`；请与 Release 的校验文件核对。
 
 ## 快速安装
 
@@ -59,7 +59,7 @@ python scripts/install_local.py verify-release --zip <下载的ZIP路径> --vers
 
 ## 知识点依据
 
-插件提供 60 个项目知识点，四科各 15 条；17 条映射对照学校公开的 2025 年材料，其余 43 条待核，2027 年归属全部待核。8 张规则卡对二分、Cache、FIFO/LRU、调度和网络时延记录部分外部支持及适用边界；项目归纳不等同于年度大纲原文。[知识点依据契约](plugins/kaoyan-408/references/knowledge-point-basis-contract.md) · [规则来源核对](eval/v2.8-acceptance/rule-source-review-20261026.md)。
+插件提供 60 个项目知识点，四科各 15 条。当前源码候选提供 60 张原创公共知识卡，安装完整候选后可用于学习，无需先配置个人笔记库。60 个知识点均已对照 2027 年第三方大纲正文：9 条为直接主题对应，51 条为上位或部分主题对应；该对照并非官方原文认证。规则依据和年度映射分别记录，卡片不覆盖全部 408 考点，外部来源仅支持各条注明的范围。[知识点依据契约](plugins/kaoyan-408/references/knowledge-point-basis-contract.md) · [2027 正文对照复核](eval/v2.9-acceptance/review-2027-mapping-independent.md) · [知识卡内容复核](eval/v2.9-acceptance/final-60-review-binding.md) · [规则来源核对](eval/v2.8-acceptance/rule-source-review-20261026.md) · [内容许可与来源](THIRD_PARTY_CONTENT.md)。
 
 ## 平台与权限
 

@@ -11,6 +11,7 @@ description: 根据用户提供的多题或多次记录聚类错因、安排间�
 - 每次生成 `ReviewQueue`，读取[便携学习记录契约](../../references/portable-learning-records.md)。
 - 引用题面/作答或生成复测题时，读取[证据与版权契约](../../references/evidence-copyright-contract.md)。
 - 整理 408 题目时按[知识点与大纲依据契约](../../references/knowledge-point-basis-contract.md)逐题给 `【知识点依据】`，再按实际观察聚类；标签不证明错因，未核年度标“待核”，非 408 任务不套用该索引，复测前不泄露详细考点或答案。
+- 需要已完成题的完整讲评时按依据契约调用 `scripts/knowledge_cards.py --mode explain --id <已匹配ID>` 读取匹配卡；复测作答前不得传 ID 或读取含解析的卡。脚本不可用或被禁止时如实说明并按契约降级。
 - 解释具体错解所违反的规则时，按[规则依据说明](../../references/knowledge-point-basis.md)核对适用条件与外部出处的支持范围；规则正确不证明个人错因，项目约定与年度大纲状态单独说明。复测作答前只给必要的宽泛主题，详细规则与出处留到讲评。
 
 ## 建立闭环

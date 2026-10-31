@@ -1,0 +1,381 @@
+{
+  "schemaVersion": "1.0",
+  "reviewedAt": "2026-10-31",
+  "scope": "仅记录实际阅读的一手来源和明确支持范围；不代表完整卡片或年度大纲已核验。",
+  "cards": [
+    {
+      "id": "CN-APP-001",
+      "semanticSha256": "f218c1a715eeb3379266b43eb1da83f842d46f9a7015f9162a08a6f9d5e834d8",
+      "references": [
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc9110",
+          "title": "RFC 9110: HTTP Semantics",
+          "locator": "§3.3",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "HTTP 的无状态语义"
+          ],
+          "limitations": [
+            "不覆盖 DNS 或 Cookie 的具体机制"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "CN-ARCH-001",
+      "semanticSha256": "c151c537405e5d3942c263b97f25d8f1a8336f86d2185a5af41e01779e3eb7a0",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-ARQ-001",
+      "semanticSha256": "600f4abfaab3536b4bcdcf7df776faf85dfddf07f7e541f7cd29c992b4903ea8",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-LAN-001",
+      "semanticSha256": "7cf838d9ef95b1e65368474dedd22363e7601670cf54e368fe60abbe4d38d851",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-LINK-001",
+      "semanticSha256": "9fd5dcac5614e49ac5a1a012c76f504d11479c4838fdeb0dd1ea37dff041a56e",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-MAC-001",
+      "semanticSha256": "c20464316ab2de0c0fc819cec8c1817e43b41120bb027d5baa34a8368c6c0638",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-NET-001",
+      "semanticSha256": "c2341496620c48be5d8c0f6ce23c46a2234052c385f4b5c04d297a202bae79e0",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-NET-002",
+      "semanticSha256": "4d5572c29cadd3666703db4c00b5cff40bb04f11f2d31fbd6ac8e9512df9035e",
+      "references": [
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc791",
+          "title": "RFC 791: Internet Protocol",
+          "locator": "§2.3、§3.1",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "IPv4 分片偏移以 8 字节为单位，分片边界约束"
+          ],
+          "limitations": [
+            "卡片具体数值与例题由项目另行计算"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "CN-NET-003",
+      "semanticSha256": "d79dfa86bd2087c905e36406a90f360d5569212d8d69d35424cd39500fff12e7",
+      "references": [
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc826",
+          "title": "RFC 826: An Ethernet Address Resolution Protocol",
+          "locator": "Packet Reception",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "ARP 把协议地址解析为以太网硬件地址"
+          ],
+          "limitations": [
+            "不单独证明 NAT 及跨网段下一跳选择"
+          ]
+        },
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc2131",
+          "title": "RFC 2131: Dynamic Host Configuration Protocol",
+          "locator": "§1.5",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "DHCP 为客户端提供网络地址及配置"
+          ],
+          "limitations": [
+            "不覆盖 NAT 或网关选择的全部细节"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "CN-PERF-001",
+      "semanticSha256": "e67a9b67ac33ff8b4047df4a0bd985260e55b686a3bb33d44097eeb71cceb22d",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-PHY-001",
+      "semanticSha256": "21dc0327fb785b9196b7b9a70d28b524ce14e8a942b0d36ee29a6e2a8d107df6",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-ROUTE-001",
+      "semanticSha256": "b034794bbc41176b35508ccb5ba87a6851793de07e9b93fc55ef9675d10c8c2f",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-TCP-001",
+      "semanticSha256": "5e0f7dd51331933631e937cf5772a32aa1da16d3e9f5441dccbafed9a6e29409",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-TCP-002",
+      "semanticSha256": "362849beeb484fa20a92cd5145862da84ab9113f1560d649afa18bc7133212d8",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "CN-TRANS-001",
+      "semanticSha256": "347e5c7fb867b6e970468f41a9518493cc468dff5d9b6e8c0cbc1a3b1c7e1314",
+      "references": [
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc768",
+          "title": "RFC 768: User Datagram Protocol",
+          "locator": "Fields，Length",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "UDP 长度包括首部与数据，最小为 8 字节"
+          ],
+          "limitations": [
+            "不覆盖 TCP 的确认、重传和连接状态"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-BASIC-001",
+      "semanticSha256": "1a6f7cf36779dbef186e1edd83ef7200de73449aafb09dd57b5fae646377f157",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "OS-DEAD-001",
+      "semanticSha256": "5711863eb067108dee28cfb4a1bd815c73df4aa5425a04660a52f231b65c4369",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-deadlock.pdf",
+          "title": "OSTEP: Deadlock",
+          "locator": "§32.3",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "死锁的四个必要条件及对应预防思路"
+          ],
+          "limitations": [
+            "不单独证明特定资源分配图或安全序列计算"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-DISK-001",
+      "semanticSha256": "63375ae115e1d47321713a3198454ffe9963123a24f94f22c082151c54dd077c",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "OS-FILE-001",
+      "semanticSha256": "8dbc2180d4dd8208ada1e320a276d4cb35ad5dfa875800817b5c6b3f847c9ce8",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-implementation.pdf",
+          "title": "OSTEP: File System Implementation",
+          "locator": "§40.2、§40.4",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "inode 保存元数据；目录记录文件名与 inode 编号"
+          ],
+          "limitations": [
+            "介绍类 UNIX 文件系统，不能概括所有分配策略及文件系统"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-MEM-001",
+      "semanticSha256": "17562e9fd38abdada5e536b272baac7d90d47616c2690960fd8f50e2536d3563",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+          "title": "OSTEP: Beyond Physical Memory: Policies",
+          "locator": "§22.3 Figure 22.2；§22.5 Figure 22.5",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "FIFO 依据进入先后；LRU 依据最近访问，命中更新顺序"
+          ],
+          "limitations": [
+            "不覆盖固定页框槽位约定、特定初态及所有场景"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-MEM-002",
+      "semanticSha256": "de78b0098b203810faca402a4fa692c85f8b4f6110a8ce630f7c76f39163c79b",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+          "title": "OSTEP: Beyond Physical Memory: Policies",
+          "locator": "§22.3 Figure 22.2；§22.5 Figure 22.5",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "FIFO 依据进入先后；LRU 依据最近访问，命中更新顺序"
+          ],
+          "limitations": [
+            "不覆盖固定页框槽位约定、特定初态及所有场景"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-MEM-003",
+      "semanticSha256": "a23cab336c00d666922bdcdd9362a10cff6e5da82a4607a7c8d3c675a34666e5",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf",
+          "title": "OSTEP: Paging: Introduction",
+          "locator": "§18.1",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "虚页号、页内偏移、页表及物理页框"
+          ],
+          "limitations": [
+            "不覆盖分段及本卡全部地址计算条件"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-MEM-004",
+      "semanticSha256": "5883c8aa1b28e560562856db26ac4737a1aa205d408f673e343a444abd33c761",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "OS-MEM-005",
+      "semanticSha256": "b77b29f94f523488c4a8e3890c1dfff76957fc50f38a5a70d863917a38ea043c",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "OS-PROC-001",
+      "semanticSha256": "e7d85782dd88b9cceafde45272820914696654766b432dfc6aab0effdef99325",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf",
+          "title": "OSTEP: Concurrency: An Introduction",
+          "locator": "§26",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "同进程线程共享地址空间并分别具有寄存器上下文"
+          ],
+          "limitations": [
+            "不推广为所有操作系统的完整资源和可见性规则"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-PROC-002",
+      "semanticSha256": "45377eb9afa2e425a69552031a3bbb34222befb9c8cb09f776571391429f9232",
+      "references": [],
+      "pendingReason": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。"
+    },
+    {
+      "id": "OS-SCHED-001",
+      "semanticSha256": "898d24b5a3974c3493a85692e2eb3bc345fc48920fbf8d16f619384995d44497",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "title": "OSTEP: Scheduling: Introduction",
+          "locator": "§7.2–7.3、§7.6–7.7",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "周转及响应指标、FCFS 和 RR 时间片"
+          ],
+          "limitations": [
+            "同刻到达顺序、上下文切换成本、I/O 等由题设确定"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-SCHED-002",
+      "semanticSha256": "a8dff1008c6f4542be31ac73957518cf56490be350a5595d15dc5e33d959dc5b",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "title": "OSTEP: Scheduling: Introduction",
+          "locator": "§7.2–7.3、§7.6–7.7",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "周转及响应指标、FCFS 和 RR 时间片"
+          ],
+          "limitations": [
+            "同刻到达顺序、上下文切换成本、I/O 等由题设确定"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-SYNC-001",
+      "semanticSha256": "ad0f6bb147923808fd9294cc425ce389e4b1267a61e2f4945f109d78d71a9b8a",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf",
+          "title": "OSTEP: Semaphores",
+          "locator": "§31.1、§31.4 Figure 31.10",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "信号量基本操作与示例中 empty/full 的初始值和通知"
+          ],
+          "limitations": [
+            "示意代码本身不证明所有并发场景或任意多生产者实现"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    },
+    {
+      "id": "OS-SYNC-002",
+      "semanticSha256": "d0c298e2c85161abae20a9573d18b1382c2f24a717d15e4509ce7a60ca5824f6",
+      "references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf",
+          "title": "OSTEP: Semaphores",
+          "locator": "§31.1、§31.4 Figure 31.10",
+          "checkedAt": "2026-10-31",
+          "supports": [
+            "信号量基本操作与示例中 empty/full 的初始值和通知"
+          ],
+          "limitations": [
+            "示意代码本身不证明所有并发场景或任意多生产者实现"
+          ]
+        }
+      ],
+      "pendingReason": "上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。"
+    }
+  ]
+}

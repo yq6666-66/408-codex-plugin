@@ -32,6 +32,13 @@ PLUGIN_SHARED_RESOURCES = {
     "src/shared/references/calculation-conventions.md": "plugins/kaoyan-408/references/calculation-conventions.md",
     "src/shared/calculation/study_simulator.py": "plugins/kaoyan-408/scripts/study_simulator.py",
 }
+KNOWLEDGE_CARD_IDS = ('CN-APP-001', 'CN-ARCH-001', 'CN-ARQ-001', 'CN-LAN-001', 'CN-LINK-001', 'CN-MAC-001', 'CN-NET-001', 'CN-NET-002', 'CN-NET-003', 'CN-PERF-001', 'CN-PHY-001', 'CN-ROUTE-001', 'CN-TCP-001', 'CN-TCP-002', 'CN-TRANS-001', 'CO-ALU-001', 'CO-BUS-001', 'CO-CACHE-001', 'CO-CACHE-002', 'CO-CPU-001', 'CO-CPU-002', 'CO-DATA-001', 'CO-DATA-002', 'CO-IO-001', 'CO-IO-002', 'CO-IO-003', 'CO-ISA-001', 'CO-MEM-001', 'CO-PERF-001', 'CO-PIPE-001', 'DS-ALG-001', 'DS-ARRAY-001', 'DS-GRAPH-001', 'DS-GRAPH-002', 'DS-GRAPH-003', 'DS-GRAPH-004', 'DS-LIST-001', 'DS-QUEUE-001', 'DS-SEARCH-001', 'DS-SEARCH-002', 'DS-SEARCH-003', 'DS-SORT-001', 'DS-STACK-001', 'DS-TREE-001', 'DS-TREE-002', 'OS-BASIC-001', 'OS-DEAD-001', 'OS-DISK-001', 'OS-FILE-001', 'OS-MEM-001', 'OS-MEM-002', 'OS-MEM-003', 'OS-MEM-004', 'OS-MEM-005', 'OS-PROC-001', 'OS-PROC-002', 'OS-SCHED-001', 'OS-SCHED-002', 'OS-SYNC-001', 'OS-SYNC-002')
+PLUGIN_SHARED_RESOURCES.update({
+    f"src/shared/references/knowledge-cards/{point_id}.json":
+    f"plugins/kaoyan-408/references/knowledge-cards/{point_id}.json"
+    for point_id in KNOWLEDGE_CARD_IDS
+})
+PLUGIN_SHARED_RESOURCES["src/shared/calculation/knowledge_cards.py"] = "plugins/kaoyan-408/scripts/knowledge_cards.py"
 PLUGIN_SKILL_INTERFACES = {
     "408-error-diagnosis": ("408 错题归因", "定位 408 单题作答的首处错误，区分证据和假设并给最小验证题", "检查我这道 408 题的解题过程，定位第一处错误。"),
     "408-concept-followup": ("408 概念追问", "回答 408 局部概念追问，说明条件、边界与反例并保留提示答案", "解释我当前的 408 概念疑点，只展开所问部分。"),
@@ -345,11 +352,12 @@ def load_source(root: Path) -> tuple[dict, dict[str, dict[str, bytes]]]:
                 raise SkillsError(f"duplicate/reserved target: {dest}")
             if dest != "SKILL.md" and dest != "LICENSE.txt" and not (
                 dest.startswith("references/") and dest.endswith((".md", ".json"))
+                or dest == "scripts/knowledge_cards.py" and src == "src/shared/calculation/knowledge_cards.py"
                 or dest == "scripts/study_simulator.py" and src == "src/shared/calculation/study_simulator.py"
                 and name == "408-calculation-check"
             ):
                 raise SkillsError(f"unsupported resource destination: {dest}")
-            if src.endswith(".py") and not (src == "src/shared/calculation/study_simulator.py" and dest == "scripts/study_simulator.py" and name == "408-calculation-check"):
+            if src.endswith(".py") and not ((src == "src/shared/calculation/study_simulator.py" and dest == "scripts/study_simulator.py" and name == "408-calculation-check") or (src == "src/shared/calculation/knowledge_cards.py" and dest == "scripts/knowledge_cards.py")):
                 raise SkillsError(f"undeclared executable capability: {src}")
             if src != "LICENSE" and not src.endswith((".md", ".json", ".py")):
                 raise SkillsError(f"unsupported source type: {src}")

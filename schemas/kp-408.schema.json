@@ -10,7 +10,7 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": "1.0"
+      "const": "1.1"
     },
     "selectionBasis": {
       "type": "string",
@@ -33,7 +33,9 @@
           "basisYear",
           "verified",
           "source",
-          "checkedAt"
+          "checkedAt",
+          "mappingStatus",
+          "mappingNote"
         ],
         "properties": {
           "id": {
@@ -133,7 +135,8 @@
                 "enum": [
                   "exam-authority",
                   "official-repost",
-                  "user-provided-primary"
+                  "user-provided-primary",
+                  "third-party-outline"
                 ]
               },
               "mappingScope": {
@@ -145,8 +148,51 @@
               "sha256": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$"
+              },
+              "sha256Scope": {
+                "enum": [
+                  "normalized-article-text-v1"
+                ]
               }
-            }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "third-party-outline"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "sha256Scope"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "reference": {
+                      "pattern": "^https://(?:[A-Za-z0-9-]+\\.)*[cC][sS][gG][rR][aA][dD][uU][aA][tT][eE][sS]\\.[cC][oO][mM](?::443)?(?:[/?#]|$)"
+                    }
+                  },
+                  "required": [
+                    "reference"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "kind": {
+                      "const": "third-party-outline"
+                    }
+                  }
+                }
+              }
+            ]
           },
           "checkedAt": {
             "type": [
@@ -154,6 +200,22 @@
               "null"
             ],
             "format": "date"
+          },
+          "mappingStatus": {
+            "enum": [
+              "direct",
+              "upper-topic",
+              "not-found"
+            ]
+          },
+          "mappingNote": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "knowledgeCard": {
+            "type": "string",
+            "pattern": "^knowledge-cards/(DS|CO|OS|CN)-[A-Z]+-[0-9]{3}\\.json$"
           }
         },
         "allOf": [
@@ -211,6 +273,119 @@
                 },
                 "checkedAt": {
                   "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "mappingStatus": {
+                  "const": "direct"
+                }
+              },
+              "required": [
+                "mappingStatus"
+              ]
+            },
+            "then": {
+              "properties": {
+                "verified": {
+                  "const": true
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "mappingScope": {
+                      "const": "topic"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "mappingStatus": {
+                  "const": "upper-topic"
+                }
+              },
+              "required": [
+                "mappingStatus"
+              ]
+            },
+            "then": {
+              "properties": {
+                "verified": {
+                  "const": true
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "mappingScope": {
+                      "const": "upper-topic"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "mappingStatus": {
+                  "const": "not-found"
+                }
+              },
+              "required": [
+                "mappingStatus"
+              ]
+            },
+            "then": {
+              "properties": {
+                "verified": {
+                  "const": false
+                },
+                "source": {
+                  "type": "null"
+                },
+                "syllabusPath": {
+                  "type": "null"
+                },
+                "checkedAt": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "basisYear": {
+                  "const": "2027"
+                },
+                "verified": {
+                  "const": true
+                }
+              },
+              "required": [
+                "basisYear",
+                "verified"
+              ]
+            },
+            "then": {
+              "properties": {
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "third-party-outline"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
                 }
               }
             }

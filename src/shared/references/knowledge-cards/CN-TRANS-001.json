@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CN-TRANS-001",
+  "subject": "计算机网络",
+  "learningGoal": "区分 UDP 与 TCP 的首部和序号含义",
+  "prerequisites": [
+    "端口、字节流与报文段"
+  ],
+  "concept": "UDP提供数据报服务，其基本首部为8字节；TCP提供面向连接的字节流服务，序号标识字节序列位置。TCP的SYN和FIN各占一个序号，纯ACK不因该标志本身占用数据序号。 UDP长度包含8字节UDP首部和数据，不含IP首部；TCP累计确认以字节序号为基准，SYN与FIN各消耗一个序号。",
+  "conditions": [
+    "例题仅UDP基本首部，不考虑IP首部、选项、分片或链路层开销；有效载荷100 B。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "UDP报文总长度只等于应用数据长度",
+      "correction": "UDP长度包含8字节UDP首部与UDP数据。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】UDP数据为100 B，UDP长度字段应为多少？",
+    "solution": "8 B首部加100 B数据，UDP长度为108 B；IP总长另计。 补充原创示例：例：TCP收到连续字节200至219且无控制标志，ACK为220；若随后收到FIN，则在其他条件不变时下一确认号为221。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】UDP数据20 B时，UDP长度字段是多少？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部一手来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "RFC 768: User Datagram Protocol（https://www.rfc-editor.org/rfc/rfc768；定位：Fields，Length；核验日期：2026-10-31）：支持UDP 长度包括首部与数据，最小为 8 字节；限制：不覆盖 TCP 的确认、重传和连接状态。 上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。 年度正文对照与规则来源分别记录。"
+  }
+}

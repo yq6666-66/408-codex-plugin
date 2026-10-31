@@ -22,12 +22,12 @@
     "solution": "直接边权7，经 B 权2+3=5，因此路径 A→B→C 的权和为5。"
   },
   "selfCheck": {
-    "question": "【原创自测】如果 A→C 改为4，最短权和是多少？"
+    "question": "【原创自测】有向边 A→B=2、B→C=3、A→C=4；从 A 到 C 的最短路径权和是多少？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
-    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton DijkstraSP（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/DijkstraSP.java；定位：构造器负边检查；核验日期：2026-10-31）：支持该实现要求边权非负；限制：不证明负环等其它算法行为。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
   }
 }

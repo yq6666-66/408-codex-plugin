@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CO-CPU-001",
+  "subject": "计算机组成原理",
+  "learningGoal": "区分取指、译码和执行阶段",
+  "prerequisites": [
+    "程序计数器与指令",
+    "基本数据通路"
+  ],
+  "concept": "指令周期按指令与机器设计包括取指、译码、执行及必要的访存、写回；具体微操作由数据通路决定。 典型数据通路借助 PC、指令寄存器、寄存器组、ALU 和存储器完成操作；访存指令与分支指令所需阶段不同。微操作是否同周期可并行取决于数据通路资源及控制约束。",
+  "conditions": [
+    "示例为顺序执行，取指成功，指令长度固定为1个地址单位。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "每条指令都必须读取操作数内存",
+      "correction": "寄存器运算或立即数运算可能无需额外读取操作数内存。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】PC 初始为100，顺序取到一条长度为1地址单位的指令；忽略分支，下一条地址是多少？",
+    "solution": "按给定长度顺序推进，下一条地址为101；具体机器 PC 更新时点须按其数据通路约定。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】PC为100，按地址单位编址，当前顺序指令长度为2个地址单位，不发生分支；下一条地址是多少？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Cornell CPU Architecture（https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/arch.html；定位：The 5 Classic CPU Stages；Architecture Styles；核验日期：2026-10-31）：支持典型五阶段指令处理背景；限制：冒险和 PC 更新须按具体数据通路。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

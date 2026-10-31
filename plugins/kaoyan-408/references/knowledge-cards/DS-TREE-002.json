@@ -22,12 +22,12 @@
     "solution": "先合并 1 与 2 得 3，再与 4 合并；叶深分别为 2、2、1，结果 1×2+2×2+4×1=10。"
   },
   "selfCheck": {
-    "question": "【原创自测】权重 1、1、2 的最小带权路径长度是多少？"
+    "question": "【原创自测】以权重1、1、2作为三个叶结点，构造二叉哈夫曼树；带权路径长度按叶权乘根到叶的边数计算，最小值是多少？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
-    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton Huffman（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Huffman.java；定位：buildTrie；核验日期：2026-10-31）：支持重复合并当前两棵最小权树；限制：不完整证明所有编码唯一性或 WPL 主张。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
   }
 }

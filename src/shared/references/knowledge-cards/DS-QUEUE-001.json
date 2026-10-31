@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-QUEUE-001",
+  "subject": "数据结构",
+  "learningGoal": "判定循环队列的满空和长度",
+  "prerequisites": [
+    "先进先出",
+    "数组下标与模运算"
+  ],
+  "concept": "队列先入先出；循环数组以模运算回绕，空满判定取决于选用的表示方法。 除预留一个空槽外，也可使用元素计数或额外标志区分满空；不同实现的可用容量和满空条件不相同。链队列常维护队头和队尾指针。",
+  "conditions": [
+    "数组长度为 m，front 指首元素，rear 指下一插入位置；预留一个空槽。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "front 等于 rear 必定表示满",
+      "correction": "在预留空槽的约定下 front=rear 表示空；满需满足 (rear+1) mod m=front。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】数组长度 5，front=3、rear=1，现有多少元素？",
+    "solution": "按约定长度为 (rear-front+5) mod 5=3，位置为 3、4、0。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】循环数组长度5，front指向首元素、rear指向下一插入位置，预留一个空槽；front=2、rear=1时队列是否满？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton LinkedQueue（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedQueue.java；定位：enqueue/dequeue；核验日期：2026-10-31）：支持链式队列链接、FIFO 操作；限制：不涵盖顺序表插入开销或循环队列约定。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

@@ -22,12 +22,12 @@
     "solution": "得到根2、左右孩子1和3；中序为1、2、3，根的左右高度均为1，满足 AVL。"
   },
   "selfCheck": {
-    "question": "【原创自测】依次插入 1、2、3 后得到的普通二叉搜索树是否 AVL 平衡？"
+    "question": "【原创自测】从空树依次插入1、2、3得到普通二叉搜索树；空树高度记为0，这棵树是否满足AVL平衡？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
-    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton BST（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BST.java；定位：put；核验日期：2026-10-31）：支持二叉搜索树按键大小插入；限制：不同重复键约定须另核。 Princeton AVLTreeST（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/AVLTreeST.java；定位：balance 和旋转方法；核验日期：2026-10-31）：支持旋转维护 AVL 平衡；限制：不证明其他平衡树变体。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
   }
 }

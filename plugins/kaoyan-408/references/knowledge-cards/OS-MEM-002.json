@@ -28,7 +28,7 @@
   ],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；关联规则卡的外部支持范围见对应卡片。",
-    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+    "ruleStatus": "项目原创归纳；外部一手来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "OSTEP: Beyond Physical Memory: Policies（https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf；定位：§22.5 Figure 22.5；核验日期：2026-10-31）：支持 LRU 依据最近访问，命中更新顺序；限制：不覆盖固定页框槽位约定、特定初态及所有场景。 上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。 年度正文对照与规则来源分别记录。"
   }
 }

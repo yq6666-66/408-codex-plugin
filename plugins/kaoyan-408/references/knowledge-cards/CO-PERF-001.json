@@ -22,12 +22,12 @@
     "solution": "所需周期为 3×10⁹，除以每秒 3×10⁹ 周期得 1 秒。"
   },
   "selfCheck": {
-    "question": "【原创自测】指令数不变、CPI 降为1.2且主频不变，时间多少？"
+    "question": "【原创自测】程序执行2×10⁹条指令，平均CPI为1.2，固定主频3 GHz；忽略I/O等待，CPU时间是多少？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
-    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Cornell performance and pipeline lecture（https://www.cs.cornell.edu/courses/cs3410/2014sp/lecture/08-perf-pipeline-i-notes.pdf；定位：PDF第16页；核验日期：2026-10-31）：支持指令数、CPI和时钟周期的性能关系；限制：处理器计时和额外开销依题设；其他性能模型仍需核对。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
   }
 }

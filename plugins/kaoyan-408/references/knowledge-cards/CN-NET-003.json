@@ -21,12 +21,12 @@
     "solution": "查询下一跳网关192.168.1.1的链路层地址，IP目的地址仍为远程目标。"
   },
   "selfCheck": {
-    "question": "【原创自测】自动获取主机IP和默认网关参数的常用协议是什么？"
+    "question": "【原创自测】主机192.168.2.10/24访问192.168.2.8，路由选择直连且 ARP 缓存为空。通常解析哪个 IP 对应的链路地址？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体内容的外部来源支持待逐项核验。",
-    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+    "ruleStatus": "项目原创归纳；外部一手来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "RFC 826: An Ethernet Address Resolution Protocol（https://www.rfc-editor.org/rfc/rfc826.txt；定位：Packet Reception；核验日期：2026-10-31）：支持ARP 把协议地址解析为以太网硬件地址；限制：不单独证明 NAT 及跨网段下一跳选择。 RFC 2131: Dynamic Host Configuration Protocol（https://www.rfc-editor.org/rfc/rfc2131；定位：§1.5；核验日期：2026-10-31）：支持DHCP 为客户端提供网络地址及配置；限制：不覆盖 NAT 或网关选择的全部细节。 上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。 年度正文对照与规则来源分别记录。"
   }
 }

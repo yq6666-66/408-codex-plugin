@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0",
+  "reviewedAt": "2026-10-31",
+  "proposalSha256": "5dbcad5bb35cd4db38c383f294ee9e2e69a3f616f47e2412c31b063f91a21f27",
+  "method": "第二人直接读取 RFC 正文及 OSTEP 指定章节与图；确认定位及声明范围，未审定整个卡片或年度来源。",
+  "entries": [
+    {
+      "id": "CN-APP-001",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110",
+      "locator": "§3.3",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "RFC 9110 §3.3 明确请求语义无状态；不证明 DNS 或 Cookie 机制。",
+      "actualReadUrl": "https://www.rfc-editor.org/rfc/rfc9110"
+    },
+    {
+      "id": "CN-NET-002",
+      "url": "https://www.rfc-editor.org/rfc/rfc791",
+      "locator": "§2.3、§3.1",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "RFC 791 §2.3 描述分片在 8 字节边界拆分；§3.1 明确偏移单位为 8 字节。",
+      "actualReadUrl": "https://www.rfc-editor.org/rfc/rfc791"
+    },
+    {
+      "id": "CN-NET-003",
+      "url": "https://www.rfc-editor.org/rfc/rfc826",
+      "locator": "Packet Reception",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "Packet Reception 给出协议地址与硬件地址表的更新和响应流程；原无扩展名 URL 本次返回 429，改读同一 RFC 编辑者的 .txt 正文，不能把原 URL 429 当成正常打开。",
+      "actualReadUrl": "https://www.rfc-editor.org/rfc/rfc826.txt"
+    },
+    {
+      "id": "CN-NET-003",
+      "url": "https://www.rfc-editor.org/rfc/rfc2131",
+      "locator": "§1.5",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§1.5 术语中说明客户端通过 DHCP 获取网络地址等配置、服务器返回配置。",
+      "actualReadUrl": "https://www.rfc-editor.org/rfc/rfc2131"
+    },
+    {
+      "id": "CN-TRANS-001",
+      "url": "https://www.rfc-editor.org/rfc/rfc768",
+      "locator": "Fields，Length",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "RFC 768 Length 字段描述长度包含 UDP 首部与数据且最小 8 字节。",
+      "actualReadUrl": "https://www.rfc-editor.org/rfc/rfc768"
+    },
+    {
+      "id": "OS-DEAD-001",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-deadlock.pdf",
+      "locator": "§32.3",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "OSTEP §32.3 正文列四个必要条件及防止条件成立的措施；特定安全序列仍未覆盖。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-deadlock.pdf"
+    },
+    {
+      "id": "OS-FILE-001",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-implementation.pdf",
+      "locator": "§40.2、§40.4",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§40.2 介绍 inode 的文件元数据；§40.4 目录包含名称与 inode 编号关联；限该类文件系统。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-implementation.pdf"
+    },
+    {
+      "id": "OS-MEM-001",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+      "locator": "§22.3 Figure 22.2；§22.5 Figure 22.5",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§22.3 及图22.2展示 FIFO 进入先后与命中不改变先后；§22.5 图22.5展示 LRU 命中后次序变化。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf"
+    },
+    {
+      "id": "OS-MEM-002",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf",
+      "locator": "§22.3 Figure 22.2；§22.5 Figure 22.5",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§22.3 及图22.2展示 FIFO；§22.5 图22.5展示 LRU 命中后次序变化。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf"
+    },
+    {
+      "id": "OS-MEM-003",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf",
+      "locator": "§18.1",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§18.1 描述虚拟页、页框、页表及地址内偏移；分段规则未覆盖。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf"
+    },
+    {
+      "id": "OS-PROC-001",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf",
+      "locator": "§26",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "第26章引言描述同进程线程共享地址空间，线程各自具有寄存器与程序计数器状态。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf"
+    },
+    {
+      "id": "OS-SCHED-001",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+      "locator": "§7.2–7.3、§7.6–7.7",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§7.2、§7.3及§7.6、§7.7分别可定位周转、FCFS、响应时间与 RR 时间片；同刻边界须另定。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf"
+    },
+    {
+      "id": "OS-SCHED-002",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+      "locator": "§7.2–7.3、§7.6–7.7",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§7.2、§7.3及§7.6、§7.7分别可定位周转、FCFS、响应时间与 RR 时间片；等待时间细节须另核。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf"
+    },
+    {
+      "id": "OS-SYNC-001",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf",
+      "locator": "§31.1、§31.4 Figure 31.10",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§31.1定义信号量操作；图31.10示例显示 empty/full 初值及通知。该示例没有充分的互斥控制，不能用于证明通用生产消费者完整正确性。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf"
+    },
+    {
+      "id": "OS-SYNC-002",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf",
+      "locator": "§31.1、§31.4 Figure 31.10",
+      "status": "pass",
+      "scope": "partial-support",
+      "finding": "§31.1定义信号量操作；图31.10示例显示 empty/full 初值及通知。该示例没有充分的互斥控制，不能用于证明通用生产消费者完整正确性。",
+      "actualReadUrl": "https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf"
+    }
+  ],
+  "cardsWithoutProposedReferences": [
+    "CN-ARCH-001",
+    "CN-ARQ-001",
+    "CN-LAN-001",
+    "CN-LINK-001",
+    "CN-MAC-001",
+    "CN-NET-001",
+    "CN-PERF-001",
+    "CN-PHY-001",
+    "CN-ROUTE-001",
+    "CN-TCP-001",
+    "CN-TCP-002",
+    "OS-BASIC-001",
+    "OS-DISK-001",
+    "OS-MEM-004",
+    "OS-MEM-005",
+    "OS-PROC-002"
+  ]
+}

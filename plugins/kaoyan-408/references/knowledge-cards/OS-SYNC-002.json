@@ -21,12 +21,12 @@
     "solution": "empty=3、full=0、mutex=1；empty计空槽，full计产品，mutex保护缓冲区。"
   },
   "selfCheck": {
-    "question": "【原创自测】生产者成功放入一个产品后，应通知哪个计数信号量？"
+    "question": "【原创自测】缓冲区容量4、初态空，empty计空槽、full计产品；连续成功生产2项且无其他操作后，empty与full分别是多少？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体内容的外部来源支持待逐项核验。",
-    "details": "原创例题按明确条件推演；年度主题对照、外部规则支持与题目来源互不替代。"
+    "ruleStatus": "项目原创归纳；外部一手来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "OSTEP: Semaphores（https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf；定位：§31.1、§31.4 Figure 31.10；核验日期：2026-10-31）：支持信号量基本操作与示例中 empty/full 的初始值和通知；限制：该示例互斥控制不足，不证明通用生产消费者的完整正确性或任意多生产者实现。 上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。 年度正文对照与规则来源分别记录。"
   }
 }

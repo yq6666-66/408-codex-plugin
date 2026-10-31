@@ -22,12 +22,12 @@
     "solution": "两条路径 A-B-D 为5，A-C-D 为6；最短完工工期6，关键路径 A-C-D。"
   },
   "selfCheck": {
-    "question": "【原创自测】若 C→D 耗时改为4，有几条关键路径？"
+    "question": "【原创自测】单源单汇活动网络 A→B=2、B→D=3、A→C=1、C→D=4，边权表示时长；有几条关键路径？"
   },
   "ruleCardIds": [],
   "evidence": {
     "mappingStatus": "详见索引",
-    "ruleStatus": "项目原创归纳；本卡具体叙述与外部来源的逐条支持范围待独立核对。",
-    "details": "例题按明示条件直接推导，未核外部正文不声称外部已验证；综合知识点的具体内容不得因上位主题映射而视为全部逐字对应。"
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton Topological（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Topological.java；定位：类说明；核验日期：2026-10-31）：支持有向无环图拓扑排序；限制：不单独证明 AOE 最迟事件时刻。 Princeton AcyclicLP（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/AcyclicLP.java；定位：类说明；核验日期：2026-10-31）：支持有向无环图最长路径；限制：不单独证明 AOE 关键活动判据。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
   }
 }

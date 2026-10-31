@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "1.0",
+  "reviewDate": "2026-10-31",
+  "suggestionsSha256": "b1c404179a2f47c6fc9c6657c31c2e7be36cd2f6dff3090a81b2bd41932ab0e0",
+  "scope": "逐条核对定位及所标支持范围；不代表卡片全部内容已核。PDF页码为从1开始的阅读器页码。",
+  "entries": [
+    {
+      "id": "CO-ALU-001",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2014sp/lecture/08-perf-pipeline-i-notes.pdf",
+      "location": "PDF第5页、第16页",
+      "status": "pass",
+      "reviewFinding": "PDF第5页为补码例子，第16页为 CPI 算例；本卡只应引用前者作为补码背景，不能以此声称定点小数或机器乘除异常已核。"
+    },
+    {
+      "id": "CO-ALU-001",
+      "sourceNumber": 2,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/cintro.html",
+      "location": "Overflow 段",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-BUS-001",
+      "sourceNumber": 1,
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+      "location": "§36.1、§36.3–36.5",
+      "status": "pass",
+      "reviewFinding": "§36.1 系统架构存在；仅支持总线层级背景，不能支持仲裁或带宽公式。"
+    },
+    {
+      "id": "CO-CACHE-001",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/caches.html",
+      "location": "Larger Blocks；Write Policies",
+      "status": "locator-missing",
+      "reviewFinding": "Larger Blocks 存在，但 Write Policies 并非页面章节标题；写直达与写回见 Handling Stores。CO-CACHE-001 使用 Larger Blocks，CO-CACHE-002 应定位 Handling Stores。"
+    },
+    {
+      "id": "CO-CACHE-002",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/caches.html",
+      "location": "Larger Blocks；Write Policies",
+      "status": "locator-missing",
+      "reviewFinding": "Larger Blocks 存在，但 Write Policies 并非页面章节标题；写直达与写回见 Handling Stores。CO-CACHE-001 使用 Larger Blocks，CO-CACHE-002 应定位 Handling Stores。"
+    },
+    {
+      "id": "CO-CPU-001",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/arch.html",
+      "location": "The 5 Classic CPU Stages；Architecture Styles",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-DATA-001",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2014sp/lecture/08-perf-pipeline-i-notes.pdf",
+      "location": "PDF第5页、第16页",
+      "status": "pass",
+      "reviewFinding": "PDF第5页为补码例子，第16页为 CPI 算例；本卡只应引用前者作为补码背景，不能以此声称定点小数或机器乘除异常已核。"
+    },
+    {
+      "id": "CO-DATA-002",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/float.html",
+      "location": "32-bit representation and exponent bias",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-IO-001",
+      "sourceNumber": 1,
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+      "location": "§36.1、§36.3–36.5",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-IO-002",
+      "sourceNumber": 1,
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+      "location": "§36.1、§36.3–36.5",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-IO-003",
+      "sourceNumber": 1,
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+      "location": "§36.1、§36.3–36.5",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-ISA-001",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/proc.html",
+      "location": "wrimm 示例",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-PERF-001",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2014sp/lecture/08-perf-pipeline-i-notes.pdf",
+      "location": "PDF第5页、第16页",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "CO-PIPE-001",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/arch.html",
+      "location": "The 5 Classic CPU Stages；Architecture Styles",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-ARRAY-001",
+      "sourceNumber": 1,
+      "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf",
+      "location": "§6.5.2.1 第3段，PDF第98页",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-GRAPH-001",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BreadthFirstPaths.java",
+      "location": "bfs",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-GRAPH-002",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/KruskalMST.java",
+      "location": "构造器",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-GRAPH-003",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/DijkstraSP.java",
+      "location": "构造器负边检查",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-GRAPH-004",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Topological.java",
+      "location": "类说明",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-GRAPH-004",
+      "sourceNumber": 2,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/AcyclicLP.java",
+      "location": "类说明",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-LIST-001",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedQueue.java",
+      "location": "enqueue/dequeue",
+      "status": "pass",
+      "reviewFinding": "链式队列入队出队代码存在；仅支持节点链接背景，不能支持顺序表插入代价。"
+    },
+    {
+      "id": "DS-QUEUE-001",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedQueue.java",
+      "location": "enqueue/dequeue",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-SEARCH-001",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BST.java",
+      "location": "put",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-SEARCH-001",
+      "sourceNumber": 2,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/AVLTreeST.java",
+      "location": "balance 和旋转方法",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-SEARCH-002",
+      "sourceNumber": 1,
+      "url": "https://www.cs.cornell.edu/courses/cs6320/2019sp/Slides/Indexing_final_version.pdf",
+      "location": "B+-Trees structure，PDF第25页",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-SEARCH-003",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BinarySearch.java",
+      "location": "indexOf",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-SEARCH-003",
+      "sourceNumber": 2,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/SequentialSearchST.java",
+      "location": "类说明",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-SEARCH-003",
+      "sourceNumber": 3,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/SeparateChainingHashST.java",
+      "location": "类说明",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-SORT-001",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Merge.java",
+      "location": "merge 与辅助数组",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-STACK-001",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedStack.java",
+      "location": "push/pop",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    },
+    {
+      "id": "DS-TREE-001",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/DepthFirstOrder.java",
+      "location": "前序与后序方法",
+      "status": "pass",
+      "reviewFinding": "DepthFirstOrder 的图 DFS 前后序存在；它仅为遍历背景，不能支持该卡二叉树形态及节点数性质。"
+    },
+    {
+      "id": "DS-TREE-002",
+      "sourceNumber": 1,
+      "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Huffman.java",
+      "location": "buildTrie",
+      "status": "pass",
+      "reviewFinding": "已读取正文中指定函数、章节或 PDF 页；仅支持该条所列范围及限制。"
+    }
+  ]
+}

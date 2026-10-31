@@ -2018,7 +2018,7 @@
       "syllabusPath": [
         "计算机网络",
         "五、传输层",
-        "传输层提供的服务"
+        "UDP 数据报"
       ],
       "basisYear": "2027",
       "verified": true,
@@ -2026,7 +2026,7 @@
         "title": "2027 408 考研大纲（第三方整理正文）",
         "publisher": "计算机考研杂货铺",
         "reference": "https://www.csgraduates.com/study_methods/outline/2027/",
-        "locator": "计算机网络 / 五、传输层 / 传输层提供的服务",
+        "locator": "计算机网络 / 五、传输层 / UDP 数据报",
         "kind": "third-party-outline",
         "mappingScope": "upper-topic",
         "sha256": "92b95d8de69f19ab99e9e7234f25f607b3f3febc22221303dcf779589d7d7128",
@@ -2034,7 +2034,7 @@
       },
       "checkedAt": "2026-10-30",
       "mappingStatus": "upper-topic",
-      "mappingNote": "正文可定位“传输层提供的服务”，仅支持上位或部分主题；本项目条目的其他内容及具体规则不可据此视为逐字列出。",
+      "mappingNote": "正文可定位“UDP 数据报”，仅支持 UDP 数据报部分的上位主题；TCP 首部及序号未由此定位覆盖，首部字段与序号规则也不能据此视为已核。",
       "knowledgeCard": "knowledge-cards/CN-TRANS-001.json"
     },
     {

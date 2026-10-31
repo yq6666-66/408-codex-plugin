@@ -1,0 +1,7 @@
+{
+  "id": "CO-CACHE-002",
+  "change": "修正 Cornell 写策略定位为 Handling Stores；未扩大支持范围",
+  "beforeSha256": "7743df6e7b759b2633a8a98c3fd7d2a9273cd52074e132d1646287a30b75de55",
+  "afterSha256": "65a5293e0d4598418f01c707eb4fc575c61a5571cfa2dd6eb14a9c861179b0e1",
+  "backup": "dist/cache-source-locator-20261031-021130-764798"
+}

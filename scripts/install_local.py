@@ -32,6 +32,7 @@ from release_payload import (
     ValidationError,
     archive_manifest_version,
     plugin_tree_digest,
+    release_files_for_version,
     validate_release_archive,
 )
 
@@ -259,9 +260,10 @@ def verify_plugin_tree(
         for path in directory.rglob("*")
         if path.is_file()
     }
-    if actual_files != set(ALLOWED_RELEASE_FILES):
-        missing = sorted(set(ALLOWED_RELEASE_FILES) - actual_files)
-        extra = sorted(actual_files - set(ALLOWED_RELEASE_FILES))
+    allowed_files = release_files_for_version(version)
+    if actual_files != set(allowed_files):
+        missing = sorted(set(allowed_files) - actual_files)
+        extra = sorted(actual_files - set(allowed_files))
         raise VerifyError(f"plugin tree does not match the release allowlist; missing={missing}, extra={extra}")
     payloads: dict[str, bytes] = {}
     for relative in sorted(actual_files):
