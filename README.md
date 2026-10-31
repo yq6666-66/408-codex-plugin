@@ -1,85 +1,129 @@
 # kaoyan-408
 
-面向考研的中文学习插件，覆盖数学一/二、英语一/二、408 和政治，支持规划、讲题、真题与招生检索、错题复测及学习记录。完整插件保留原有 14 个技能，并增加 3 个 408 专用入口，共 17 个技能。
+面向考研学习的中文插件，支持数学一／二、英语一／二、408 和政治。从制定计划、逐题讲解到错题复测、进度诊断与招生信息核验，提供 17 个分工明确的技能。
 
-当前版本：`2.9.0-dev.1`（开发候选）。默认安装仍使用已发布的稳定版 `v2.8.0`；候选标签及附件的状态请查看 [v2.9.0-dev.1 Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.9.0-dev.1)。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
+你可以直接提问：“我考数学二和 408，帮我安排这周的学习。”也可以发一道题、你的作答过程或一份有权使用的讲义。基础学习不需要配置笔记库；需要跨会话保存时，再按需启用学习记录。
 
-固定版本可使用 `--ref v2.8.0` 或 `--branch v2.8.0`。需要试用开发候选时，可使用已创建的 `--ref v2.9.0-dev.1` 或 `--branch v2.9.0-dev.1`；候选不替代稳定版。
+## 选择版本
 
-已发布 v2.8.0 ZIP 为 60 个文件，SHA-256 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`；请与 Release 的校验文件核对。
+当前版本：`2.9.0-dev.1`。这是**预发布版**：新增 60 张 408 公共知识卡和 2027 年第三方大纲对照，适合希望提前体验新内容的使用者。真实模型自动路由、真实笔记写入及新客户端行为尚未完整验收。
 
-## 快速安装
+| 版本 | 适合谁 | 下载 |
+| --- | --- | --- |
+| `v2.8.0` 稳定版 | 希望优先使用已发布稳定版 | [稳定版 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0) |
+| `v2.9.0-dev.1` 预发布版 | 希望体验公共知识卡与新版依据 | [预发布 Release](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.9.0-dev.1) |
 
-确认正式 Release 已发布后，在支持插件命令的 Codex CLI 中执行：
+默认安装选 `v2.8.0`。两个版本均包含 17 个技能；60 张公共知识卡属于 `v2.9.0-dev.1`，不应当作稳定版已包含的功能。
+
+## 安装与第一次使用
+
+### Codex CLI
+
+在支持插件命令的 Codex CLI 中，安装固定的稳定版：
 
 ```powershell
 codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.8.0
 codex plugin add kaoyan-408@kaoyan-408
 ```
 
-正式标签发布后，也可在终端中克隆固定标签，然后用宿主的本地插件安装入口选择仓库：
+要试用预发布版，将第一条命令中的版本改为 `--ref v2.9.0-dev.1`。如果已存在同名市场或插件，先检查其来源、版本和宿主提供的更新方式；切换前备份已有学习记录。
+
+也可准备固定版本的仓库，再按宿主支持的本地安装入口选择该仓库：
 
 ```powershell
 git clone --branch v2.8.0 --depth 1 https://github.com/yq6666-66/408-codex-plugin.git
 ```
 
-正式发布后从 [Release 页面](https://github.com/yq6666-66/408-codex-plugin/releases/tag/v2.8.0)下载 ZIP 和校验文件。在上述克隆仓库的根目录运行，ZIP 路径按实际下载位置填写：
+预发布版使用 `--branch v2.9.0-dev.1`。完整插件需要整个插件目录与共享引用，不要只复制单个 `SKILL.md`。
+
+### 下载与校验
+
+从对应 Release 页面下载 ZIP 和 `.sha256` 文件。预发布包的 SHA-256 为 `de2809735d525615936c3e4c6a9fb79661a9c058484bc1c23352f00a02d094af`；稳定版 `v2.8.0` 为 `bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407`。
+
+例如，在已检出 `v2.9.0-dev.1` 的仓库根目录，用实际下载路径替换下面的文件路径，再执行：
 
 ```powershell
-python scripts/install_local.py verify-release --zip <下载的ZIP路径> --version 2.8.0 --sha256 bb0dd4439a621d5842e10b23f289cd1f0e7ca33d9c6df328a9891dc1c3b9a407
+$zipPath = "C:\Downloads\kaoyan-408-2.9.0-dev.1.zip"
+python scripts/install_local.py verify-release --zip $zipPath --version 2.9.0-dev.1 --sha256 de2809735d525615936c3e4c6a9fb79661a9c058484bc1c23352f00a02d094af
 ```
 
-安装后新建对话，试着说：“我考数学二和 408，帮我安排本周计划。”也可以要求“先给一条提示，不要泄露答案”。宿主是否自动选择技能需实际确认；若未调用，可使用客户端的插件选择入口。
+### 开始一段学习
 
-## 功能和技能
+安装后重新加载客户端并新建对话，可以从以下请求开始：
 
-规划与执行支持目标分解、学习时段、进度诊断、检查点和到期复测；学科教练支持逐题讲解、提示和独立作答。真题与招生检索区分官方事实、网友评价与待核信息；模考在交卷前保留答案。
+1. “我考数学二、英语二、408 和政治，每周有 15 小时，帮我制定一周计划。”
+2. “这是我的 FIFO 解题过程，帮我找第一处错误，先不要给完整答案。”
+3. “只提示第四步，不要告诉我淘汰页。”
+4. “把我提供的学习材料整理成问答卡，先不要保存。”
 
-| Skill | 主责 | 示例触发 | 负向边界 |
-| --- | --- | --- | --- |
-| `kaoyan-408-planner` | 阶段、月度、周度、目标日期倒排与跨科配额 | “今年考研怎么分配四科时间” | 不展开单次时段，不伪造真题频率 |
-| `kaoyan-review-executor` | 展开当前时段；按检查点恢复上次复习 | “今晚 90 分钟刷数学”“继续上次复习” | 不决定长期路线，不凭聊天历史编造检查点 |
-| `kaoyan-progress-diagnostician` | 根据记录诊断偏差、风险与调整信号 | “按我粘贴的进度看要不要加时间” | 不凭空生成进度 |
-| `kaoyan-error-loop-coach` | 跨题错因聚类、复测与掌握证据 | “这套卷错题都是同一类” | 不替代单题第一处错误定位 |
-| `kaoyan-mock-exam-coach` | 冻结题面模考；交卷前零泄露 | “来套卷，交卷前别给答案” | 交卷前不讲题或泄露线索 |
-| `kaoyan-408-tutor` | 408 四科概念与单题；可调状态模拟器 | “讲这道 Cache 题” | 不做整卷趋势或搜索整套资料 |
-| `408-error-diagnosis` | 依据实际作答定位 408 单题首错 | “检查我这一步哪里错” | 不替代跨题错因闭环 |
-| `408-concept-followup` | 解释 408 局部概念、条件与反例 | “为什么命中不改变 FIFO 顺序” | 完整讲题仍由 tutor 主责 |
-| `408-calculation-check` | 复核 408 数值、单位与状态过程 | “核对这个 Cache 地址计算” | 未运行脚本不称脚本核验 |
-| `kaoyan-math-coach` | 数学一/二讲解、第一处错误与训练 | “帮我验算这个极限” | 先明确卷种，不做跨题闭环 |
-| `kaoyan-english-coach` | 英语一/二阅读、翻译、完形与写作批改 | “批改这篇英语二作文” | 区分卷种与评分口径 |
-| `kaoyan-politics-coach` | 政治理论、材料题、批改与背诵复测 | “这段材料对应什么原理”“现在先考我背诵” | 时政按试卷实际年度核验，不凭记忆断言当前时政 |
-| `kaoyan-past-paper-searcher` | 六科真题来源发现、核验、许可与登记 | “帮我找 2024 数学二真题” | 不直接完成逐题教学 |
-| `kaoyan-past-paper-analyst` | 已核验真题的覆盖、难度与有限趋势 | “这三年 408 哪些考点变多” | 不搜索来源，不把小样本写成规律 |
-| `kaoyan-material-study-assistant` | 用户材料的摘要、卡片、提纲与原创练习 | “把我贴的讲义做成卡片” | 不索取未授权材料，不替代单题讲解 |
-| `kaoyan-official-info-researcher` | 报名、考试安排、政策与单项官方事实核验 | “今年报名哪天开始”“核验某校是否考 408” | 不主责完整择校调研；无宿主调度能力不承诺自动提醒 |
-| `kaoyan-admissions-researcher` | 院校筛选、招生详情、历年比较、网友评价与择校参考 | “哪些学校考 408”“查某校招生、近两年录取与网上评价” | 评价不替代官方事实；不推断个人录取概率或自动保存报告 |
+是否自动选择正确技能取决于宿主；如果没有调用，可使用客户端提供的插件或技能选择入口。其他宿主的安装路径见[安装与恢复指南](docs/installation.md)，请以客户端实际提供的功能为准。
 
-三个 408 专用入口分别处理单题首错、局部概念和计算复核；从头完整讲题仍由 tutor 主责，多题错因聚类与复测由错题闭环主责。明确指定技能时尊重指定；自动选择的实际效果取决于宿主。
+## 能做什么
 
-## 知识点依据
+### 规划、执行与复习
 
-插件提供 60 个项目知识点，四科各 15 条。当前源码候选提供 60 张原创公共知识卡，安装完整候选后可用于学习，无需先配置个人笔记库。60 个知识点均已对照 2027 年第三方大纲正文：9 条为直接主题对应，51 条为上位或部分主题对应；该对照并非官方原文认证。规则依据和年度映射分别记录，卡片不覆盖全部 408 考点，外部来源仅支持各条注明的范围。[知识点依据契约](plugins/kaoyan-408/references/knowledge-point-basis-contract.md) · [2027 正文对照复核](eval/v2.9-acceptance/review-2027-mapping-independent.md) · [知识卡内容复核](eval/v2.9-acceptance/final-60-review-binding.md) · [规则来源核对](eval/v2.8-acceptance/rule-source-review-20261026.md) · [内容许可与来源](THIRD_PARTY_CONTENT.md)。
-
-## 平台与权限
-
-| 宿主 | 入口与证据边界 |
+| 技能 | 适合的任务 |
 | --- | --- |
-| Codex | 提供原生清单；历史隔离安装和定向样本不证明当前版本自动路由通过。 |
-| Claude Code | 提供原生清单；旧版本隔离安装通过，当前新会话行为未验收。 |
-| Cursor | 提供仓库导入入口；旧报告的本机版本和完整技能列表未核实。 |
-| ZCode | 提供原生清单；旧版普通请求未触发技能，显式选择 planner 可调用；当前版本未复测。 |
+| `kaoyan-408-planner` | 制定阶段、月度和周计划，分配跨科学习时间。 |
+| `kaoyan-review-executor` | 把已有计划展开为本次学习时段，或根据检查点续学。 |
+| `kaoyan-progress-diagnostician` | 根据实际记录诊断进度偏差，给出调整信号。 |
+| `kaoyan-error-loop-coach` | 聚类多题错因、安排到期复测并判断掌握证据。 |
+| `kaoyan-mock-exam-coach` | 组织模考；交卷前保留答案，交卷后讲评。 |
+
+### 讲题与学科辅导
+
+| 技能 | 适合的任务 |
+| --- | --- |
+| `kaoyan-408-tutor` | 从头讲解 408 概念和题目，按需使用随包计算工具。 |
+| `408-error-diagnosis` | 根据实际作答定位 408 单题的第一处错误。 |
+| `408-concept-followup` | 解释 408 局部概念、条件、反例或连续疑点。 |
+| `408-calculation-check` | 复核 408 的数值、单位和状态变化。 |
+| `kaoyan-math-coach` | 辅导数学一／二，讲解题目并复核计算。 |
+| `kaoyan-english-coach` | 辅导英语一／二阅读、翻译、完形和写作。 |
+| `kaoyan-politics-coach` | 辅导政治理论辨析、材料题和背诵复测。 |
+
+完整讲题通常由 tutor 主责；三个 408 专用入口分别聚焦单题首错、局部追问和计算复核。用户明确指定技能时尊重指定；连续追问和复合请求由宿主根据当前主要目的处理。没有实际作答过程时，应将易错点与用户已犯错误区分开。
+
+### 真题、资料与招生
+
+| 技能 | 适合的任务 |
+| --- | --- |
+| `kaoyan-past-paper-searcher` | 发现真题来源，核验出处和可访问性。 |
+| `kaoyan-past-paper-analyst` | 基于实际读到的材料分析覆盖、难度和有限趋势。 |
+| `kaoyan-material-study-assistant` | 将用户有权使用的材料整理成摘要、卡片或原创练习。 |
+| `kaoyan-official-info-researcher` | 核验报名、考试安排和单项官方事实。 |
+| `kaoyan-admissions-researcher` | 调研院校招生信息、历年情况和公开评价。 |
+
+搜索结果摘要不等于已读到题面；招生公告、网友评价与分析判断分别标注。不能访问来源或关键事实缺失时，结果保持待核。
+
+## 408 知识点依据
+
+`v2.9.0-dev.1` 提供四科各 15 张原创公共知识卡，包含概念、适用条件、易混点、例题和自测。它们围绕项目已有 60 个知识点组织，**不代表覆盖全部 408 考点**。
+
+年度对照使用[第三方整理的 2027 年大纲正文](https://www.csgraduates.com/study_methods/outline/2027/)：9 条为直接主题对应，51 条为上位或部分主题对应。年度归属、具体规则的外部来源和项目推导分别记录；第三方正文不是官方原始大纲，主题对应也不证明解题公式或答案正确。未获得支持的细节保持待核。
+
+完整讲评按匹配的知识点给出依据；仅提示、独立作答或模考未交卷时，精确依据可能泄题，留到允许讲评后再给。无法匹配时标为未收录或待核。
+
+[知识点依据契约](plugins/kaoyan-408/references/knowledge-point-basis-contract.md) · [2027 年对照复核](eval/v2.9-acceptance/review-2027-mapping-independent.md) · [知识卡内容复核](eval/v2.9-acceptance/final-60-review-binding.md) · [内容许可与来源](THIRD_PARTY_CONTENT.md)
+
+## 平台、权限与验证范围
+
+| 宿主 | 支持入口与已知边界 |
+| --- | --- |
+| Codex | 提供原生清单；旧树上的安装与定向样本不证明当前版本自动路由通过。 |
+| Claude Code | 提供原生清单；旧版隔离安装通过，当前新会话行为未验收。 |
+| Cursor | 提供仓库导入入口；历史报告未核实本机版本和完整技能列表。 |
+| ZCode | 提供原生清单；旧版普通提问未触发技能，显式选择 planner 曾调用成功；当前版本未复测。 |
 | WorkBuddy | 提供原生清单；旧版 CLI 安装已验证，新会话使用未验证。 |
 
-[完整平台支持和历史验证范围](docs/platform-support.md)。外部搜索、脚本和文件能力由宿主决定；无法实际读取时标待核。学习记录只在授权范围内写入，写入、读回及校验成功后才称已保存；只读或不记忆时不写入。记录 Schema 1.2 保持 1.0/1.1 读取兼容，检查点可导出供跨会话恢复。
+插件的搜索、脚本和文件操作取决于宿主实际能力。学习记录为可选功能：只有在用户授权范围内写入，并且写入、读回和校验成功后，才报告已保存。记录 Schema 1.2 保持 1.0／1.1 读取兼容；回退版本前应备份记录，旧版对新字段的处理以旧版契约为准。
 
-## 进一步使用与回退
+工程测试、安装成功与真实教学行为是不同证据。预发布候选的双系统构建、检查与未测项见[交付记录](eval/v2.9-acceptance/candidate-delivery.md)，历史客户端证据见[平台支持表](docs/platform-support.md)。
 
-[各宿主安装与恢复指南](docs/installation.md)提供固定版本、本地仓库入口和回退说明。
+## 更多资料
 
-- [便携学习记录与检查点](plugins/kaoyan-408/references/portable-learning-records.md) · [Obsidian 配置](plugins/kaoyan-408/references/obsidian-brain-contract.md) · [Notion 契约](plugins/kaoyan-408/references/notion-brain-contract.md)
-- [独立三技能导出](docs/v3-release.md) · [技能维护边界](docs/skill-maintenance-boundaries.md) · [变更记录](CHANGELOG.md)
-- [2.6.1 宿主验证](eval/v2.6.1-acceptance/native-host-review-20261017.md) · [2.8 验收资料](eval/v2.8-acceptance/README.md) · [2.6.0 发布与验收](eval/v2.6-acceptance/results-v2.6.0-candidate.md) · [历史 README 归档](docs/readme-history-20261028.md)
-- 需要稳定版时，先通过宿主正常入口移除当前插件，再使用 `codex plugin marketplace add yq6666-66/408-codex-plugin --ref v2.6.0` 和 `codex plugin add kaoyan-408@kaoyan-408`。旧版对较新记录的处理取决于对应版本契约；回退前先备份记录。
+[安装与恢复指南](docs/installation.md) · [便携学习记录与检查点](plugins/kaoyan-408/references/portable-learning-records.md) · [Obsidian 配置](plugins/kaoyan-408/references/obsidian-brain-contract.md) · [Notion 契约](plugins/kaoyan-408/references/notion-brain-contract.md)
+
+[独立三技能导出](docs/v3-release.md) · [技能维护边界](docs/skill-maintenance-boundaries.md) · [变更记录](CHANGELOG.md) · [历史 README](docs/readme-history-20261028.md)
 
 项目没有后台题库或账号服务。[隐私](PRIVACY.md) · [使用条款](TERMS.md) · [安全](SECURITY.md) · [内容版权](THIRD_PARTY_CONTENT.md)
