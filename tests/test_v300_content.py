@@ -18,24 +18,25 @@ spec.loader.exec_module(sim)
 
 
 class CandidateKnowledgeTests(unittest.TestCase):
-    def test_all_60_points_preserve_source_scope_and_pending_years(self):
+    def test_all_60_points_preserve_2027_third_party_source_scope(self):
         points = json.loads((SOURCE / "references" / "kp-408.json").read_text(encoding="utf-8"))["knowledgePoints"]
         self.assertEqual(len(points), 60)
         self.assertEqual(len({p["id"] for p in points}), 60)
         self.assertEqual(sorted(sum(p["subject"] == subject for p in points) for subject in
                                 ("数据结构", "计算机组成原理", "操作系统", "计算机网络")), [15] * 4)
-        verified = [p for p in points if p["verified"]]
-        self.assertEqual(len(verified), 17)
-        for point in verified:
-            self.assertEqual(point["basisYear"], "2025")
-            self.assertEqual(point["source"]["kind"], "official-repost")
-            self.assertEqual(point["source"]["publisher"], "芜湖学院计算科学学院")
-            self.assertIn(point["source"]["mappingScope"], {"topic", "upper-topic"})
-            self.assertTrue(point["source"]["locator"])
-        self.assertFalse(any(p["basisYear"] == "2027" for p in points))
+        self.assertEqual(sum(p["mappingStatus"] == "direct" for p in points), 9)
+        self.assertEqual(sum(p["mappingStatus"] == "upper-topic" for p in points), 51)
         for point in points:
-            if not point["verified"]:
-                self.assertEqual(point["basisYear"], "待核")
+            with self.subTest(point=point["id"]):
+                self.assertTrue(point["verified"])
+                self.assertEqual(point["basisYear"], "2027")
+                self.assertEqual(point["source"]["kind"], "third-party-outline")
+                self.assertEqual(point["source"]["sha256Scope"], "normalized-article-text-v1")
+                self.assertEqual(point["source"]["mappingScope"],
+                                 "topic" if point["mappingStatus"] == "direct" else "upper-topic")
+                self.assertTrue(point["source"]["locator"])
+                self.assertTrue(point["mappingNote"])
+                self.assertTrue(point["checkedAt"])
 
     def test_rule_cards_resolve_internal_points_and_keep_external_scope_explicit(self):
         directory = SOURCE / "references"
