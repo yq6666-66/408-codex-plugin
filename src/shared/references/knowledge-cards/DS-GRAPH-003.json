@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-GRAPH-003",
+  "subject": "数据结构",
+  "learningGoal": "在适用条件下比较路径长度",
+  "prerequisites": [
+    "带权图与路径",
+    "路径长度及可达性"
+  ],
+  "concept": "单源最短路径求从指定源到各可达点的最小路径权和；Dijkstra 的贪心定点依赖相关边权非负。 无权图可用 BFS 按边数计算最短距离；Dijkstra 适用于非负边权，负边需考虑其他方法。不可达顶点距离保持无穷或题设约定，存在可达负环时最短路径可能没有有限下界。",
+  "conditions": [
+    "路径长度为边权之和；Dijkstra 示例边权均非负。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "最短路径一定使用最少边",
+      "correction": "边权不同则边数少的路径权和仍可能更大。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】有向边 A→B=2、B→C=3、A→C=7，求 A 到 C 最短路径。",
+    "solution": "直接边权7，经 B 权2+3=5，因此路径 A→B→C 的权和为5。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】有向边 A→B=2、B→C=3、A→C=4；从 A 到 C 的最短路径权和是多少？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton DijkstraSP（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/DijkstraSP.java；定位：构造器负边检查；核验日期：2026-10-31）：支持该实现要求边权非负；限制：不证明负环等其它算法行为。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

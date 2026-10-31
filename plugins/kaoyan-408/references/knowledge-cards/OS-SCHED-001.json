@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "id": "OS-SCHED-001",
+  "subject": "操作系统",
+  "learningGoal": "区分先来先服务与时间片轮转调度",
+  "prerequisites": [
+    "到达时间与服务时间"
+  ],
+  "concept": "FCFS 按题设先后次序安排可运行任务，RR 使用时间片轮流执行；CPU 空闲、到达事件、同刻排序及是否计上下文切换必须按题设处理。具体事件规则由关联规则卡维护。",
+  "conditions": [
+    "例题为单处理机、非抢占 FCFS；忽略切换成本，所有任务在到达后持续就绪。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "先到达的任务一旦运行，RR也必然运行到完成",
+      "correction": "RR 任务未完成且时间片用完时会让出 CPU，重新进入队列。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】A在0到达需3个时间单位，B在1到达需2个时间单位，按给定非抢占FCFS且无切换开销，B何时开始？",
+    "solution": "A在0至3运行；B在1到达等待至3，因此B在3开始。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】RR时间片长度为2，单任务需要5个时间单位且无其他任务。共分配多少次时间片？最后一次不足整片也计一次。"
+  },
+  "ruleCardIds": [
+    "rule-fcfs",
+    "rule-rr"
+  ],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部一手来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "OSTEP: Scheduling: Introduction（https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf；定位：§7.2–7.3、§7.6–7.7；核验日期：2026-10-31）：支持周转及响应指标、FCFS 和 RR 时间片；限制：同刻到达顺序、上下文切换成本、I/O 等由题设确定。 上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。 年度正文对照与规则来源分别记录。"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CO-CACHE-001",
+  "subject": "计算机组成原理",
+  "learningGoal": "核对字节编址直接映射地址字段",
+  "prerequisites": [
+    "字节编址",
+    "块与缓存行"
+  ],
+  "concept": "直接映射将地址拆为标记、行索引和块内偏移；具体规则及适用条件以 rule-cache-direct 为准。 全相联没有行索引字段，组相联使用组索引且一组可包含多行；不同映射对应的替换选择和块定位不同，不能将直接映射公式直接当作通用公式。",
+  "conditions": [
+    "字节地址16位；块64 B；256行；每行一块。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "减去块内偏移后其余全部是标记",
+      "correction": "直接映射仍需扣除选择缓存行的索引位。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】按字节编址的16位地址、64 B块、256行、每行一块的直接映射 Cache，标记、行索引和块内偏移各几位？",
+    "solution": "64 B 对应6位偏移；256行对应8位索引；标记为16−6−8=2位；2+8+6=16。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】按字节编址的32位地址、64 B块、256行、每行一块的直接映射 Cache，标记占几位？"
+  },
+  "ruleCardIds": [
+    "rule-cache-direct"
+  ],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Cornell Caches（https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/caches.html；定位：Larger Blocks；核验日期：2026-10-31）：支持缓存地址的标记、索引及块内偏移结构；限制：具体写缓冲完成时刻依实现。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

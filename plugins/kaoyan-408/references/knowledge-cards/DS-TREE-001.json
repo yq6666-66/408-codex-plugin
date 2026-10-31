@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-TREE-001",
+  "subject": "数据结构",
+  "learningGoal": "区分二叉树形态、基本性质和前中后序遍历",
+  "prerequisites": [
+    "二叉树结点、子树及层次",
+    "递归访问"
+  ],
+  "concept": "前序依次访问根、左子树、右子树；中序为左、根、右；后序为左、右、根。 二叉树具有至多两个有序子位置；满二叉树和完全二叉树的层次限制不同。前序或后序与含互异结点的中序配合可重建二叉树，仅凭单一遍历一般不足。 本卡取根为第1层：第i层最多2^(i−1)个结点，非空、高度为h层的二叉树最多2^h−1个结点；每个结点的度只可能为0、1、2时，叶结点数 n₀ 与度为2的结点数 n₂ 满足 n₀=n₂+1。本卡按常见国内约定，满二叉树指每层结点都达到最大数；完全二叉树除最后一层外均满，最后一层自左向右连续。部分资料将 full binary tree 用于每个结点度为0或2的另一约定，需以题设定义为准。",
+  "conditions": [
+    "空子树不输出；二叉树中左右位置有区别。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "前序遍历与层序遍历相同",
+      "correction": "前序递归先深入左子树；层序逐层访问，二者通常不同。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】树根 A，左子树根 B 且 B 的右孩子为 D，右孩子 C；写三种深度优先遍历。",
+    "solution": "前序 A B D C；中序 B D A C；后序 D B C A。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】树根 A，左孩子 B、右孩子 C，B 的右孩子为 D；这棵树的层序遍历是什么？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；已核对的来源仅支持下列相关背景，本卡主要规则及其余内容待核。",
+    "details": "Princeton DepthFirstOrder（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/DepthFirstOrder.java；定位：前序与后序方法；核验日期：2026-10-31）：支持图深度优先搜索的前序与后序框架背景；限制：不证明二叉树满、完全形态及节点数性质。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

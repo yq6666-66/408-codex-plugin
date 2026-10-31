@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CN-LAN-001",
+  "subject": "计算机网络",
+  "learningGoal": "解释交换机 MAC 学习和 VLAN 广播范围",
+  "prerequisites": [
+    "MAC 地址、交换端口与广播"
+  ],
+  "concept": "交换机依据输入帧源 MAC 学习入口端口，并依据目的 MAC 表项转发；目的未知时在相应 VLAN 内泛洪。VLAN 划分二层广播域，跨 VLAN 通信通常需要三层转发。",
+  "conditions": [
+    "例题为学习型交换机，访问端口只归属指定 VLAN，忽略链路聚合、安全过滤和特殊配置。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "交换机通过目的 MAC 来学习该地址的入端口",
+      "correction": "正常源地址学习依据入帧的源 MAC 和入端口；目的地址用于查表转发。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】交换机从端口1收到源 MAC A、目的 MAC B的帧，表中无 A、B，先学习什么？",
+    "solution": "建立 A→端口1；B未知，按该 VLAN 未知单播规则从其他符合条件端口泛洪。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】交换机没有静态表项或端口保护等限制：先从端口2收到源 MAC A，后从端口3收到源 MAC A。正常动态学习后 A 的表项指向哪里？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；本次未实际取得支持本卡具体规则的一手来源，外部依据待核。",
+    "details": "本次尚未实际阅读可定位的一手来源，具体规则及例题的外部依据待核。 年度正文对照与规则来源分别记录。"
+  }
+}

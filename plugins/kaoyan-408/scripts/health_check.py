@@ -13,6 +13,7 @@ from typing import Any
 
 
 EXPECTED_RUNTIME_HELPERS = {
+    "knowledge_cards.py",
     "configure_obsidian_brain.py",
     "health_check.py",
     "records.py",

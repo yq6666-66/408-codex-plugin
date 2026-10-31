@@ -9,7 +9,7 @@
     {
       "name": "kaoyan-408",
       "source": "./plugins/kaoyan-408",
-      "version": "2.8.0",
+      "version": "2.9.0-dev.1",
       "description": "招生调研、官方招生核验、多平台网友评价、六科真题检索与详细教学的中文考研Skills。",
       "displayName": "408考研插件",
       "category": "other",

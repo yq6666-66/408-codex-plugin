@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-GRAPH-001",
+  "subject": "数据结构",
+  "learningGoal": "分析有向图邻接结构和 BFS 顺序",
+  "prerequisites": [
+    "图的顶点与边",
+    "队列与访问标记"
+  ],
+  "concept": "邻接矩阵按顶点对存边；邻接表按顶点存邻居。BFS 用队列逐层发现可达顶点，访问顺序受邻居次序影响。 邻接矩阵存储顶点对的信息，适合直接判断边；邻接表存储各顶点的邻接边。DFS 常用递归或显式栈深入未访问邻点，BFS 使用队列并逐层扩展；非连通图需从未访问顶点继续。",
+  "conditions": [
+    "示例为有向图，邻接点按字母升序处理；发现即标记。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "BFS 顺序对于任何邻接表都相同",
+      "correction": "同层顶点发现顺序可能随邻接顺序变化，但无权图的最短边数层次不变。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】边 A→B、A→C、B→D、C→D；从 A 按字母序 BFS。",
+    "solution": "先访问 A，发现 B、C；访问 B 时发现 D；访问 C 不重复入队；顺序 A、B、C、D。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】有向边 A→B、A→C、B→D、C→D；从 A 到 D 的最少边数是多少？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton BreadthFirstPaths（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BreadthFirstPaths.java；定位：bfs；核验日期：2026-10-31）：支持队列 BFS 和无权最短边数；限制：不同图类型和断连全图遍历须核实现。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

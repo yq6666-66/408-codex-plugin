@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-28T14:11:59Z",
+  "generatedAt": "2026-10-31T11:59:51Z",
   "plugin": {
     "name": "kaoyan-408",
-    "treeSha256": "7fde68a9b58350862dbea53a0020c25e5b762cf7220e3b7ad948f1a034db3715",
-    "version": "2.8.0"
+    "treeSha256": "464d6387ac7a208aec8d913841836862654edd4b3dd1730921374bff51f15193",
+    "version": "2.9.0-dev.1"
   },
   "results": {
     "plugin": {
@@ -88,7 +88,7 @@
   "validators": {
     "plugin": {
       "mode": "official-script",
-      "sha256": "1e6cb914505b458856c2cfab7d18a224731c743ef47e0c9d78afe64f35b67f7c",
+      "sha256": "f4eeadb733b28b0c3e714de263a76d6542866a672f3e99bdffcf4dbcdf85e944",
       "source": "plugin-creator/scripts/validate_plugin.py"
     },
     "skill": {

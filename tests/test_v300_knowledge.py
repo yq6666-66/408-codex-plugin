@@ -28,6 +28,7 @@ class CanonicalKnowledgeTests(unittest.TestCase):
         self.references.mkdir(parents=True)
         for name in ("kp-408.json", "rule-cards.json"):
             shutil.copyfile(REPO / "src/shared/references" / name, self.references / name)
+        shutil.copytree(REPO / "src/shared/references/knowledge-cards", self.references / "knowledge-cards")
         self.points = json.loads((self.references / "kp-408.json").read_bytes())
         self.cards = json.loads((self.references / "rule-cards.json").read_bytes())
 
@@ -44,7 +45,7 @@ class CanonicalKnowledgeTests(unittest.TestCase):
         result = self.validate()
         self.assertTrue(result["valid"])
         self.assertEqual((result["knowledgePoints"], result["ruleCards"]), (60, 8))
-        self.assertEqual((result["verifiedMappings"], result["pendingMappings"]), (17, 43))
+        self.assertEqual((result["verifiedMappings"], result["pendingMappings"]), (60, 0))
         self.assertFalse((self.root / "plugins").exists())
         self.assertFalse((self.root / "scripts").exists())
 
@@ -57,9 +58,14 @@ class CanonicalKnowledgeTests(unittest.TestCase):
                 self.reject()
 
     def test_pending_mapping_cannot_contain_guessed_evidence(self):
-        point = next(p for p in self.points["knowledgePoints"] if p["basisYear"] == "待核")
+        point = self.points["knowledgePoints"][0]
+        point.update({"basisYear": "待核", "verified": False, "source": None,
+                      "syllabusPath": None, "checkedAt": None, "mappingStatus": "not-found",
+                      "mappingNote": "当前测试夹具尚无匹配"})
+        self.validate()
+        verified_source = copy.deepcopy(self.points["knowledgePoints"][1]["source"])
         for field, value in (("verified", True), ("syllabusPath", ["guessed"]),
-                             ("source", copy.deepcopy(self.points["knowledgePoints"][0]["source"])),
+                             ("source", verified_source),
                              ("checkedAt", "2026-10-22")):
             with self.subTest(field=field):
                 old = point[field]
@@ -153,7 +159,7 @@ class CanonicalKnowledgeTests(unittest.TestCase):
         card = self.make_partially_sourced_card()
         result = self.validate()
         self.assertEqual(card["source"]["kind"], "project-summary")
-        self.assertEqual((result["verifiedMappings"], result["pendingMappings"]), (17, 43))
+        self.assertEqual((result["verifiedMappings"], result["pendingMappings"]), (60, 0))
         self.assertEqual(result["externallySupportedRuleCards"], 1)
 
     def test_partial_rule_needs_at_least_one_actual_reference(self):

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "id": "OS-SCHED-002",
+  "subject": "操作系统",
+  "learningGoal": "计算周转、等待和响应时间并区分定义",
+  "prerequisites": [
+    "进程到达、运行和完成时间"
+  ],
+  "concept": "周转时间从到达到完成；响应时间从到达到首次开始运行；等待时间累计就绪队列中的等待。多次抢占须累计各段等待，不能把首次响应时间当总等待。具体边界由题目定义。",
+  "conditions": [
+    "例题无I/O或其他阻塞，总周转时间由服务时间与就绪等待组成。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "响应时间总等于等待时间",
+      "correction": "被抢占后还可能再次排队，因此总等待可以大于首次响应。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】进程0时刻到达，5时刻完成，CPU服务共3单位且无I/O，它的周转和总等待分别是多少？",
+    "solution": "周转5−0=5；无其他阻塞时总等待5−3=2。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】进程2到达、4首次开始，响应时间是多少？"
+  },
+  "ruleCardIds": [
+    "rule-fcfs",
+    "rule-rr"
+  ],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部一手来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "OSTEP: Scheduling: Introduction（https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf；定位：§7.2–7.3、§7.6–7.7；核验日期：2026-10-31）：支持周转及响应指标；限制：等待时间细节未由此来源单独核定；同刻到达顺序、上下文切换成本和 I/O 由题设确定。 上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。 年度正文对照与规则来源分别记录。"
+  }
+}

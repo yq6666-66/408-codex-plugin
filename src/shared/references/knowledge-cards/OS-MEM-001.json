@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0",
+  "id": "OS-MEM-001",
+  "subject": "操作系统",
+  "learningGoal": "用 FIFO 跟踪固定页框与淘汰队列",
+  "prerequisites": [
+    "页框、命中与缺页"
+  ],
+  "concept": "FIFO 按驻留页面本次进入内存的先后选择淘汰对象；页面命中不改变进入先后。固定页框位置与淘汰队列含义不同。具体操作规则以关联规则卡为准。",
+  "conditions": [
+    "例题初态为空、2页框，首次装入空页框也算缺页；队列从最早进入到最新进入。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "命中页面后把它移到 FIFO 队尾",
+      "correction": "FIFO 命中不改变装入顺序；按最近访问更新顺序是 LRU 的思路。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】2页框初态空，FIFO访问1、2、1、3。第4次淘汰谁？共多少次缺页？",
+    "solution": "前两次均缺页，第三次命中不改队列[1,2]，第四次淘汰1并装入3；共3次缺页。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】两个页框已满，FIFO 队列从旧到新为 [2,5]；缺页访问7时淘汰哪页，新队列是什么？"
+  },
+  "ruleCardIds": [
+    "rule-fifo"
+  ],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部一手来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "OSTEP: Beyond Physical Memory: Policies（https://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf；定位：§22.3 Figure 22.2；核验日期：2026-10-31）：支持 FIFO 依据进入先后且命中不改变先后；限制：不覆盖固定页框槽位约定、特定初态及所有场景。 上述来源仅支持其明确列出的规则，卡片其余细节、例题和适用边界仍需分别核查。 年度正文对照与规则来源分别记录。"
+  }
+}

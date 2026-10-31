@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-SEARCH-001",
+  "subject": "数据结构",
+  "learningGoal": "区分二叉搜索树顺序约束和 AVL 高度约束",
+  "prerequisites": [
+    "二叉树结点和高度",
+    "关键字比较"
+  ],
+  "concept": "二叉搜索树按关键字组织左小右大；AVL 还要求每个结点左右子树高度差绝对值不超过1。 查找从根比较并按大小进入相应子树；插入位置沿查找路径确定。AVL 在插入或删除破坏高度约束时，根据失衡结点及子树形态进行旋转，旋转后仍须保持搜索顺序。",
+  "conditions": [
+    "示例关键字互异，空树高度记为0；此处平衡指 AVL 平衡。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "二叉搜索树一定平衡",
+      "correction": "单调插入可使普通二叉搜索树退化为链；AVL 需要额外检查并调整高度差。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】依次插入 2、1、3 到空二叉搜索树，给出中序序列并判断是否 AVL 平衡。",
+    "solution": "得到根2、左右孩子1和3；中序为1、2、3，根的左右高度均为1，满足 AVL。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】从空树依次插入1、2、3得到普通二叉搜索树；空树高度记为0，这棵树是否满足AVL平衡？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton BST（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BST.java；定位：put；核验日期：2026-10-31）：支持二叉搜索树按键大小插入；限制：不同重复键约定须另核。 Princeton AVLTreeST（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/AVLTreeST.java；定位：balance 和旋转方法；核验日期：2026-10-31）：支持旋转维护 AVL 平衡；限制：不证明其他平衡树变体。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

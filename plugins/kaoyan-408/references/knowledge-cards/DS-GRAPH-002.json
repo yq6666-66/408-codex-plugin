@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-GRAPH-002",
+  "subject": "数据结构",
+  "learningGoal": "判断加权无向连通图的最小生成树",
+  "prerequisites": [
+    "无向图与连通性",
+    "树与边权之和"
+  ],
+  "concept": "生成树连接所有顶点且无环，恰有 n−1 条边；最小生成树使边权之和最小。 Kruskal 依次考虑轻边并跳过会形成环的边；Prim 从已有顶点集合逐步选择跨越集合边界的轻边。顶点不连通时一般只能得到生成森林，不应称全图生成树。",
+  "conditions": [
+    "讨论有限无向连通图；允许等权边，此时最优树可能不唯一。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "最小生成树就是每个顶点到根的最短路径树",
+      "correction": "最小生成树优化整体权和，最短路径树优化指定源到各点的路径长度。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】三角图 AB=1、BC=2、AC=4，求最小生成树。",
+    "solution": "选择 AB、BC，连接3顶点且无环，权和3；其他两边组合权和分别为5和6。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】无向三角图 AB=1、BC=2、AC=2；最小生成树是否唯一？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton KruskalMST（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/KruskalMST.java；定位：构造器；核验日期：2026-10-31）：支持排序和并查集避免环；限制：不证明全部 Prim 和森林情况。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

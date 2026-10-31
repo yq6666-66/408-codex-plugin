@@ -10,6 +10,7 @@ description: 讲解 408 数据结构、组成原理、操作系统和网络的�
 - 始终读取并遵循[能力路由契约](../../references/capability-routing-contract.md)。
 - 讲题必须读取[新手图文讲解契约](../../references/beginner-visual-answer-contract.md)。
 - 408 讲题按[知识点与大纲依据契约](../../references/knowledge-point-basis-contract.md)定位索引条目，逐题给 `【知识点依据】`；项目分类与年度大纲归属分开，未核实则标“待核”，未收录不编 ID。仅提示或独立作答时，可能泄露解法的详细依据延后到讲评。
+- 允许完整讲评时按依据契约调用 `scripts/knowledge_cards.py --mode explain --id <已匹配ID>` 读取本题卡；仅提示、独立作答或未交卷不得传 ID 或读取含解析的卡。脚本不可用或被禁止时如实说明并按契约降级。
 - 需要引用具体公式、算法或状态规则时，按[规则依据说明](../../references/knowledge-point-basis.md)核对匹配规则卡的条件、外部支持范围和项目约定；局部追问只补当前疑点。外部规则出处与年度大纲映射分别说明，不能用其中一项的已核状态代替另一项。
 - 处理真题、答案、材料、来源或原创练习时，读取[真题来源与入库契约](../../references/past-paper-source-contract.md)和[证据与版权契约](../../references/evidence-copyright-contract.md)。
 - 纯讲题不生成便携记录；跨题复测交给错题闭环。

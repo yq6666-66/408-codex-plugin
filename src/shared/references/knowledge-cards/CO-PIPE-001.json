@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CO-PIPE-001",
+  "subject": "计算机组成原理",
+  "learningGoal": "计算理想流水线完成时间并辨别依赖",
+  "prerequisites": [
+    "时钟周期",
+    "流水线阶段"
+  ],
+  "concept": "理想流水线阶段重叠执行；当指令间存在数据、控制或结构冲突时，实际完成时间可能需要额外停顿。 数据冒险可由前递或停顿处理，控制冒险与分支结果确定有关，结构冒险由资源竞争造成；具体是否存在及损失周期必须根据实际数据通路和题目时序判断。",
+  "conditions": [
+    "k级等长阶段、每级1周期，n条连续进入，无停顿且流水线初始为空。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "k级流水线总时间总是缩短为非流水线的1/k",
+      "correction": "起始填充和排空带来额外周期，短序列更明显；冒险也会产生停顿。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】5级理想流水线执行3条指令需多少周期？",
+    "solution": "第一条完成需要5周期，其后两条各隔1周期完成，共5+3−1=7周期。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】5级理想流水线每级1周期、初始为空、无停顿，执行1条指令需要几个周期？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Cornell CPU Architecture（https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/arch.html；定位：The 5 Classic CPU Stages；Architecture Styles；核验日期：2026-10-31）：支持五阶段与理想流水线周期；限制：冒险和 PC 更新须按具体数据通路。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

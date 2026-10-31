@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-31",
+  "backup": "dist/source-locator-scope-20261031-023001-604075",
+  "reason": "将来源定位和支持范围收窄到该卡实际相关内容；不扩大核验",
+  "cards": [
+    {
+      "id": "CO-ALU-001",
+      "beforeSha256": "cca95b148af70e57beba7b1dec956d330242992087cf92b9a64d94a2f79ac423",
+      "afterSha256": "57dbeb45650a50de46630cf658a8ece604208cc82f79061cd82acaa1c0a13044"
+    },
+    {
+      "id": "CO-DATA-001",
+      "beforeSha256": "cca54583460f99e37c9b38ec5c3f7ea99e46204bcd615c7fe49d755cf7410e7a",
+      "afterSha256": "7d2305125104960b6bbbf41ed231c7fd0893d117680581f4731b4762cae7eba7"
+    },
+    {
+      "id": "CO-PERF-001",
+      "beforeSha256": "7e763a29e6ebe4c530b3d972f2e1f5ea5dde9ead4028dbb396597b89cf18f5c5",
+      "afterSha256": "a02ec62a426e43b04d23d76f0ef50631f21aa2b29cab5c7fba5c283c00e2d834"
+    },
+    {
+      "id": "CO-BUS-001",
+      "beforeSha256": "e9127764853dd02f969ab4de1efe9bc7a4321993052729dd608239137eff070b",
+      "afterSha256": "4e9f407239dbbf2e47ea667b7ea955fdd0f5ebb730b1f39067e9073e12098b48"
+    },
+    {
+      "id": "OS-MEM-001",
+      "beforeSha256": "c696f36baa87413a79eaf8960148a6876608841108b62032d941262e9b3234c3",
+      "afterSha256": "c0c9960b926463bfc9e4579722ae33e2ae794a6a8d9935ff5d1a94279cbc5d2a"
+    },
+    {
+      "id": "OS-MEM-002",
+      "beforeSha256": "2c8a3c405566b73a6ad4daf8c2f5ed3729b59e158cea259cd07679b5311c05a4",
+      "afterSha256": "f97ccd15834ba38a5e8cf55c5e50e6db160f42cd1a8cdac63aa23f33b9c7028c"
+    },
+    {
+      "id": "OS-SCHED-002",
+      "beforeSha256": "6f97f7e8b96b53c0023973078f90aa96baedd7f7dc3d0c043a096bd691c86699",
+      "afterSha256": "9623fb405f9dd3ba78fcf06af6374435857e32d1fb62560cdc26eed28bb95dbe"
+    }
+  ]
+}

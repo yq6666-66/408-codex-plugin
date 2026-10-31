@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "DS-STACK-001",
+  "subject": "数据结构",
+  "learningGoal": "用栈追踪递归调用与返回",
+  "prerequisites": [
+    "后进先出",
+    "函数调用与返回"
+  ],
+  "concept": "栈限定在一端入栈和出栈，后入的尚未弹出元素先出；递归调用的活动记录通常按调用与返回顺序嵌套。 递归每一层应有终止条件、参数状态与返回点，先压入的未完成调用后返回；栈可用于括号匹配、表达式求值和显式模拟递归。",
+  "conditions": [
+    "讨论正常、有限且终止的递归；栈顶是唯一可弹出端。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "递归函数调用次数等于最大递归深度",
+      "correction": "调用次数是全部调用数；最大深度是同时未返回的调用层数。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】依次入栈 A、B，弹出一次，再入栈 C，依次弹空，输出序列是什么？",
+    "solution": "第一次弹 B；随后 C 位于 A 上方，依次弹 C、A；输出 B、C、A。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】入栈 A、B、C 后直接弹空，输出顺序是什么？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Princeton LinkedStack（https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedStack.java；定位：push/pop；核验日期：2026-10-31）：支持栈的 LIFO 操作；限制：不涵盖递归活动记录的完整实现。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

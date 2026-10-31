@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-31",
+  "backup": "dist/os-cn-source-correction-20261031-022216-199069",
+  "reason": "独立复核：RFC826 实读 .txt；OSTEP Fig31.10 互斥不足",
+  "cards": [
+    {
+      "id": "CN-NET-003",
+      "beforeSha256": "b38cb0949e5b3d01067907c56c76437816537d8057d25b48d5d162400146260a",
+      "afterSha256": "be1560ede999f810667586e3be6d2bdd6fbe7fec532a0a45109661662493ab53"
+    },
+    {
+      "id": "OS-SYNC-001",
+      "beforeSha256": "b7a3c60090f7b967b33fab890b2aa20593f4f2b0f281ea517450ed0d4b41a587",
+      "afterSha256": "1c8133004d336aff29b6f189dda7e1123d14ea0aeb29b747567228c56335e6fc"
+    },
+    {
+      "id": "OS-SYNC-002",
+      "beforeSha256": "e304b363f2ea5af69ebd65f8f51c53977c48cdde22657ad1c3724694e384443c",
+      "afterSha256": "3bb906da7993c7733292b656a1770e6ff01e2f385aebf6b46ca9b3aa52479740"
+    }
+  ]
+}

@@ -110,15 +110,15 @@ class KnowledgePointTests(unittest.TestCase):
                 self.assertIsNone(point["source"])
                 self.assertIsNone(point["syllabusPath"])
 
-    def test_known_school_document_is_not_relabelled_as_2027(self):
-        matched = []
-        for point in self.data["knowledgePoints"]:
-            source = point["source"]
-            if source and source.get("sha256") == "8ee1e0c917675bdc3a51fa283fd50dcd4f652a962370762704d50f05b23100a5":
-                matched.append(point)
-                self.assertEqual(point["basisYear"], "2025")
-                self.assertEqual(source["kind"], "official-repost")
-        self.assertTrue(matched)
+    def test_2027_third_party_mappings_keep_explicit_scope(self):
+        points = self.data["knowledgePoints"]
+        self.assertEqual({point["basisYear"] for point in points}, {"2027"})
+        self.assertTrue(all(point["source"]["kind"] == "third-party-outline" for point in points))
+        self.assertEqual(sum(point["mappingStatus"] == "direct" for point in points), 9)
+        self.assertEqual(sum(point["mappingStatus"] == "upper-topic" for point in points), 51)
+        self.assertTrue(all(point["source"]["sha256Scope"] == "normalized-article-text-v1" for point in points))
+        self.assertTrue(all(point["knowledgeCard"] == "knowledge-cards/" + point["id"] + ".json" for point in points))
+        self.assertNotIn("2025年408大纲", json.dumps(self.data, ensure_ascii=False))
 
     def test_two_consumer_skills_link_the_basis_contract(self):
         for skill in ("kaoyan-408-tutor", "kaoyan-error-loop-coach"):

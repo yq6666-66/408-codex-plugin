@@ -56,7 +56,10 @@ EXPECTED_REFERENCES = {
     "beginner-visual-answer-contract.md",
 }
 
+KNOWLEDGE_CARD_IDS = ('CN-APP-001', 'CN-ARCH-001', 'CN-ARQ-001', 'CN-LAN-001', 'CN-LINK-001', 'CN-MAC-001', 'CN-NET-001', 'CN-NET-002', 'CN-NET-003', 'CN-PERF-001', 'CN-PHY-001', 'CN-ROUTE-001', 'CN-TCP-001', 'CN-TCP-002', 'CN-TRANS-001', 'CO-ALU-001', 'CO-BUS-001', 'CO-CACHE-001', 'CO-CACHE-002', 'CO-CPU-001', 'CO-CPU-002', 'CO-DATA-001', 'CO-DATA-002', 'CO-IO-001', 'CO-IO-002', 'CO-IO-003', 'CO-ISA-001', 'CO-MEM-001', 'CO-PERF-001', 'CO-PIPE-001', 'DS-ALG-001', 'DS-ARRAY-001', 'DS-GRAPH-001', 'DS-GRAPH-002', 'DS-GRAPH-003', 'DS-GRAPH-004', 'DS-LIST-001', 'DS-QUEUE-001', 'DS-SEARCH-001', 'DS-SEARCH-002', 'DS-SEARCH-003', 'DS-SORT-001', 'DS-STACK-001', 'DS-TREE-001', 'DS-TREE-002', 'OS-BASIC-001', 'OS-DEAD-001', 'OS-DISK-001', 'OS-FILE-001', 'OS-MEM-001', 'OS-MEM-002', 'OS-MEM-003', 'OS-MEM-004', 'OS-MEM-005', 'OS-PROC-001', 'OS-PROC-002', 'OS-SCHED-001', 'OS-SCHED-002', 'OS-SYNC-001', 'OS-SYNC-002')
+
 EXPECTED_RUNTIME_SCRIPTS = {
+    "knowledge_cards.py",
     "configure_obsidian_brain.py",
     "health_check.py",
     "records.py",
@@ -106,6 +109,7 @@ def expected_release_files() -> frozenset[str]:
         CLAUDE_MANIFEST_RELATIVE,
         "assets/kaoyan-408.svg",
         *(f"references/{name}" for name in EXPECTED_REFERENCES),
+        *(f"references/knowledge-cards/{point_id}.json" for point_id in KNOWLEDGE_CARD_IDS),
         *(f"scripts/{name}" for name in EXPECTED_RUNTIME_SCRIPTS),
     }
     for skill in EXPECTED_SKILLS:
@@ -115,6 +119,17 @@ def expected_release_files() -> frozenset[str]:
 
 
 ALLOWED_RELEASE_FILES = expected_release_files()
+LEGACY_28_RELEASE_FILES = frozenset(
+    name for name in ALLOWED_RELEASE_FILES
+    if not name.startswith("references/knowledge-cards/") and name != "scripts/knowledge_cards.py"
+)
+
+
+def release_files_for_version(version: str) -> frozenset[str]:
+    """The published 2.8 family retains its original 60-file layout."""
+    if version.startswith("2.8."):
+        return LEGACY_28_RELEASE_FILES
+    return ALLOWED_RELEASE_FILES
 
 
 class Utf8ZipInfo(ZipInfo):
@@ -148,7 +163,17 @@ def validate_release_archive(archive_path: Path) -> tuple[str, ...]:
             duplicates = [name for name, count in Counter(names).items() if count > 1]
             if duplicates:
                 raise ValidationError(f"release ZIP contains duplicate members: {sorted(duplicates)}")
-            if set(names) != set(ALLOWED_RELEASE_FILES) or names != sorted(ALLOWED_RELEASE_FILES):
+            try:
+                import json
+                import re
+                manifest = json.loads(archive.read(CODEX_MANIFEST_RELATIVE).decode("utf-8"))
+                version = manifest["version"]
+                if not isinstance(version, str) or re.fullmatch(SEMVER_PATTERN, version) is None:
+                    raise ValueError("version must be release semver")
+            except (KeyError, TypeError, ValueError, UnicodeError) as exc:
+                raise ValidationError(f"release ZIP manifest is unreadable: {exc}") from exc
+            allowed = release_files_for_version(version)
+            if set(names) != set(allowed) or names != sorted(allowed):
                 raise ValidationError("release ZIP does not match the exact ordered allowlist")
             if archive.comment:
                 raise ValidationError("release ZIP comment must be empty")

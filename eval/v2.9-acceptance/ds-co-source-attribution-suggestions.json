@@ -1,0 +1,468 @@
+{
+  "schemaVersion": "1.0",
+  "purpose": "independent-review-only",
+  "reviewDate": "2026-10-31",
+  "entries": [
+    {
+      "id": "CO-ALU-001",
+      "sha256": "06b1d4b74a7cad8b4281d9ba3de3de701f172f6781209b41b7cd5de2c6621936",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2014sp/lecture/08-perf-pipeline-i-notes.pdf",
+          "title": "Cornell performance and pipeline lecture",
+          "location": "PDF第5页、第16页",
+          "supports": "补码示例及 CPI 关系",
+          "limitations": "跨平台、定点小数及异常行为另核"
+        },
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/cintro.html",
+          "title": "Cornell Introduction to C",
+          "location": "Overflow 段",
+          "supports": "定长整数和溢出背景",
+          "limitations": "不能推断任意机器乘除异常语义"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-BUS-001",
+      "sha256": "31dcfce34752408160fcf64099d063ec3f103085d37729cb7753621abd9bd285",
+      "sources": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+          "title": "OSTEP I/O Devices",
+          "location": "§36.1、§36.3–36.5",
+          "supports": "I/O 层级、轮询、中断和 DMA 背景",
+          "limitations": "仲裁、屏蔽及硬件完成时机依实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-CACHE-001",
+      "sha256": "bb81633b069fafa1a14068dd969aa1c37fb3f7240c00972b7020973cccdd5423",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/caches.html",
+          "title": "Cornell Caches",
+          "location": "Larger Blocks；Write Policies",
+          "supports": "缓存地址划分、写直达与写回背景",
+          "limitations": "具体写缓冲完成时刻依实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-CACHE-002",
+      "sha256": "517ff6153de825bff654a79cd3647af39480d50416242902c19ff3edd34dd85e",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/caches.html",
+          "title": "Cornell Caches",
+          "location": "Larger Blocks；Write Policies",
+          "supports": "缓存地址划分、写直达与写回背景",
+          "limitations": "具体写缓冲完成时刻依实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-CPU-001",
+      "sha256": "34e74fa163bc05b2682be33709df52a4a1aff2a52ffb04a3023eb84ec2901bb1",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/arch.html",
+          "title": "Cornell CPU Architecture",
+          "location": "The 5 Classic CPU Stages；Architecture Styles",
+          "supports": "五阶段与理想流水线周期",
+          "limitations": "冒险和 PC 更新须按具体数据通路"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-CPU-002",
+      "sha256": "e38306c4e8a522b5efe4885ae8a4774390410a1edac03399db23cca2d5624e3c",
+      "sources": [],
+      "status": "pending",
+      "note": "本次未实际读取足以支持本卡的来源，待核"
+    },
+    {
+      "id": "CO-DATA-001",
+      "sha256": "6ec0105f9d865cdb7ace90076ae09eced18f2dca48e02b4f81f0de9b2b7f8b4a",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2014sp/lecture/08-perf-pipeline-i-notes.pdf",
+          "title": "Cornell performance and pipeline lecture",
+          "location": "PDF第5页、第16页",
+          "supports": "补码示例及 CPI 关系",
+          "limitations": "跨平台、定点小数及异常行为另核"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-DATA-002",
+      "sha256": "aad4822b5c9469b92003e16e3e92c4936f5f886e0d157548c6c576c66be49e7e",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/float.html",
+          "title": "Cornell Floating Point",
+          "location": "32-bit representation and exponent bias",
+          "supports": "单精度字段与指数偏置",
+          "limitations": "特殊值细节未逐项核验"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-IO-001",
+      "sha256": "baf00b03db7129a27d9d0e441f81cb7517369884742e5a8a212f58f16dd87200",
+      "sources": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+          "title": "OSTEP I/O Devices",
+          "location": "§36.1、§36.3–36.5",
+          "supports": "I/O 层级、轮询、中断和 DMA 背景",
+          "limitations": "仲裁、屏蔽及硬件完成时机依实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-IO-002",
+      "sha256": "5b2ab2cf6a7a943c927afc8a11b132747ccf011e434c3041c99e09e3a19bd4c6",
+      "sources": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+          "title": "OSTEP I/O Devices",
+          "location": "§36.1、§36.3–36.5",
+          "supports": "I/O 层级、轮询、中断和 DMA 背景",
+          "limitations": "仲裁、屏蔽及硬件完成时机依实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-IO-003",
+      "sha256": "3338de982c86bbbef838675b30d4fc36422d49c9c4a9017211725051fdccbd49",
+      "sources": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf",
+          "title": "OSTEP I/O Devices",
+          "location": "§36.1、§36.3–36.5",
+          "supports": "I/O 层级、轮询、中断和 DMA 背景",
+          "limitations": "仲裁、屏蔽及硬件完成时机依实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-ISA-001",
+      "sha256": "bc45450a71594732e60e37e7e2a7fc9a7be47bca7ef4ae0e39ac45d4449398d6",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/proc.html",
+          "title": "Cornell Processors",
+          "location": "wrimm 示例",
+          "supports": "特定实现中的立即数",
+          "limitations": "其他 ISA 寻址模式须另核"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-MEM-001",
+      "sha256": "2dd9e212126a8633f2c601a88ba76508a4e765021f6dd3356b73c70ae0f26e8a",
+      "sources": [],
+      "status": "pending",
+      "note": "本次未实际读取足以支持本卡的来源，待核"
+    },
+    {
+      "id": "CO-PERF-001",
+      "sha256": "c1003b59b91809fcb73ba93e9f035241dc01114347a9141de2b2acde1c377a72",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2014sp/lecture/08-perf-pipeline-i-notes.pdf",
+          "title": "Cornell performance and pipeline lecture",
+          "location": "PDF第5页、第16页",
+          "supports": "补码示例及 CPI 关系",
+          "limitations": "跨平台、定点小数及异常行为另核"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "CO-PIPE-001",
+      "sha256": "1c0c6b3bec4295a6d0ff2ab809176dd083a845fcf6540b1e843d7c08e330fdeb",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/arch.html",
+          "title": "Cornell CPU Architecture",
+          "location": "The 5 Classic CPU Stages；Architecture Styles",
+          "supports": "五阶段与理想流水线周期",
+          "limitations": "冒险和 PC 更新须按具体数据通路"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-ALG-001",
+      "sha256": "7da66dba6d80772859a87297f2bed80617c590f54566179fa97bbfb2c17eebd3",
+      "sources": [],
+      "status": "pending",
+      "note": "本次未实际读取足以支持本卡的来源，待核"
+    },
+    {
+      "id": "DS-ARRAY-001",
+      "sha256": "d86898e837b47d76a26743c72320cfd1bb1dc10d5bdb923f9f4203e1a64268cd",
+      "sources": [
+        {
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf",
+          "title": "WG14 N1570",
+          "location": "§6.5.2.1 第3段，PDF第98页",
+          "supports": "C 多维数组行优先",
+          "limitations": "不证明其他语言或矩阵压缩方案"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-GRAPH-001",
+      "sha256": "2dd0bf62013d55b8f6f9389f46c57e3b609055c504879c9868ff6df1f970481e",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BreadthFirstPaths.java",
+          "title": "Princeton BreadthFirstPaths",
+          "location": "bfs",
+          "supports": "队列 BFS 和无权最短边数",
+          "limitations": "不同图类型和断连全图遍历须核实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-GRAPH-002",
+      "sha256": "f274b5e4e430fe225ad74ff6668778e6d69685b2785478d39acc6a1d7e63c557",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/KruskalMST.java",
+          "title": "Princeton KruskalMST",
+          "location": "构造器",
+          "supports": "排序和并查集避免环",
+          "limitations": "不证明全部 Prim 和森林情况"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-GRAPH-003",
+      "sha256": "305194bc130d5c124f005f968c590de4623d03e814e1406fbae2e5effc638d7e",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/DijkstraSP.java",
+          "title": "Princeton DijkstraSP",
+          "location": "构造器负边检查",
+          "supports": "该实现要求边权非负",
+          "limitations": "不证明负环等其它算法行为"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-GRAPH-004",
+      "sha256": "febd81134af8acbb09b905dbfa14d7f316ed03eb86ad3cb137520b44ce4100af",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Topological.java",
+          "title": "Princeton Topological",
+          "location": "类说明",
+          "supports": "有向无环图拓扑排序",
+          "limitations": "不单独证明 AOE 最迟事件时刻"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/AcyclicLP.java",
+          "title": "Princeton AcyclicLP",
+          "location": "类说明",
+          "supports": "有向无环图最长路径",
+          "limitations": "不单独证明 AOE 关键活动判据"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-LIST-001",
+      "sha256": "8ce92649b6bcfa610a5fd30fb4f4526acfc84dba72c23925c10d4d3b264aaf70",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedQueue.java",
+          "title": "Princeton LinkedQueue",
+          "location": "enqueue/dequeue",
+          "supports": "链式队列链接、FIFO 操作",
+          "limitations": "不涵盖顺序表插入开销或循环队列约定"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-QUEUE-001",
+      "sha256": "991b0859aa142aa713a53cfadf3538a25976e2c0a4e41ebf123756c20af20af9",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedQueue.java",
+          "title": "Princeton LinkedQueue",
+          "location": "enqueue/dequeue",
+          "supports": "链式队列链接、FIFO 操作",
+          "limitations": "不涵盖顺序表插入开销或循环队列约定"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-SEARCH-001",
+      "sha256": "da92e5268d33144e7ede992e85459569862f69296fccaa391b6cc64798d06b9d",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BST.java",
+          "title": "Princeton BST",
+          "location": "put",
+          "supports": "二叉搜索树按键大小插入",
+          "limitations": "不同重复键约定须另核"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/AVLTreeST.java",
+          "title": "Princeton AVLTreeST",
+          "location": "balance 和旋转方法",
+          "supports": "旋转维护 AVL 平衡",
+          "limitations": "不证明其他平衡树变体"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-SEARCH-002",
+      "sha256": "f98202c75310a71aea7fd92541ca3e4a9e2023c2ba06e093a085106db7dad39a",
+      "sources": [
+        {
+          "url": "https://www.cs.cornell.edu/courses/cs6320/2019sp/Slides/Indexing_final_version.pdf",
+          "title": "Cornell Indexing",
+          "location": "B+-Trees structure，PDF第25页",
+          "supports": "B+ 树叶层和叶链",
+          "limitations": "B树删除等实现细节未覆盖"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-SEARCH-003",
+      "sha256": "22fe207728222ab476cdfc341124dc8c7459f85c0b2090d63c737bcfc3692a7b",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/BinarySearch.java",
+          "title": "Princeton BinarySearch",
+          "location": "indexOf",
+          "supports": "有序数组闭区间折半查找",
+          "limitations": "性能及不同边界约定需另核"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/SequentialSearchST.java",
+          "title": "Princeton SequentialSearchST",
+          "location": "类说明",
+          "supports": "链表顺序查找实现",
+          "limitations": "不覆盖全部顺序存储变体"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/SeparateChainingHashST.java",
+          "title": "Princeton SeparateChainingHashST",
+          "location": "类说明",
+          "supports": "链地址法实现",
+          "limitations": "负载与性能依具体条件"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-SORT-001",
+      "sha256": "8f803b120b37acc8d5e6f53d45b8c68698f55b4bb444aba926fa4005029dc231",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Merge.java",
+          "title": "Princeton Merge",
+          "location": "merge 与辅助数组",
+          "supports": "相等元素左段先取的稳定归并",
+          "limitations": "不证明其他排序全部复杂度及稳定性"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-STACK-001",
+      "sha256": "f2e0f849f32cdb38b707f284dea12ed0671d8b858889e979c236e82b60f24626",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/LinkedStack.java",
+          "title": "Princeton LinkedStack",
+          "location": "push/pop",
+          "supports": "栈的 LIFO 操作",
+          "limitations": "不涵盖递归活动记录的完整实现"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-TREE-001",
+      "sha256": "85a42e87c3033cfc89b308966d35fec9f72a6fc1cdf5c744a545626ca4b5aefe",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/DepthFirstOrder.java",
+          "title": "Princeton DepthFirstOrder",
+          "location": "前序与后序方法",
+          "supports": "图深度优先前后序框架",
+          "limitations": "不证明二叉树满、完全形态及节点数性质"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    },
+    {
+      "id": "DS-TREE-002",
+      "sha256": "c70b6495aab7f12e883cb3ec587cf51d85b5c7d4d5792b16c76f29aeb294ddda",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kevin-wayne/algs4/master/src/main/java/edu/princeton/cs/algs4/Huffman.java",
+          "title": "Princeton Huffman",
+          "location": "buildTrie",
+          "supports": "重复合并当前两棵最小权树",
+          "limitations": "不完整证明所有编码唯一性或 WPL 主张"
+        }
+      ],
+      "status": "partially-supported",
+      "note": "仅建议归属；项目内算术验证及未覆盖内容不由该引用证明"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "CO-DATA-002",
+  "subject": "计算机组成原理",
+  "learningGoal": "解释规格化、指数偏置和数值范围",
+  "prerequisites": [
+    "二进制科学计数法",
+    "IEEE 754 字段"
+  ],
+  "concept": "浮点数由符号、指数和有效数共同确定数值；IEEE 754 中特殊指数编码用于零、非规格化数、无穷和 NaN。 规格化二进制数以符号、偏置指数和尾数字段表达；舍入可能引起精度损失。机器浮点范围有限，加减运算还需对阶和结果规格化，不可视为任意精度实数。",
+  "conditions": [
+    "以下示例限定 IEEE 754 二进制32位规格化数，指数偏置127。"
+  ],
+  "misconceptions": [
+    {
+      "claim": "浮点指数全零也按隐含首位1的规格化公式计算",
+      "correction": "指数全零编码用于零或非规格化数，规则与规格化数不同。"
+    }
+  ],
+  "workedExample": {
+    "question": "【原创例题】IEEE 754 单精度的 1.0，符号、指数域与小数域分别是什么？",
+    "solution": "正数符号位0；1.0=1.0×2⁰，偏置指数127即01111111；小数域23位全零。"
+  },
+  "selfCheck": {
+    "question": "【原创自测】IEEE 754 二进制32位规格化格式中，−1.0相对于+1.0的符号位如何变化？"
+  },
+  "ruleCardIds": [],
+  "evidence": {
+    "mappingStatus": "详见索引",
+    "ruleStatus": "项目原创归纳；外部来源仅对所列局部提供支持，未覆盖内容待核。",
+    "details": "Cornell Floating Point（https://www.cs.cornell.edu/courses/cs3410/2026fa/notes/float.html；定位：32-bit representation and exponent bias；核验日期：2026-10-31）：支持单精度字段与指数偏置；限制：特殊值细节未逐项核验。 项目例题、数值结果和未列明的细节需单独复核；外部来源状态不改变年度大纲对照。"
+  }
+}

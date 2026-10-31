@@ -725,6 +725,18 @@ def check_knowledge_points(plugin: Path) -> None:
     require({point["subject"] for point in points} == set(prefixes), "knowledge-point index must cover four 408 subjects")
     for point in points:
         require(point["id"].startswith(prefixes[point["subject"]] + "-"), "knowledge-point subject and ID prefix mismatch")
+    card_dir = plugin / "references" / "knowledge-cards"
+    require(card_dir.is_dir() and not card_dir.is_symlink(), "knowledge-card directory is missing or unsafe")
+    expected = {point["id"] + ".json" for point in points}
+    actual = {p.name for p in card_dir.iterdir()}
+    require(actual == expected, "knowledge-card files must match the index exactly")
+    for point in points:
+        point_id = point["id"]
+        require(point.get("knowledgeCard") == f"knowledge-cards/{point_id}.json", "knowledge-card index reference mismatch")
+        path = card_dir / (point_id + ".json")
+        require(path.is_file() and not path.is_symlink(), "knowledge-card file is missing or unsafe")
+        card = load_json(path)
+        require(isinstance(card, dict) and card.get("id") == point_id and card.get("subject") == point["subject"] and card.get("schemaVersion") == "1.0", "knowledge-card identity mismatch")
 
 
 def check_portable_schema(plugin: Path) -> None:

@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-10-31",
+  "reviewFile": "eval\\v2.9-acceptance\\os-cn-source-proposals.json",
+  "scope": "仅修改 evidence.ruleStatus/details，已核验30卡语义哈希与审阅一致；部分支持不升级为全文已核",
+  "backup": "dist/os-cn-attribution-backup-20261031-021839-713093",
+  "cards": [
+    {
+      "id": "CN-APP-001",
+      "beforeSha256": "ad6784d71d701392c01e05383e77feb46554cfdea9da5f84c5fd50e2fd37ed00",
+      "afterSha256": "8249309e3869376b0ae8bd302a146dada2e649ae054d62a28f19b1faf236ddba",
+      "semanticSha256": "f218c1a715eeb3379266b43eb1da83f842d46f9a7015f9162a08a6f9d5e834d8",
+      "sourceCount": 1
+    },
+    {
+      "id": "CN-ARCH-001",
+      "beforeSha256": "b7b8af7c139a3a7c3098e3140a783055b2dd7d1208d3a3f300c69af144f8848a",
+      "afterSha256": "25945bb406d1e5e837af683f86bf495e5ef1a2542a48c92971b410751cff8e8a",
+      "semanticSha256": "c151c537405e5d3942c263b97f25d8f1a8336f86d2185a5af41e01779e3eb7a0",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-ARQ-001",
+      "beforeSha256": "385c8ea73a299ad060dc15574e07d3bcfa9564c9e44ca76e55d7ea6b6a4d0d2a",
+      "afterSha256": "5b6a8ffa41afc5096347cb103b45e965983f50169c7924051e2a4e583c6e8259",
+      "semanticSha256": "600f4abfaab3536b4bcdcf7df776faf85dfddf07f7e541f7cd29c992b4903ea8",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-LAN-001",
+      "beforeSha256": "3e66e124ee1f96cc0a69a0aed7d11009a6b573649c816b1b1ec313f2ef20a3a8",
+      "afterSha256": "15a3483654728759145b4fcd6d045673af4ef3fabfa1d63228a93b4d6aae6ea2",
+      "semanticSha256": "7cf838d9ef95b1e65368474dedd22363e7601670cf54e368fe60abbe4d38d851",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-LINK-001",
+      "beforeSha256": "2f5b03b7f3f079877406033f3367d9130e474aca6de333e5205a814b87de8c17",
+      "afterSha256": "38f73649d54180b695280534fc85dacc8255429f8e8d33bc3143596386bc1bb7",
+      "semanticSha256": "9fd5dcac5614e49ac5a1a012c76f504d11479c4838fdeb0dd1ea37dff041a56e",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-MAC-001",
+      "beforeSha256": "e630b374f9c1f7971046e8dff377e8cedc9459d8d3cddfc4238526a5db839e94",
+      "afterSha256": "ccc67bf6937f95285f2c0cbc2407237806243efc329c240c49d3a76355e00bae",
+      "semanticSha256": "c20464316ab2de0c0fc819cec8c1817e43b41120bb027d5baa34a8368c6c0638",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-NET-001",
+      "beforeSha256": "6844993c86ffbc60e2d7b9d166311099482573efcfd16202d1f19b3b4e6a5740",
+      "afterSha256": "cf086a2ec1605508341c0bb2c61f362b307de311d662105e949026367ff57c75",
+      "semanticSha256": "c2341496620c48be5d8c0f6ce23c46a2234052c385f4b5c04d297a202bae79e0",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-NET-002",
+      "beforeSha256": "9625dd75da91e3608db1d7f85505086ab2dd98d5892a6a9386f6d885c465b14a",
+      "afterSha256": "2466eb25f11317d64607dd9f9ba1ad6da3335a9265d1f9cd1f1838c224e5bb04",
+      "semanticSha256": "4d5572c29cadd3666703db4c00b5cff40bb04f11f2d31fbd6ac8e9512df9035e",
+      "sourceCount": 1
+    },
+    {
+      "id": "CN-NET-003",
+      "beforeSha256": "75c4e7eea39fb4bfaea522ad8f0312eff702fc98dbcd0b81038d63afd524f710",
+      "afterSha256": "b38cb0949e5b3d01067907c56c76437816537d8057d25b48d5d162400146260a",
+      "semanticSha256": "d79dfa86bd2087c905e36406a90f360d5569212d8d69d35424cd39500fff12e7",
+      "sourceCount": 2
+    },
+    {
+      "id": "CN-PERF-001",
+      "beforeSha256": "57c123eeb765e8d0c424b4fe68968628ba6b36232939dee2bfe8d54e9b48f3c8",
+      "afterSha256": "1eec3fae8f5a5d1e5425ff5307a9b2369763f175885839d0f89ba7d0936317be",
+      "semanticSha256": "e67a9b67ac33ff8b4047df4a0bd985260e55b686a3bb33d44097eeb71cceb22d",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-PHY-001",
+      "beforeSha256": "b0b9ccf2b89b8869014b0cf72c0fc7ce098399f30a92e27accc4e3af4d993e5b",
+      "afterSha256": "dbacced1b1220136801f7c61b88cdafe44bada3c5c01000354044044dad2ed28",
+      "semanticSha256": "21dc0327fb785b9196b7b9a70d28b524ce14e8a942b0d36ee29a6e2a8d107df6",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-ROUTE-001",
+      "beforeSha256": "e8e9d3dc1b392ddb2af1004d23378a5f29d1161c9fd251ce867d11408dd67b87",
+      "afterSha256": "9edce60728303031c71017a9251edeb019bd9578e2d234fbf6a09ac0f1582dbb",
+      "semanticSha256": "b034794bbc41176b35508ccb5ba87a6851793de07e9b93fc55ef9675d10c8c2f",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-TCP-001",
+      "beforeSha256": "0b21f4385ffbdf07a085d77757c434b383639274af83d806fab3efd6fae32448",
+      "afterSha256": "034c5ac6829969e901c444160757d95abfc9c2373cf60b60ae956b60fea59efc",
+      "semanticSha256": "5e0f7dd51331933631e937cf5772a32aa1da16d3e9f5441dccbafed9a6e29409",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-TCP-002",
+      "beforeSha256": "bfeb3e09eece1026190121fdb51aac6810ad2dae6b479630a933d3c0d0749e89",
+      "afterSha256": "fc3387b59d0fde550bf177da46bb6c68a28c54832255e91a243337e36c08dbc0",
+      "semanticSha256": "362849beeb484fa20a92cd5145862da84ab9113f1560d649afa18bc7133212d8",
+      "sourceCount": 0
+    },
+    {
+      "id": "CN-TRANS-001",
+      "beforeSha256": "19fd5a1d0a9467a74aa4ef288f4bf49569d52e190f09b93b82ee0ee631d5ce63",
+      "afterSha256": "b86585ee4e3c7966af687c006d1f2898a4b8d49f491ec759c6fd3646f9187d81",
+      "semanticSha256": "347e5c7fb867b6e970468f41a9518493cc468dff5d9b6e8c0cbc1a3b1c7e1314",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-BASIC-001",
+      "beforeSha256": "70456c59842f666829f03450e91def5bf551f539c3a2a5f51d165dc41854c14f",
+      "afterSha256": "aa3029250824ad6082f587e2a19b788a82cd9a180312f4b6415db49e49c86d88",
+      "semanticSha256": "1a6f7cf36779dbef186e1edd83ef7200de73449aafb09dd57b5fae646377f157",
+      "sourceCount": 0
+    },
+    {
+      "id": "OS-DEAD-001",
+      "beforeSha256": "719b000e97f586457c42aca2fb7d77f4d72be879266493d09e6dcef78ffff065",
+      "afterSha256": "4150ec2fef71a8858221a28f1ef67b8243046540decf7678d40451b95ee898e1",
+      "semanticSha256": "5711863eb067108dee28cfb4a1bd815c73df4aa5425a04660a52f231b65c4369",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-DISK-001",
+      "beforeSha256": "1ff9af14392bc7ba89c4ccc1bbd5c33cea795215da95b7e2dd3637bacddbd7ac",
+      "afterSha256": "074be31e377589fc16b5b7f5b07429f1c4c9a06597708e72452c7ac7cd2bfd8a",
+      "semanticSha256": "63375ae115e1d47321713a3198454ffe9963123a24f94f22c082151c54dd077c",
+      "sourceCount": 0
+    },
+    {
+      "id": "OS-FILE-001",
+      "beforeSha256": "f646e6988321d926717a5452e666414f0602d7aa5a89fd58d215994dc1ddf93a",
+      "afterSha256": "6deee5f55262a8b9167c5f8e1e9a1b163b14260cd011168a4141a3be966dcdf6",
+      "semanticSha256": "8dbc2180d4dd8208ada1e320a276d4cb35ad5dfa875800817b5c6b3f847c9ce8",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-MEM-001",
+      "beforeSha256": "a340f7d0c3810093f707e3c49a48f42f804bc765e27f1d885dbe070c44d3b7ed",
+      "afterSha256": "c696f36baa87413a79eaf8960148a6876608841108b62032d941262e9b3234c3",
+      "semanticSha256": "17562e9fd38abdada5e536b272baac7d90d47616c2690960fd8f50e2536d3563",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-MEM-002",
+      "beforeSha256": "563ae671b59a357c20be54d7618a8adb6947a568cd6394895fa60b01cb5f4377",
+      "afterSha256": "2c8a3c405566b73a6ad4daf8c2f5ed3729b59e158cea259cd07679b5311c05a4",
+      "semanticSha256": "de78b0098b203810faca402a4fa692c85f8b4f6110a8ce630f7c76f39163c79b",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-MEM-003",
+      "beforeSha256": "c15e0e80130a5bcb8b7ebe150176b707e691ba608f29c0a53e2cd57466afd05d",
+      "afterSha256": "4eeb42d69038530511f1da4f07db96a89bbf955ce675a1488ca25bcedf2716ee",
+      "semanticSha256": "a23cab336c00d666922bdcdd9362a10cff6e5da82a4607a7c8d3c675a34666e5",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-MEM-004",
+      "beforeSha256": "87798b9db5281e1540bb89578dc90fbd1dff7808101ddea41bc271f1319a2c69",
+      "afterSha256": "915c8a5d9d141450c5ebc8165ab123381a51002b90085900c138b1b9908a6831",
+      "semanticSha256": "5883c8aa1b28e560562856db26ac4737a1aa205d408f673e343a444abd33c761",
+      "sourceCount": 0
+    },
+    {
+      "id": "OS-MEM-005",
+      "beforeSha256": "aad72d47a8bb32d60fe0088f14bae515783fd26b7f93137f337251f5138c9c34",
+      "afterSha256": "a6ee3f032a3552b10d7e951ea72f9aa8ec7880835f6f3b03547509feb23d54ca",
+      "semanticSha256": "b77b29f94f523488c4a8e3890c1dfff76957fc50f38a5a70d863917a38ea043c",
+      "sourceCount": 0
+    },
+    {
+      "id": "OS-PROC-001",
+      "beforeSha256": "affecff3a59ce9b4f87ac50a01b5b9270f3b485f7a9be006fab81c7b0f83b011",
+      "afterSha256": "29b4dd8f525c3e07fdbf6da6fce561eef75f19189356bd79d7f813b735b7e383",
+      "semanticSha256": "e7d85782dd88b9cceafde45272820914696654766b432dfc6aab0effdef99325",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-PROC-002",
+      "beforeSha256": "129cbd13399363ee5f0cc9f77c9c0c5a6f1afdb5fe8025c2ce89f9548737e27b",
+      "afterSha256": "d3f34bf308e98d73619e18fb8a7a8c0d244b8f7acecc58fcf7815ac6981837cb",
+      "semanticSha256": "45377eb9afa2e425a69552031a3bbb34222befb9c8cb09f776571391429f9232",
+      "sourceCount": 0
+    },
+    {
+      "id": "OS-SCHED-001",
+      "beforeSha256": "600a1364b7175abe8e6e3eef09e04b00d0b9e11c83cd539fbb284a15a1ddb6ff",
+      "afterSha256": "0ddcf2211c2f8c250c2e88ee29480eaf3a2aced9f65358449e063a4556ca656b",
+      "semanticSha256": "898d24b5a3974c3493a85692e2eb3bc345fc48920fbf8d16f619384995d44497",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-SCHED-002",
+      "beforeSha256": "17ea742e3ea847f40478e85ece8f790a1a03f265b426826312bf655d897c23bb",
+      "afterSha256": "6f97f7e8b96b53c0023973078f90aa96baedd7f7dc3d0c043a096bd691c86699",
+      "semanticSha256": "a8dff1008c6f4542be31ac73957518cf56490be350a5595d15dc5e33d959dc5b",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-SYNC-001",
+      "beforeSha256": "9bc1037b144abecbef165388d76c7eda6431e7fc27954fb03872b13d0617c8e2",
+      "afterSha256": "b7a3c60090f7b967b33fab890b2aa20593f4f2b0f281ea517450ed0d4b41a587",
+      "semanticSha256": "ad0f6bb147923808fd9294cc425ce389e4b1267a61e2f4945f109d78d71a9b8a",
+      "sourceCount": 1
+    },
+    {
+      "id": "OS-SYNC-002",
+      "beforeSha256": "d4231d6f3a44ab8fa8b196e31a4ea71a4fe0e8187e31c19e987b94c93231e7d8",
+      "afterSha256": "e304b363f2ea5af69ebd65f8f51c53977c48cdde22657ad1c3724694e384443c",
+      "semanticSha256": "d0c298e2c85161abae20a9573d18b1382c2f24a717d15e4509ce7a60ca5824f6",
+      "sourceCount": 1
+    }
+  ]
+}

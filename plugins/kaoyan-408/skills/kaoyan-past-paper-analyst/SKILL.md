@@ -8,7 +8,7 @@ description: 分析用户提供或真题搜索器已核验可访问的考研真�
 ## 加载契约
 
 - 始终读取并遵循[能力路由契约](../../references/capability-routing-contract.md)。
-- 真题处理读取[真题来源与入库契约](../../references/past-paper-source-contract.md)和[证据与版权契约](../../references/evidence-copyright-contract.md)。逐题讲解还需读取[新手图文讲解契约](../../references/beginner-visual-answer-contract.md)。
+- 真题处理读取[真题来源与入库契约](../../references/past-paper-source-contract.md)和[证据与版权契约](../../references/evidence-copyright-contract.md)。需要逐题讲解时，由主 Agent 串联对应学科 Skill 并读取[新手图文讲解契约](../../references/beginner-visual-answer-contract.md)。
 - 不生成便携记录；跨题错因交错题闭环。
 
 ## 输入与分块
